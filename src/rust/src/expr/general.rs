@@ -532,8 +532,8 @@ impl PlRExpr {
             .into())
     }
 
-    fn log(&self, base: f64) -> Result<Self> {
-        Ok(self.inner.clone().log(base).into())
+    fn log(&self, base: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().log(base.inner.clone()).into())
     }
 
     fn log1p(&self) -> Result<Self> {

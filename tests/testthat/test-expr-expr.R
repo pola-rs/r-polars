@@ -608,6 +608,10 @@ test_that("pow, rpow, sqrt, log10", {
     pl$DataFrame(a = 0.42^(-1:3))$select(pl$col("a")$log(0.42)),
     pl$DataFrame(a = -1:3)$cast(pl$Float64)
   )
+  expect_equal(
+    pl$DataFrame(a = c(exp(1), 2), base = c(exp(1), 2))$select(pl$col("a")$log("base")),
+    pl$DataFrame(a = c(1, 1))
+  )
 
   # exp
   log10123 <- suppressWarnings(log(-1:3))
