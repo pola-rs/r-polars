@@ -1031,4 +1031,8 @@ impl PlRExpr {
     fn new_selector(selector: &PlRSelector) -> Result<Self> {
         Ok(Expr::Selector(selector.inner.clone()).into())
     }
+
+    fn index_of(&self, element: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().index_of(element.inner.clone()).into())
+    }
 }
