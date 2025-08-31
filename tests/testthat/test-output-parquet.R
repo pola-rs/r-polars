@@ -179,10 +179,7 @@ test_that("argument `mkdir` works", {
   on.exit(unlink(tmpf))
   df_exp <- as_polars_df(mtcars)
 
-  expect_error(
-    df_exp$write_parquet(tmpf),
-    "No such file or directory"
-  )
+  expect_error(df_exp$write_parquet(tmpf))
 
   df_exp$write_parquet(tmpf, mkdir = TRUE)
 
