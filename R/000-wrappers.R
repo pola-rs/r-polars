@@ -1852,6 +1852,13 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRExpr_index_of` <- function(self) {
+  function(`element`) {
+    `element` <- .savvy_extract_ptr(`element`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_index_of__impl, `self`, `element`))
+  }
+}
+
 `PlRExpr_interpolate` <- function(self) {
   function(`method`) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_interpolate__impl, `self`, `method`))
@@ -3379,6 +3386,7 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   e$`hash` <- `PlRExpr_hash`(ptr)
   e$`hist` <- `PlRExpr_hist`(ptr)
   e$`implode` <- `PlRExpr_implode`(ptr)
+  e$`index_of` <- `PlRExpr_index_of`(ptr)
   e$`interpolate` <- `PlRExpr_interpolate`(ptr)
   e$`interpolate_by` <- `PlRExpr_interpolate_by`(ptr)
   e$`into_selector` <- `PlRExpr_into_selector`(ptr)

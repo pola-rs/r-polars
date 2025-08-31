@@ -308,6 +308,7 @@ nav:
             - head: man/expr__head.md
             - hist: man/expr__hist.md
             - implode: man/expr__implode.md
+            - index_of: man/expr__index_of.md
             - interpolate_by: man/expr__interpolate_by.md
             - interpolate: man/expr__interpolate.md
             - is_between: man/expr__is_between.md
