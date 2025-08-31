@@ -128,7 +128,6 @@ features = [
     "moment",
     "month_end",
     "month_start",
-    "object",
     "offset_by",
     "partition_by",
     "pct_change",
