@@ -15,7 +15,8 @@ dataframe__write_parquet(
   partition_by = NULL,
   partition_chunk_size_bytes = 4294967296,
   storage_options = NULL,
-  retries = 2
+  retries = 2,
+  mkdir = FALSE
 )
 }
 \arguments{
@@ -90,6 +91,8 @@ If \code{storage_options} is not provided, Polars will try to infer the
 information from environment variables.}
 
 \item{retries}{Number of retries if accessing a cloud instance fails.}
+
+\item{mkdir}{Recursively create all the directories in the path.}
 }
 \value{
 \code{NULL} invisibly.

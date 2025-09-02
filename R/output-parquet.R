@@ -186,13 +186,13 @@ dataframe__write_parquet <- function(
   partition_by = NULL,
   partition_chunk_size_bytes = 4294967296,
   storage_options = NULL,
-  retries = 2
+  retries = 2,
+  mkdir = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
 
     target <- file
-    mkdir <- FALSE
 
     if (!is.null(partition_by)) {
       if (!is_string(file)) {
