@@ -210,19 +210,19 @@ check_mold() {
     return
   fi
 
-  if command -v mold >/dev/null 2>&1; then
+  if command -v ld.mold >/dev/null 2>&1; then
     add_additional_lib "-fuse-ld=mold"
     export RUSTFLAGS="${RUSTFLAGS:-} -C link-args=-fuse-ld=mold"
     cat <<EOF
 ---------------------- [MOLD LINKER ENABLED] ----------------------
-mold detected in PATH: enabling '-fuse-ld=mold'
+ld.mold detected in PATH: enabling '-fuse-ld=mold'
 To disable, set R_POLARS_USE_MOLD='false'
 -------------------------------------------------------------------
 EOF
   else
     cat <<EOF
 ---------------------- [MOLD LINKER DISABLED] ----------------------
-'mold' not found in PATH. Continuing without mold.
+'ld.mold' not found in PATH. Continuing without mold.
 --------------------------------------------------------------------
 EOF
   fi
