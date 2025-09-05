@@ -169,7 +169,8 @@ jobs:
       - name: Install mold on Rtools
         if: runner.os == 'Windows'
         run: |
-          pacman -Syu mingw-w64-x86_64-mold --noconfirm
+          pacman -Sy --noconfirm
+          pacman -S --noconfirm --needed mingw-w64-x86_64-mold
 
       - uses: Swatinem/rust-cache@v2
         with:
