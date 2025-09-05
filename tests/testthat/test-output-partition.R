@@ -4,12 +4,12 @@ patrick::with_parameters_test_that(
     lf <- as_polars_lf(mtcars)
 
     tibble::tribble(
-    ~.test_name, ~fn, ~reader, ~fn_sorted,
-    "sink_csv", lf$sink_csv, pl$read_csv, lf$sort("am", "cyl")$sink_csv,
-    "sink_ipc", lf$sink_ipc, pl$read_ipc, lf$sort("am", "cyl")$sink_ipc,
-    "sink_ndjson", lf$sink_ndjson, pl$read_ndjson, lf$sort("am", "cyl")$sink_ndjson,
-    "sink_parquet", lf$sink_parquet, pl$read_parquet, lf$sort("am", "cyl")$sink_parquet,
-  )
+      ~.test_name, ~fn, ~reader, ~fn_sorted,
+      "sink_csv", lf$sink_csv, pl$read_csv, lf$sort("am", "cyl")$sink_csv,
+      "sink_ipc", lf$sink_ipc, pl$read_ipc, lf$sort("am", "cyl")$sink_ipc,
+      "sink_ndjson", lf$sink_ndjson, pl$read_ndjson, lf$sort("am", "cyl")$sink_ndjson,
+      "sink_parquet", lf$sink_parquet, pl$read_parquet, lf$sort("am", "cyl")$sink_parquet,
+    )
   },
   code = {
     # TODO: use expect_shape() after testthat 3.3 is released
