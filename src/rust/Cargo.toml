@@ -169,10 +169,10 @@ features = [
 mimalloc = { version = "0.1", default-features = false }
 
 [target.'cfg(all(target_family = "unix", not(target_os = "macos"), not(target_os = "emscripten"), not(allocator = "mimalloc")))'.dependencies]
-jemallocator = { version = "0.5", features = [
+tikv-jemallocator = { version = "0.6", features = [
     "disable_initial_exec_tls",
     "background_threads",
 ] }
 
 [target.'cfg(all(target_family = "unix", target_os = "macos", not(allocator = "mimalloc")))'.dependencies]
-jemallocator = { version = "0.5", features = ["disable_initial_exec_tls"] }
+tikv-jemallocator = { version = "0.6", features = ["disable_initial_exec_tls"] }
