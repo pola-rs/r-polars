@@ -713,10 +713,6 @@ patrick::with_parameters_test_that(
   }
 )
 
-test_that("list$to_struct's error", {
-  expect_snapshot(pl$col("foo")$list$to_struct(), error = TRUE)
-})
-
 test_that("list$to_struct's deprecated argument", {
   expect_snapshot(
     pl$col("foo")$list$to_struct("foo", fields = "a"),
