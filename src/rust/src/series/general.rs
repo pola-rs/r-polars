@@ -243,12 +243,16 @@ impl PlRSeries {
         let infer_field_strategy = Wrap::<ListToStructWidthStrategy>::try_from(n_field_strategy)?.0;
 
         #[cfg(not(target_arch = "wasm32"))]
-        use crate::r_udf::RUdf;
+        use crate::{
+            r_threads::{ThreadCom, concurrent_handler},
+            r_udf::{CONFIG, RUdf, RUdfSignature},
+        };
 
         #[cfg(not(target_arch = "wasm32"))]
         let get_index_name = name_gen
             .map(|lambda| <PlanCallback<usize, String>>::from(RUdf::new(lambda)))
             .map(|f| NameGenerator(Arc::new(move |i| f.call(i).map(PlSmallStr::from)) as Arc<_>));
+
         #[cfg(target_arch = "wasm32")]
         let get_index_name = match name_gen {
             Some(_) => {
@@ -260,18 +264,47 @@ impl PlRSeries {
             None => None,
         };
 
-        self.series
-            .list()
-            .map_err(RPolarsErr::from)?
+        let list_chunked = self.series.list().map_err(RPolarsErr::from)?;
+
+        #[cfg(not(target_arch = "wasm32"))]
+        let struct_chunked =
+            if get_index_name.is_some() || ThreadCom::try_from_global(&CONFIG).is_ok() {
+                let list_chunked = list_chunked.clone();
+                // Same as PlRLazyFrame::collect
+                concurrent_handler(
+                    move |tc| {
+                        let retval = list_chunked.to_struct(&ListToStructArgs::InferWidth {
+                            infer_field_strategy,
+                            get_index_name,
+                            max_fields: None,
+                        });
+                        ThreadCom::kill_global(&CONFIG);
+                        drop(tc);
+                        retval
+                    },
+                    |udf_sig: RUdfSignature| udf_sig.eval(),
+                    &CONFIG,
+                )
+                .map_err(|e| e.to_string())?
+            } else {
+                list_chunked.to_struct(&ListToStructArgs::InferWidth {
+                    infer_field_strategy,
+                    get_index_name,
+                    max_fields: None,
+                })
+            }
+            .map_err(RPolarsErr::from)?;
+
+        #[cfg(target_arch = "wasm32")]
+        let struct_chunked = list_chunked
             .to_struct(&ListToStructArgs::InferWidth {
                 infer_field_strategy,
                 get_index_name,
                 max_fields: None,
             })
-            .map(IntoSeries::into_series)
-            .map(PlRSeries::from)
-            .map_err(RPolarsErr::from)
-            .map_err(Into::into)
+            .map_err(RPolarsErr::from)?;
+
+        Ok(struct_chunked.into_series().into())
     }
 
     fn str_json_decode(&self, infer_schema_length: Option<NumericScalar>) -> Result<Self> {
