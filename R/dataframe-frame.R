@@ -944,6 +944,21 @@ dataframe__drop_nulls <- function(...) {
     wrap()
 }
 
+#' Apply eager functions to columns of a DataFrame
+#'
+#'
+dataframe__map_columns <- function(column_names, lambda) {
+  wrap({
+    lambda <- as_function(lambda)
+    c_selectors <- parse_into_selector(!!!c(column_names), .arg_name = "column_names")
+
+    list_series <- self$select(c_selectors)$get_columns() |>
+      lapply(\(col) lambda(col))
+
+    self$with_columns(!!!list_series)
+  })
+}
+
 #' Take every nth row in the DataFrame
 #'
 #' @inheritParams lazyframe__gather_every
