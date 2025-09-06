@@ -348,3 +348,35 @@
       │ 1   ┆ null ┆ null ┆ null │
       └─────┴──────┴──────┴──────┘
 
+# list$to_struct's error
+
+    Code
+      pl$col("foo")$list$to_struct()
+    Condition
+      Error in `pl$col("foo")$list$to_struct()`:
+      ! Evaluation failed in `$to_struct()`.
+      Caused by error in `pl$col("foo")$list$to_struct()`:
+      ! Invalid operation.
+      i `<expr>$list$to_struct()` requires either `fields` to be a vector or `upper_bound` to be set
+
+# list$to_struct's deprecated argument
+
+    Code
+      pl$col("foo")$list$to_struct("foo", fields = "a")
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! `<expr>$list$to_struct()` with `n_field_strategy` is deprecated and has no effect on execution.
+    Output
+      col("foo").list.to_struct()
+
+---
+
+    Code
+      pl$col("foo")$list$to_struct()
+    Condition
+      Error in `pl$col("foo")$list$to_struct()`:
+      ! Evaluation failed in `$to_struct()`.
+      Caused by error in `pl$col("foo")$list$to_struct()`:
+      ! Invalid operation.
+      i `<expr>$list$to_struct()` requires either `fields` to be a vector or `upper_bound` to be set
+
