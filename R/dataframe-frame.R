@@ -950,21 +950,12 @@ dataframe__drop_nulls <- function(...) {
 dataframe__map_columns <- function(column_names, lambda) {
   wrap({
     lambda <- as_function(lambda)
-    c_names <- if (is_character(column_names)) {
-      column_names
-    } else {
-      # Like `_expand_selectors` in Python Polars
-      c_names_selector <- parse_into_selector(!!!c(column_names), .arg_name = "column_names")
-      cleared_self <- self$clear()
-      cleared_self$select(c_names_selector)$columns
-    }
+    c_selectors <- parse_into_selector(!!!c(column_names), .arg_name = "column_names")
 
-    self$with_columns(
-      !!!(
-        lapply(c_names, \(c_name) lambda(self$get_column(c_name))) |>
-          set_names(c_names)
-      )
-    )
+    list_series <- self$select(c_selectors)$get_columns() |>
+      lapply(\(col) lambda(col))
+
+    self$with_columns(!!!list_series)
   })
 }
 
