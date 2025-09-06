@@ -7,7 +7,7 @@ This is an update that corresponds to Python Polars 1.33.0, which includes signi
 ### Deprecations
 
 Some of the methods or arguments of expr have been deprecated.
-They still work the same way on series.
+They still work the same way on series (#1507, #1531).
 
 #### Entire expr method
 
@@ -18,6 +18,10 @@ They still work the same way on series.
 - `<expr>$list$to_struct()`'s first argument `n_field_strategy` (#1507).
 - `<expr>$str$json_decode()`'s first argument `dtype` must be specified (#1507).
 - `<expr>$str$json_decode()`'s `infer_schema_length` (#1507).
+- `<expr>$str$to_datetime()`'s first argument `format` or `time_zone` must be specified
+  for time zone aware datetime (#1507).
+  - Related to this, in `<expr>$str$strptime()`, if the string to be parsed contains a time zone,
+    the time zone must be specified.
 - `<expr>$str$to_decimal()`'s `inference_length` (#1507).
 - `<expr>$str$to_decimal()`'s new `scale` argument must be specified (#1507).
 
