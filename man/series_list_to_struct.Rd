@@ -42,6 +42,10 @@ s2 <- s1$list$to_struct()
 s2
 s2$struct$fields
 
+# Convert list to struct with field name assignment by
+# function/index:
+s3 <- s1$list$to_struct(fields = \(idx) sprintf("n\%02d", idx))
+s3$struct$fields
 
 # Convert list to struct with field name assignment by
 # index from a list of names:

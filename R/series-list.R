@@ -32,10 +32,10 @@ namespace_series_list <- function(x) {
 #' s2
 #' s2$struct$fields
 #'
-# # Convert list to struct with field name assignment by
-# # function/index:
-# s3 <- s1$list$to_struct(fields = \(idx) sprintf("n%02d", idx))
-# s3$struct$fields
+#' # Convert list to struct with field name assignment by
+#' # function/index:
+#' s3 <- s1$list$to_struct(fields = \(idx) sprintf("n%02d", idx))
+#' s3$struct$fields
 #'
 #' # Convert list to struct with field name assignment by
 #' # index from a list of names:
@@ -54,9 +54,6 @@ series_list_to_struct <- function(
       name_gen <- if (is.null(fields)) {
         NULL
       } else {
-        # TODO: not supported yet, update the rust side to use concurrent_handler
-        abort("Not supported yet!")
-
         fields <- as_function(fields)
         \(idx) fields(idx)
       }
