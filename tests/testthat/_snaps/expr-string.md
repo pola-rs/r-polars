@@ -101,18 +101,32 @@
 # $str$to_datetime
 
     Code
-      df$select(pl$col("x")$str$to_datetime(format = "%Y / %m / %d"))
+      df$select(pl$col("invalid")$str$to_datetime(format = "%Y / %m / %d"))
     Condition
       Error in `df$select()`:
       ! Evaluation failed in `$select()`.
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: conversion from `str` to `datetime[μs]` failed in column 'x' for 3 out of 3 values: ["2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4"]
+      ! Invalid operation: conversion from `str` to `datetime[μs]` failed in column 'invalid' for 3 out of 3 values: ["2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4"]
       
       You might want to try:
       - setting `strict=False` to set values that cannot be converted to `null`
       - using `str.strptime`, `str.to_date`, or `str.to_datetime` and providing a format string
+
+---
+
+    Code
+      df$select(pl$col("with_tz")$str$to_datetime())
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! `strptime` / `to_datetime` was called with no format and no time zone, but a time zone is part of the data.
+      
+      This was previously allowed but led to unpredictable and erroneous results. Give a format string, set a time zone or perform the operation eagerly on a Series instead of on an Expr.
 
 # zfill
 
@@ -214,6 +228,42 @@
       ! Evaluation failed in `$pad_start()`.
       Caused by error:
       ! Expected a string with one character only, currently has 14 (from "multiple_chars").
+
+# str$json_path
+
+    Code
+      df$select(pl$col("json_val")$str$json_decode(dtype, 1))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error in `pl$col("json_val")$str$json_decode()`:
+      ! Evaluation failed in `$json_decode()`.
+      Caused by error in `pl$col("json_val")$str$json_decode()`:
+      ! `...` must be empty.
+      x Problematic argument:
+      * ..1 = 1
+      i Did you forget to name an argument?
+
+---
+
+    Code
+      df$select(pl$col("json_val")$str$json_decode())
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! `<expr>$str$json_decode()` without `dtype` is deprecated and set `dtype = pl$Struct()` automatically.
+    Output
+      shape: (3, 1)
+      ┌───────────┐
+      │ json_val  │
+      │ ---       │
+      │ struct[0] │
+      ╞═══════════╡
+      │ {}        │
+      │ null      │
+      │ {}        │
+      └───────────┘
 
 # encode decode
 
@@ -404,6 +454,20 @@
       Caused by error:
       ! Invalid operation: expected the same amount of patterns as replacement strings
 
+# str$strptime's deprecated operation
+
+    Code
+      pl$select(pl$lit("2020-01-01T01:00:00+09:00")$str$strptime(pl$Datetime()))
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! `strptime` / `to_datetime` was called with no format and no time zone, but a time zone is part of the data.
+      
+      This was previously allowed but led to unpredictable and erroneous results. Give a format string, set a time zone or perform the operation eagerly on a Series instead of on an Expr.
+
 # str$find works
 
     Code
@@ -452,4 +516,100 @@
       x Problematic argument:
       * ..1 = "a"
       i Did you forget to name an argument?
+
+# to_decimal
+
+    Code
+      df$select(pl$col("x")$str$to_decimal(scale = 2))
+    Output
+      shape: (9, 1)
+      ┌──────────────┐
+      │ x            │
+      │ ---          │
+      │ decimal[*,2] │
+      ╞══════════════╡
+      │ 40.12        │
+      │ 3420.13      │
+      │ 120134.19    │
+      │ 3212.98      │
+      │ 12.90        │
+      │ 143.09       │
+      │ 143.90       │
+      │ null         │
+      │ 0.00         │
+      └──────────────┘
+
+---
+
+    Code
+      df$select(pl$col("x")$str$to_decimal(scale = 4))
+    Output
+      shape: (9, 1)
+      ┌──────────────┐
+      │ x            │
+      │ ---          │
+      │ decimal[*,4] │
+      ╞══════════════╡
+      │ 40.1200      │
+      │ 3420.1300    │
+      │ 120134.1900  │
+      │ 3212.9800    │
+      │ 12.9000      │
+      │ 143.0900     │
+      │ 143.9000     │
+      │ null         │
+      │ 0.0010       │
+      └──────────────┘
+
+---
+
+    Code
+      df$select(pl$col("x")$str$to_decimal())
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! `<expr>$str$to_decimal()` without `scale` is deprecated and set `scale = 0L` automatically.
+    Output
+      shape: (9, 1)
+      ┌──────────────┐
+      │ x            │
+      │ ---          │
+      │ decimal[*,0] │
+      ╞══════════════╡
+      │ 40           │
+      │ 3420         │
+      │ 120134       │
+      │ 3212         │
+      │ 12           │
+      │ 143          │
+      │ 143          │
+      │ null         │
+      │ null         │
+      └──────────────┘
+
+---
+
+    Code
+      df$select(pl$col("x")$str$to_decimal(inference_length = 0))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! `<expr>$str$to_decimal()` with `inference_length` is deprecated and has no effect on execution.
+      Warning:
+      ! `<expr>$str$to_decimal()` without `scale` is deprecated and set `scale = 0L` automatically.
+    Output
+      shape: (9, 1)
+      ┌──────────────┐
+      │ x            │
+      │ ---          │
+      │ decimal[*,0] │
+      ╞══════════════╡
+      │ 40           │
+      │ 3420         │
+      │ 120134       │
+      │ 3212         │
+      │ 12           │
+      │ 143          │
+      │ 143          │
+      │ null         │
+      │ null         │
+      └──────────────┘
 

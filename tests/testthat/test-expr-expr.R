@@ -2970,3 +2970,7 @@ test_that("index_of works", {
     )$cast(pl$UInt32)
   )
 })
+
+test_that("Deprecated shrink_dtype", {
+  expect_snapshot(pl$col("foo")$shrink_dtype(), cnd_class = TRUE)
+})

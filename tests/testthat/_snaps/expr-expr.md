@@ -548,3 +548,14 @@
       Caused by error:
       ! Argument `probs` must be numeric, not character
 
+# Deprecated shrink_dtype
+
+    Code
+      pl$col("foo")$shrink_dtype()
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! `<expr>$shrink_dtype()` is deprecated and is a no-op.
+      i Use `<series>$shrink_dtype()` instead.
+    Output
+      col("foo")
+

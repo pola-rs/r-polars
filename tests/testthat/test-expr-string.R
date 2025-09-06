@@ -121,9 +121,13 @@ test_that("$str$to_time", {
 })
 
 test_that("$str$to_datetime", {
-  df <- pl$DataFrame(x = c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4 03:00"))
+  df <- pl$DataFrame(
+    naive = c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4 03:00"),
+    invalid = c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4"),
+    with_tz = c("2009-01-02 01:00Z", "2009-01-03 02:00+01:00", "2009-1-4 03:00-02:00")
+  )
   expect_equal(
-    df$select(pl$col("x")$str$to_datetime(time_zone = "UTC", time_unit = "ms")),
+    df$select(x = pl$col("naive")$str$to_datetime(time_zone = "UTC", time_unit = "ms")),
     pl$DataFrame(
       x = as.POSIXct(
         c("2009-01-02 01:00:00", "2009-01-03 02:00:00", "2009-01-04 03:00:00"),
@@ -132,18 +136,32 @@ test_that("$str$to_datetime", {
     )
   )
 
-  df <- pl$DataFrame(x = c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4"))
   expect_equal(
-    df$select(pl$col("x")$str$to_datetime(
-      format = "%Y / %m / %d",
-      strict = FALSE,
-      time_unit = "ms"
-    )),
+    df$select(
+      x = pl$col("invalid")$str$to_datetime(
+        format = "%Y / %m / %d",
+        strict = FALSE,
+        time_unit = "ms"
+      )
+    ),
     pl$DataFrame(x = as.POSIXct(c(NA, NA, NA)))
   )
-
   expect_snapshot(
-    df$select(pl$col("x")$str$to_datetime(format = "%Y / %m / %d")),
+    df$select(pl$col("invalid")$str$to_datetime(format = "%Y / %m / %d")),
+    error = TRUE
+  )
+
+  expect_equal(
+    df$select(pl$col("with_tz")$str$to_datetime(time_zone = "UTC", time_unit = "ms")),
+    pl$DataFrame(
+      with_tz = as.POSIXct(
+        c("2009-01-02 01:00:00", "2009-01-03 01:00:00", "2009-01-04 05:00:00"),
+        tz = "UTC"
+      )
+    )
+  )
+  expect_snapshot(
+    df$select(pl$col("with_tz")$str$to_datetime()),
     error = TRUE
   )
 })
@@ -440,7 +458,7 @@ test_that("str$starts_with str$ends_with", {
   )
 })
 
-test_that("str$json_path, str$json_decode", {
+test_that("str$json_path", {
   df <- pl$DataFrame(
     json_val = c('{"a":"1"}', NA, '{"a":2}', '{"a":2.1}', '{"a":true}')
   )
@@ -448,19 +466,27 @@ test_that("str$json_path, str$json_decode", {
     df$select(pl$col("json_val")$str$json_path_match("$.a")),
     pl$DataFrame(json_val = c("1", NA, "2", "2.1", "true"))
   )
+})
 
+test_that("str$json_path", {
   df <- pl$DataFrame(
     json_val = c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')
   )
   dtype <- pl$Struct(a = pl$Float64, b = pl$Boolean)
   actual <- df$select(pl$col("json_val")$str$json_decode(dtype))
+
   expect_equal(
     actual$select(pl$col("json_val")$struct$unnest()),
     pl$DataFrame(a = c(1, NA, 2), b = c(TRUE, NA, FALSE))
   )
-  expect_error(
+
+  expect_snapshot(
     df$select(pl$col("json_val")$str$json_decode(dtype, 1)),
-    "Did you forget"
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(pl$col("json_val")$str$json_decode()),
+    cnd_class = TRUE
   )
 })
 
@@ -858,7 +884,7 @@ test_that("str$replace_many", {
 })
 
 patrick::with_parameters_test_that(
-  "parse time without format specified",
+  "str$strptime without format specified",
   .cases = {
     # nolint start: line_length_linter
     tibble::tribble(
@@ -884,6 +910,13 @@ patrick::with_parameters_test_that(
     )
   }
 )
+
+test_that("str$strptime's deprecated operation", {
+  expect_snapshot(
+    pl$select(pl$lit("2020-01-01T01:00:00+09:00")$str$strptime(pl$Datetime())),
+    error = TRUE
+  )
+})
 
 # test_that("str$extract_groups works", {
 #   df <- pl$DataFrame(
@@ -1049,21 +1082,27 @@ test_that("$str$extract_many works", {
   )
 })
 
-# TODO: uncomment when https://github.com/pola-rs/polars/issues/20556 is solved
-# test_that("to_decimal", {
-#   df <- pl$DataFrame(
-#     x = c(
-#       "40.12", "3420.13", "120134.19", "3212.98",
-#       "12.90", "143.09", "143.9"
-#     )
-#   )
-#   expect_equal(
-#     df$select(pl$col("x")$str$to_decimal()),
-#     pl$DataFrame(x = c(
-#       40.12, 3420.13, 120134.19, 3212.98, 12.90, 143.09, 143.9
-#     ), .schema_overrides = list(x = pl$Decimal(scale = 2)))
-#   )
-# })
+test_that("to_decimal", {
+  df <- pl$DataFrame(
+    x = c(
+      "40.12",
+      "3420.13",
+      "120134.19",
+      "3212.98",
+      "12.90",
+      "143.09",
+      "143.9",
+      "invalid",
+      ".001"
+    )
+  )
+  expect_snapshot(df$select(pl$col("x")$str$to_decimal(scale = 2)))
+  expect_snapshot(df$select(pl$col("x")$str$to_decimal(scale = 4)))
+
+  # Deprecated usage
+  expect_snapshot(df$select(pl$col("x")$str$to_decimal()), cnd_class = TRUE)
+  expect_snapshot(df$select(pl$col("x")$str$to_decimal(inference_length = 0)), cnd_class = TRUE)
+})
 
 make_normalize_cases <- function() {
   tibble::tribble(
