@@ -9,7 +9,7 @@ dataframe__map_columns(column_names, lambda)
 \arguments{
 \item{column_names}{Column names or selectors specifying columns to apply the function to.}
 
-\item{lambda}{A function will receive a \link{Series} as the first argument.}
+\item{lambda}{A function that will receive a \link{Series} as the first argument.}
 }
 \value{
 A polars \link{DataFrame}
