@@ -670,7 +670,7 @@ expr_str_starts_with <- function(prefix) {
 #'   Ignored.
 #' @inherit as_polars_expr return
 #' @seealso
-#' - [`<series>$str$json_decode()`][srs_str_json_decode]
+#' - [`<series>$str$json_decode()`][series_str_json_decode]
 #' @examples
 #' df <- pl$DataFrame(
 #'   json_val = c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')

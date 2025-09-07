@@ -41,6 +41,6 @@ df$select(
 }
 \seealso{
 \itemize{
-\item \code{\link[=srs_str_json_decode]{<series>$str$json_decode()}}
+\item \code{\link[=series_str_json_decode]{<series>$str$json_decode()}}
 }
 }
