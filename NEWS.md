@@ -7,7 +7,8 @@ This is an update that corresponds to Python Polars 1.33.0, which includes signi
 ### Deprecations
 
 Some entire expr methods or arguments of expr methods have been deprecated.
-They still work the same way on series (#1507, #1531, #1534).
+They still work the same way on series
+([pola-rs/polars#24027](https://github.com/pola-rs/polars/pull/24027), #1507, #1531, #1534).
 
 As a workaround of these deprecations, the new `<dataframe>$map_columns()` function can be used
 to apply functions for Series to each column (#1533).
