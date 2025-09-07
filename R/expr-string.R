@@ -43,9 +43,10 @@ namespace_expr_str <- function(x) {
 #' @inheritParams expr_dt_replace_time_zone
 #' @inherit as_polars_expr return
 #' @seealso
-#' - [`<Expr>$str$to_date()`][expr_str_to_date]
-#' - [`<Expr>$str$to_datetime()`][expr_str_to_datetime]
-#' - [`<Expr>$str$to_time()`][expr_str_to_time]
+#' - [`<expr>$str$to_date()`][expr_str_to_date]
+#' - [`<expr>$str$to_datetime()`][expr_str_to_datetime]
+#' - [`<expr>$str$to_time()`][expr_str_to_time]
+#' - [`<series>$str$to_datetime()`][series_str_to_datetime]
 #' @examples
 #' # Dealing with a consistent format
 #' df <- pl$DataFrame(x = c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
@@ -182,7 +183,8 @@ expr_str_to_time <- function(format = NULL, ..., strict = TRUE, cache = TRUE) {
 #' penalty - cleaning your data beforehand will almost certainly be more performant.
 #' @inherit as_polars_expr return
 #' @seealso
-#' - [`<Expr>$str$strptime()`][expr_str_strptime]
+#' - [`<expr>$str$strptime()`][expr_str_strptime]
+#' - [`<series>$str$to_datetime()`][series_str_to_datetime]
 #' @examples
 #' df <- pl$DataFrame(x = c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
 #'
@@ -488,7 +490,8 @@ expr_str_zfill <- function(length) {
 #' @param inference_length `r lifecycle::badge("deprecated")`
 #'   Ignored.
 #' @inherit as_polars_expr return
-#'
+#' @seealso
+#' - [`<series>$str$to_decimal()`][series_str_to_decimal]
 #' @examples
 #' df <- pl$DataFrame(
 #'   numbers = c(
@@ -652,14 +655,22 @@ expr_str_starts_with <- function(prefix) {
 
 #' Parse string values as JSON.
 #'
+#' Parse string values as JSON.
+#' Throw errors if encounter invalid json strings.
+#'
+#' As of polars 1.3.0, `infer_schema_length` is deprecated and
+#' `dtype` must be provided to ensure that the planner can determine
+#' the output datatype.
+#'
+#' If inferring dtype is needed, [`<series>$str$json_decode()`][series_str_json_decode]
+#' can be used, which inspects the data at runtime.
 #' @inheritParams rlang::args_dots_empty
 #' @param dtype The dtype to cast the extracted value to.
 #' @param infer_schema_length `r lifecycle::badge("deprecated")`
 #'   Ignored.
-#' @details
-#' Throw errors if encounter invalid json strings.
-#'
 #' @inherit as_polars_expr return
+#' @seealso
+#' - [`<series>$str$json_decode()`][series_str_json_decode]
 #' @examples
 #' df <- pl$DataFrame(
 #'   json_val = c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')

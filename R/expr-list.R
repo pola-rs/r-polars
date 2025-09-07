@@ -747,15 +747,12 @@ expr_list_to_array <- function(width) {
 # TODO: link to pl__Unknown
 #' Convert the Series of type List to a Series of type Struct
 #'
-#' @details It is recommended to set `upper_bound` to the correct output size
-#' of the struct. If this is not set, Polars will not know the output type of
-#' this operation and will set it to `Unknown` which can lead to errors because
-#' Polars is not able to resolve the query.
+#' @details
+#' As of polars 1.3.0, the `n_field_strategy` argument is ignored and deprecated.
+#' The `fields` needs to be a character vector or the `upper_bound` is regarded as ground truth.
 #'
-#' For performance reasons, the length of the first non-null sublist is used to
-#' determine the number of output fields by default.
-#' If the sublists can be of different lengths then `n_field_strategy="max_width"`
-#' must be used to obtain the expected result.
+#' If inferring field length is needed, [`<series>$list$to_struct()`][series_list_to_struct]
+#' can be used, which inspects the data at runtime.
 #' @inherit as_polars_expr return
 #' @inheritParams expr_arr_to_struct
 #' @param n_field_strategy `r lifecycle::badge("deprecated")`
@@ -764,6 +761,9 @@ expr_list_to_array <- function(width) {
 #'   A [polars expression][Expr] needs to be able to evaluate the output datatype at all
 #'   times, so the caller must provide an upper bound of the number of struct
 #'   fields that will be created if `fields` is not a character vector of field names.
+#' @seealso
+#' - [`<expr>$arr$to_struct()`][expr_arr_to_struct]
+#' - [`<series>$list$to_struct()`][series_list_to_struct]
 #' @examples
 #' df <- pl$DataFrame(n = list(c(0, 1), c(0, 1, 2)))
 #'

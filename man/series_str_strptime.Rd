@@ -87,3 +87,9 @@ pl$select(pl$coalesce(
   s3$str$strptime(pl$Date, "\%c", strict = FALSE),
 ))$to_series()
 }
+\seealso{
+\itemize{
+\item \code{\link[=expr_str_strptime]{<expr>$str$strptime()}}
+\item \code{\link[=series_str_to_datetime]{<series>$str$to_datetime()}}
+}
+}

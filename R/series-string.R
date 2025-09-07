@@ -22,6 +22,8 @@ namespace_series_str <- function(x) {
 #' - `"earliest"`: Use the earliest datetime
 #' - `"latest"`: Use the latest datetime
 #' - `"null"`: Return a null value
+#' @seealso
+#' - [`<expr>$str$to_datetime()`][expr_str_to_datetime]
 #' @examples
 #' s <- as_polars_series(c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
 #' s$str$to_datetime("%Y-%m-%d %H:%M%#z")
@@ -79,6 +81,9 @@ series_str_to_datetime <- function(
 #' @inheritParams series_str_to_datetime
 #' @inherit expr_str_strptime description details
 #' @inheritParams expr_str_strptime
+#' @seealso
+#' - [`<expr>$str$strptime()`][expr_str_strptime]
+#' - [`<series>$str$to_datetime()`][series_str_to_datetime]
 #' @examples
 #' s1 <- as_polars_series(c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
 #'
@@ -162,6 +167,8 @@ series_str_strptime <- function(
 #'   If `NULL`, the method will infer the scale from the data.
 #' @param inference_length Number of elements to parse to determine the
 #'   `precision` and `scale` of the [decimal data type][pl__Decimal].
+#' @seealso
+#' - [`<expr>$str$to_decimal()`][expr_str_to_decimal]
 #' @examples
 #' s <- as_polars_series(c(
 #'   "40.12",
@@ -202,6 +209,8 @@ series_str_to_decimal <- function(..., scale = NULL, inference_length = 100L) {
 #' @param infer_schema_length The maximum number of rows to scan for schema inference.
 #'   If set to `NULL`, the full data may be scanned *(this is slow)*.
 #'   Only used if the `dtype` argument is `NULL`.
+#' @seealso
+#' - [`<expr>$str$json_decode()`][expr_str_json_decode]
 #' @examples
 #' s1 <- as_polars_series(c('{"a":1, "b": true}', NA, '{"a":2, "b": false}'))
 #'
