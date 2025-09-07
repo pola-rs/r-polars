@@ -63,9 +63,11 @@ There is `<expr>$map_batches()` in this package, but it is not recommended to us
 Instead, it is recommended to convert the polars object to an R DataFrame or similar, and then use common higher-order functions like `lapply()` or `purrr::map()`.
 
 There is also `<dataframe>$map_columns()`, which is a thin wrapper around `lapply()`.
+This function extracts the selected columns as Series using column selectors and applies the UDF using `lapply()`,
+which is simpler to `purrr::map_at()` described later.
 
 ```{r}
-dat$map_columns(cs$all(), \(col) scale(col$to_r_vector())[, 1])
+dat$map_columns(c("carb", "mpg"), \(col) scale(col$to_r_vector())[, 1])
 ```
 
 Note that when you convert your polars object to R, you may run out of memory if your object is a LazyFrame that is too big to fit in memory once collected.
