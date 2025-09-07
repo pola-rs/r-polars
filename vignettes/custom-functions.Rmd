@@ -64,7 +64,7 @@ Instead, it is recommended to convert the polars object to an R DataFrame or sim
 
 There is also `<dataframe>$map_columns()`, which is a thin wrapper around `lapply()`.
 This function extracts the selected columns as Series using column selectors and applies the UDF using `lapply()`,
-which is simpler to `purrr::map_at()` described later.
+which is similar to `purrr::map_at()` described later.
 
 ```{r}
 dat$map_columns(c("carb", "mpg"), \(col) scale(col$to_r_vector())[, 1])

@@ -955,7 +955,7 @@ dataframe__drop_nulls <- function(...) {
 #' [Series] before the function is applied, and the return value of the function
 #' will be converted back to a [Series] by [as_polars_series].
 #'
-#' It is recommended that using [`<dataframe>$with_columns()`][dataframe__with_columns]
+#' It is recommended to use [`<dataframe>$with_columns()`][dataframe__with_columns]
 #' unless they are using expressions that are only possible on [Series] and not on [Expr].
 #' This is almost never the case, except for a very select few functions that cannot know
 #' the output datatype without looking at the data.
