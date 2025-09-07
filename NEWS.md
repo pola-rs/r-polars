@@ -6,16 +6,38 @@ This is an update that corresponds to Python Polars 1.33.0, which includes signi
 
 ### Deprecations
 
-Some of the methods or arguments of expr have been deprecated.
-They still work the same way on series (#1507, #1531).
+Some entire expr methods or arguments of expr methods have been deprecated.
+They still work the same way on series
+([pola-rs/polars#24027](https://github.com/pola-rs/polars/pull/24027), #1507, #1531, #1534).
 
-#### Entire expr method
+As a workaround of these deprecations, the new `<dataframe>$map_columns()` function can be used
+to apply functions for Series to each column (#1533).
+
+```r
+df <- pl$DataFrame(n = list(c(0, 1), c(0, 1, 2)))
+
+# `df$with_columns(pl$col("n")$list$to_struct(n_field_strategy = "max_width"))` no longer works identically.
+df$map_columns("n", \(s) s$list$to_struct(n_field_strategy = "max_width"))
+#> shape: (2, 1)
+#> ┌────────────────┐
+#> │ n              │
+#> │ ---            │
+#> │ struct[3]      │
+#> ╞════════════════╡
+#> │ {0.0,1.0,null} │
+#> │ {0.0,1.0,2.0}  │
+#> └────────────────┘
+```
+
+#### Entire expr method deprecations
 
 - `<expr>$shrink_dtype()` (#1507).
 
-#### Arguments of expr method
+#### Arguments of expr method deprecations
 
 - `<expr>$list$to_struct()`'s first argument `n_field_strategy` (#1507).
+- `<expr>$list$to_struct()`'s `upper_bound` argument must be specified when used with
+  non-vector `fields` specification (#1534).
 - `<expr>$str$json_decode()`'s first argument `dtype` must be specified (#1507).
 - `<expr>$str$json_decode()`'s `infer_schema_length` (#1507).
 - `<expr>$str$to_datetime()`'s first argument `format` or `time_zone` must be specified

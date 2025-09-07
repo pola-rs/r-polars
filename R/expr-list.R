@@ -810,19 +810,25 @@ expr_list_to_struct <- function(
       fields
     } else {
       if (is.null(upper_bound)) {
-        abort(
+        # Python Polars does not allow `upper_bound` to be empty,
+        # but avoiding breaking change for the API, this is needed.
+        deprecate_warn(
           c(
-            format_error("Invalid operation."),
-            i = format_error(
-              sprintf(
-                "%s requires either %s to be a vector or %s to be set",
-                format_code("<expr>$list$to_struct()"),
-                format_arg("fields"),
-                format_arg("upper_bound")
-              )
+            `!` = sprintf(
+              "%s without %s is deprecated, automatically setting %s.",
+              format_code("<expr>$list$to_struct()"),
+              format_arg("upper_bound"),
+              format_code("upper_bound = 1L")
+            ),
+            i = sprintf(
+              "Either modify %s to be a vector or specify %s to suppress this warning.",
+              format_code("fields"),
+              format_code("upper_bound")
             )
-          )
+          ),
+          always = TRUE
         )
+        upper_bound <- 1L
       }
       idx <- seq(0L, upper_bound - 1L)
 

@@ -508,7 +508,8 @@ expr_str_to_decimal <- function(..., scale, inference_length = deprecated()) {
             format_code("<expr>$str$to_decimal()"),
             format_arg("inference_length")
           )
-        )
+        ),
+        always = TRUE
       )
     }
 
@@ -523,7 +524,8 @@ expr_str_to_decimal <- function(..., scale, inference_length = deprecated()) {
             format_arg("scale"),
             format_code("scale = 0L")
           )
-        )
+        ),
+        always = TRUE
       )
       scale <- 0L
     }
@@ -682,7 +684,8 @@ expr_str_json_decode <- function(dtype, ..., infer_schema_length = deprecated())
             format_arg("dtype"),
             format_code("dtype = pl$Struct()")
           )
-        )
+        ),
+        always = TRUE
       )
       dtype <- pl$Struct()
     }

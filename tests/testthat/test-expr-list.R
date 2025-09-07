@@ -718,5 +718,5 @@ test_that("list$to_struct's deprecated argument", {
     pl$col("foo")$list$to_struct("foo", fields = "a"),
     cnd_class = TRUE
   )
-  expect_snapshot(pl$col("foo")$list$to_struct(), error = TRUE)
+  expect_snapshot(pl$col("foo")$list$to_struct(), cnd_class = TRUE)
 })
