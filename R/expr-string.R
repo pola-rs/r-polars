@@ -491,7 +491,7 @@ expr_str_zfill <- function(length) {
 #'   Ignored.
 #' @inherit as_polars_expr return
 #' @seealso
-#' - [`<series>$str$to_decimal()`][srs_str_to_decimal]
+#' - [`<series>$str$to_decimal()`][series_str_to_decimal]
 #' @examples
 #' df <- pl$DataFrame(
 #'   numbers = c(
@@ -662,7 +662,7 @@ expr_str_starts_with <- function(prefix) {
 #' `dtype` must be provided to ensure that the planner can determine
 #' the output datatype.
 #'
-#' If inferring dtype is needed, [`<series>$str$json_decode()`][srs_str_json_decode]
+#' If inferring dtype is needed, [`<series>$str$json_decode()`][series_str_json_decode]
 #' can be used, which inspects the data at runtime.
 #' @inheritParams rlang::args_dots_empty
 #' @param dtype The dtype to cast the extracted value to.

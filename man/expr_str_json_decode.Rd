@@ -26,7 +26,7 @@ As of polars 1.3.0, \code{infer_schema_length} is deprecated and
 \code{dtype} must be provided to ensure that the planner can determine
 the output datatype.
 
-If inferring dtype is needed, \code{\link[=srs_str_json_decode]{<series>$str$json_decode()}}
+If inferring dtype is needed, \code{\link[=series_str_json_decode]{<series>$str$json_decode()}}
 can be used, which inspects the data at runtime.
 }
 \examples{

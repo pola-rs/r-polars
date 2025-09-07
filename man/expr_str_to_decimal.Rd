@@ -31,6 +31,6 @@ df$with_columns(numbers_decimal = pl$col("numbers")$str$to_decimal(scale = 2))
 }
 \seealso{
 \itemize{
-\item \code{\link[=srs_str_to_decimal]{<series>$str$to_decimal()}}
+\item \code{\link[=series_str_to_decimal]{<series>$str$to_decimal()}}
 }
 }
