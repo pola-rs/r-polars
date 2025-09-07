@@ -22,7 +22,7 @@ similar to \link[purrr:map_if]{purrr::map_at}. The selected columns will be mate
 \link{Series} before the function is applied, and the return value of the function
 will be converted back to a \link{Series} by \link{as_polars_series}.
 
-It is recommended that using \code{\link[=dataframe__with_columns]{<dataframe>$with_columns()}}
+It is recommended to use \code{\link[=dataframe__with_columns]{<dataframe>$with_columns()}}
 unless they are using expressions that are only possible on \link{Series} and not on \link{Expr}.
 This is almost never the case, except for a very select few functions that cannot know
 the output datatype without looking at the data.
