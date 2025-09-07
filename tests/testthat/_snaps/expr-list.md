@@ -364,8 +364,8 @@
       pl$col("foo")$list$to_struct()
     Condition <lifecycle_warning_deprecated>
       Warning:
-      ! `<expr>$list$to_struct()` without `upper_bound` is deprecated and set `upper_bound = 1L` automatically.
-      i Either `fields` to be a vector or `upper_bound` to be set to suppress this warning.
+      ! `<expr>$list$to_struct()` without `upper_bound` is deprecated, automatically setting `upper_bound = 1L`.
+      i Either modify `fields` to be a vector or specify `upper_bound` to suppress this warning.
     Output
       col("foo").list.to_struct()
 
