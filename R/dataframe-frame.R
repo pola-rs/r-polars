@@ -960,7 +960,7 @@ dataframe__drop_nulls <- function(...) {
 #' This is almost never the case, except for a very select few functions that cannot know
 #' the output datatype without looking at the data.
 #' @param column_names Column names or selectors specifying columns to apply the function to.
-#' @param lambda A function will receive a [Series] as the first argument.
+#' @param lambda A function that will receive a [Series] as the first argument.
 #' @examples
 #' df1 <- pl$DataFrame(
 #'   a = 1:4,
