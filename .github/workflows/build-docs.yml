@@ -18,6 +18,8 @@ on:
       - NAMESPACE
       - README.md
       - NEWS.md
+    tags:
+      - v*
   pull_request:
     branches:
       - main
@@ -35,9 +37,6 @@ on:
       - NAMESPACE
       - README.md
       - NEWS.md
-  release:
-    types:
-      - released
   workflow_dispatch:
 
 concurrency:
