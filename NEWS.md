@@ -6,7 +6,7 @@ This is an update that corresponds to Python Polars 1.33.0, which includes signi
 
 ### Deprecations
 
-Some of the entire methods of expr of arguments of expr methods have been deprecated.
+Some entire expr methods or arguments of expr methods have been deprecated.
 They still work the same way on series (#1507, #1531, #1534).
 
 As a workaround of these deprecations, the new `<dataframe>$map_columns()` function can be used
