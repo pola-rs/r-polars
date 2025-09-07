@@ -815,13 +815,13 @@ expr_list_to_struct <- function(
         deprecate_warn(
           c(
             `!` = sprintf(
-              "%s without %s is deprecated and set %s automatically.",
+              "%s without %s is deprecated, automatically setting %s.",
               format_code("<expr>$list$to_struct()"),
               format_arg("upper_bound"),
               format_code("upper_bound = 1L")
             ),
             i = sprintf(
-              "Either %s to be a vector or %s to be set to suppress this warning.",
+              "Either modify %s to be a vector or specify %s to suppress this warning.",
               format_code("fields"),
               format_code("upper_bound")
             )
