@@ -362,10 +362,10 @@
 
     Code
       pl$col("foo")$list$to_struct()
-    Condition
-      Error in `pl$col("foo")$list$to_struct()`:
-      ! Evaluation failed in `$to_struct()`.
-      Caused by error in `pl$col("foo")$list$to_struct()`:
-      ! Invalid operation.
-      i `<expr>$list$to_struct()` requires either `fields` to be a vector or `upper_bound` to be set
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! `<expr>$list$to_struct()` without `upper_bound` is deprecated and set `upper_bound = 1L` automatically.
+      i Either `fields` to be a vector or `upper_bound` to be set to suppress this warning.
+    Output
+      col("foo").list.to_struct()
 
