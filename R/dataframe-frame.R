@@ -946,14 +946,52 @@ dataframe__drop_nulls <- function(...) {
 
 #' Apply eager functions to columns of a DataFrame
 #'
+#' @inherit as_polars_df return
+#' @description
+#' `r lifecycle::badge("experimental")`
 #'
+#' A higher-order function to apply functions to selected columns of a [DataFrame],
+#' similar to [purrr::map_at]. The selected columns will be materialized as
+#' [Series] before the function is applied, and the return value of the function
+#' will be converted back to a [Series] by [as_polars_series].
+#'
+#' It is recommended that using [`<dataframe>$with_columns()`][dataframe__with_columns]
+#' unless they are using expressions that are only possible on [Series] and not on [Expr].
+#' This is almost never the case, except for a very select few functions that cannot know
+#' the output datatype without looking at the data.
+#' @param column_names Column names or selectors specifying columns to apply the function to.
+#' @param lambda A function will receive a [Series] as the first argument.
+#' @examples
+#' df1 <- pl$DataFrame(
+#'   a = 1:4,
+#'   b = c("10", "20", "30", "40"),
+#' )
+#'
+#' # Apply `<series>$shrink_dtype()` to the "a" column
+#' df1$map_columns("a", \(s) s$shrink_dtype())
+#'
+#' # Convert the "b" column to integer by the base R function `as.integer()`
+#' df1$map_columns("b", \(s) s$to_r_vector() |> as.integer())
+#'
+#' df2 <- pl$DataFrame(
+#'   a = c('{"x":"a"}', NA, '{"x":"b"}', NA),
+#'   b = c('{"a":1, "b": true}', NA, '{"a":2, "b": false}', NA),
+#' )
+#'
+#' # Apply `<series>$str$json_decode()` to both the "a" and "b" columns
+#' df2$map_columns(c("a", "b"), \(s) s$str$json_decode())
+#'
+#' # Use a selector to apply the function to all columns
+#' df2$map_columns(cs$all(), \(s) s$str$json_decode())
 dataframe__map_columns <- function(column_names, lambda) {
   wrap({
     lambda <- as_function(lambda)
-    c_selectors <- parse_into_selector(!!!c(column_names), .arg_name = "column_names")
+    c_selector <- parse_into_selector(!!!c(column_names), .arg_name = "column_names")
 
-    list_series <- self$select(c_selectors)$get_columns() |>
-      lapply(\(col) lambda(col))
+    # `as_polars_series` is needed because `with_columns` treat character vectors
+    # as column names, not as values.
+    list_series <- self$select(c_selector)$get_columns() |>
+      lapply(\(col) as_polars_series(lambda(col)))
 
     self$with_columns(!!!list_series)
   })
