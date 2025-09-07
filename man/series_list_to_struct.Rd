@@ -51,3 +51,8 @@ s3$struct$fields
 # index from a list of names:
 s1$list$to_struct(fields = c("one", "two", "three"))$struct$unnest()
 }
+\seealso{
+\itemize{
+\item \code{\link[=expr_list_to_struct]{<expr>$list$to_struct()}}
+}
+}

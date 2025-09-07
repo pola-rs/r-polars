@@ -66,6 +66,7 @@ df$select(pl$col("x")$str$to_datetime(time_zone = "UTC"))
 }
 \seealso{
 \itemize{
-\item \code{\link[=expr_str_strptime]{<Expr>$str$strptime()}}
+\item \code{\link[=expr_str_strptime]{<expr>$str$strptime()}}
+\item \code{\link[=series_str_to_datetime]{<series>$str$to_datetime()}}
 }
 }

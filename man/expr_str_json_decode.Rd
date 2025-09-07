@@ -19,9 +19,15 @@ A polars \link{expression}
 }
 \description{
 Parse string values as JSON.
+Throw errors if encounter invalid json strings.
 }
 \details{
-Throw errors if encounter invalid json strings.
+As of polars 1.3.0, \code{infer_schema_length} is deprecated and
+\code{dtype} must be provided to ensure that the planner can determine
+the output datatype.
+
+If inferring dtype is needed, \code{\link[=srs_str_json_decode]{<series>$str$json_decode()}}
+can be used, which inspects the data at runtime.
 }
 \examples{
 df <- pl$DataFrame(
@@ -32,4 +38,9 @@ dtype <- pl$Struct(a = pl$UInt8, b = pl$Boolean)
 df$select(
   pl$col("json_val")$str$json_decode(dtype)
 )$unnest("json_val")
+}
+\seealso{
+\itemize{
+\item \code{\link[=srs_str_json_decode]{<series>$str$json_decode()}}
+}
 }

@@ -101,8 +101,9 @@ df$select(pl$col("x")$str$strptime(
 }
 \seealso{
 \itemize{
-\item \code{\link[=expr_str_to_date]{<Expr>$str$to_date()}}
-\item \code{\link[=expr_str_to_datetime]{<Expr>$str$to_datetime()}}
-\item \code{\link[=expr_str_to_time]{<Expr>$str$to_time()}}
+\item \code{\link[=expr_str_to_date]{<expr>$str$to_date()}}
+\item \code{\link[=expr_str_to_datetime]{<expr>$str$to_datetime()}}
+\item \code{\link[=expr_str_to_time]{<expr>$str$to_time()}}
+\item \code{\link[=series_str_to_datetime]{<series>$str$to_datetime()}}
 }
 }

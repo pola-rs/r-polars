@@ -35,3 +35,8 @@ s <- as_polars_series(c(
 s$str$to_decimal()
 s$str$to_decimal(scale = 4)
 }
+\seealso{
+\itemize{
+\item \code{\link[=expr_str_to_decimal]{<expr>$str$to_decimal()}}
+}
+}

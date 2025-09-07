@@ -33,3 +33,8 @@ s3 <- s1$str$json_decode(pl$Struct(a = pl$UInt8, b = pl$Boolean))
 s3
 s3$dtype
 }
+\seealso{
+\itemize{
+\item \code{\link[=expr_str_json_decode]{<expr>$str$json_decode()}}
+}
+}

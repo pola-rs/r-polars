@@ -25,6 +25,8 @@ namespace_series_list <- function(x) {
 #'   - `"max_width"`: Set number of fields as max length of all sublists.
 #'
 #'   If the `field` argument is character, this argument will be ignored.
+#' @seealso
+#' - [`<expr>$list$to_struct()`][expr_list_to_struct]
 #' @examples
 #' # Convert list to struct with default field name assignment:
 #' s1 <- as_polars_series(list(0:2, 0:1))

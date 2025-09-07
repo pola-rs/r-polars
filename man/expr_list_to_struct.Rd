@@ -35,15 +35,11 @@ A polars \link{expression}
 Convert the Series of type List to a Series of type Struct
 }
 \details{
-It is recommended to set \code{upper_bound} to the correct output size
-of the struct. If this is not set, Polars will not know the output type of
-this operation and will set it to \code{Unknown} which can lead to errors because
-Polars is not able to resolve the query.
+As of polars 1.3.0, the \code{n_field_strategy} argument is ignored and deprecated.
+The \code{fields} needs to be a character vector or the \code{upper_bound} is regarded as ground truth.
 
-For performance reasons, the length of the first non-null sublist is used to
-determine the number of output fields by default.
-If the sublists can be of different lengths then \code{n_field_strategy="max_width"}
-must be used to obtain the expected result.
+If inferring field length is needed, \code{\link[=series_list_to_struct]{<series>$list$to_struct()}}
+can be used, which inspects the data at runtime.
 }
 \examples{
 df <- pl$DataFrame(n = list(c(0, 1), c(0, 1, 2)))
@@ -67,4 +63,10 @@ df$select(
 df$select(pl$col("n")$list$to_struct(
   fields = c("one", "two", "three"))
 )$unnest("n")
+}
+\seealso{
+\itemize{
+\item \code{\link[=expr_arr_to_struct]{<expr>$arr$to_struct()}}
+\item \code{\link[=series_list_to_struct]{<series>$list$to_struct()}}
+}
 }
