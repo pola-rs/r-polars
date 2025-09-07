@@ -253,3 +253,138 @@
       $ i...  <i8>: 42, 42, 42, 42, 42, 42, 42, 42, 42, 42
       $ i... <i64>: 42, 42, 42, 42, 42, 42, 42, 42, 42, 42
 
+# $map_columns() works shrink_dtype
+
+    Code
+      df$map_columns(columns, lambda)
+    Output
+      shape: (3, 3)
+      ┌──────┬──────┬───────┐
+      │ col1 ┆ col2 ┆ col3  │
+      │ ---  ┆ ---  ┆ ---   │
+      │ i8   ┆ str  ┆ bool  │
+      ╞══════╪══════╪═══════╡
+      │ 1    ┆ 1    ┆ true  │
+      │ 2    ┆ 2    ┆ false │
+      │ 3    ┆ 3    ┆ true  │
+      └──────┴──────┴───────┘
+
+# $map_columns() works mean
+
+    Code
+      df$map_columns(columns, lambda)
+    Output
+      shape: (3, 3)
+      ┌──────┬──────┬───────┐
+      │ col1 ┆ col2 ┆ col3  │
+      │ ---  ┆ ---  ┆ ---   │
+      │ f64  ┆ str  ┆ bool  │
+      ╞══════╪══════╪═══════╡
+      │ 2.0  ┆ 1    ┆ true  │
+      │ 2.0  ┆ 2    ┆ false │
+      │ 2.0  ┆ 3    ┆ true  │
+      └──────┴──────┴───────┘
+
+# $map_columns() works purrr-style lambda
+
+    Code
+      df$map_columns(columns, lambda)
+    Output
+      shape: (3, 3)
+      ┌──────┬──────┬───────┐
+      │ col1 ┆ col2 ┆ col3  │
+      │ ---  ┆ ---  ┆ ---   │
+      │ i32  ┆ str  ┆ bool  │
+      ╞══════╪══════╪═══════╡
+      │ 2    ┆ 1    ┆ true  │
+      │ 3    ┆ 2    ┆ false │
+      │ 4    ┆ 3    ┆ true  │
+      └──────┴──────┴───────┘
+
+# $map_columns() works return R vector
+
+    Code
+      df$map_columns(columns, lambda)
+    Output
+      shape: (3, 3)
+      ┌──────┬──────┬───────┐
+      │ col1 ┆ col2 ┆ col3  │
+      │ ---  ┆ ---  ┆ ---   │
+      │ str  ┆ str  ┆ str   │
+      ╞══════╪══════╪═══════╡
+      │ 1    ┆ 1    ┆ TRUE  │
+      │ 2    ┆ 2    ┆ FALSE │
+      │ 3    ┆ 3    ┆ TRUE  │
+      └──────┴──────┴───────┘
+
+# $map_columns() works select with pl$col
+
+    Code
+      df$map_columns(columns, lambda)
+    Output
+      shape: (3, 3)
+      ┌──────┬──────┬──────┐
+      │ col1 ┆ col2 ┆ col3 │
+      │ ---  ┆ ---  ┆ ---  │
+      │ i32  ┆ str  ┆ i32  │
+      ╞══════╪══════╪══════╡
+      │ 1    ┆ 1    ┆ 2    │
+      │ 2    ┆ 2    ┆ 1    │
+      │ 3    ┆ 3    ┆ 2    │
+      └──────┴──────┴──────┘
+
+# $map_columns() works select with list of selectors
+
+    Code
+      df$map_columns(columns, lambda)
+    Output
+      shape: (3, 3)
+      ┌──────┬──────┬──────┐
+      │ col1 ┆ col2 ┆ col3 │
+      │ ---  ┆ ---  ┆ ---  │
+      │ i32  ┆ str  ┆ i32  │
+      ╞══════╪══════╪══════╡
+      │ 2    ┆ 1    ┆ 2    │
+      │ 3    ┆ 2    ┆ 1    │
+      │ 4    ┆ 3    ┆ 2    │
+      └──────┴──────┴──────┘
+
+# $map_columns() works return expr should error
+
+    Code
+      df$map_columns(columns, lambda)
+    Condition
+      Error in `df$map_columns()`:
+      ! Evaluation failed in `$map_columns()`.
+      Caused by error in `as_polars_series()`:
+      ! Passing Polars expression objects to `as_polars_series()` is not supported.
+      i You can evaluate the expression with `pl$select()`.
+
+# $map_columns() works return wrong length should error
+
+    Code
+      df$map_columns(columns, lambda)
+    Condition
+      Error in `df$map_columns()`:
+      ! Evaluation failed in `$map_columns()`.
+      Caused by error in `self$with_columns()`:
+      ! Evaluation failed in `$with_columns()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: unable to add a column of length 2 to a DataFrame of height 3
+
+# $map_columns() works non-existing column should error
+
+    Code
+      df$map_columns(columns, lambda)
+    Condition
+      Error in `df$map_columns()`:
+      ! Evaluation failed in `$map_columns()`.
+      Caused by error in `self$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Column(s) not found: "foobar" not found
+

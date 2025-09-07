@@ -28,6 +28,7 @@ They still work the same way on series (#1507, #1531).
 ### New features
 
 - In `<expr>$log()`, argument `base` can now take an expression (#1523).
+- New method `<dataframe>$map_columns()` (#1533).
 - New method `<expr>$index_of()` (#1519).
 - New argument `mkdir` in `<DataFrame>$write_parquet()` (#1525).
 

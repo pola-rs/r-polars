@@ -795,3 +795,35 @@ test_that("$glimpse() works", {
   expect_snapshot(df$glimpse(max_colname_length = 2))
   expect_type(invisible(df$glimpse()), "character")
 })
+
+patrick::with_parameters_test_that(
+  "$map_columns() works",
+  .cases = {
+    # nolint start: line_length_linter
+    tibble::tribble(
+      ~.test_name, ~columns, ~lambda, ~error,
+      "shrink_dtype", c("col1", "col2"), \(x) x$shrink_dtype(), FALSE,
+      "mean", cs$numeric(), mean, FALSE,
+      "purrr-style lambda", cs$integer(), ~. + 1L, FALSE,
+      "return R vector", cs$all(), \(x) x$to_r_vector() |> as.character(), FALSE,
+      "select with pl$col", pl$col("col3"), \(x) x$to_r_vector() + 1L, FALSE,
+      "select with list of selectors", list(cs$integer(), cs$boolean()), \(x) x$to_r_vector() + 1L, FALSE,
+      "return expr should error", cs$all(), \(...) pl$lit(1), TRUE,
+      "return wrong length should error", cs$all(), \(...) 1:2, TRUE,
+      "non-existing column should error", "foobar", \(x) x, TRUE,
+    )
+    # nolint end
+  },
+  code = {
+    df <- pl$DataFrame(
+      col1 = 1:3,
+      col2 = as.character(1:3),
+      col3 = c(TRUE, FALSE, TRUE),
+    )
+
+    expect_snapshot(
+      df$map_columns(columns, lambda),
+      error = error
+    )
+  }
+)
