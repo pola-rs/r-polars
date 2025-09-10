@@ -83,7 +83,7 @@ A polars \link{DataFrame}
 Read into a DataFrame from Arrow IPC (Feather v2) file
 }
 \examples{
-\dontshow{if (requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset()) withAutoprint(\{ # examplesIf}
 temp_dir <- tempfile()
 # Write a hive-style partitioned arrow file dataset
 arrow::write_dataset(

@@ -61,7 +61,7 @@ Similarly for "calendar week", "calendar month", "calendar quarter", and "calend
 }
 
 \examples{
-\dontshow{if (requireNamespace("hms", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("hms", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 pl$select(
   time = pl$time_range(
     start = hms::parse_hms("14:00:00"),

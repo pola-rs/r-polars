@@ -154,7 +154,7 @@ Because polars \link{DataFrame} allows empty column name, which is not generally
 in R data frame.
 }
 \examples{
-\dontshow{if (requireNamespace("tibble", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("tibble", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Polars DataFrame may have empty column name
 df <- pl$DataFrame(x = 1:2, c("a", "b"))
 df

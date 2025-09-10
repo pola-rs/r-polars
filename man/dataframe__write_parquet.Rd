@@ -101,7 +101,7 @@ information from environment variables.}
 Write to Parquet file
 }
 \examples{
-\dontshow{if (requireNamespace("withr", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("withr", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 dat = as_polars_df(mtcars)
 
 # write data to a single parquet file

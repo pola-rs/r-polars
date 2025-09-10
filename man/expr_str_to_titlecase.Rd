@@ -17,7 +17,7 @@ This method is only available with the "nightly" feature.
 See \code{\link[=polars_info]{polars_info()}} for more details.
 }
 \examples{
-\dontshow{if (polars_info()$features$nightly) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (polars_info()$features$nightly) withAutoprint(\{ # examplesIf}
 pl$select(
   pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()
 )$to_series()

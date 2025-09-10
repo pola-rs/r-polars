@@ -16,7 +16,7 @@ dataframe__write_ndjson(file)
 Serialize to newline delimited JSON representation
 }
 \examples{
-\dontshow{if (requireNamespace("jsonlite", quiet = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("jsonlite", quiet = TRUE)) withAutoprint(\{ # examplesIf}
 dat <- as_polars_df(head(mtcars))
 destination <- tempfile()
 

@@ -51,12 +51,12 @@ VignetteBuilder:
 Config/Needs/dev: devtools, lifecycle, readr, glue, RcppTOML, smvr
 Config/Needs/lint: fs, lintr
 Config/Needs/website: etiennebacher/altdoc, future.apply
-Config/polars/lib-version: 1.3.0-rc.1
+Config/polars/lib-version: 1.3.1-rc.1
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 Config/testthat/start-first: lazyframe-frame, *-s3-base, polars_options,
     expr-expr, expr-*
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 SystemRequirements: Cargo (Rust's package manager), rustc

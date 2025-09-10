@@ -51,7 +51,7 @@ A \link[nanoarrow:as_nanoarrow_array_stream]{nanoarrow array stream}
 Create a nanoarrow_array_stream from a Polars object
 }
 \examples{
-\dontshow{if (requireNamespace("nanoarrow", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("nanoarrow", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Zero-copy round trip via nanoarrow
 as_polars_series(letters[1:3], name = "letters") |>
   nanoarrow::as_nanoarrow_array_stream() |>

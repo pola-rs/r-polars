@@ -82,7 +82,7 @@ information from environment variables.}
 This allows streaming results that are larger than RAM to be written to disk.
 }
 \examples{
-\dontshow{if (requireNamespace("jsonlite", quiet = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("jsonlite", quiet = TRUE)) withAutoprint(\{ # examplesIf}
 dat <- as_polars_lf(head(mtcars))
 destination <- tempfile()
 

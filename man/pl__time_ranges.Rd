@@ -61,7 +61,7 @@ Similarly for "calendar week", "calendar month", "calendar quarter", and "calend
 }
 
 \examples{
-\dontshow{if (requireNamespace("hms", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("hms", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 df <- pl$DataFrame(
   start = hms::parse_hms(c("09:00:00", "10:00:00")),
   end = hms::parse_hms(c("11:00:00", "11:00:00"))
