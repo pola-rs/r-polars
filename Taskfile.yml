@@ -171,7 +171,6 @@ tasks:
       - Rscript -e 'devtools::test()'
 
   build-readme:
-    internal: true
     desc: Build README.md
     sources:
       - README.Rmd
