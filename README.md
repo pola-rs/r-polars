@@ -15,6 +15,8 @@ status](https://rpolars.r-universe.dev/polars/badges/version)](https://rpolars.r
 status](https://www.r-pkg.org/badges/version/polars)](https://CRAN.R-project.org/package=polars)
 [![Docs dev
 version](https://img.shields.io/badge/docs-dev-blue.svg)](https://pola-rs.github.io/r-polars)
+[![Ask
+DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/pola-rs/r-polars)
 <!-- badges: end -->
 
 Polars is a blazingly fast DataFrame library, written in Rust.
