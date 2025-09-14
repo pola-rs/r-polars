@@ -237,4 +237,5 @@ jobs:
           prerelease: true
           commit: ${{ github.sha }}
           tag: ${{ env.TAG_NAME }}
+          token: ${{ secrets.GITHUB_TOKEN }} # It seems that the `commit` input requires this
           artifacts: libs/*,sha256sums.txt
