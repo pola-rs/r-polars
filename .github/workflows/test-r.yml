@@ -212,6 +212,8 @@ jobs:
         exclude:
           - os: macos-latest
             r: "4.3"
+          - os: windows-latest
+            r: "4.3" # FIXME: Seems buggy `Error in inDL(x, as.logical(local), as.logical(now), ...)`
 
     env:
       NOT_CRAN: "true"
