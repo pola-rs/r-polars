@@ -1,8 +1,5 @@
 name: Release binary libraries
 on:
-  push:
-    tags:
-      - "lib-v*"
   pull_request:
     branches:
       - main
@@ -206,7 +203,7 @@ jobs:
       - build
       - test
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
+    if: github.event_name == 'workflow_dispatch'
     permissions:
       contents: write
 
@@ -224,11 +221,20 @@ jobs:
         run: |
           find . -type f | cut -c3- | xargs sha256sum >"../sha256sums.txt"
 
+      - name: get version
+        run: |
+          new_version="$(cargo metadata --format-version=1 --no-deps  --manifest-path src/rust/Cargo.toml |
+            jq --raw-output '.packages[] | select(.name == "r-polars") | .version')"
+          echo "TAG_NAME=lib-v${new_version}" >>"$GITHUB_ENV"
+
       - name: create release
-        uses: softprops/action-gh-release@v2
+        uses: ncipollo/release-action@v1.20.0
         with:
-          draft: true
+          draft: true # TODO: remove this line after checking this workflow works well
+          immutableCreate: true
           prerelease: true
-          files: |
-            libs/*
+          commit: ${{ github.sha }}
+          tag: ${{ env.TAG_NAME }}
+          artifacts: >
+            libs/*,
             sha256sums.txt
