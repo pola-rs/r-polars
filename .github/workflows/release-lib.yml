@@ -131,6 +131,8 @@ jobs:
             r: devel
           - os: macos-latest
             r: oldrel-1
+          - os: windows-latest
+            r: oldrel-1 # FIXME: Seems buggy with R 4.4.3 `Error in inDL(x, as.logical(local), as.logical(now), ...)`
         include:
           - os: macos-13
             r: release
