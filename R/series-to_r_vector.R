@@ -1,7 +1,3 @@
-# Global variables to track if optional package messages have been shown
-.vctrs_message_shown <- FALSE
-.blob_message_shown <- FALSE
-
 # TODO: more notes about naive time
 # TODO: link to the type mapping vignette
 #' Export the Series as an R vector
@@ -242,25 +238,23 @@ series__to_r_vector <- function(
     }
 
     # The vctrs package should be loaded to print vctrs_list_of and vctrs_unspecified correctly.
-    if (!is_vctrs_installed() && !.vctrs_message_shown) {
+    if (!is_vctrs_installed()) {
       inform(
         c(
           i = "The `vctrs` package is not installed.",
           i = "Return value may not be printed correctly."
         )
       )
-      .vctrs_message_shown <<- TRUE
     }
 
     # The blob package should be loaded to print blob correctly.
-    if (!is_blob_installed() && !.blob_message_shown) {
+    if (!is_blob_installed()) {
       inform(
         c(
           i = "The `blob` package is not installed.",
           i = "The blob class vector will not be printed correctly."
         )
       )
-      .blob_message_shown <<- TRUE
     }
 
     # Ensure the bit64 package is loaded if int64 is set to 'integer64'

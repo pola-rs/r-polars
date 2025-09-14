@@ -2604,12 +2604,14 @@ lazyframe__describe <- function(
 
     # From the 1 x (metrics * variables) table, we extract the stats for each
     # variable in a list with length(metrics) elements.
-    # Probably could be optimized.
+    # Convert entire dataframe to list of vectors once to avoid repeated
+    # vector conversions that trigger optional package messages
+    df_metrics_list <- as.list(df_metrics, as_series = FALSE)
     output <- vector("list", length = length(schema))
     names(output) <- names(schema)
     for (nm in seq_along(names(output))) {
       for (i in seq_along(metrics)) {
-        output[[nm]][i] <- as.vector(df_metrics$to_series((nm - 1) * length(metrics) + i - 1))
+        output[[nm]][i] <- df_metrics_list[[(nm - 1) * length(metrics) + i]]
       }
     }
 
