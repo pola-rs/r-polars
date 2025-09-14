@@ -235,6 +235,4 @@ jobs:
           prerelease: true
           commit: ${{ github.sha }}
           tag: ${{ env.TAG_NAME }}
-          artifacts: >
-            libs/*,
-            sha256sums.txt
+          artifacts: libs/*,sha256sums.txt
