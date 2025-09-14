@@ -138,6 +138,8 @@ jobs:
         run: |
           du -hsc /usr/local/lib/*
           sudo rm -rf /usr/local/lib/android || true
+          du -hsc /opt/hostedtoolcache/*
+          sudo rm -rf /opt/hostedtoolcache/CodeQL || true
 
       - uses: actions/checkout@v5
 
