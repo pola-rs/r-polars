@@ -2,6 +2,60 @@
 
     Code
       as_polars_series(1)$to_r_vector()
+    Output
+      [1] 1
+
+---
+
+    Code
+      as_polars_series(NULL)$to_r_vector()
+    Message
+      i The `vctrs` package is not installed.
+      i Return value may not be printed correctly.
+    Output
+      <unspecified> [0]
+
+---
+
+    Code
+      as_polars_series(list(1))$to_r_vector()
+    Message
+      i The `vctrs` package is not installed.
+      i Return value may not be printed correctly.
+    Output
+      <list_of<double>[1]>
+      [[1]]
+      [1] 1
+      
+
+---
+
+    Code
+      as_polars_series(1L)$cast(pl$Binary)$to_r_vector()
+    Message
+      i The `blob` package is not installed.
+      i The blob class vector will not be printed correctly.
+    Output
+      <blob[1]>
+      [1] blob[1 B]
+
+---
+
+    Code
+      as_polars_series(1L)$cast(pl$Time)$to_r_vector()
+    Condition
+      Warning:
+      ! The `hms` package is not installed.
+      i The hms class vector will be printed as difftime.
+    Output
+      00:00:00.000000
+
+---
+
+    Code
+      as_polars_series(pl$DataFrame(list_time = as_polars_series(list(1L))$cast(pl$
+        List(pl$Time)), array_binary = as_polars_series(list(1L))$cast(pl$Array(pl$
+        Binary, 1))))$to_r_vector(struct = "tibble")
     Message
       i The `vctrs` package is not installed.
       i Return value may not be printed correctly.
@@ -12,7 +66,10 @@
       ! The `hms` package is not installed.
       i The hms class vector will be printed as difftime.
     Output
-      [1] 1
+      # A tibble: 1 x 2
+           list_time array_binary
+        <list<time>> <list<blob>>
+      1          [1]          [1]
 
 # int64 argument error
 

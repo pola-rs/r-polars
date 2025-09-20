@@ -1,8 +1,32 @@
 test_that("Optional package suggestion", {
+  skip_if_not_installed("vctrs")
+  skip_if_not_installed("blob")
+  skip_if_not_installed("hms")
+
   with_mocked_bindings(
     {
       expect_snapshot(
         as_polars_series(1)$to_r_vector()
+      )
+      expect_snapshot(
+        as_polars_series(NULL)$to_r_vector()
+      )
+      expect_snapshot(
+        as_polars_series(list(1))$to_r_vector()
+      )
+      expect_snapshot(
+        as_polars_series(1L)$cast(pl$Binary)$to_r_vector()
+      )
+      expect_snapshot(
+        as_polars_series(1L)$cast(pl$Time)$to_r_vector()
+      )
+      expect_snapshot(
+        as_polars_series(
+          pl$DataFrame(
+            list_time = as_polars_series(list(1L))$cast(pl$List(pl$Time)),
+            array_binary = as_polars_series(list(1L))$cast(pl$Array(pl$Binary, 1))
+          )
+        )$to_r_vector(struct = "tibble")
       )
     },
     is_vctrs_installed = \() FALSE,

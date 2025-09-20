@@ -3049,6 +3049,26 @@ SEXP savvy_PlRSeries_get_fmt__impl(SEXP self__, SEXP c_arg__str_len_limit) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRSeries_is_include_binary__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_is_include_binary__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_is_include_list__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_is_include_list__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_is_include_null__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_is_include_null__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_is_include_time__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_is_include_time__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRSeries_is_sorted_ascending_flag__impl(SEXP self__) {
     SEXP res = savvy_PlRSeries_is_sorted_ascending_flag__ffi(self__);
     return handle_result(res);
@@ -3839,6 +3859,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_equals__impl", (DL_FUNC) &savvy_PlRSeries_equals__impl, 5},
     {"savvy_PlRSeries_from_arrow_c_stream__impl", (DL_FUNC) &savvy_PlRSeries_from_arrow_c_stream__impl, 1},
     {"savvy_PlRSeries_get_fmt__impl", (DL_FUNC) &savvy_PlRSeries_get_fmt__impl, 2},
+    {"savvy_PlRSeries_is_include_binary__impl", (DL_FUNC) &savvy_PlRSeries_is_include_binary__impl, 1},
+    {"savvy_PlRSeries_is_include_list__impl", (DL_FUNC) &savvy_PlRSeries_is_include_list__impl, 1},
+    {"savvy_PlRSeries_is_include_null__impl", (DL_FUNC) &savvy_PlRSeries_is_include_null__impl, 1},
+    {"savvy_PlRSeries_is_include_time__impl", (DL_FUNC) &savvy_PlRSeries_is_include_time__impl, 1},
     {"savvy_PlRSeries_is_sorted_ascending_flag__impl", (DL_FUNC) &savvy_PlRSeries_is_sorted_ascending_flag__impl, 1},
     {"savvy_PlRSeries_is_sorted_descending_flag__impl", (DL_FUNC) &savvy_PlRSeries_is_sorted_descending_flag__impl, 1},
     {"savvy_PlRSeries_len__impl", (DL_FUNC) &savvy_PlRSeries_len__impl, 1},
