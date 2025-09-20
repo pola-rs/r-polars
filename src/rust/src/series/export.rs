@@ -395,6 +395,22 @@ impl PlRSeries {
 
         Ok(())
     }
+
+    fn is_include_null(&self) -> Result<Sexp> {
+        is_dtype_include_null(self.series.dtype()).try_into()
+    }
+
+    fn is_include_list(&self) -> Result<Sexp> {
+        is_dtype_include_list(self.series.dtype()).try_into()
+    }
+
+    fn is_include_binary(&self) -> Result<Sexp> {
+        is_dtype_include_binary(self.series.dtype()).try_into()
+    }
+
+    fn is_include_time(&self) -> Result<Sexp> {
+        is_dtype_include_time(self.series.dtype()).try_into()
+    }
 }
 
 // TODO: move to upstream polars
@@ -428,5 +444,42 @@ impl Iterator for SeriesStreamIterator {
 
             Some(std::result::Result::Ok(batch))
         }
+    }
+}
+
+fn is_dtype_include_null(dtype: &DataType) -> bool {
+    match dtype {
+        DataType::Null => true,
+        DataType::List(_) | DataType::Array(_, _) => is_dtype_include_null(&dtype.leaf_dtype()),
+        DataType::Struct(fields) => fields.iter().any(|fld| is_dtype_include_null(fld.dtype())),
+        _ => false,
+    }
+}
+
+fn is_dtype_include_list(dtype: &DataType) -> bool {
+    match dtype {
+        DataType::List(_) | DataType::Array(_, _) => true,
+        DataType::Struct(fields) => fields.iter().any(|fld| is_dtype_include_list(fld.dtype())),
+        _ => false,
+    }
+}
+
+fn is_dtype_include_binary(dtype: &DataType) -> bool {
+    match dtype {
+        DataType::Binary => true,
+        DataType::List(_) | DataType::Array(_, _) => is_dtype_include_binary(&dtype.leaf_dtype()),
+        DataType::Struct(fields) => fields
+            .iter()
+            .any(|fld| is_dtype_include_binary(fld.dtype())),
+        _ => false,
+    }
+}
+
+fn is_dtype_include_time(dtype: &DataType) -> bool {
+    match dtype {
+        DataType::Time => true,
+        DataType::List(_) | DataType::Array(_, _) => is_dtype_include_time(&dtype.leaf_dtype()),
+        DataType::Struct(fields) => fields.iter().any(|fld| is_dtype_include_time(fld.dtype())),
+        _ => false,
     }
 }

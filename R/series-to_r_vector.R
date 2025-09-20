@@ -238,7 +238,7 @@ series__to_r_vector <- function(
     }
 
     # The vctrs package should be loaded to print vctrs_list_of and vctrs_unspecified correctly.
-    if (!is_vctrs_installed()) {
+    if (!is_vctrs_installed() && (self$`_s`$is_include_null() || self$`_s`$is_include_list())) {
       inform(
         c(
           i = "The `vctrs` package is not installed.",
@@ -248,7 +248,7 @@ series__to_r_vector <- function(
     }
 
     # The blob package should be loaded to print blob correctly.
-    if (!is_blob_installed()) {
+    if (!is_blob_installed() && self$`_s`$is_include_binary()) {
       inform(
         c(
           i = "The `blob` package is not installed.",
@@ -279,7 +279,7 @@ series__to_r_vector <- function(
       }
     } else {
       # The hms package should be loaded to print hms correctly.
-      if (!is_hms_installed()) {
+      if (!is_hms_installed() && self$`_s`$is_include_time()) {
         warn(
           c(
             `!` = "The `hms` package is not installed.",
