@@ -450,7 +450,7 @@ impl Iterator for SeriesStreamIterator {
 fn is_dtype_include_null(dtype: &DataType) -> bool {
     match dtype {
         DataType::Null => true,
-        DataType::List(_) | DataType::Array(_, _) => is_dtype_include_null(&dtype.leaf_dtype()),
+        DataType::List(_) | DataType::Array(_, _) => is_dtype_include_null(dtype.leaf_dtype()),
         DataType::Struct(fields) => fields.iter().any(|fld| is_dtype_include_null(fld.dtype())),
         _ => false,
     }
@@ -467,7 +467,7 @@ fn is_dtype_include_list(dtype: &DataType) -> bool {
 fn is_dtype_include_binary(dtype: &DataType) -> bool {
     match dtype {
         DataType::Binary => true,
-        DataType::List(_) | DataType::Array(_, _) => is_dtype_include_binary(&dtype.leaf_dtype()),
+        DataType::List(_) | DataType::Array(_, _) => is_dtype_include_binary(dtype.leaf_dtype()),
         DataType::Struct(fields) => fields
             .iter()
             .any(|fld| is_dtype_include_binary(fld.dtype())),
@@ -478,7 +478,7 @@ fn is_dtype_include_binary(dtype: &DataType) -> bool {
 fn is_dtype_include_time(dtype: &DataType) -> bool {
     match dtype {
         DataType::Time => true,
-        DataType::List(_) | DataType::Array(_, _) => is_dtype_include_time(&dtype.leaf_dtype()),
+        DataType::List(_) | DataType::Array(_, _) => is_dtype_include_time(dtype.leaf_dtype()),
         DataType::Struct(fields) => fields.iter().any(|fld| is_dtype_include_time(fld.dtype())),
         _ => false,
     }
