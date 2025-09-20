@@ -238,7 +238,7 @@ series__to_r_vector <- function(
     }
 
     # The vctrs package should be loaded to print vctrs_list_of and vctrs_unspecified correctly.
-    if (!is_vctrs_installed() && (self$`_s`$is_include_null() || self$`_s`$is_include_list())) {
+    if (!is_vctrs_installed() && (self$`_s`$is_include_list() || self$`_s`$is_include_null())) {
       inform(
         c(
           i = "The `vctrs` package is not installed.",
