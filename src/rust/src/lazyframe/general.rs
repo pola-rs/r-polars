@@ -54,7 +54,6 @@ impl PlRLazyFrame {
         comm_subplan_elim: bool,
         comm_subexpr_elim: bool,
         cluster_with_columns: bool,
-        collapse_joins: bool,
         _eager: bool,
         _check_order: bool,
     ) -> Result<Self> {
@@ -66,7 +65,6 @@ impl PlRLazyFrame {
             .with_predicate_pushdown(predicate_pushdown)
             .with_simplify_expr(simplify_expression)
             .with_slice_pushdown(slice_pushdown)
-            .with_collapse_joins(collapse_joins)
             .with_check_order(_check_order)
             .with_comm_subplan_elim(comm_subplan_elim)
             .with_comm_subexpr_elim(comm_subexpr_elim)

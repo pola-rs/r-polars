@@ -245,7 +245,8 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 #' @param comm_subexpr_elim A logical, indicates trying to cache common subexpressions.
 #' @param cluster_with_columns A logical, indicates to combine sequential independent calls
 #' to with_columns.
-#' @param collapse_joins Collapse a join and filters into a faster join.
+#' @param collapse_joins `r lifecycle::badge("deprecated")`
+#'   Use `predicate_pushdown` instead.
 #' @param no_optimization A logical. If `TRUE`, turn off (certain) optimizations.
 #' @param engine The engine name to use for processing the query.
 #' One of the followings:
@@ -285,15 +286,24 @@ lazyframe__collect <- function(
   comm_subplan_elim = TRUE,
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
-  collapse_joins = TRUE,
   no_optimization = FALSE,
   engine = c("auto", "in-memory", "streaming"),
   `_check_order` = TRUE,
-  `_eager` = FALSE
+  `_eager` = FALSE,
+  collapse_joins = deprecated()
 ) {
   wrap({
     check_dots_empty0(...)
     engine <- arg_match0(engine, c("auto", "in-memory", "streaming"))
+
+    if (is_present(collapse_joins)) {
+      deprecate_warn(
+        c(
+          `!` = sprintf("%s is deprecated.", format_arg("collapse_joins")),
+          `i` = sprintf("Use %s instead.", format_arg("predicate_pushdown"))
+        )
+      )
+    }
 
     if (isTRUE(no_optimization) || isTRUE(`_eager`)) {
       predicate_pushdown <- FALSE
@@ -302,7 +312,6 @@ lazyframe__collect <- function(
       comm_subplan_elim <- FALSE
       comm_subexpr_elim <- FALSE
       cluster_with_columns <- FALSE
-      collapse_joins <- FALSE
       `_check_order` <- FALSE
     }
 
@@ -316,7 +325,6 @@ lazyframe__collect <- function(
       comm_subplan_elim = comm_subplan_elim,
       comm_subexpr_elim = comm_subexpr_elim,
       cluster_with_columns = cluster_with_columns,
-      collapse_joins = collapse_joins,
       `_check_order` = `_check_order`,
       `_eager` = `_eager`
     )
@@ -368,14 +376,23 @@ lazyframe__profile <- function(
   comm_subplan_elim = TRUE,
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
-  collapse_joins = TRUE,
   no_optimization = FALSE,
   `_check_order` = TRUE,
   show_plot = FALSE,
-  truncate_nodes = 0
+  truncate_nodes = 0,
+  collapse_joins = deprecated()
 ) {
   wrap({
     check_dots_empty0(...)
+
+    if (is_present(collapse_joins)) {
+      deprecate_warn(
+        c(
+          `!` = sprintf("%s is deprecated.", format_arg("collapse_joins")),
+          `i` = sprintf("Use %s instead.", format_arg("predicate_pushdown"))
+        )
+      )
+    }
 
     if (isTRUE(no_optimization)) {
       predicate_pushdown <- FALSE
@@ -384,7 +401,6 @@ lazyframe__profile <- function(
       comm_subplan_elim <- FALSE
       comm_subexpr_elim <- FALSE
       cluster_with_columns <- FALSE
-      collapse_joins <- FALSE
       `_check_order` <- FALSE
     }
 
@@ -398,7 +414,6 @@ lazyframe__profile <- function(
       comm_subplan_elim = comm_subplan_elim,
       comm_subexpr_elim = comm_subexpr_elim,
       cluster_with_columns = cluster_with_columns,
-      collapse_joins = collapse_joins,
       `_check_order` = `_check_order`,
       `_eager` = FALSE
     )
@@ -462,13 +477,22 @@ lazyframe__explain <- function(
   comm_subplan_elim = TRUE,
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
-  collapse_joins = TRUE,
+  collapse_joins = deprecated(),
   `_check_order` = TRUE
 ) {
   wrap({
     check_dots_empty0(...)
 
     format <- arg_match0(format, c("plain", "tree"))
+
+    if (is_present(collapse_joins)) {
+      deprecate_warn(
+        c(
+          `!` = sprintf("%s is deprecated.", format_arg("collapse_joins")),
+          `i` = sprintf("Use %s instead.", format_arg("predicate_pushdown"))
+        )
+      )
+    }
 
     if (isTRUE(optimized)) {
       ldf <- self$`_ldf`$optimization_toggle(
@@ -481,7 +505,6 @@ lazyframe__explain <- function(
         comm_subplan_elim = comm_subplan_elim,
         comm_subexpr_elim = comm_subexpr_elim,
         cluster_with_columns = cluster_with_columns,
-        collapse_joins = collapse_joins,
         `_check_order` = `_check_order`,
         `_eager` = FALSE
       )
@@ -1034,6 +1057,7 @@ lazyframe__fill_null <- function(
             pl$UInt16,
             pl$UInt32,
             pl$UInt64,
+            pl$UInt128,
             pl$Float32,
             pl$Float64,
             pl$Decimal()
@@ -1972,9 +1996,18 @@ lazyframe__to_dot <- function(
   comm_subplan_elim = TRUE,
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
-  collapse_joins = TRUE,
+  collapse_joins = deprecated(),
   `_check_order` = TRUE
 ) {
+  if (is_present(collapse_joins)) {
+    deprecate_warn(
+      c(
+        `!` = sprintf("%s is deprecated.", format_arg("collapse_joins")),
+        `i` = sprintf("Use %s instead.", format_arg("predicate_pushdown"))
+      )
+    )
+  }
+
   ldf <- self$`_ldf`$optimization_toggle(
     type_coercion = type_coercion,
     `_type_check` = `_type_check`,
@@ -1985,7 +2018,6 @@ lazyframe__to_dot <- function(
     comm_subplan_elim = comm_subplan_elim,
     comm_subexpr_elim = comm_subexpr_elim,
     cluster_with_columns = cluster_with_columns,
-    collapse_joins = collapse_joins,
     `_check_order` = `_check_order`,
     `_eager` = FALSE
   )

@@ -53,6 +53,7 @@ impl TryFrom<&str> for PlRDataType {
             "UInt16" => DataType::UInt16,
             "UInt32" => DataType::UInt32,
             "UInt64" => DataType::UInt64,
+            "UInt128" => DataType::UInt128,
             "Float32" => DataType::Float32,
             "Float64" => DataType::Float64,
             "Boolean" => DataType::Boolean,
@@ -64,7 +65,11 @@ impl TryFrom<&str> for PlRDataType {
             "Time" => DataType::Time,
             "Datetime" => DataType::Datetime(TimeUnit::Microseconds, None),
             "Duration" => DataType::Duration(TimeUnit::Microseconds),
-            "Decimal" => DataType::Decimal(None, None), // "none" scale => "infer"
+            "Decimal" => {
+                return Err(
+                    "Decimal without precision/scale set is not a valid Polars datatype".into(),
+                );
+            }
             "List" => DataType::List(Box::new(DataType::Null)),
             "Array" => DataType::Array(Box::new(DataType::Null), 0),
             "Struct" => DataType::Struct(vec![]),
@@ -941,7 +946,7 @@ impl TryFrom<&str> for Wrap<Option<IpcCompression>> {
     fn try_from(compression: &str) -> Result<Self, String> {
         let parsed = match compression {
             "lz4" => Some(IpcCompression::LZ4),
-            "zstd" => Some(IpcCompression::ZSTD),
+            "zstd" => Some(IpcCompression::ZSTD(Default::default())),
             "uncompressed" => None,
             _ => return Err("unreachable".to_string()),
         };

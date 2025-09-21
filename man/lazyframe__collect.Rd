@@ -15,11 +15,11 @@ lazyframe__collect(
   comm_subplan_elim = TRUE,
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
-  collapse_joins = TRUE,
   no_optimization = FALSE,
   engine = c("auto", "in-memory", "streaming"),
   `_check_order` = TRUE,
-  `_eager` = FALSE
+  `_eager` = FALSE,
+  collapse_joins = deprecated()
 )
 }
 \arguments{
@@ -43,8 +43,6 @@ on self-joins or unions.}
 \item{cluster_with_columns}{A logical, indicates to combine sequential independent calls
 to with_columns.}
 
-\item{collapse_joins}{Collapse a join and filters into a faster join.}
-
 \item{no_optimization}{A logical. If \code{TRUE}, turn off (certain) optimizations.}
 
 \item{engine}{The engine name to use for processing the query.
@@ -60,6 +58,9 @@ The \code{"in-memory"} engine will be selected for most cases.
 
 \item{_eager}{A logical, indicates to turn off multi-node optimizations and
 the other optimizations. This option is intended for internal use only.}
+
+\item{collapse_joins}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use \code{predicate_pushdown} instead.}
 }
 \value{
 A polars \link{DataFrame}

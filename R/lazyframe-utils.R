@@ -99,15 +99,26 @@ set_sink_optimizations <- function(
   projection_pushdown = TRUE,
   simplify_expression = TRUE,
   slice_pushdown = TRUE,
-  collapse_joins = TRUE,
   no_optimization = FALSE,
-  `_check_order` = TRUE
+  `_check_order` = TRUE,
+  collapse_joins = deprecated(),
+  call = caller_env()
 ) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown <- FALSE
     projection_pushdown <- FALSE
     slice_pushdown <- FALSE
     `_check_order` <- FALSE
+  }
+
+  if (is_present(collapse_joins)) {
+    deprecate_warn(
+      c(
+        `!` = sprintf("%s is deprecated.", format_arg("collapse_joins")),
+        `i` = sprintf("Use %s instead.", format_arg("predicate_pushdown"))
+      ),
+      user_env = call
+    )
   }
 
   self$`_ldf`$optimization_toggle(
@@ -120,7 +131,6 @@ set_sink_optimizations <- function(
     comm_subplan_elim = FALSE,
     comm_subexpr_elim = FALSE,
     cluster_with_columns = FALSE,
-    collapse_joins = collapse_joins,
     `_eager` = FALSE,
     `_check_order` = `_check_order`
   )

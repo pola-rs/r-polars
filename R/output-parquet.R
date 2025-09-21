@@ -76,12 +76,12 @@ lazyframe__sink_parquet <- function(
   projection_pushdown = TRUE,
   simplify_expression = TRUE,
   slice_pushdown = TRUE,
-  collapse_joins = TRUE,
   no_optimization = FALSE,
   storage_options = NULL,
   retries = 2,
   sync_on_close = c("none", "data", "all"),
-  mkdir = FALSE
+  mkdir = FALSE,
+  collapse_joins = deprecated()
 ) {
   wrap({
     check_dots_empty0(...)

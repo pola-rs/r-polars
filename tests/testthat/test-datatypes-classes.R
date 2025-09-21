@@ -20,8 +20,8 @@ patrick::with_parameters_test_that(
       "Date", pl$Date,
       "Time", pl$Time,
       "Null", pl$Null,
-      "Decimal(NULL, 1)", pl$Decimal(NULL, 1),
-      "Decimal(2, 3)", pl$Decimal(2, 3),
+      "Decimal()", pl$Decimal(),
+      "Decimal(2, 2)", pl$Decimal(2, 2),
       "Datetime('ms', NULL)", pl$Datetime("ms", NULL),
       "Datetime('ns', 'UTC')", pl$Datetime("ns", "UTC"),
       "Datetime('us', 'UTC')", pl$Datetime("us", "UTC"),
@@ -86,3 +86,25 @@ test_that("Categorical order deprecation", {
   expect_deprecated(pl$Categorical("lexical"))
   expect_deprecated(pl$Categorical("physical"))
 })
+
+test_that("Decimal deprecation", {
+  expect_snapshot(pl$Decimal(NULL, NULL))
+})
+
+patrick::with_parameters_test_that(
+  "invalid decimal (precision = {precision}, scale = {scale})",
+  .cases = {
+    tibble::tribble(
+      ~precision, ~scale,
+      0, 0,
+      -1, 0,
+      1, -1,
+      39, 40,
+      38, 39,
+      39, 1,
+    )
+  },
+  code = {
+    expect_snapshot(pl$Decimal(precision, scale), error = TRUE)
+  }
+)

@@ -849,7 +849,7 @@ class(`PlRDataFrame`) <- c("PlRDataFrame__bundle", "savvy_polars__sealed")
   .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_datetime__impl, `time_unit`, `time_zone`))
 }
 
-`PlRDataType`$`new_decimal` <- function(`scale` = NULL, `precision` = NULL) {
+`PlRDataType`$`new_decimal` <- function(`scale`, `precision`) {
   .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_decimal__impl, `scale`, `precision`))
 }
 
@@ -3824,8 +3824,8 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_polars__sealed")
 }
 
 `PlRLazyFrame_optimization_toggle` <- function(self) {
-  function(`type_coercion`, `_type_check`, `predicate_pushdown`, `projection_pushdown`, `simplify_expression`, `slice_pushdown`, `comm_subplan_elim`, `comm_subexpr_elim`, `cluster_with_columns`, `collapse_joins`, `_eager`, `_check_order`) {
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_optimization_toggle__impl, `self`, `type_coercion`, `_type_check`, `predicate_pushdown`, `projection_pushdown`, `simplify_expression`, `slice_pushdown`, `comm_subplan_elim`, `comm_subexpr_elim`, `cluster_with_columns`, `collapse_joins`, `_eager`, `_check_order`))
+  function(`type_coercion`, `_type_check`, `predicate_pushdown`, `projection_pushdown`, `simplify_expression`, `slice_pushdown`, `comm_subplan_elim`, `comm_subexpr_elim`, `cluster_with_columns`, `_eager`, `_check_order`) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_optimization_toggle__impl, `self`, `type_coercion`, `_type_check`, `predicate_pushdown`, `projection_pushdown`, `simplify_expression`, `slice_pushdown`, `comm_subplan_elim`, `comm_subexpr_elim`, `cluster_with_columns`, `_eager`, `_check_order`))
   }
 }
 

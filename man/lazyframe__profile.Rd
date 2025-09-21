@@ -15,11 +15,11 @@ lazyframe__profile(
   comm_subplan_elim = TRUE,
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
-  collapse_joins = TRUE,
   no_optimization = FALSE,
   `_check_order` = TRUE,
   show_plot = FALSE,
-  truncate_nodes = 0
+  truncate_nodes = 0,
+  collapse_joins = deprecated()
 )
 }
 \arguments{
@@ -43,8 +43,6 @@ on self-joins or unions.}
 \item{cluster_with_columns}{A logical, indicates to combine sequential independent calls
 to with_columns.}
 
-\item{collapse_joins}{Collapse a join and filters into a faster join.}
-
 \item{no_optimization}{A logical. If \code{TRUE}, turn off (certain) optimizations.}
 
 \item{_check_order, _type_check}{For internal use only.}
@@ -53,6 +51,9 @@ to with_columns.}
 
 \item{truncate_nodes}{Truncate the label lengths in the Gantt chart to this
 number of characters. If \code{0} (default), do not truncate.}
+
+\item{collapse_joins}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use \code{predicate_pushdown} instead.}
 }
 \value{
 List of two \code{DataFrame}s: one with the collected result, the other

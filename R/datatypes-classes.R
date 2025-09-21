@@ -126,6 +126,7 @@ on_load({
     "UInt16",
     "UInt32",
     "UInt64",
+    "UInt128",
     "Float32",
     "Float64",
     "Boolean",
@@ -142,11 +143,30 @@ on_load({
 })
 
 #' @rdname polars_dtype
-#' @param precision Single integer or `NULL` (default), maximum number of digits in each number.
-#' If `NULL`, the precision is inferred.
-#' @param scale Single integer or `NULL`. Number of digits to the right of the decimal point
-#' in each number. The default is `0`.
-pl__Decimal <- function(precision = NULL, scale = 0L) {
+#' @param precision Single integer should be in the range `1` to `38`.
+#'   The maximum number of digits in each number.
+#' @param scale Single integer. Number of digits to the right of the decimal point
+#'   in each number. The default is `0`.
+pl__Decimal <- function(precision = 38L, scale = 0L) {
+  if (is.null(precision)) {
+    deprecate_warn(
+      c(
+        `!` = sprintf("%s should not be %s.", format_arg("precision"), format_code("NULL")),
+        `i` = sprintf("Use an integer between 1 and 38 instead.")
+      )
+    )
+    precision <- 38L
+  }
+  if (is.null(scale)) {
+    deprecate_warn(
+      c(
+        `!` = sprintf("%s should not be %s.", format_arg("scale"), format_code("NULL")),
+        `i` = sprintf("Use an integer between 0 and %s instead.", format_arg("precision"))
+      )
+    )
+    scale <- 0L
+  }
+
   PlRDataType$new_decimal(scale = scale, precision = precision) |>
     wrap()
 }

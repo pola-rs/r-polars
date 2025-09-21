@@ -242,7 +242,7 @@
     Output
       Null
 
-# data types print Decimal(NULL, 1)
+# data types print Decimal()
 
     Code
       print(class(object))
@@ -255,9 +255,9 @@
     Code
       print(object)
     Output
-      Decimal(precision=NULL, scale=1)
+      Decimal(precision=38, scale=0)
 
-# data types print Decimal(2, 3)
+# data types print Decimal(2, 2)
 
     Code
       print(class(object))
@@ -270,7 +270,7 @@
     Code
       print(object)
     Output
-      Decimal(precision=2, scale=3)
+      Decimal(precision=2, scale=2)
 
 # data types print Datetime('ms', NULL)
 
@@ -525,4 +525,78 @@
       ! Evaluation failed in `$Enum()`.
       Caused by error in `pl$Enum()`:
       ! Enum categories must be unique, found duplicated: b, a
+
+# Decimal deprecation
+
+    Code
+      pl$Decimal(NULL, NULL)
+    Condition
+      Warning:
+      ! `precision` should not be `NULL`.
+      i Use an integer between 1 and 38 instead.
+      Warning:
+      ! `scale` should not be `NULL`.
+      i Use an integer between 0 and `precision` instead.
+    Output
+      Decimal(precision=38, scale=0)
+
+# invalid decimal (precision = 0, scale = 0)
+
+    Code
+      pl$Decimal(precision, scale)
+    Condition
+      Error in `pl$Decimal()`:
+      ! Evaluation failed in `$Decimal()`.
+      Caused by error:
+      ! Invalid operation: precision must be between 1 and 38
+
+# invalid decimal (precision = -1, scale = 0)
+
+    Code
+      pl$Decimal(precision, scale)
+    Condition
+      Error in `pl$Decimal()`:
+      ! Evaluation failed in `$Decimal()`.
+      Caused by error:
+      ! -1.0 is out of range that can be safely converted to usize
+
+# invalid decimal (precision = 1, scale = -1)
+
+    Code
+      pl$Decimal(precision, scale)
+    Condition
+      Error in `pl$Decimal()`:
+      ! Evaluation failed in `$Decimal()`.
+      Caused by error:
+      ! -1.0 is out of range that can be safely converted to usize
+
+# invalid decimal (precision = 39, scale = 40)
+
+    Code
+      pl$Decimal(precision, scale)
+    Condition
+      Error in `pl$Decimal()`:
+      ! Evaluation failed in `$Decimal()`.
+      Caused by error:
+      ! Invalid operation: precision must be between 1 and 38
+
+# invalid decimal (precision = 38, scale = 39)
+
+    Code
+      pl$Decimal(precision, scale)
+    Condition
+      Error in `pl$Decimal()`:
+      ! Evaluation failed in `$Decimal()`.
+      Caused by error:
+      ! Invalid operation: scale must be less than or equal to precision
+
+# invalid decimal (precision = 39, scale = 1)
+
+    Code
+      pl$Decimal(precision, scale)
+    Condition
+      Error in `pl$Decimal()`:
+      ! Evaluation failed in `$Decimal()`.
+      Caused by error:
+      ! Invalid operation: precision must be between 1 and 38
 

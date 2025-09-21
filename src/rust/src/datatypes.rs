@@ -41,18 +41,9 @@ impl TryFrom<EnvironmentSexp> for &PlRDataType {
 
 impl std::fmt::Display for PlRDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        fn opt_usize_to_string(opt: Option<usize>) -> String {
-            opt.map_or_else(|| "NULL".to_string(), |v| v.to_string())
-        }
-
         match &self.dt {
             DataType::Decimal(precision, scale) => {
-                write!(
-                    f,
-                    "Decimal(precision={}, scale={})",
-                    opt_usize_to_string(*precision),
-                    opt_usize_to_string(*scale)
-                )
+                write!(f, "Decimal(precision={}, scale={})", *precision, *scale)
             }
             DataType::Datetime(time_unit, time_zone) => {
                 write!(
@@ -139,15 +130,11 @@ impl PlRDataType {
         name.try_into().map_err(savvy::Error::from)
     }
 
-    pub fn new_decimal(
-        scale: Option<NumericScalar>,
-        precision: Option<NumericScalar>,
-    ) -> Result<Self> {
-        let precision = precision
-            .map(<Wrap<usize>>::try_from)
-            .transpose()?
-            .map(|p| p.0);
-        let scale = scale.map(<Wrap<usize>>::try_from).transpose()?.map(|s| s.0);
+    pub fn new_decimal(scale: NumericScalar, precision: NumericScalar) -> Result<Self> {
+        let precision = <Wrap<usize>>::try_from(precision)?.0;
+        let scale = <Wrap<usize>>::try_from(scale)?.0;
+        polars_compute::decimal::dec128_verify_prec_scale(precision, scale)
+            .map_err(RPolarsErr::from)?;
         Ok(DataType::Decimal(precision, scale).into())
     }
 
@@ -272,6 +259,7 @@ impl PlRDataType {
             DataType::UInt16 => vec!["uint16", "unsigned_integer", "integer", "numeric"],
             DataType::UInt32 => vec!["uint32", "unsigned_integer", "integer", "numeric"],
             DataType::UInt64 => vec!["uint64", "unsigned_integer", "integer", "numeric"],
+            DataType::UInt128 => vec!["uint128", "unsigned_integer", "integer", "numeric"],
             DataType::Float32 => vec!["float32", "float", "numeric"],
             DataType::Float64 => vec!["float64", "float", "numeric"],
             DataType::Decimal(_, _) => vec!["decimal", "numeric"],
@@ -303,10 +291,8 @@ impl PlRDataType {
         match &self.dt {
             DataType::Decimal(precision, scale) => {
                 let mut out = OwnedListSexp::new(2, true)?;
-                let precision: Sexp =
-                    precision.map_or_else(|| NullSexp.into(), |v| (v as f64).try_into())?;
-                let scale: Sexp =
-                    scale.map_or_else(|| NullSexp.into(), |v| (v as f64).try_into())?;
+                let precision: Sexp = (*precision as i32).try_into()?;
+                let scale: Sexp = (*scale as i32).try_into()?;
                 let _ = out.set_name_and_value(0, "precision", precision);
                 let _ = out.set_name_and_value(1, "scale", scale);
                 Ok(out.into())
