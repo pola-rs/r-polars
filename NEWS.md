@@ -2,6 +2,15 @@
 
 ## polars (development version)
 
+This is an update that corresponds to Python Polars 1.34.0.
+
+### Deprecations
+
+- `pl$Decimal`'s arguments should not be `NULL` (#1553).
+  Since the automatic inference feature has been removed, `precision` and `scale` must always be specified.
+- The `collapse_joins` argument of some LazyFrame methods is deprecated (#1553).
+  Use `predicate_pushdown` instead.
+
 ## polars 1.3.1
 
 This is an update that corresponds to Python Polars 1.33.1.

@@ -16,7 +16,7 @@ lazyframe__to_dot(
   comm_subplan_elim = TRUE,
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
-  collapse_joins = TRUE,
+  collapse_joins = deprecated(),
   `_check_order` = TRUE
 )
 }
@@ -43,7 +43,8 @@ on self-joins or unions.}
 \item{cluster_with_columns}{A logical, indicates to combine sequential independent calls
 to with_columns.}
 
-\item{collapse_joins}{Collapse a join and filters into a faster join.}
+\item{collapse_joins}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use \code{predicate_pushdown} instead.}
 
 \item{_check_order, _type_check}{For internal use only.}
 }

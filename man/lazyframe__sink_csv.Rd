@@ -28,12 +28,12 @@ lazyframe__sink_csv(
   projection_pushdown = TRUE,
   simplify_expression = TRUE,
   slice_pushdown = TRUE,
-  collapse_joins = TRUE,
   no_optimization = FALSE,
   storage_options = NULL,
   retries = 2,
   sync_on_close = c("none", "data", "all"),
-  mkdir = FALSE
+  mkdir = FALSE,
+  collapse_joins = deprecated()
 )
 }
 \arguments{
@@ -109,8 +109,6 @@ this to \code{FALSE} will be slightly faster.}
 
 \item{slice_pushdown}{A logical, indicates slice pushdown optimization.}
 
-\item{collapse_joins}{Collapse a join and filters into a faster join.}
-
 \item{no_optimization}{A logical. If \code{TRUE}, turn off (certain) optimizations.}
 
 \item{storage_options}{Named vector containing options that indicate how to
@@ -139,6 +137,9 @@ information from environment variables.}
 }}
 
 \item{mkdir}{Recursively create all the directories in the path.}
+
+\item{collapse_joins}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use \code{predicate_pushdown} instead.}
 }
 \value{
 \code{NULL} invisibly.

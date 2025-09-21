@@ -6,6 +6,7 @@ patrick::with_parameters_test_that(
       "null", as_polars_series(NULL),
       "int32", as_polars_series(1:1000),
       "int128", as_polars_series(1:3)$cast(pl$Int128),
+      "uint128", as_polars_series(1:3)$cast(pl$UInt128),
       "struct", as_polars_series(data.frame(a = 1:3, b = letters[1:3])),
     )
   },

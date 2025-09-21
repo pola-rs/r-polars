@@ -35,6 +35,7 @@ patrick::with_parameters_test_that(
       "empty", as_polars_df(NULL),
       "string", pl$DataFrame(a = letters[1:5]),
       "i128", pl$DataFrame(a = 1:3)$cast(pl$Int128),
+      "u128", pl$DataFrame(a = 1:3)$cast(pl$UInt128),
     )
   },
   code = {

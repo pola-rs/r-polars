@@ -13,7 +13,7 @@
 \alias{pl__Struct}
 \title{Polars DataType class (\code{polars_dtype})}
 \usage{
-pl__Decimal(precision = NULL, scale = 0L)
+pl__Decimal(precision = 38L, scale = 0L)
 
 pl__Datetime(time_unit = c("us", "ns", "ms"), time_zone = NULL)
 
@@ -30,10 +30,10 @@ pl__List(inner)
 pl__Struct(...)
 }
 \arguments{
-\item{precision}{Single integer or \code{NULL} (default), maximum number of digits in each number.
-If \code{NULL}, the precision is inferred.}
+\item{precision}{Single integer should be in the range \code{1} to \code{38}.
+The maximum number of digits in each number.}
 
-\item{scale}{Single integer or \code{NULL}. Number of digits to the right of the decimal point
+\item{scale}{Single integer. Number of digits to the right of the decimal point
 in each number. The default is \code{0}.}
 
 \item{time_unit}{One of \code{"us"} (default, microseconds),
