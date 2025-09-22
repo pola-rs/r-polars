@@ -1,4 +1,4 @@
-#'' Start a when-then-otherwise expression
+#' Start a when-then-otherwise expression
 #'
 #' @description
 #' Always initiated with a `pl$when()$then()` and optionally followed by

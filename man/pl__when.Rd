@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions-whenthen.R
 \name{pl__when}
 \alias{pl__when}
-\title{' Start a when-then-otherwise expression}
+\title{Start a when-then-otherwise expression}
 \usage{
 pl__when(...)
 }
