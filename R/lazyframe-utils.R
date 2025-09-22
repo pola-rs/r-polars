@@ -139,7 +139,7 @@ set_sink_optimizations <- function(
 #' Transforms raw percentiles into our preferred format, adding the 50th
 #' percentile.
 #' Raises an error if the percentile sequence is invalid (e.g. outside the
-#' range [0, 1]).
+#' range `[0, 1]`).
 #' @noRd
 parse_percentiles <- function(percentiles, inject_median = FALSE) {
   if (!all(percentiles >= 0 & percentiles <= 1)) {
