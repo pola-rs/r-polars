@@ -496,6 +496,7 @@ nav:
             - sum: man/pl__sum.md
             - time_range: man/pl__time_range.md
             - time_ranges: man/pl__time_ranges.md
+            - when: man/pl__when.md
         - List:
             - list_all: man/expr_list_all.md
             - list_any: man/expr_list_any.md
