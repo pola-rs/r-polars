@@ -80,7 +80,7 @@ impl RUdfSignature {
                 let mut args = FunctionArgs::new();
                 args.add("df", <PlRDataFrame>::from(df))?;
                 let res: LogicalSexp = <Sexp>::from(r_udf.0.call(args)?).try_into()?;
-                let out: bool = res.iter().next().ok_or("Expected a bool")?.into();
+                let out: bool = res.iter().next().ok_or("Expected a bool")?;
                 Ok(RUdfReturn::Bool(out))
             }
         }

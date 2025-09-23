@@ -86,7 +86,7 @@ impl PlRLazyFrame {
             use crate::r_udf::RUdf;
 
             let chunk_size = chunk_size
-                .map(|n| <Wrap<NonZeroUsize>>::try_from(n))
+                .map(<Wrap<NonZeroUsize>>::try_from)
                 .transpose()?
                 .map(|w| w.0);
 
