@@ -207,6 +207,7 @@ nav:
         - Misc:
             - collect: man/lazyframe__collect.md
             - collect_schema: man/lazyframe__collect_schema.md
+            - sink_batches: man/lazyframe__sink_batches.md
             - profile: man/lazyframe__profile.md
             - serialize: man/lazyframe__serialize.md
       Series:

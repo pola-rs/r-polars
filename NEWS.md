@@ -11,6 +11,10 @@ This is an update that corresponds to Python Polars 1.34.0.
 - The `collapse_joins` argument of some LazyFrame methods is deprecated (#1553).
   Use `predicate_pushdown` instead.
 
+### New features
+
+- `<lazyframe>$sink_batches()` to apply a function to each reading batch.
+
 ## polars 1.3.1
 
 This is an update that corresponds to Python Polars 1.33.1.
