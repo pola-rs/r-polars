@@ -62,7 +62,7 @@ lazyframe__lazy_sink_batches <- function(
     check_dots_empty0(...)
     lambda <- as_function(lambda)
 
-    ldf <- self$`_ldf`$sink_batches(
+    self$`_ldf`$sink_batches(
       lambda = function(df) {
         lambda(wrap(.savvy_wrap_PlRDataFrame(df))) |>
           isTRUE()
