@@ -89,7 +89,7 @@
       Caused by error:
       ! cannot compare string with numeric type (i64)
 
-# arr$to_struct with fields = NULL
+# arr$to_struct with fields = {rlang::quo_text(fields)} default
 
     Code
       pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(
@@ -107,7 +107,7 @@
       │ 2       ┆ 2       │
       └─────────┴─────────┘
 
-# arr$to_struct with fields = "a"
+# arr$to_struct with fields = {rlang::quo_text(fields)} short chr
 
     Code
       pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(
@@ -125,7 +125,7 @@
       │ 2   │
       └─────┘
 
-# arr$to_struct with fields = c("a", "b", "c", "d")
+# arr$to_struct with fields = {rlang::quo_text(fields)} long chr
 
     Code
       pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(
@@ -143,7 +143,7 @@
       │ 2   ┆ 2   │
       └─────┴─────┘
 
-# arr$to_struct with fields = function (x) sprintf("field_%s", x)
+# arr$to_struct with fields = {rlang::quo_text(fields)} function
 
     Code
       pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(
@@ -161,7 +161,7 @@
       │ 2       ┆ 2       │
       └─────────┴─────────┘
 
-# arr$to_struct with fields = ~paste0("field_", .)
+# arr$to_struct with fields = {rlang::quo_text(fields)} purrr style
 
     Code
       pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(

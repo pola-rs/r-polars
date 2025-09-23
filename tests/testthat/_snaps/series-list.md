@@ -1,4 +1,4 @@
-# list$to_struct with fields = NULL, n_field_strategy = "first_non_null"
+# list$to_struct with fields = {rlang::quo_text(fields)}, n_field_strategy = {rlang::quo_text(n_field_strategy)} fields=NULL, n_field_strategy=first_non_null
 
     Code
       as_polars_df(as_polars_series(list(c(1, 2), c(1, 2, 3), c(1)))$list$to_struct(
@@ -15,7 +15,7 @@
       │ 1.0     ┆ null    │
       └─────────┴─────────┘
 
-# list$to_struct with fields = function (x) sprintf("field-%s", x + 1), n_field_strategy = "first_non_null"
+# list$to_struct with fields = {rlang::quo_text(fields)}, n_field_strategy = {rlang::quo_text(n_field_strategy)} fields=function (x) , sprintf("field-%s", x + 1), n_field_strategy=first_non_null
 
     Code
       as_polars_df(as_polars_series(list(c(1, 2), c(1, 2, 3), c(1)))$list$to_struct(
@@ -32,7 +32,7 @@
       │ 1.0     ┆ null    │
       └─────────┴─────────┘
 
-# list$to_struct with fields = ~paste0("field-", . + 1), n_field_strategy = "first_non_null"
+# list$to_struct with fields = {rlang::quo_text(fields)}, n_field_strategy = {rlang::quo_text(n_field_strategy)} fields=~paste0("field-", . + 1), n_field_strategy=first_non_null
 
     Code
       as_polars_df(as_polars_series(list(c(1, 2), c(1, 2, 3), c(1)))$list$to_struct(
@@ -49,7 +49,7 @@
       │ 1.0     ┆ null    │
       └─────────┴─────────┘
 
-# list$to_struct with fields = NULL, n_field_strategy = "max_width"
+# list$to_struct with fields = {rlang::quo_text(fields)}, n_field_strategy = {rlang::quo_text(n_field_strategy)} fields=NULL, n_field_strategy=max_width
 
     Code
       as_polars_df(as_polars_series(list(c(1, 2), c(1, 2, 3), c(1)))$list$to_struct(
@@ -66,7 +66,7 @@
       │ 1.0     ┆ null    ┆ null    │
       └─────────┴─────────┴─────────┘
 
-# list$to_struct with fields = function (x) sprintf("field-%s", x + 1), n_field_strategy = "max_width"
+# list$to_struct with fields = {rlang::quo_text(fields)}, n_field_strategy = {rlang::quo_text(n_field_strategy)} fields=function (x) , sprintf("field-%s", x + 1), n_field_strategy=max_width
 
     Code
       as_polars_df(as_polars_series(list(c(1, 2), c(1, 2, 3), c(1)))$list$to_struct(
@@ -83,7 +83,7 @@
       │ 1.0     ┆ null    ┆ null    │
       └─────────┴─────────┴─────────┘
 
-# list$to_struct with fields = ~paste0("field-", . + 1), n_field_strategy = "max_width"
+# list$to_struct with fields = {rlang::quo_text(fields)}, n_field_strategy = {rlang::quo_text(n_field_strategy)} fields=~paste0("field-", . + 1), n_field_strategy=max_width
 
     Code
       as_polars_df(as_polars_series(list(c(1, 2), c(1, 2, 3), c(1)))$list$to_struct(
@@ -100,7 +100,7 @@
       │ 1.0     ┆ null    ┆ null    │
       └─────────┴─────────┴─────────┘
 
-# list$to_struct with fields = "a", n_field_strategy = NA_character_
+# list$to_struct with fields = {rlang::quo_text(fields)}, n_field_strategy = {rlang::quo_text(n_field_strategy)} fields=a, n_field_strategy=NA
 
     Code
       as_polars_df(as_polars_series(list(c(1, 2), c(1, 2, 3), c(1)))$list$to_struct(
@@ -117,7 +117,7 @@
       │ 1.0 │
       └─────┘
 
-# list$to_struct with fields = c("a", "b", "c", "d"), n_field_strategy = NA_character_
+# list$to_struct with fields = {rlang::quo_text(fields)}, n_field_strategy = {rlang::quo_text(n_field_strategy)} fields=a, b, c, d, n_field_strategy=NA
 
     Code
       as_polars_df(as_polars_series(list(c(1, 2), c(1, 2, 3), c(1)))$list$to_struct(

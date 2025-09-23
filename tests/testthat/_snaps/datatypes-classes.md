@@ -540,7 +540,7 @@
     Output
       Decimal(precision=38, scale=0)
 
-# invalid decimal (precision = 0, scale = 0)
+# invalid decimal (precision = {precision}, scale = {scale}) precision=0, scale=0
 
     Code
       pl$Decimal(precision, scale)
@@ -550,7 +550,7 @@
       Caused by error:
       ! Invalid operation: precision must be between 1 and 38
 
-# invalid decimal (precision = -1, scale = 0)
+# invalid decimal (precision = {precision}, scale = {scale}) precision=-1, scale=0
 
     Code
       pl$Decimal(precision, scale)
@@ -560,7 +560,7 @@
       Caused by error:
       ! -1.0 is out of range that can be safely converted to usize
 
-# invalid decimal (precision = 1, scale = -1)
+# invalid decimal (precision = {precision}, scale = {scale}) precision=1, scale=-1
 
     Code
       pl$Decimal(precision, scale)
@@ -570,7 +570,7 @@
       Caused by error:
       ! -1.0 is out of range that can be safely converted to usize
 
-# invalid decimal (precision = 39, scale = 40)
+# invalid decimal (precision = {precision}, scale = {scale}) precision=39, scale=40
 
     Code
       pl$Decimal(precision, scale)
@@ -580,7 +580,7 @@
       Caused by error:
       ! Invalid operation: precision must be between 1 and 38
 
-# invalid decimal (precision = 38, scale = 39)
+# invalid decimal (precision = {precision}, scale = {scale}) precision=38, scale=39
 
     Code
       pl$Decimal(precision, scale)
@@ -590,7 +590,7 @@
       Caused by error:
       ! Invalid operation: scale must be less than or equal to precision
 
-# invalid decimal (precision = 39, scale = 1)
+# invalid decimal (precision = {precision}, scale = {scale}) precision=39, scale=1
 
     Code
       pl$Decimal(precision, scale)
