@@ -75,6 +75,37 @@ impl PlRLazyFrame {
         Ok(ldf.into())
     }
 
+    fn sink_batches(
+        &self,
+        lambda: savvy::FunctionSexp,
+        maintain_order: bool,
+        chunk_size: Option<NumericScalar>,
+    ) -> Result<Self> {
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            use crate::r_udf::RUdf;
+
+            let chunk_size = chunk_size
+                .map(|n| <Wrap<NonZeroUsize>>::try_from(n))
+                .transpose()?
+                .map(|w| w.0);
+
+            let ldf = self.ldf.clone();
+            ldf.sink_batches(
+                <PlanCallback<DataFrame, bool>>::from(RUdf::new(lambda)),
+                maintain_order,
+                chunk_size,
+            )
+            .map(Into::into)
+            .map_err(RPolarsErr::from)
+            .map_err(Into::into)
+        }
+        #[cfg(target_arch = "wasm32")]
+        {
+            Err(RPolarsErr::Other(format!("Not supported in WASM")).into())
+        }
+    }
+
     fn filter(&mut self, predicate: &PlRExpr) -> Result<Self> {
         let ldf = self.ldf.clone();
         Ok(ldf.filter(predicate.inner.clone()).into())
