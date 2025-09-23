@@ -18,3 +18,4 @@ altdoc/freeze.rds
 docs
 .venv_altdoc
 altdoc/reference_home.md
+..Rcheck/
