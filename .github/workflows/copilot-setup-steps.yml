@@ -36,11 +36,6 @@ jobs:
       - name: Set up Air
         uses: posit-dev/setup-air@v1
 
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: stable
-
       - uses: rui314/setup-mold@v1
 
       - uses: Swatinem/rust-cache@v2
