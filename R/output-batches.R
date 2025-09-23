@@ -11,8 +11,8 @@
 #' @inheritParams lazyframe__sink_parquet
 #' @param lambda A function that will receive a [DataFrame] as the first argument and
 #'   called for side effects (e.g., writing to a file).
-#'   If the function returns `TRUE`, this signals that no more results are needed,
-#'   allowing for early stopping.
+#'   If the function returns `TRUE` and using the streaming engine,
+#'   this signals that no more results are needed, allowing for early stopping.
 #' @param chunk_size An positive integer or `NULL` (default).
 #'   The number of rows that are buffered before the callback is called.
 #' @return

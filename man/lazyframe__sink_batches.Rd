@@ -23,8 +23,8 @@ lazyframe__lazy_sink_batches(
 \arguments{
 \item{lambda}{A function that will receive a \link{DataFrame} as the first argument and
 called for side effects (e.g., writing to a file).
-If the function returns \code{TRUE}, this signals that no more results are needed,
-allowing for early stopping.}
+If the function returns \code{TRUE} and using the streaming engine,
+this signals that no more results are needed, allowing for early stopping.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
