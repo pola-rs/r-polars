@@ -7,12 +7,14 @@ R Polars is an R package that provides bindings to the Polars Rust library using
 ## Working Effectively
 
 ### Bootstrap and Setup (REQUIRED FIRST)
-- Install system dependencies:
-  - `sudo apt-get update && sudo apt-get install -y r-base r-base-dev build-essential`
-  - Install Rust via rustup: `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
-  - Add Rust to PATH: `export PATH="$HOME/.cargo/bin:$PATH"`
-  - Install savvy-cli: `cargo install savvy-cli`
-  - Install essential R packages: `sudo apt-get install -y r-cran-devtools r-cran-testthat r-cran-pkgbuild r-cran-lintr`
+The environment is automatically configured via GitHub Actions setup steps in `.github/workflows/copilot-setup-steps.yml`. This includes:
+- R 4.3 with essential development packages (devtools, pkgbuild, testthat, lintr, pkgload)
+- Rust toolchain with cargo and rustc
+- savvy-cli for R wrapper generation
+- mold linker for faster builds
+- Rust cache for improved build times
+
+If setup steps are not automatically executed, the environment may not be fully configured for r-polars development.
 
 ### Environment Variables (CRITICAL)
 Always set these environment variables before building:
@@ -142,6 +144,7 @@ These operations MUST complete and should NEVER be cancelled:
 - Verify environment variables are set correctly
 - Clear cache: `rm -rf src/rust/target` and rebuild
 - Check for out-of-memory issues during compilation
+- **Environment Issues**: If tools are missing, the environment may not be properly configured via `.github/workflows/copilot-setup-steps.yml`
 
 ### Test Failures
 - Run individual failing tests: `devtools::test(filter="test_name")`
