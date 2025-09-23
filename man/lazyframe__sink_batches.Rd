@@ -28,7 +28,7 @@ this signals that no more results are needed, allowing for early stopping.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{chunk_size}{An positive integer or \code{NULL} (default).
+\item{chunk_size}{A positive integer or \code{NULL} (default).
 The number of rows that are buffered before the callback is called.}
 
 \item{maintain_order}{Maintain the order in which data is processed. Setting

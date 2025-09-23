@@ -13,7 +13,7 @@
 #'   called for side effects (e.g., writing to a file).
 #'   If the function returns `TRUE` and using the streaming engine,
 #'   this signals that no more results are needed, allowing for early stopping.
-#' @param chunk_size An positive integer or `NULL` (default).
+#' @param chunk_size A positive integer or `NULL` (default).
 #'   The number of rows that are buffered before the callback is called.
 #' @return
 #' - `<lazyframe>$sink_batches()` returns `NULL` invisibly.
