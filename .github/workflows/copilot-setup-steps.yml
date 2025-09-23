@@ -33,6 +33,9 @@ jobs:
       - name: Install Task
         uses: go-task/setup-task@v1
 
+      - name: Set up Air
+        uses: posit-dev/setup-air@v1
+
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -56,6 +59,8 @@ jobs:
           cargo --version
           echo "Task version:"
           task --version
+          echo "Air version:"
+          air --version
           echo "savvy-cli version:"
           savvy-cli --version
           echo "Environment ready for r-polars development"
