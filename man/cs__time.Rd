@@ -13,7 +13,7 @@ A Polars \link[=cs]{selector}
 Select all time columns
 }
 \examples{
-\dontshow{if (requireNamespace("hms", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("hms", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 df <- pl$DataFrame(
   dtm = as.POSIXct(c("2001-5-7 10:25", "2031-12-31 00:30")),
   dt = as.Date(c("1999-12-31", "2024-8-9")),

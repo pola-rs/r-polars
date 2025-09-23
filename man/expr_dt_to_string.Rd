@@ -29,7 +29,7 @@ formatting of the resulting string; if no format is provided, the appropriate
 ISO format for the underlying data type is used.
 }
 \examples{
-\dontshow{if (requireNamespace("hms", quietly = TRUE) && requireNamespace("clock", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("hms", quietly = TRUE) && requireNamespace("clock", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 df <- pl$DataFrame(
   dt = as.Date(c("1990-03-01", "2020-05-03", "2077-07-05")),
   dtm = as.POSIXct(c("1980-08-10 00:10:20", "2010-10-20 08:25:35", "2040-12-30 16:40:50")),

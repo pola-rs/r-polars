@@ -91,7 +91,7 @@ A polars \link{DataFrame}
 Read into a DataFrame from NDJSON file
 }
 \examples{
-\dontshow{if (requireNamespace("jsonlite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("jsonlite", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ndjson_filename <- tempfile()
 jsonlite::stream_out(iris, file(ndjson_filename), verbose = FALSE)
 pl$read_ndjson(ndjson_filename)

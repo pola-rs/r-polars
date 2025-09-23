@@ -118,7 +118,7 @@ This allows the query optimizer to push down predicates and projections to
 the scan level, thereby potentially reducing memory overhead.
 }
 \examples{
-\dontshow{if (requireNamespace("withr", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("withr", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # Write a Parquet file than we can then import as DataFrame
 temp_file <- withr::local_tempfile(fileext = ".parquet")
 as_polars_df(mtcars)$write_parquet(temp_file)

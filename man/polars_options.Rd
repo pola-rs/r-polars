@@ -35,7 +35,7 @@ default value in parenthesis):
 }
 }
 \examples{
-\dontshow{if (requireNamespace("withr", quietly = TRUE) && requireNamespace("hms", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("withr", quietly = TRUE) && requireNamespace("hms", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(hms)
 polars_options()
 withr::with_options(

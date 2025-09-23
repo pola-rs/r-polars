@@ -1,0 +1,14 @@
+* using log directory ‘/home/runner/work/r-polars/r-polars/..Rcheck’
+* using R version 4.3.3 (2024-02-29)
+* using platform: x86_64-pc-linux-gnu (64-bit)
+* R was compiled by
+    gcc (Ubuntu 13.2.0-23ubuntu3) 13.2.0
+    GNU Fortran (Ubuntu 13.2.0-23ubuntu3) 13.2.0
+* running under: Ubuntu 24.04.3 LTS
+* using session charset: UTF-8
+* using options ‘--no-manual --no-build-vignettes’
+* checking for file ‘./DESCRIPTION’ ... ERROR
+Required fields missing or empty:
+  ‘Author’ ‘Maintainer’
+* DONE
+Status: 1 ERROR

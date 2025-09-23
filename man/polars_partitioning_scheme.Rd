@@ -68,7 +68,7 @@ therefore repeating the same value multiple times may overwrite previous partiti
 }
 }
 \examples{
-\dontshow{if (requireNamespace("withr", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("withr", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # Partitioning by columns
 temp_dir_1 <- withr::local_tempdir()
 as_polars_lf(mtcars)$sink_parquet(
