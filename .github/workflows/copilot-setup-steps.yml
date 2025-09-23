@@ -47,12 +47,6 @@ jobs:
       - name: Install savvy-cli
         run: curl --proto '=https' --tlsv1.2 -LsSf https://github.com/yutannihilation/savvy/releases/latest/download/savvy-cli-installer.sh | sh
 
-      - name: Set environment variables
-        run: |
-          echo "NOT_CRAN=true" >> $GITHUB_ENV
-          echo "LIBR_POLARS_BUILD=true" >> $GITHUB_ENV
-          echo "DEBUG=true" >> $GITHUB_ENV
-
       - name: Verify setup
         run: |
           echo "R version:"

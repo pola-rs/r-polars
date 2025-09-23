@@ -78,7 +78,7 @@
       Error in `polars_options()`:
       ! `to_r_vector.non_existent` must be one of "raise" or "null", not "foo".
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.uint8, opt_value=integer
+# options for to_r_vector() works: polars.to_r_vector.uint8 = integer
 
     Code
       series$to_r_vector()
@@ -191,7 +191,7 @@
       2     2     2 1970-01-03 00'00.000000"        2       2 0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
       3     3     3 1970-01-04 00'00.000000"        3       3 0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.uint8, opt_value=raw
+# options for to_r_vector() works: polars.to_r_vector.uint8 = raw
 
     Code
       series$to_r_vector()
@@ -313,7 +313,7 @@
       2 02        2 1970-01-03 00'00.000000"        2       2 0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
       3 03        3 1970-01-04 00'00.000000"        3       3 0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.int64, opt_value=double
+# options for to_r_vector() works: polars.to_r_vector.int64 = double
 
     Code
       series$to_r_vector()
@@ -426,7 +426,7 @@
       2     2     2 1970-01-03 00'00.000000"        2       2 0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
       3     3     3 1970-01-04 00'00.000000"        3       3 0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.int64, opt_value=character
+# options for to_r_vector() works: polars.to_r_vector.int64 = character
 
     Code
       series$to_r_vector()
@@ -548,7 +548,7 @@
       2     2 2     1970-01-03 00'00.000000"        2       2 0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
       3     3 3     1970-01-04 00'00.000000"        3       3 0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.int64, opt_value=integer
+# options for to_r_vector() works: polars.to_r_vector.int64 = integer
 
     Code
       series$to_r_vector()
@@ -670,7 +670,7 @@
       2     2     2 1970-01-03 00'00.000000"        2       2 0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
       3     3     3 1970-01-04 00'00.000000"        3       3 0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.int64, opt_value=integer64
+# options for to_r_vector() works: polars.to_r_vector.int64 = integer64
 
     Code
       series$to_r_vector()
@@ -794,7 +794,7 @@
       2     2       2 1970-01-03 00'00.000000"        2       2 0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
       3     3       3 1970-01-04 00'00.000000"        3       3 0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.date, opt_value=Date
+# options for to_r_vector() works: polars.to_r_vector.date = Date
 
     Code
       series$to_r_vector()
@@ -907,7 +907,7 @@
       2     2     2 1970-01-03 00'00.000000"        2       2 0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
       3     3     3 1970-01-04 00'00.000000"        3       3 0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.date, opt_value=IDate
+# options for to_r_vector() works: polars.to_r_vector.date = IDate
 
     Code
       series$to_r_vector()
@@ -1029,7 +1029,7 @@
       2     2     2 1970-01-03 00'00.000000"        2       2 0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
       3     3     3 1970-01-04 00'00.000000"        3       3 0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.time, opt_value=hms
+# options for to_r_vector() works: polars.to_r_vector.time = hms
 
     Code
       series$to_r_vector()
@@ -1142,7 +1142,7 @@
       2     2     2 1970-01-03 00'00.000000"        2       2 0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
       3     3     3 1970-01-04 00'00.000000"        3       3 0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.time, opt_value=ITime
+# options for to_r_vector() works: polars.to_r_vector.time = ITime
 
     Code
       series$to_r_vector()
@@ -1260,7 +1260,7 @@
       2     2     2 1970-01-03 00:00:00        2       2 0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
       3     3     3 1970-01-04 00:00:00        3       3 0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.struct, opt_value=dataframe
+# options for to_r_vector() works: polars.to_r_vector.struct = dataframe
 
     Code
       series$to_r_vector()
@@ -1373,7 +1373,7 @@
       2     2     2 1970-01-03 00'00.000000"        2       2 0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
       3     3     3 1970-01-04 00'00.000000"        3       3 0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.struct, opt_value=tibble
+# options for to_r_vector() works: polars.to_r_vector.struct = tibble
 
     Code
       series$to_r_vector()
@@ -1497,7 +1497,7 @@
       2     2     2 1970-01-03 00'00.000000"        2       2 0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
       3     3     3 1970-01-04 00'00.000000"        3       3 0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.decimal, opt_value=double
+# options for to_r_vector() works: polars.to_r_vector.decimal = double
 
     Code
       series$to_r_vector()
@@ -1610,7 +1610,7 @@
       2     2     2 1970-01-03 00'00.000000"        2       2 0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
       3     3     3 1970-01-04 00'00.000000"        3       3 0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.decimal, opt_value=character
+# options for to_r_vector() works: polars.to_r_vector.decimal = character
 
     Code
       series$to_r_vector()
@@ -1732,7 +1732,7 @@
       2     2     2 1970-01-03 00'00.000000"        2 2.00    0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
       3     3     3 1970-01-04 00'00.000000"        3 3.00    0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.as_clock_class, opt_value=FALSE
+# options for to_r_vector() works: polars.to_r_vector.as_clock_class = FALSE
 
     Code
       series$to_r_vector()
@@ -1845,7 +1845,7 @@
       2     2     2 1970-01-03 00'00.000000"        2       2 0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
       3     3     3 1970-01-04 00'00.000000"        3       3 0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00            
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.as_clock_class, opt_value=TRUE
+# options for to_r_vector() works: polars.to_r_vector.as_clock_class = TRUE
 
     Code
       series$to_r_vector()
@@ -1987,7 +1987,7 @@
       2     2     2 1970-01-03 00'00.000000"        2       2            2 1970-01-01T01:00:00.002+01:00 1970-01-01T00:00:00.002         2020-11-01T01:00:00.000      2020-03-08T01:00:00.000        
       3     3     3 1970-01-04 00'00.000000"        3       3            3 1970-01-01T01:00:00.003+01:00 1970-01-01T00:00:00.003         2020-11-01T02:00:00.000      2020-03-08T02:00:00.000        
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.ambiguous, opt_value=raise
+# options for to_r_vector() works: polars.to_r_vector.ambiguous = raise
 
     Code
       series$to_r_vector()
@@ -2037,7 +2037,7 @@
       Caused by error:
       ! datetime '2020-11-01 01:00:00' is ambiguous in time zone 'America/New_York'. Please use `ambiguous` to tell how it should be localized.
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.ambiguous, opt_value=earliest
+# options for to_r_vector() works: polars.to_r_vector.ambiguous = earliest
 
     Code
       series$to_r_vector()
@@ -2165,7 +2165,7 @@
       2     2     2 1970-01-03 00'00.000000"        2       2 0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00             2020-11-01 01:00:00         
       3     3     3 1970-01-04 00'00.000000"        3       3 0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00             2020-11-01 02:00:00         
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.ambiguous, opt_value=latest
+# options for to_r_vector() works: polars.to_r_vector.ambiguous = latest
 
     Code
       series$to_r_vector()
@@ -2293,7 +2293,7 @@
       2     2     2 1970-01-03 00'00.000000"        2       2 0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00             2020-11-01 01:00:00         
       3     3     3 1970-01-04 00'00.000000"        3       3 0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00             2020-11-01 02:00:00         
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.ambiguous, opt_value=null
+# options for to_r_vector() works: polars.to_r_vector.ambiguous = null
 
     Code
       series$to_r_vector()
@@ -2421,7 +2421,7 @@
       2     2     2 1970-01-03 00'00.000000"        2       2 0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00             NA                          
       3     3     3 1970-01-04 00'00.000000"        3       3 0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00             2020-11-01 02:00:00         
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.non_existent, opt_value=raise
+# options for to_r_vector() works: polars.to_r_vector.non_existent = raise
 
     Code
       series$to_r_vector()
@@ -2471,7 +2471,7 @@
       Caused by error:
       ! datetime '2020-03-08 02:00:00' is non-existent in time zone 'America/New_York'. You may be able to use `non_existent='null'` to return `null` in this case.
 
-# options for to_r_vector() works: {opt_name} = {opt_value} opt_name=polars.to_r_vector.non_existent, opt_value=null
+# options for to_r_vector() works: polars.to_r_vector.non_existent = null
 
     Code
       series$to_r_vector()

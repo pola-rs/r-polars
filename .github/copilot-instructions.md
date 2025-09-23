@@ -8,9 +8,10 @@ R Polars is an R package that provides bindings to the Polars Rust library using
 
 ### Bootstrap and Setup (REQUIRED FIRST)
 The environment is automatically configured via GitHub Actions setup steps in `.github/workflows/copilot-setup-steps.yml`. This includes:
-- R 4.3 with essential development packages (devtools, pkgbuild, testthat, lintr, pkgload)
+- R (latest version) with essential development packages (devtools, pkgbuild, testthat, lintr, pkgload)
 - Rust toolchain with cargo and rustc
 - savvy-cli for R wrapper generation
+- Task runner for project automation
 - mold linker for faster builds
 - Rust cache for improved build times
 
@@ -24,7 +25,15 @@ export LIBR_POLARS_BUILD=true
 export DEBUG=true  # for debug builds, false for release builds
 ```
 
+**Note**: These environment variables are automatically set by the Taskfile.yml when using `task` commands.
+
 ### Build Process (NEVER CANCEL - LONG RUNNING)
+**Option 1: Using Task (Recommended)**
+- `task build-rust` -- Builds Rust library with proper environment variables
+- `task build-documents` -- Generates R documentation
+- `task test-all` -- Runs full test suite
+
+**Option 2: Manual Commands**
 1. Generate R wrappers: `savvy-cli update .` -- takes 10-30 seconds
 2. **CRITICAL**: Compile Rust library: `Rscript -e 'pkgbuild::compile_dll()'` 
    - **NEVER CANCEL**: Debug build takes ~5 minutes, release build takes ~10+ minutes
@@ -33,6 +42,11 @@ export DEBUG=true  # for debug builds, false for release builds
 3. Generate documentation: `Rscript -e 'devtools::document()'` -- takes 1-2 minutes
 
 ### Testing (NEVER CANCEL - VERY LONG RUNNING)
+**Option 1: Using Task (Recommended)**
+- `task test-all` -- Runs full test suite with proper environment
+- `task test-source` -- Runs all tests for source code
+
+**Option 2: Manual Commands**
 - **CRITICAL**: Full test suite: `Rscript -e 'devtools::test()'`
   - **NEVER CANCEL**: Takes 15-25 minutes to complete with 3100+ tests
   - **ALWAYS** set timeout to 30+ minutes minimum
@@ -45,12 +59,25 @@ export DEBUG=true  # for debug builds, false for release builds
 After making any changes, ALWAYS run through these validation steps:
 
 ### Basic Development Workflow Validation
+**Option 1: Using Task (Recommended)**
+1. **ALWAYS** run the build process first: `task build-rust`
+2. **ALWAYS** test basic functionality: `Rscript -e 'devtools::load_all(); df <- pl$DataFrame(x=1:3); print(df); print(as.data.frame(df))'`
+3. Run a subset of tests: `Rscript -e 'devtools::test(filter="polars_options")'` (takes ~15 seconds)
+4. **CRITICAL**: For major changes, run full test suite: `task test-all` with proper timeout
+
+**Option 2: Manual Commands**
 1. **ALWAYS** run the build process first: `savvy-cli update . && Rscript -e 'pkgbuild::compile_dll()'`
 2. **ALWAYS** test basic functionality: `Rscript -e 'devtools::load_all(); df <- pl$DataFrame(x=1:3); print(df); print(as.data.frame(df))'`
 3. Run a subset of tests: `Rscript -e 'devtools::test(filter="polars_options")'` (takes ~15 seconds)
 4. **CRITICAL**: For major changes, run full test suite with proper timeout
 
 ### Linting and Formatting (REQUIRED BEFORE COMMITS)
+**Option 1: Using Task (Recommended)**
+- Format all files: `task format-all` or `task fmt`
+- Format R code: `task format-r` 
+- Format Rust code: `task format-rust`
+
+**Option 2: Manual Commands**
 - Format R code: Requires `air` tool (not available in basic environment) - use GitHub Actions
 - Check R lint: `Rscript -e 'pkgload::load_all(); lintr::lint_package(cache=FALSE)'` -- takes 2-3 minutes
 - Format Rust code: `cd src/rust && rustup component add rustfmt && cargo fmt --all`
@@ -84,7 +111,7 @@ Always test these scenarios after making changes:
 - **Priority tests**: Tests starting with specific patterns run first (see DESCRIPTION)
 
 ### Development Tools
-- **Task automation**: `Taskfile.yml` (requires Task tool, not always available)
+- **Task automation**: `Taskfile.yml` with Task tool available via setup steps
 - **Configuration**: 
   - `.lintr.R` for R linting rules
   - `air.toml` for R code formatting

@@ -918,3 +918,99 @@
       	1ns
       ]
 
+# nanoarrow_array/nanoarrow_array_stream support int16
+
+    Code
+      print(series_from_array_default)
+    Output
+      shape: (10,)
+      Series: '' [i16]
+      [
+      	1
+      	2
+      	3
+      	4
+      	5
+      	6
+      	7
+      	8
+      	9
+      	10
+      ]
+
+# nanoarrow_array/nanoarrow_array_stream support int32
+
+    Code
+      print(series_from_array_default)
+    Output
+      shape: (10,)
+      Series: '' [i32]
+      [
+      	1
+      	2
+      	3
+      	4
+      	5
+      	6
+      	7
+      	8
+      	9
+      	10
+      ]
+
+# nanoarrow_array/nanoarrow_array_stream support int64
+
+    Code
+      print(series_from_array_default)
+    Output
+      shape: (10,)
+      Series: '' [i64]
+      [
+      	1
+      	2
+      	3
+      	4
+      	5
+      	6
+      	7
+      	8
+      	9
+      	10
+      ]
+
+# arrow RecordBatchReader and Tabular objects support table
+
+    Code
+      print(series_default)
+    Output
+      shape: (2,)
+      Series: '' [struct[3]]
+      [
+      	{1,"a",[true]}
+      	{2,"b",[null]}
+      ]
+
+# arrow RecordBatchReader and Tabular objects support record_batch
+
+    Code
+      print(series_default)
+    Output
+      shape: (2,)
+      Series: '' [struct[3]]
+      [
+      	{1,"a",[true]}
+      	{2,"b",[null]}
+      ]
+
+# arrow RecordBatchReader and Tabular objects support record_batch_reader
+
+    Code
+      print(series_default)
+    Output
+      shape: (2,)
+      Series: '' [struct[3]]
+      [
+      	{1,"a",[true]}
+      	{2,"b",[null]}
+      ]
+

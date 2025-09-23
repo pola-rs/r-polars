@@ -5,9 +5,9 @@
 \alias{knit_print.polars_series}
 \title{knit print polars DataFrame}
 \usage{
-knit_print.polars_data_frame(x, ...)
+\method{knit_print}{polars_data_frame}(x, ...)
 
-knit_print.polars_series(x, ...)
+\method{knit_print}{polars_series}(x, ...)
 }
 \arguments{
 \item{x}{A polars object}
@@ -34,7 +34,7 @@ Or, the output format can be enforced with R's \code{options} function as follow
 }
 }
 \examples{
-\dontshow{if (requireNamespace("knitr", quietly = TRUE) && requireNamespace("withr", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("knitr", quietly = TRUE) && requireNamespace("withr", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Using the default print method
 withr::with_options(
   list(polars.df_knitr_print = "default"),

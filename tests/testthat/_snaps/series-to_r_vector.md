@@ -113,7 +113,7 @@
       1     1            [2 x 1]
       2     2            [2 x 1]
 
-# ambiguous argument '{ambiguous}' ambiguous=raise
+# ambiguous argument 'raise'
 
     Code
       series_ambiguous$to_r_vector(ambiguous = ambiguous)
@@ -123,7 +123,7 @@
       Caused by error:
       ! datetime '2020-11-01 01:00:00' is ambiguous in time zone 'America/New_York'. Please use `ambiguous` to tell how it should be localized.
 
-# ambiguous argument '{ambiguous}' ambiguous=earliest
+# ambiguous argument 'earliest'
 
     Code
       series_ambiguous$to_r_vector(ambiguous = ambiguous)
@@ -131,7 +131,7 @@
       [1] "2020-11-01 00:00:00 EDT" "2020-11-01 01:00:00 EDT"
       [3] "2020-11-01 02:00:00 EST"
 
-# ambiguous argument '{ambiguous}' ambiguous=latest
+# ambiguous argument 'latest'
 
     Code
       series_ambiguous$to_r_vector(ambiguous = ambiguous)
@@ -139,7 +139,7 @@
       [1] "2020-11-01 00:00:00 EDT" "2020-11-01 01:00:00 EST"
       [3] "2020-11-01 02:00:00 EST"
 
-# ambiguous argument '{ambiguous}' ambiguous=null
+# ambiguous argument 'null'
 
     Code
       series_ambiguous$to_r_vector(ambiguous = ambiguous)
@@ -147,7 +147,7 @@
       [1] "2020-11-01 00:00:00 EDT" NA                       
       [3] "2020-11-01 02:00:00 EST"
 
-# non_existent argument '{non_existent}' non_existent=raise
+# non_existent argument 'raise'
 
     Code
       series_non_existent$to_r_vector(non_existent = non_existent)
@@ -157,7 +157,7 @@
       Caused by error:
       ! datetime '2020-03-08 02:00:00' is non-existent in time zone 'America/New_York'. You may be able to use `non_existent='null'` to return `null` in this case.
 
-# non_existent argument '{non_existent}' non_existent=null
+# non_existent argument 'null'
 
     Code
       series_non_existent$to_r_vector(non_existent = non_existent)

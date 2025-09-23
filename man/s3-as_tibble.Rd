@@ -5,7 +5,7 @@
 \alias{as_tibble.polars_lazy_frame}
 \title{Export the polars object as a tibble data frame}
 \usage{
-as_tibble.polars_data_frame(
+\method{as_tibble}{polars_data_frame}(
   x,
   ...,
   .name_repair = c("check_unique", "unique", "universal", "minimal", "unique_quiet",
@@ -20,7 +20,7 @@ as_tibble.polars_data_frame(
   non_existent = c("raise", "null")
 )
 
-as_tibble.polars_lazy_frame(
+\method{as_tibble}{polars_lazy_frame}(
   x,
   ...,
   .name_repair = c("check_unique", "unique", "universal", "minimal", "unique_quiet",
@@ -47,6 +47,8 @@ as_tibble.polars_lazy_frame(
 \item \code{"check_unique"}: (default value), no name repair, but check they are
 \code{unique},
 \item \code{"universal"}: Make the names \code{unique} and syntactic
+\item \code{"unique_quiet"}: Same as \code{"unique"}, but "quiet"
+\item \code{"universal_quiet"}: Same as \code{"universal"}, but "quiet"
 \item a function: apply custom name repair (e.g., \code{.name_repair = make.names}
 for names in the style of base R).
 \item A purrr-style anonymous function, see \code{\link[rlang:as_function]{rlang::as_function()}}
@@ -152,7 +154,7 @@ Because polars \link{DataFrame} allows empty column name, which is not generally
 in R data frame.
 }
 \examples{
-\dontshow{if (requireNamespace("tibble", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("tibble", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Polars DataFrame may have empty column name
 df <- pl$DataFrame(x = 1:2, c("a", "b"))
 df

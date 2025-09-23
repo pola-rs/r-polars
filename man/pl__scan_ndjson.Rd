@@ -92,7 +92,7 @@ This allows the query optimizer to push down predicates and projections to
 the scan level, thereby potentially reducing memory overhead.
 }
 \examples{
-\dontshow{if (requireNamespace("jsonlite", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("jsonlite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 ndjson_filename <- tempfile()
 jsonlite::stream_out(iris, file(ndjson_filename), verbose = FALSE)
 pl$scan_ndjson(ndjson_filename)$collect()

@@ -22,7 +22,7 @@ replaced, and if it is a Date then a new Datetime is created by combining
 the two values.
 }
 \examples{
-\dontshow{if (requireNamespace("hms", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("hms", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 df <- pl$DataFrame(
   dtm = c(
     ISOdatetime(2022, 12, 31, 10, 30, 45),

@@ -38,7 +38,7 @@ A polars \link{DataFrame}
 Read into a DataFrame from Arrow IPC stream format
 }
 \examples{
-\dontshow{if (requireNamespace("nanoarrow", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("nanoarrow", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 temp_file <- tempfile(fileext = ".arrows")
 
 mtcars |>

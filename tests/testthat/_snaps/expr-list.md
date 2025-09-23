@@ -168,7 +168,7 @@
       Caused by error:
       ! lengths don't match: cannot take a larger sample than the total population when `with_replacement=false`
 
-# list$to_struct with field = {rlang::quo_text(fields)}, upper_bound = {rlang::quo_text(upper_bound)} fields=NULL, upper_bound=1
+# list$to_struct with field = NULL, upper_bound = 1
 
     Code
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
@@ -186,7 +186,7 @@
       │ 1       │
       └─────────┘
 
-# list$to_struct with field = {rlang::quo_text(fields)}, upper_bound = {rlang::quo_text(upper_bound)} fields=function (x) , sprintf("field-%s", x + 1), upper_bound=1
+# list$to_struct with field = function (x) sprintf("field-%s", x + 1), upper_bound = 1
 
     Code
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
@@ -204,7 +204,7 @@
       │ 1       │
       └─────────┘
 
-# list$to_struct with field = {rlang::quo_text(fields)}, upper_bound = {rlang::quo_text(upper_bound)} fields=~paste0("field-", . + 1), upper_bound=1
+# list$to_struct with field = ~paste0("field-", . + 1), upper_bound = 1
 
     Code
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
@@ -222,7 +222,7 @@
       │ 1       │
       └─────────┘
 
-# list$to_struct with field = {rlang::quo_text(fields)}, upper_bound = {rlang::quo_text(upper_bound)} fields=a, upper_bound=1
+# list$to_struct with field = "a", upper_bound = 1
 
     Code
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
@@ -240,7 +240,7 @@
       │ 1   │
       └─────┘
 
-# list$to_struct with field = {rlang::quo_text(fields)}, upper_bound = {rlang::quo_text(upper_bound)} fields=a, b, c, d, upper_bound=1
+# list$to_struct with field = c("a", "b", "c", "d"), upper_bound = 1
 
     Code
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
@@ -258,7 +258,7 @@
       │ 1   ┆ null ┆ null ┆ null │
       └─────┴──────┴──────┴──────┘
 
-# list$to_struct with field = {rlang::quo_text(fields)}, upper_bound = {rlang::quo_text(upper_bound)} fields=NULL, upper_bound=5
+# list$to_struct with field = NULL, upper_bound = 5
 
     Code
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
@@ -276,7 +276,7 @@
       │ 1       ┆ null    ┆ null    ┆ null    ┆ null    │
       └─────────┴─────────┴─────────┴─────────┴─────────┘
 
-# list$to_struct with field = {rlang::quo_text(fields)}, upper_bound = {rlang::quo_text(upper_bound)} fields=function (x) , sprintf("field-%s", x + 1), upper_bound=5
+# list$to_struct with field = function (x) sprintf("field-%s", x + 1), upper_bound = 5
 
     Code
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
@@ -294,7 +294,7 @@
       │ 1       ┆ null    ┆ null    ┆ null    ┆ null    │
       └─────────┴─────────┴─────────┴─────────┴─────────┘
 
-# list$to_struct with field = {rlang::quo_text(fields)}, upper_bound = {rlang::quo_text(upper_bound)} fields=~paste0("field-", . + 1), upper_bound=5
+# list$to_struct with field = ~paste0("field-", . + 1), upper_bound = 5
 
     Code
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
@@ -312,7 +312,7 @@
       │ 1       ┆ null    ┆ null    ┆ null    ┆ null    │
       └─────────┴─────────┴─────────┴─────────┴─────────┘
 
-# list$to_struct with field = {rlang::quo_text(fields)}, upper_bound = {rlang::quo_text(upper_bound)} fields=a, upper_bound=5
+# list$to_struct with field = "a", upper_bound = 5
 
     Code
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
@@ -330,7 +330,7 @@
       │ 1   │
       └─────┘
 
-# list$to_struct with field = {rlang::quo_text(fields)}, upper_bound = {rlang::quo_text(upper_bound)} fields=a, b, c, d, upper_bound=5
+# list$to_struct with field = c("a", "b", "c", "d"), upper_bound = 5
 
     Code
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
