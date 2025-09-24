@@ -59,15 +59,66 @@ Only use it if you cannot implement your logic otherwise.
 \verb{<lazyframe>$sink_batches()} is a shortcut for \verb{<lazyframe>$lazy_sink_batches()$collect()}.
 }
 \examples{
+# One usecase for this function is to export larger-than-RAM data to file
+# formats for which polars doesn't provide a writer out of the box.
+# The example below writes a LazyFrame by batches to a CSV file for the
+# sake of the example, but one could replace `write.csv()` by
+# `haven::write_dta()`, `saveRDS()`, or other functions.
 lf <- as_polars_lf(mtcars)
-lf$sink_batches(\(df) print(df), chunk_size = 10)
 
-# Early stopping by returning TRUE from the function
-lf$sort("cyl")$sink_batches(
+output_dir <- withr::local_tempdir()
+output_dir_idx <- 1
+
+lf$sink_batches(
   \(df) {
-    print(df)
-    if (max(df[["cyl"]])$to_r_vector() > 4) TRUE else FALSE
+     # `df` is one chunk of the original LazyFrame.
+     dest <- paste0(output_dir, "/file_", output_dir_idx, ".csv")
+     cat(sprintf("Writing \%s rows to \%s\n", nrow(df), dest))
+     write.csv(as.data.frame(df), dest)
+     output_dir_idx <<- output_dir_idx + 1
+  }
+)
+
+list.files(output_dir)
+
+pl$read_csv(output_dir)
+
+# The number of rows in each chunk can be adjusted with `chunk_size`.
+output_dir <- withr::local_tempdir()
+output_dir_idx <- 1
+
+lf$sink_batches(
+  \(df) {
+     dest <- paste0(output_dir, "/file_", output_dir_idx, ".csv")
+     cat(sprintf("Writing \%s rows to \%s\n", nrow(df), dest))
+     write.csv(as.data.frame(df), dest)
+     output_dir_idx <<- output_dir_idx + 1
   },
   chunk_size = 10
 )
+
+list.files(output_dir)
+
+# To avoid manually creating paths and incrementing `output_dir_idx` in the
+# anonymous function, we can use function factories:
+output_dir <- withr::local_tempdir()
+writer_factory <- function(dir) {
+  i <- 0
+  function(df) {
+    i <<- i + 1
+    as.data.frame(df) |>
+      write.csv(file.path(dir, sprintf("\%03d.csv", i)), row.names = FALSE)
+  }
+}
+writer <- writer_factory(output_dir)
+
+lf$sink_batches(
+  \(df) {
+     cat(sprintf("Write \%s rows\n", nrow(df)))
+     writer(df)
+  },
+  chunk_size = 10
+)
+
+list.files(output_dir)
 }
