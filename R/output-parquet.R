@@ -53,6 +53,8 @@
 #' @return
 #' - `<lazyframe>$sink_*()` returns `NULL` invisibly.
 #' - `<lazyframe>$lazy_sink_*()` returns a new [LazyFrame].
+#'   If evaluating this [LazyFrame] (by [`<lazyframe>$collect()`][lazyframe__collect]),
+#'   the query results will be written to the specified file(s).
 #'
 #' @examples
 #' # sink table 'mtcars' from mem to parquet
