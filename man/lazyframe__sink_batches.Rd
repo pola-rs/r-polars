@@ -87,6 +87,7 @@ lf$sort("cyl")$sink_batches(
 # It is therefore recommended to set `chunk_size` manually.
 
 output_dir <- withr::local_tempdir()
+dir.create(output_dir)
 output_dir_idx <- 1
 
 lf$sink_batches(
@@ -104,6 +105,7 @@ pl$read_csv(output_dir)
 
 # The number of rows in each chunk can be adjusted with `chunk_size`.
 output_dir <- withr::local_tempdir()
+dir.create(output_dir)
 output_dir_idx <- 1
 
 lf$sink_batches(
@@ -121,6 +123,7 @@ list.files(output_dir)
 # To avoid manually creating paths and incrementing `output_dir_idx` in the
 # anonymous function, we can use function factories:
 output_dir <- withr::local_tempdir()
+dir.create(output_dir)
 writer_factory <- function(dir) {
   i <- 0
   function(df) {
