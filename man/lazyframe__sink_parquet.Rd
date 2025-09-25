@@ -180,17 +180,28 @@ Use \code{predicate_pushdown} instead.}
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 This allows streaming results that are larger than RAM to be written to disk.
-\verb{<lazyframe>$sink_*()} is a shortcut for \verb{<lazyframe>$lazy_sink_*()$collect()}.
+\itemize{
+\item \verb{<lazyframe>$lazy_sink_*()} don't write directly to the output file(s) until
+\code{\link[=lazyframe__collect]{$collect()}} is called.
+This is useful if you want to save a query to review or run later.
+\item \verb{<lazyframe>$sink_*()} write directly to the output file(s) (they are shortcuts for
+\verb{<lazyframe>$lazy_sink_*()$collect()}).
+}
 }
 \examples{
-# sink table 'mtcars' from mem to parquet
+# Sink table 'mtcars' from mem to parquet
 tmpf <- tempfile()
 as_polars_lf(mtcars)$sink_parquet(tmpf)
 
-# stream a query end-to-end
+# Save the query for streaming a query end-to-end
 tmpf2 <- tempfile()
-pl$scan_parquet(tmpf)$select(pl$col("cyl") * 2)$sink_parquet(tmpf2)
+lf <- pl$scan_parquet(tmpf)$select(pl$col("cyl") * 2)$lazy_sink_parquet(tmpf2)
+lf$explain() |>
+  cat()
 
-# load parquet directly into a DataFrame / memory
-pl$scan_parquet(tmpf2)$collect()
+# Execute the query and write to disk
+lf$collect()
+
+# Load parquet directly into a DataFrame / memory
+pl$read_parquet(tmpf2)
 }

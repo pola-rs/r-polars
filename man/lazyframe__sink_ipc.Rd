@@ -136,10 +136,16 @@ Use \code{predicate_pushdown} instead.}
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 This allows streaming results that are larger than RAM to be written to disk.
-\verb{<lazyframe>$sink_*()} is a shortcut for \verb{<lazyframe>$lazy_sink_*()$collect()}.
+\itemize{
+\item \verb{<lazyframe>$lazy_sink_*()} don't write directly to the output file(s) until
+\code{\link[=lazyframe__collect]{$collect()}} is called.
+This is useful if you want to save a query to review or run later.
+\item \verb{<lazyframe>$sink_*()} write directly to the output file(s) (they are shortcuts for
+\verb{<lazyframe>$lazy_sink_*()$collect()}).
+}
 }
 \examples{
 tmpf <- tempfile(fileext = ".arrow")
 as_polars_lf(mtcars)$sink_ipc(tmpf)
-pl$scan_ipc(tmpf)$collect()
+pl$read_ipc(tmpf)
 }

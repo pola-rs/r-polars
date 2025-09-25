@@ -43,16 +43,21 @@
 #'   integer, then quotes will be used even if they aren`t strictly necessary.
 #'
 #' @examples
-#' # sink table 'mtcars' from mem to CSV
+#' # Sink table 'mtcars' from mem to CSV
 #' tmpf <- tempfile(fileext = ".csv")
 #' as_polars_lf(mtcars)$sink_csv(tmpf)
 #'
-#' # stream a query end-to-end
+#' # Save the query for streaming a query end-to-end
 #' tmpf2 <- tempfile(fileext = ".csv")
-#' pl$scan_csv(tmpf)$select(pl$col("cyl") * 2)$sink_csv(tmpf2)
+#' lf <- pl$scan_csv(tmpf)$select(pl$col("cyl") * 2)$lazy_sink_csv(tmpf2)
+#' lf$explain() |>
+#'   cat()
 #'
-#' # load parquet directly into a DataFrame / memory
-#' pl$scan_csv(tmpf2)$collect()
+#' # Execute the query and write to disk
+#' lf$collect()
+#'
+#' # Load CSV directly into a DataFrame / memory
+#' pl$read_csv(tmpf2)
 lazyframe__sink_csv <- function(
   path,
   ...,

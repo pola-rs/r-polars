@@ -6,7 +6,12 @@
 #' `r lifecycle::badge("experimental")`
 #'
 #' This allows streaming results that are larger than RAM to be written to disk.
-#' `<lazyframe>$sink_*()` is a shortcut for `<lazyframe>$lazy_sink_*()$collect()`.
+#'
+#' - `<lazyframe>$lazy_sink_*()` don't write directly to the output file(s) until
+#'   [`$collect()`][lazyframe__collect()] is called.
+#'   This is useful if you want to save a query to review or run later.
+#' - `<lazyframe>$sink_*()` write directly to the output file(s) (they are shortcuts for
+#'   `<lazyframe>$lazy_sink_*()$collect()`).
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams lazyframe__collect
@@ -55,16 +60,21 @@
 #' - `<lazyframe>$lazy_sink_*()` returns a new [LazyFrame].
 #'
 #' @examples
-#' # sink table 'mtcars' from mem to parquet
+#' # Sink table 'mtcars' from mem to parquet
 #' tmpf <- tempfile()
 #' as_polars_lf(mtcars)$sink_parquet(tmpf)
 #'
-#' # stream a query end-to-end
+#' # Save the query for streaming a query end-to-end
 #' tmpf2 <- tempfile()
-#' pl$scan_parquet(tmpf)$select(pl$col("cyl") * 2)$sink_parquet(tmpf2)
+#' lf <- pl$scan_parquet(tmpf)$select(pl$col("cyl") * 2)$lazy_sink_parquet(tmpf2)
+#' lf$explain() |>
+#'   cat()
 #'
-#' # load parquet directly into a DataFrame / memory
-#' pl$scan_parquet(tmpf2)$collect()
+#' # Execute the query and write to disk
+#' lf$collect()
+#'
+#' # Load parquet directly into a DataFrame / memory
+#' pl$read_parquet(tmpf2)
 lazyframe__sink_parquet <- function(
   path,
   ...,

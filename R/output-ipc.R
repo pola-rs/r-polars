@@ -19,7 +19,7 @@
 #' @examples
 #' tmpf <- tempfile(fileext = ".arrow")
 #' as_polars_lf(mtcars)$sink_ipc(tmpf)
-#' pl$scan_ipc(tmpf)$collect()
+#' pl$read_ipc(tmpf)
 lazyframe__sink_ipc <- function(
   path,
   ...,
