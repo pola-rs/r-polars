@@ -59,12 +59,28 @@ Only use it if you cannot implement your logic otherwise.
 \verb{<lazyframe>$sink_batches()} is a shortcut for \verb{<lazyframe>$lazy_sink_batches()$collect()}.
 }
 \examples{
+lf <- as_polars_lf(mtcars)
+
+# Each batch is a Polars DataFrame
+lf$sink_batches(\(df) print(df), chunk_size = 10)
+
+# We can stop reading the batches by returning `TRUE`:
+lf$sort("cyl")$sink_batches(
+  \(df) {
+    print(df)
+
+    # We want to stop if this condition is respected:
+    max(df[["cyl"]])$to_r_vector() > 4
+  },
+  chunk_size = 10
+)
+
+
 # One usecase for this function is to export larger-than-RAM data to file
 # formats for which polars doesn't provide a writer out of the box.
 # The example below writes a LazyFrame by batches to a CSV file for the
 # sake of the example, but one could replace `write.csv()` by
 # `haven::write_dta()`, `saveRDS()`, or other functions.
-lf <- as_polars_lf(mtcars)
 
 output_dir <- withr::local_tempdir()
 output_dir_idx <- 1
