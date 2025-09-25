@@ -6,8 +6,10 @@
 #' `r lifecycle::badge("experimental")`
 #'
 #' This allows streaming results that are larger than RAM to be written to disk.
+#' `<lazyframe>$sink_*()` is a shortcut for `<lazyframe>$lazy_sink_*()$collect()`.
 #'
 #' @inheritParams rlang::args_dots_empty
+#' @inheritParams lazyframe__collect
 #' @param path A character. File path to which the file should be written.
 #' @param compression The compression method. Must be one of:
 #' * `"lz4"`: fast compression/decompression.
@@ -48,7 +50,9 @@
 #' * `"all"`: syncs the file contents and metadata.
 #' @param mkdir Recursively create all the directories in the path.
 #'
-#' @return `NULL` invisibly.
+#' @return
+#' - `<lazyframe>$sink_*()` returns `NULL` invisibly.
+#' - `<lazyframe>$lazy_sink_*()` returns a new [LazyFrame].
 #'
 #' @examples
 #' # sink table 'mtcars' from mem to parquet
@@ -62,6 +66,58 @@
 #' # load parquet directly into a DataFrame / memory
 #' pl$scan_parquet(tmpf2)$collect()
 lazyframe__sink_parquet <- function(
+  path,
+  ...,
+  compression = c("lz4", "uncompressed", "snappy", "gzip", "lzo", "brotli", "zstd"),
+  compression_level = NULL,
+  statistics = TRUE,
+  row_group_size = NULL,
+  data_page_size = NULL,
+  maintain_order = TRUE,
+  type_coercion = TRUE,
+  `_type_check` = TRUE,
+  predicate_pushdown = TRUE,
+  projection_pushdown = TRUE,
+  simplify_expression = TRUE,
+  slice_pushdown = TRUE,
+  no_optimization = FALSE,
+  storage_options = NULL,
+  retries = 2,
+  sync_on_close = c("none", "data", "all"),
+  mkdir = FALSE,
+  engine = c("auto", "in-memory", "streaming"),
+  collapse_joins = deprecated()
+) {
+  wrap({
+    check_dots_empty0(...)
+
+    self$lazy_sink_parquet(
+      path = path,
+      compression = compression,
+      compression_level = compression_level,
+      statistics = statistics,
+      row_group_size = row_group_size,
+      data_page_size = data_page_size,
+      maintain_order = maintain_order,
+      type_coercion = type_coercion,
+      `_type_check` = `_type_check`,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      no_optimization = no_optimization,
+      storage_options = storage_options,
+      retries = retries,
+      sync_on_close = sync_on_close,
+      mkdir = mkdir,
+      collapse_joins = collapse_joins
+    )$collect(engine = engine)
+  })
+  invisible(NULL)
+}
+
+#' @rdname lazyframe__sink_parquet
+lazyframe__lazy_sink_parquet <- function(
   path,
   ...,
   compression = c("lz4", "uncompressed", "snappy", "gzip", "lzo", "brotli", "zstd"),
@@ -126,7 +182,7 @@ lazyframe__sink_parquet <- function(
       abort("`statistics` must be TRUE, FALSE, 'full', or a call to `parquet_statistics()`.")
     }
 
-    lf <- lf$sink_parquet(
+    lf$sink_parquet(
       target = target,
       compression = compression,
       compression_level = compression_level,
@@ -142,11 +198,7 @@ lazyframe__sink_parquet <- function(
       storage_options = storage_options,
       retries = retries
     )
-
-    # TODO: support `engine`, `lazy` arguments
-    wrap(lf)$collect()
   })
-  invisible(NULL)
 }
 
 #' Write to Parquet file
@@ -216,6 +268,7 @@ dataframe__write_parquet <- function(
       storage_options = storage_options,
       retries = retries,
       mkdir = mkdir,
+      engine = "in-memory"
     )
   })
   invisible(NULL)

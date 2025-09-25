@@ -82,6 +82,77 @@ lazyframe__sink_csv <- function(
   retries = 2,
   sync_on_close = c("none", "data", "all"),
   mkdir = FALSE,
+  engine = c("auto", "in-memory", "streaming"),
+  collapse_joins = deprecated()
+) {
+  wrap({
+    check_dots_empty0(...)
+
+    self$lazy_sink_csv(
+      path = path,
+      include_bom = include_bom,
+      include_header = include_header,
+      separator = separator,
+      line_terminator = line_terminator,
+      quote_char = quote_char,
+      batch_size = batch_size,
+      datetime_format = datetime_format,
+      date_format = date_format,
+      time_format = time_format,
+      float_scientific = float_scientific,
+      float_precision = float_precision,
+      decimal_comma = decimal_comma,
+      null_value = null_value,
+      quote_style = quote_style,
+      maintain_order = maintain_order,
+      type_coercion = type_coercion,
+      `_type_check` = `_type_check`,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      no_optimization = no_optimization,
+      storage_options = storage_options,
+      retries = retries,
+      sync_on_close = sync_on_close,
+      mkdir = mkdir,
+      collapse_joins = collapse_joins
+    )$collect(engine = engine)
+  })
+  # TODO: support `optimizations` argument
+  invisible(NULL)
+}
+
+#' @rdname lazyframe__sink_csv
+lazyframe__lazy_sink_csv <- function(
+  path,
+  ...,
+  include_bom = FALSE,
+  include_header = TRUE,
+  separator = ",",
+  line_terminator = "\n",
+  quote_char = '"',
+  batch_size = 1024,
+  datetime_format = NULL,
+  date_format = NULL,
+  time_format = NULL,
+  float_scientific = NULL,
+  float_precision = NULL,
+  decimal_comma = FALSE,
+  null_value = "",
+  quote_style = c("necessary", "always", "never", "non_numeric"),
+  maintain_order = TRUE,
+  type_coercion = TRUE,
+  `_type_check` = TRUE,
+  predicate_pushdown = TRUE,
+  projection_pushdown = TRUE,
+  simplify_expression = TRUE,
+  slice_pushdown = TRUE,
+  no_optimization = FALSE,
+  storage_options = NULL,
+  retries = 2,
+  sync_on_close = c("none", "data", "all"),
+  mkdir = FALSE,
   collapse_joins = deprecated()
 ) {
   wrap({
@@ -111,7 +182,7 @@ lazyframe__sink_csv <- function(
       no_optimization = no_optimization
     )
 
-    lf <- lf$sink_csv(
+    lf$sink_csv(
       target = target,
       include_bom = include_bom,
       include_header = include_header,
@@ -133,11 +204,7 @@ lazyframe__sink_csv <- function(
       storage_options = storage_options,
       retries = retries
     )
-
-    # TODO: support `engine`, `lazy` arguments
-    wrap(lf)$collect()
   })
-  invisible(NULL)
 }
 
 #' Write to comma-separated values (CSV) file
@@ -176,7 +243,6 @@ dataframe__write_csv <- function(
   wrap({
     check_dots_empty0(...)
 
-    # TODO: Update like https://github.com/pola-rs/polars/pull/22582
     self$lazy()$sink_csv(
       path = file,
       include_bom = include_bom,
@@ -194,7 +260,8 @@ dataframe__write_csv <- function(
       null_value = null_value,
       quote_style = quote_style,
       storage_options = storage_options,
-      retries = retries
+      retries = retries,
+      engine = "in-memory"
     )
   })
   invisible(NULL)

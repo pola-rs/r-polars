@@ -7,7 +7,7 @@
       ! Evaluation failed in `$write_parquet()`.
       Caused by error:
       ! Evaluation failed in `$sink_parquet()`.
-      Caused by error in `wrap(lf)$collect()`:
+      Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Column(s) not found: unable to find column "foo"; valid columns: ["mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb"]
@@ -26,7 +26,7 @@
       ! Evaluation failed in `$write_parquet()`.
       Caused by error:
       ! Evaluation failed in `$sink_parquet()`.
-      Caused by error in `wrap(lf)$collect()`:
+      Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Column(s) not found: unable to find column ""; valid columns: ["mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb"]

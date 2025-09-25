@@ -52,10 +52,10 @@ The \code{"in-memory"} engine will be selected for most cases.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 This allows streaming results that are larger than RAM in certain cases.
+
 Note that this method is much slower than native sinks.
 Only use it if you cannot implement your logic otherwise.
-}
-\details{
+
 \verb{<lazyframe>$sink_batches()} is a shortcut for \verb{<lazyframe>$lazy_sink_batches()$collect()}.
 }
 \examples{

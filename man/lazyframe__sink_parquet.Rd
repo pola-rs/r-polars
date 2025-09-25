@@ -3,6 +3,7 @@
 \name{parquet_statistics}
 \alias{parquet_statistics}
 \alias{lazyframe__sink_parquet}
+\alias{lazyframe__lazy_sink_parquet}
 \title{Evaluate the query in streaming mode and write to a Parquet file}
 \usage{
 parquet_statistics(
@@ -14,6 +15,30 @@ parquet_statistics(
 )
 
 lazyframe__sink_parquet(
+  path,
+  ...,
+  compression = c("lz4", "uncompressed", "snappy", "gzip", "lzo", "brotli", "zstd"),
+  compression_level = NULL,
+  statistics = TRUE,
+  row_group_size = NULL,
+  data_page_size = NULL,
+  maintain_order = TRUE,
+  type_coercion = TRUE,
+  `_type_check` = TRUE,
+  predicate_pushdown = TRUE,
+  projection_pushdown = TRUE,
+  simplify_expression = TRUE,
+  slice_pushdown = TRUE,
+  no_optimization = FALSE,
+  storage_options = NULL,
+  retries = 2,
+  sync_on_close = c("none", "data", "all"),
+  mkdir = FALSE,
+  engine = c("auto", "in-memory", "streaming"),
+  collapse_joins = deprecated()
+)
+
+lazyframe__lazy_sink_parquet(
   path,
   ...,
   compression = c("lz4", "uncompressed", "snappy", "gzip", "lzo", "brotli", "zstd"),
@@ -133,16 +158,29 @@ information from environment variables.}
 
 \item{mkdir}{Recursively create all the directories in the path.}
 
+\item{engine}{The engine name to use for processing the query.
+One of the followings:
+\itemize{
+\item \code{"auto"} (default): Select the engine automatically.
+The \code{"in-memory"} engine will be selected for most cases.
+\item \code{"in-memory"}: Use the in-memory engine.
+\item \code{"streaming"}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Use the (new) streaming engine.
+}}
+
 \item{collapse_joins}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 Use \code{predicate_pushdown} instead.}
 }
 \value{
-\code{NULL} invisibly.
+\itemize{
+\item \verb{<lazyframe>$sink_*()} returns \code{NULL} invisibly.
+\item \verb{<lazyframe>$lazy_sink_*()} returns a new \link{LazyFrame}.
+}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 This allows streaming results that are larger than RAM to be written to disk.
+\verb{<lazyframe>$sink_*()} is a shortcut for \verb{<lazyframe>$lazy_sink_*()$collect()}.
 }
 \examples{
 # sink table 'mtcars' from mem to parquet
