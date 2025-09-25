@@ -188,8 +188,6 @@ Use \code{predicate_pushdown} instead.}
 \itemize{
 \item \verb{<lazyframe>$sink_*()} returns \code{NULL} invisibly.
 \item \verb{<lazyframe>$lazy_sink_*()} returns a new \link{LazyFrame}.
-If evaluating this \link{LazyFrame} (by \code{\link[=lazyframe__collect]{<lazyframe>$collect()}}),
-the query results will be written to the specified file(s).
 }
 }
 \description{
