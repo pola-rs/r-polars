@@ -51,7 +51,6 @@
 #'
 #' lf$sink_batches(
 #'   \(df) {
-#'      # `df` is one chunk of the original LazyFrame.
 #'      dest <- paste0(output_dir, "/file_", output_dir_idx, ".csv")
 #'      cat(sprintf("Writing %s rows to %s\n", nrow(df), dest))
 #'      write.csv(as.data.frame(df), dest)
