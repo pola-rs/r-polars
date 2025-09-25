@@ -35,12 +35,16 @@
 #'   chunk_size = 10
 #' )
 #'
-#'
 #' # One usecase for this function is to export larger-than-RAM data to file
 #' # formats for which polars doesn't provide a writer out of the box.
 #' # The example below writes a LazyFrame by batches to a CSV file for the
 #' # sake of the example, but one could replace `write.csv()` by
 #' # `haven::write_dta()`, `saveRDS()`, or other functions.
+#' #
+#' # Note that if `chunk_size` is missing, then Polars tries to compute it
+#' # automatically. However, depending on the characteristics of the data (for
+#' # instance very long string elements), this can lead to out-of-memory errors.
+#' # It is therefore recommended to set `chunk_size` manually.
 #'
 #' output_dir <- withr::local_tempdir()
 #' output_dir_idx <- 1
