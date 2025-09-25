@@ -1,8 +1,8 @@
-use polars::prelude::{DataType, DataTypeExpr, PlSmallStr, Schema};
-use savvy::{Result, savvy};
-
+use crate::expr::selector::PlRSelector;
 use crate::prelude::Wrap;
 use crate::{PlRDataType, PlRExpr, RPolarsErr, prelude::*};
+use polars::prelude::{DataTypeExpr, Schema};
+use savvy::{ListSexp, NumericScalar, Result, Sexp, savvy};
 
 #[savvy]
 #[repr(transparent)]
@@ -12,15 +12,15 @@ pub struct PlRDataTypeExpr {
 }
 
 impl From<DataTypeExpr> for PlRDataTypeExpr {
-    fn from(expr: DataTypeExpr) -> Result<Self> {
+    fn from(expr: DataTypeExpr) -> Self {
         PlRDataTypeExpr { inner: expr }
     }
 }
 
 #[savvy]
 impl PlRDataTypeExpr {
-    pub fn from_dtype(datatype: Wrap<PlRDataType>) -> Result<Self> {
-        DataTypeExpr::Literal(datatype.0).into()
+    pub fn from_dtype(datatype: &PlRDataType) -> Result<Self> {
+        Ok(DataTypeExpr::Literal(datatype.dt.clone()).into())
     }
 
     pub fn of_expr(expr: PlRExpr) -> Result<Self> {
@@ -31,33 +31,23 @@ impl PlRDataTypeExpr {
         Ok(DataTypeExpr::SelfDtype.into())
     }
 
-    // pub fn collect_dtype<'py>(
-    //     &self,
-    //     schema: Wrap<Schema>,
-    // ) -> Result<Sexp> {
-    //     let dtype = self
-    //         .clone()
-    //         .inner
-    //         .into_datatype(&schema.0.clone())
-    //         .map_err(RPolarsErr::from)?;
-    //     Wrap(dtype).into_pyobject(py)
-    // }
+    pub fn collect_dtype<'py>(&self, schema: ListSexp) -> Result<Sexp> {
+        let schema = <Wrap<Schema>>::try_from(schema)?.0;
+        let dtype = self
+            .clone()
+            .inner
+            .into_datatype(&schema)
+            .map_err(RPolarsErr::from)?;
 
-    // fn collect_schema(&mut self) -> Result<Sexp> {
-    //     let schema = self.ldf.collect_schema().map_err(RPolarsErr::from)?;
-    //     let mut out = OwnedListSexp::new(schema.len(), true)?;
-    //     for (i, (name, dtype)) in schema.iter().enumerate() {
-    //         let value: Sexp = PlRDataType::from(dtype.clone()).try_into()?;
-    //         let _ = out.set_name_and_value(i, name.as_str(), value);
-    //     }
-    //     Ok(out.into())
-    // }
+        let value: Sexp = PlRDataType::from(dtype.clone()).try_into()?;
+        Ok(value)
+    }
 
     pub fn inner_dtype(&self) -> Result<Self> {
         Ok(self.inner.clone().inner_dtype().into())
     }
 
-    pub fn equals(&self, other: &Self) -> Result<PlRExpr> {
+    pub fn equals(&self, other: &PlRDataTypeExpr) -> Result<PlRExpr> {
         Ok(self.inner.clone().equals(other.inner.clone()).into())
     }
 
@@ -65,11 +55,12 @@ impl PlRDataTypeExpr {
         Ok(self.inner.clone().display().into())
     }
 
-    pub fn matches(&self, selector: PySelector) -> Result<PlRExpr> {
-        let dtype_selector = parse_datatype_selector(selector)?;
+    pub fn matches(&self, selector: &PlRSelector) -> Result<PlRExpr> {
+        let dtype_selector = DataTypeSelector::try_from(selector)?;
         Ok(self.inner.clone().matches(dtype_selector).into())
     }
 
+    // TODO: support this
     // pub fn struct_with_fields(fields: Vec<(String, PlRDataTypeExpr)>) -> Result<Self> {
     //     let fields = fields
     //         .into_iter()
@@ -82,7 +73,8 @@ impl PlRDataTypeExpr {
         Ok(self.inner.clone().wrap_in_list().into())
     }
 
-    pub fn wrap_in_array(&self, width: usize) -> Result<Self> {
+    pub fn wrap_in_array(&self, width: NumericScalar) -> Result<Self> {
+        let width = <Wrap<usize>>::try_from(width)?.0;
         Ok(self.inner.clone().wrap_in_array(width).into())
     }
 
@@ -96,10 +88,12 @@ impl PlRDataTypeExpr {
 
     pub fn default_value(
         &self,
-        n: usize,
+        n: NumericScalar,
         numeric_to_one: bool,
-        num_list_values: usize,
+        num_list_values: NumericScalar,
     ) -> Result<PlRExpr> {
+        let n = <Wrap<usize>>::try_from(n)?.0;
+        let num_list_values = <Wrap<usize>>::try_from(num_list_values)?.0;
         Ok(self
             .inner
             .clone()
@@ -123,7 +117,8 @@ impl PlRDataTypeExpr {
         Ok(self.inner.clone().arr().shape().into())
     }
 
-    pub fn struct_field_dtype_by_index(&self, index: i64) -> Result<Self> {
+    pub fn struct_field_dtype_by_index(&self, index: NumericScalar) -> Result<Self> {
+        let index = <Wrap<i64>>::try_from(index)?.0;
         Ok(self
             .inner
             .clone()

@@ -123,6 +123,28 @@ SEXP savvy_PlRDataType_new_from_name__ffi(SEXP c_arg__name);
 SEXP savvy_PlRDataType_new_list__ffi(SEXP c_arg__inner);
 SEXP savvy_PlRDataType_new_struct__ffi(SEXP c_arg__fields);
 
+// methods and associated functions for PlRDataTypeExpr
+SEXP savvy_PlRDataTypeExpr_arr_inner_dtype__ffi(SEXP self__);
+SEXP savvy_PlRDataTypeExpr_arr_shape__ffi(SEXP self__);
+SEXP savvy_PlRDataTypeExpr_arr_width__ffi(SEXP self__);
+SEXP savvy_PlRDataTypeExpr_collect_dtype__ffi(SEXP self__, SEXP c_arg__schema);
+SEXP savvy_PlRDataTypeExpr_default_value__ffi(SEXP self__, SEXP c_arg__n, SEXP c_arg__numeric_to_one, SEXP c_arg__num_list_values);
+SEXP savvy_PlRDataTypeExpr_display__ffi(SEXP self__);
+SEXP savvy_PlRDataTypeExpr_equals__ffi(SEXP self__, SEXP c_arg__other);
+SEXP savvy_PlRDataTypeExpr_from_dtype__ffi(SEXP c_arg__datatype);
+SEXP savvy_PlRDataTypeExpr_inner_dtype__ffi(SEXP self__);
+SEXP savvy_PlRDataTypeExpr_list_inner_dtype__ffi(SEXP self__);
+SEXP savvy_PlRDataTypeExpr_matches__ffi(SEXP self__, SEXP c_arg__selector);
+SEXP savvy_PlRDataTypeExpr_of_expr__ffi(SEXP c_arg__expr);
+SEXP savvy_PlRDataTypeExpr_self_dtype__ffi(void);
+SEXP savvy_PlRDataTypeExpr_struct_field_dtype_by_index__ffi(SEXP self__, SEXP c_arg__index);
+SEXP savvy_PlRDataTypeExpr_struct_field_dtype_by_name__ffi(SEXP self__, SEXP c_arg__name);
+SEXP savvy_PlRDataTypeExpr_struct_field_names__ffi(SEXP self__);
+SEXP savvy_PlRDataTypeExpr_to_signed_integer__ffi(SEXP self__);
+SEXP savvy_PlRDataTypeExpr_to_unsigned_integer__ffi(SEXP self__);
+SEXP savvy_PlRDataTypeExpr_wrap_in_array__ffi(SEXP self__, SEXP c_arg__width);
+SEXP savvy_PlRDataTypeExpr_wrap_in_list__ffi(SEXP self__);
+
 // methods and associated functions for PlRExpr
 SEXP savvy_PlRExpr_abs__ffi(SEXP self__);
 SEXP savvy_PlRExpr_add__ffi(SEXP self__, SEXP c_arg__rhs);
