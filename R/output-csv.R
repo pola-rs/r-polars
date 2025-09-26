@@ -47,7 +47,7 @@
 #' tmpf <- tempfile(fileext = ".csv")
 #' as_polars_lf(mtcars)$sink_csv(tmpf)
 #'
-#' # Save the query for streaming a query end-to-end
+#' # Save a query for streaming end-to-end
 #' tmpf2 <- tempfile(fileext = ".csv")
 #' lf <- pl$scan_csv(tmpf)$select(pl$col("cyl") * 2)$lazy_sink_csv(tmpf2)
 #' lf$explain() |>
