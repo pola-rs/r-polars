@@ -207,7 +207,7 @@ This is useful if you want to save a query to review or run later.
 tmpf <- tempfile(fileext = ".csv")
 as_polars_lf(mtcars)$sink_csv(tmpf)
 
-# Save a query for streaming end-to-end
+# Create a query that can be run in streaming end-to-end
 tmpf2 <- tempfile(fileext = ".csv")
 lf <- pl$scan_csv(tmpf)$select(pl$col("cyl") * 2)$lazy_sink_csv(tmpf2)
 lf$explain() |>

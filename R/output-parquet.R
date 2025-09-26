@@ -64,7 +64,7 @@
 #' tmpf <- tempfile()
 #' as_polars_lf(mtcars)$sink_parquet(tmpf)
 #'
-#' # Save a query for streaming end-to-end
+#' # Create a query that can be run in streaming end-to-end
 #' tmpf2 <- tempfile()
 #' lf <- pl$scan_parquet(tmpf)$select(pl$col("cyl") * 2)$lazy_sink_parquet(tmpf2)
 #' lf$explain() |>
