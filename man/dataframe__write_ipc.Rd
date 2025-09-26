@@ -18,16 +18,12 @@ dataframe__write_ipc(
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{compression}{The compression method. Must be one of:
+\item{compression}{Determines the compression algorithm.
+Must be one of:
 \itemize{
-\item \code{"lz4"}: fast compression/decompression.
-\item \code{"uncompressed"}
-\item \code{"snappy"}: this guarantees that the parquet file will be compatible with
-older parquet readers.
-\item \code{"gzip"}
-\item \code{"lzo"}
-\item \code{"brotli"}
-\item \code{"zstd"}: good compression performance.
+\item \code{"uncompressed"} or \code{NULL}: Write an uncompressed Arrow file.
+\item \code{"lz4"}: Fast compression/decompression.
+\item \code{"zstd"} (default): Good compression performance.
 }}
 
 \item{compat_level}{Determines the compatibility level when exporting
@@ -63,9 +59,7 @@ information from environment variables.}
 \code{NULL} invisibly.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
-This allows streaming results that are larger than RAM to be written to disk.
+Write to Arrow IPC file.
 }
 \examples{
 tmpf <- tempfile()

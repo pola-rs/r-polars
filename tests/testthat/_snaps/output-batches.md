@@ -132,3 +132,25 @@
       │ 21.4 ┆ 4.0 ┆ 121.0 ┆ 109.0 ┆ … ┆ 1.0 ┆ 1.0 ┆ 4.0  ┆ 2.0  │
       └──────┴─────┴───────┴───────┴───┴─────┴─────┴──────┴──────┘
 
+# lazy_sink_batches works
+
+    Code
+      cat(lf$explain())
+    Output
+      SINK (callback)
+        DF ["mpg", "cyl", "disp", "hp", ...]; PROJECT */11 COLUMNS
+
+---
+
+    Code
+      lf$collect()
+    Output
+      Callback
+      Callback
+      Callback
+      Callback
+      shape: (0, 0)
+      ┌┐
+      ╞╡
+      └┘
+

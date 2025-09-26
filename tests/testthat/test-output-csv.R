@@ -5,6 +5,15 @@ test_that("sink_csv works", {
   expect_equal(pl$read_csv(temp_out), lf$collect())
 })
 
+test_that("lazy_sink_csv works", {
+  temp_out <- withr::local_tempfile()
+  lf <- as_polars_lf(mtcars)$lazy_sink_csv(temp_out)
+
+  expect_snapshot(lf$explain() |> cat())
+  expect_snapshot(lf$collect())
+  expect_equal(pl$read_csv(temp_out), as_polars_df(mtcars))
+})
+
 test_that("sink_csv: null_value works", {
   dat <- mtcars
   dat[c(1, 3, 9, 12), c(3, 4, 5)] <- NA

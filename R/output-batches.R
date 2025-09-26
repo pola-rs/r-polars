@@ -1,7 +1,9 @@
 #' Evaluate the query and call a user-defined function for every ready batch
 #'
+#' @description
 #' `r lifecycle::badge("experimental")`
 #' This allows streaming results that are larger than RAM in certain cases.
+#'
 #' Note that this method is much slower than native sinks.
 #' Only use it if you cannot implement your logic otherwise.
 #'
@@ -111,9 +113,10 @@ lazyframe__sink_batches <- function(
   engine = c("auto", "in-memory", "streaming")
 ) {
   wrap({
+    check_dots_empty0(...)
+
     self$lazy_sink_batches(
       lambda,
-      ...,
       chunk_size = chunk_size,
       maintain_order = maintain_order
     )$collect(
