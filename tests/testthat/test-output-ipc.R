@@ -17,6 +17,15 @@ patrick::with_parameters_test_that(
   compression = list("uncompressed", "zstd", "lz4", NULL)
 )
 
+test_that("lazy_sink_ipc works", {
+  temp_out <- withr::local_tempfile()
+  lf <- as_polars_lf(mtcars)$lazy_sink_ipc(temp_out)
+
+  expect_snapshot(lf$explain() |> cat())
+  expect_snapshot(lf$collect())
+  expect_equal(pl$read_ipc(temp_out), as_polars_df(mtcars))
+})
+
 test_that("sink_ipc: wrong compression", {
   lf <- as_polars_lf(iris)
   tmpf <- withr::local_tempfile()

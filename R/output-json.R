@@ -36,6 +36,49 @@ lazyframe__sink_ndjson <- function(
   retries = 2,
   sync_on_close = c("none", "data", "all"),
   mkdir = FALSE,
+  engine = c("auto", "in-memory", "streaming"),
+  collapse_joins = deprecated()
+) {
+  wrap({
+    check_dots_empty0(...)
+
+    self$lazy_sink_ndjson(
+      path = path,
+      maintain_order = maintain_order,
+      type_coercion = type_coercion,
+      `_type_check` = `_type_check`,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      no_optimization = no_optimization,
+      storage_options = storage_options,
+      retries = retries,
+      sync_on_close = sync_on_close,
+      mkdir = mkdir,
+      collapse_joins = collapse_joins
+    )$collect(engine = engine)
+  })
+  # TODO: support `optimizations` argument
+  invisible(NULL)
+}
+
+#' @rdname lazyframe__sink_ndjson
+lazyframe__lazy_sink_ndjson <- function(
+  path,
+  ...,
+  maintain_order = TRUE,
+  type_coercion = TRUE,
+  `_type_check` = TRUE,
+  predicate_pushdown = TRUE,
+  projection_pushdown = TRUE,
+  simplify_expression = TRUE,
+  slice_pushdown = TRUE,
+  no_optimization = FALSE,
+  storage_options = NULL,
+  retries = 2,
+  sync_on_close = c("none", "data", "all"),
+  mkdir = FALSE,
   collapse_joins = deprecated()
 ) {
   wrap({
@@ -59,7 +102,7 @@ lazyframe__sink_ndjson <- function(
       no_optimization = no_optimization
     )
 
-    lf <- lf$sink_json(
+    lf$sink_json(
       target = target,
       maintain_order = maintain_order,
       sync_on_close = sync_on_close,
@@ -67,11 +110,7 @@ lazyframe__sink_ndjson <- function(
       storage_options = storage_options,
       retries = retries
     )
-
-    # TODO: support `engine`, `lazy` arguments
-    wrap(lf)$collect()
   })
-  invisible(NULL)
 }
 
 #' Serialize to JSON representation
@@ -104,8 +143,7 @@ dataframe__write_json <- function(file) {
 #' jsonlite::stream_in(file(destination))
 dataframe__write_ndjson <- function(file) {
   wrap({
-    # TODO: Update like https://github.com/pola-rs/polars/pull/22582
-    self$lazy()$sink_ndjson(file)
+    self$lazy()$sink_ndjson(file, engine = "in-memory")
   })
   invisible(NULL)
 }

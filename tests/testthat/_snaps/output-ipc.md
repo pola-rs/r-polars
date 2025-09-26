@@ -1,3 +1,21 @@
+# lazy_sink_ipc works
+
+    Code
+      cat(lf$explain())
+    Output
+      SINK (file)
+        DF ["mpg", "cyl", "disp", "hp", ...]; PROJECT */11 COLUMNS
+
+---
+
+    Code
+      lf$collect()
+    Output
+      shape: (0, 0)
+      ┌┐
+      ╞╡
+      └┘
+
 # Test writing data to Arrow file "uncompressed" - 0
 
     Code
