@@ -128,19 +128,14 @@ writer_factory <- function(dir) {
   i <- 0
   function(df) {
     i <<- i + 1
+    cat(sprintf("Write \%s rows\n", nrow(df)))
     as.data.frame(df) |>
       write.csv(file.path(dir, sprintf("\%03d.csv", i)), row.names = FALSE)
   }
 }
 writer <- writer_factory(output_dir)
 
-lf$sink_batches(
-  \(df) {
-     cat(sprintf("Write \%s rows\n", nrow(df)))
-     writer(df)
-  },
-  chunk_size = 10
-)
+lf$sink_batches(writer, chunk_size = 10)
 
 list.files(output_dir)
 }
