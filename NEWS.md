@@ -13,7 +13,10 @@ This is an update that corresponds to Python Polars 1.34.0.
 
 ### New features
 
-- `<lazyframe>$sink_batches()` to apply a function to each reading batch.
+- `<lazyframe>$sink_batches()` to apply a function to each reading batch (#1557).
+- `<lazyframe>$lazy_sink_*` methods, variants of `<lazyframe>$sink_*` methods, that return a LazyFrame
+  instead of executing immediately (#1562).
+- `<lazyframe>$sink_*` methods gain the `engine` argument (#1562).
 
 ## polars 1.3.1
 
