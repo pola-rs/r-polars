@@ -86,56 +86,61 @@ lf$sort("cyl")$sink_batches(
 # instance very long string elements), this can lead to out-of-memory errors.
 # It is therefore recommended to set `chunk_size` manually.
 
-output_dir <- withr::local_tempdir()
-dir.create(output_dir)
-output_dir_idx <- 1
+withr::with_tempdir({
+  file_idx <- 1
 
-lf$sink_batches(
-  \(df) {
-     dest <- paste0(output_dir, "/file_", output_dir_idx, ".csv")
-     cat(sprintf("Writing \%s rows to \%s\n", nrow(df), dest))
-     write.csv(as.data.frame(df), dest)
-     output_dir_idx <<- output_dir_idx + 1
-  }
-)
+  lf$sink_batches(
+    \(df) {
+      dest <- paste0("file_", file_idx, ".csv")
+      cat(sprintf("Writing \%s rows to \%s\n", nrow(df), dest))
+      write.csv(as.data.frame(df), dest)
+      file_idx <<- file_idx + 1
+    }
+  )
 
-list.files(output_dir)
+  cat("\nFiles in the directory:\n")
+  cat(list.files("."))
+  cat("\n\n")
 
-pl$read_csv(output_dir)
+  pl$read_csv(".")
+})
 
 # The number of rows in each chunk can be adjusted with `chunk_size`.
-output_dir <- withr::local_tempdir()
-dir.create(output_dir)
-output_dir_idx <- 1
+withr::with_tempdir({
+  file_idx <- 1
 
-lf$sink_batches(
-  \(df) {
-     dest <- paste0(output_dir, "/file_", output_dir_idx, ".csv")
-     cat(sprintf("Writing \%s rows to \%s\n", nrow(df), dest))
-     write.csv(as.data.frame(df), dest)
-     output_dir_idx <<- output_dir_idx + 1
-  },
-  chunk_size = 10
-)
+  lf$sink_batches(
+    \(df) {
+      dest <- paste0("file_", file_idx, ".csv")
+      cat(sprintf("Writing \%s rows to \%s\n", nrow(df), dest))
+      write.csv(as.data.frame(df), dest)
+      file_idx <<- file_idx + 1
+    }
+  )
 
-list.files(output_dir)
+  cat("\nFiles in the directory:\n")
+  cat(list.files("."))
+})
 
-# To avoid manually creating paths and incrementing `output_dir_idx` in the
+# To avoid manually creating paths and incrementing `file_idx` in the
 # anonymous function, we can use function factories:
-output_dir <- withr::local_tempdir()
-dir.create(output_dir)
-writer_factory <- function(dir) {
-  i <- 0
-  function(df) {
-    i <<- i + 1
-    cat(sprintf("Write \%s rows\n", nrow(df)))
-    as.data.frame(df) |>
-      write.csv(file.path(dir, sprintf("\%03d.csv", i)), row.names = FALSE)
+withr::with_tempdir({
+  writer_factory <- function(dir) {
+    i <- 0
+    function(df) {
+      i <<- i + 1
+      dest <- file.path(dir, sprintf("\%03d.csv", i))
+      cat(sprintf("Writing \%s rows to \%s\n", nrow(df), dest))
+      as.data.frame(df) |>
+        write.csv(dest, row.names = FALSE)
+    }
   }
-}
-writer <- writer_factory(output_dir)
 
-lf$sink_batches(writer, chunk_size = 10)
+  writer <- writer_factory(".")
 
-list.files(output_dir)
+  lf$sink_batches(writer, chunk_size = 10)
+
+  cat("\nFiles in the directory:\n")
+  cat(list.files("."))
+})
 }
