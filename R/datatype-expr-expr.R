@@ -17,10 +17,6 @@ wrap.PlRDataTypeExpr <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_datatype_expr` <- x
 
-  lapply(names(polars_namespaces_expr), function(namespace) {
-    makeActiveBinding(namespace, function() polars_namespaces_expr[[namespace]](self), self)
-  })
-
   class(self) <- c("polars_datatype_expr", "polars_object")
   self
 }
