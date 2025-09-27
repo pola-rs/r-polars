@@ -14,7 +14,8 @@ classes <- c(
   "sql_context",
   # "S3",
   "expr",
-  "pl"
+  "pl",
+  "datatype_expr"
 )
 
 to_modify <- grep(
@@ -60,6 +61,8 @@ for (i in to_modify) {
     "pl"
   } else if (grepl("man/sql_context", i)) {
     "sql_context"
+  } else if (grepl("man/datatype_expr", i)) {
+    "datatype_expr"
   } else {
     "foobar"
   }
@@ -105,7 +108,8 @@ for (i in to_modify) {
       orig
     )
   } else if (
-    which_class %in% c("dataframe", "lazyframe", "groupby", "lazygroupby", "sql_context")
+    which_class %in%
+      c("dataframe", "lazyframe", "groupby", "lazygroupby", "sql_context", "datatype_expr")
   ) {
     replacement <- switch(
       which_class,
@@ -114,6 +118,7 @@ for (i in to_modify) {
       groupby = "GroupBy",
       lazygroupby = "LazyGroupBy",
       sql_context = "SQLContext",
+      datatype_expr = "DataTypeExpr",
       "unreachable"
     )
     new <- gsub(
