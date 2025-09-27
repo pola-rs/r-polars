@@ -119,3 +119,28 @@ test_that("shrink_dtype", {
     )
   )
 })
+
+test_that("reshape works", {
+  s <- as_polars_series(1:8)
+
+  expect_equal(
+    s$reshape(c(2, 4)),
+    as_polars_series(list(1:4, 5:8))$list$to_array(4)
+  )
+  expect_equal(
+    s$reshape(c(-1, 4)),
+    as_polars_series(list(1:4, 5:8))$list$to_array(4)
+  )
+  expect_equal(
+    s$reshape(c(2, -1)),
+    as_polars_series(list(1:4, 5:8))$list$to_array(4)
+  )
+  expect_equal(
+    s$reshape(c(2, 2, 2)),
+    as_polars_series(list(list(1:2, 3:4), list(5:6, 7:8)))$cast(pl$Array(pl$Int32, c(2, 2)))
+  )
+  expect_equal(
+    s$reshape(c(2, -1, 2)),
+    as_polars_series(list(list(1:2, 3:4), list(5:6, 7:8)))$cast(pl$Array(pl$Int32, c(2, 2)))
+  )
+})

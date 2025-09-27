@@ -7,7 +7,14 @@
 #'
 #' This allows streaming results that are larger than RAM to be written to disk.
 #'
+#' - `<lazyframe>$lazy_sink_*()` don't write directly to the output file(s) until
+#'   [`$collect()`][lazyframe__collect()] is called.
+#'   This is useful if you want to save a query to review or run later.
+#' - `<lazyframe>$sink_*()` write directly to the output file(s) (they are shortcuts for
+#'   `<lazyframe>$lazy_sink_*()$collect()`).
+#'
 #' @inheritParams rlang::args_dots_empty
+#' @inheritParams lazyframe__collect
 #' @param path A character. File path to which the file should be written.
 #' @param compression The compression method. Must be one of:
 #' * `"lz4"`: fast compression/decompression.
@@ -48,20 +55,79 @@
 #' * `"all"`: syncs the file contents and metadata.
 #' @param mkdir Recursively create all the directories in the path.
 #'
-#' @return `NULL` invisibly.
+#' @return
+#' - `<lazyframe>$sink_*()` returns `NULL` invisibly.
+#' - `<lazyframe>$lazy_sink_*()` returns a new [LazyFrame].
 #'
 #' @examples
-#' # sink table 'mtcars' from mem to parquet
+#' # Sink table 'mtcars' from mem to parquet
 #' tmpf <- tempfile()
 #' as_polars_lf(mtcars)$sink_parquet(tmpf)
 #'
-#' # stream a query end-to-end
+#' # Create a query that can be run in streaming end-to-end
 #' tmpf2 <- tempfile()
-#' pl$scan_parquet(tmpf)$select(pl$col("cyl") * 2)$sink_parquet(tmpf2)
+#' lf <- pl$scan_parquet(tmpf)$select(pl$col("cyl") * 2)$lazy_sink_parquet(tmpf2)
+#' lf$explain() |>
+#'   cat()
 #'
-#' # load parquet directly into a DataFrame / memory
-#' pl$scan_parquet(tmpf2)$collect()
+#' # Execute the query and write to disk
+#' lf$collect()
+#'
+#' # Load parquet directly into a DataFrame / memory
+#' pl$read_parquet(tmpf2)
 lazyframe__sink_parquet <- function(
+  path,
+  ...,
+  compression = c("lz4", "uncompressed", "snappy", "gzip", "lzo", "brotli", "zstd"),
+  compression_level = NULL,
+  statistics = TRUE,
+  row_group_size = NULL,
+  data_page_size = NULL,
+  maintain_order = TRUE,
+  type_coercion = TRUE,
+  `_type_check` = TRUE,
+  predicate_pushdown = TRUE,
+  projection_pushdown = TRUE,
+  simplify_expression = TRUE,
+  slice_pushdown = TRUE,
+  no_optimization = FALSE,
+  storage_options = NULL,
+  retries = 2,
+  sync_on_close = c("none", "data", "all"),
+  mkdir = FALSE,
+  engine = c("auto", "in-memory", "streaming"),
+  collapse_joins = deprecated()
+) {
+  wrap({
+    check_dots_empty0(...)
+
+    self$lazy_sink_parquet(
+      path = path,
+      compression = compression,
+      compression_level = compression_level,
+      statistics = statistics,
+      row_group_size = row_group_size,
+      data_page_size = data_page_size,
+      maintain_order = maintain_order,
+      type_coercion = type_coercion,
+      `_type_check` = `_type_check`,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      no_optimization = no_optimization,
+      storage_options = storage_options,
+      retries = retries,
+      sync_on_close = sync_on_close,
+      mkdir = mkdir,
+      collapse_joins = collapse_joins
+    )$collect(engine = engine)
+  })
+  invisible(NULL)
+}
+
+#' @rdname lazyframe__sink_parquet
+lazyframe__lazy_sink_parquet <- function(
   path,
   ...,
   compression = c("lz4", "uncompressed", "snappy", "gzip", "lzo", "brotli", "zstd"),
@@ -126,7 +192,7 @@ lazyframe__sink_parquet <- function(
       abort("`statistics` must be TRUE, FALSE, 'full', or a call to `parquet_statistics()`.")
     }
 
-    lf <- lf$sink_parquet(
+    lf$sink_parquet(
       target = target,
       compression = compression,
       compression_level = compression_level,
@@ -142,11 +208,7 @@ lazyframe__sink_parquet <- function(
       storage_options = storage_options,
       retries = retries
     )
-
-    # TODO: support `engine`, `lazy` arguments
-    wrap(lf)$collect()
   })
-  invisible(NULL)
 }
 
 #' Write to Parquet file
@@ -216,6 +278,7 @@ dataframe__write_parquet <- function(
       storage_options = storage_options,
       retries = retries,
       mkdir = mkdir,
+      engine = "in-memory"
     )
   })
   invisible(NULL)

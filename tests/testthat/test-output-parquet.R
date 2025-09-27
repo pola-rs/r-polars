@@ -11,6 +11,15 @@ test_that("sink_parquet(): basic usage", {
   expect_equal(pl$scan_parquet(tmpf)$collect(), df)
 })
 
+test_that("lazy_sink_parquet works", {
+  temp_out <- withr::local_tempfile()
+  lf <- as_polars_lf(mtcars)$lazy_sink_parquet(temp_out)
+
+  expect_snapshot(lf$explain() |> cat())
+  expect_snapshot(lf$collect())
+  expect_equal(pl$read_parquet(temp_out), as_polars_df(mtcars))
+})
+
 test_that("sink_parquet: argument 'statistics'", {
   lf <- as_polars_lf(mtcars)
 
