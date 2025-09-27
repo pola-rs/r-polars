@@ -1,5 +1,5 @@
 # The env for storing all datatype_expr-expr methods
-polars_datatype_expr_methods <- new.env(parent = emptyenv())
+polars_datatype_expr__methods <- new.env(parent = emptyenv())
 
 namespace_datatype_expr <- function(x) {
   self <- new.env(parent = emptyenv())
@@ -27,17 +27,15 @@ wrap.PlRDataTypeExpr <- function(x, ...) {
 
 #' Get whether the output DataType is matches a certain selector
 #'
-#' Null values are counted in the total.
-#'
-#' @inherit as_polars_expr return
-#'
 #' @examples
 #' df <- pl$DataFrame(a = 1:3)
 #' df$select(
 #'   a_is_string = pl$dtype_of("a")$matches(cs$string()),
 #'   a_is_integer = pl$dtype_of("a")$matches(cs$integer()),
 #' )
-datatype_expr_matches <- function(selector) {
-  self$`_datatype_expr`$matches() |>
-    wrap()
+datatype_expr__matches <- function(selector) {
+  wrap({
+    check_polars_selector(selector)
+    self$`_datatype_expr`$matches(selector$`_rselector`)
+  })
 }
