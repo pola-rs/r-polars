@@ -22,16 +22,89 @@
 #' - `<lazyframe>$lazy_sink_batches()` returns a new [LazyFrame].
 #' @examples
 #' lf <- as_polars_lf(mtcars)
+#'
+#' # Each batch is a Polars DataFrame
 #' lf$sink_batches(\(df) print(df), chunk_size = 10)
 #'
-#' # Early stopping by returning TRUE from the function
+#' # We can stop reading the batches by returning `TRUE`:
 #' lf$sort("cyl")$sink_batches(
 #'   \(df) {
 #'     print(df)
-#'     if (max(df[["cyl"]])$to_r_vector() > 4) TRUE else FALSE
+#'
+#'     # We want to stop if this condition is respected:
+#'     max(df[["cyl"]])$to_r_vector() > 4
 #'   },
 #'   chunk_size = 10
 #' )
+#'
+#' # One usecase for this function is to export larger-than-RAM data to file
+#' # formats for which polars doesn't provide a writer out of the box.
+#' # The example below writes a LazyFrame by batches to a CSV file for the
+#' # sake of the example, but one could replace `write.csv()` by
+#' # `haven::write_dta()`, `saveRDS()`, or other functions.
+#' #
+#' # Note that if `chunk_size` is missing, then Polars tries to compute it
+#' # automatically. However, depending on the characteristics of the data (for
+#' # instance very long string elements), this can lead to out-of-memory errors.
+#' # It is therefore recommended to set `chunk_size` manually.
+#'
+#' withr::with_tempdir({
+#'   file_idx <- 1
+#'
+#'   lf$sink_batches(
+#'     \(df) {
+#'       dest <- paste0("file_", file_idx, ".csv")
+#'       cat(sprintf("Writing %s rows to %s\n", nrow(df), dest))
+#'       write.csv(as.data.frame(df), dest)
+#'       file_idx <<- file_idx + 1
+#'     }
+#'   )
+#'
+#'   cat("\nFiles in the directory:\n")
+#'   cat(list.files("."))
+#'   cat("\n\n")
+#'
+#'   pl$read_csv(".")
+#' })
+#'
+#' # The number of rows in each chunk can be adjusted with `chunk_size`.
+#' withr::with_tempdir({
+#'   file_idx <- 1
+#'
+#'   lf$sink_batches(
+#'     \(df) {
+#'       dest <- paste0("file_", file_idx, ".csv")
+#'       cat(sprintf("Writing %s rows to %s\n", nrow(df), dest))
+#'       write.csv(as.data.frame(df), dest)
+#'       file_idx <<- file_idx + 1
+#'     }
+#'   )
+#'
+#'   cat("\nFiles in the directory:\n")
+#'   cat(list.files("."))
+#' })
+#'
+#' # To avoid manually creating paths and incrementing `file_idx` in the
+#' # anonymous function, we can use function factories:
+#' withr::with_tempdir({
+#'   writer_factory <- function(dir) {
+#'     i <- 0
+#'     function(df) {
+#'       i <<- i + 1
+#'       dest <- file.path(dir, sprintf("%03d.csv", i))
+#'       cat(sprintf("Writing %s rows to %s\n", nrow(df), dest))
+#'       as.data.frame(df) |>
+#'         write.csv(dest, row.names = FALSE)
+#'     }
+#'   }
+#'
+#'   writer <- writer_factory(".")
+#'
+#'   lf$sink_batches(writer, chunk_size = 10)
+#'
+#'   cat("\nFiles in the directory:\n")
+#'   cat(list.files("."))
+#' })
 lazyframe__sink_batches <- function(
   lambda,
   ...,
