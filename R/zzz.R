@@ -41,6 +41,7 @@ POLARS_STORE_ENVS <- list(
   "cs__" = cs,
   "pl_api_" = pl__api,
   "datatype__" = polars_datatype__methods,
+  "datatype_expr__" = polars_datatype_expr__methods,
   "namespace_expr_" = polars_namespaces_expr,
   "expr__" = polars_expr__methods,
   "expr_arr_" = polars_expr_arr_methods,
