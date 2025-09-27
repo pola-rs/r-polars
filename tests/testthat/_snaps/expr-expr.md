@@ -266,6 +266,18 @@
       Caused by error:
       ! Argument `dimensions` must be numeric, not logical
 
+---
+
+    Code
+      pl$DataFrame(a = 1:4)$select(pl$col("a")$reshape(c(2, -1)))
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: can only infer the first dimension
+
 # shuffle
 
     Code

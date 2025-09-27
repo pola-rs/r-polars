@@ -2178,7 +2178,7 @@ test_that("reshape", {
     )$schema,
     list(a = pl$Array(pl$Int32, 2))
   )
-  expect_snapshot(pl$DataFrame(a = 1:4)$select(pl$col("a")$reshape(c(-1, 2))), error = TRUE)
+  expect_snapshot(pl$DataFrame(a = 1:4)$select(pl$col("a")$reshape(c(2, -1))), error = TRUE)
 
   # One can specify more than 2 dimensions by using the Array type
   out <- pl$DataFrame(foo = 1:12)$select(
