@@ -905,7 +905,7 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
 
 `PlRDataTypeExpr_collect_dtype` <- function(self) {
   function(`schema`) {
-    .Call(savvy_PlRDataTypeExpr_collect_dtype__impl, `self`, `schema`)
+    .savvy_wrap_PlRDataType(.Call(savvy_PlRDataTypeExpr_collect_dtype__impl, `self`, `schema`))
   }
 }
 

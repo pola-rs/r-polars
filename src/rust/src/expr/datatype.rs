@@ -31,16 +31,14 @@ impl PlRDataTypeExpr {
         Ok(DataTypeExpr::SelfDtype.into())
     }
 
-    pub fn collect_dtype<'py>(&self, schema: ListSexp) -> Result<Sexp> {
+    pub fn collect_dtype(&self, schema: ListSexp) -> Result<PlRDataType> {
         let schema = <Wrap<Schema>>::try_from(schema)?.0;
-        let dtype = self
-            .clone()
+        self.clone()
             .inner
             .into_datatype(&schema)
-            .map_err(RPolarsErr::from)?;
-
-        let value: Sexp = PlRDataType::from(dtype.clone()).try_into()?;
-        Ok(value)
+            .map(Into::into)
+            .map_err(RPolarsErr::from)
+            .map_err(Into::into)
     }
 
     pub fn inner_dtype(&self) -> Result<Self> {
