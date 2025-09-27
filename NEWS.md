@@ -18,6 +18,11 @@ This is an update that corresponds to Python Polars 1.34.0.
   instead of executing immediately (#1562).
 - `<lazyframe>$sink_*` methods gain the `engine` argument (#1562).
 
+### Bug fixes
+
+- `<expr>$reshape()` does not allow `-1` in dimensions other than the first dimension
+  ([pola-rs/polars#24591](https://github.com/pola-rs/polars/pull/24591), #1564).
+
 ## polars 1.3.1
 
 This is an update that corresponds to Python Polars 1.33.1.

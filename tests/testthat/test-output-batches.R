@@ -1,10 +1,21 @@
 patrick::with_parameters_test_that(
   "sink_batches works",
   {
-    lf <- as_polars_lf(mtcars)
+    lf <- pl$LazyFrame(seq = 1:10)
 
     expect_snapshot(
-      lf$sink_batches(\(df) print(df), chunk_size = 10, maintain_order = TRUE, engine = engine)
+      lf$sink_batches(print, chunk_size = 3, maintain_order = TRUE, engine = engine)
+    )
+    expect_snapshot(
+      lf$sink_batches(
+        \(df) {
+          print(df)
+          max(df[["seq"]])$to_r_vector() > 4
+        },
+        chunk_size = 3,
+        maintain_order = TRUE,
+        engine = engine
+      )
     )
   },
   engine = c("streaming", "in-memory")

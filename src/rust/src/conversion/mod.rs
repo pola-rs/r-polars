@@ -816,7 +816,11 @@ pub(crate) fn parse_cloud_options(
     uri: &str,
     kv: Vec<(String, String)>,
 ) -> savvy::Result<CloudOptions> {
-    let out = CloudOptions::from_untyped_config(uri, kv).map_err(RPolarsErr::from)?;
+    let out = CloudOptions::from_untyped_config(
+        polars_utils::plpath::CloudScheme::from_uri(uri).as_ref(),
+        kv,
+    )
+    .map_err(RPolarsErr::from)?;
     Ok(out)
 }
 
