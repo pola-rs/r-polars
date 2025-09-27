@@ -2,7 +2,7 @@ use crate::expr::selector::PlRSelector;
 use crate::prelude::Wrap;
 use crate::{PlRDataType, PlRExpr, RPolarsErr, prelude::*};
 use polars::prelude::{DataTypeExpr, Schema};
-use savvy::{ListSexp, NumericScalar, Result, Sexp, savvy};
+use savvy::{ListSexp, NumericScalar, Result, savvy};
 
 #[savvy]
 #[repr(transparent)]
