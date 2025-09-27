@@ -25,8 +25,9 @@ wrap.PlRDataTypeExpr <- function(x, ...) {
   self
 }
 
-#' Get whether the output DataType is matches a certain selector
+#' Get whether the output DataType matches a certain selector
 #'
+#' @inherit pl__dtype_of return
 #' @examples
 #' df <- pl$DataFrame(a = 1:3)
 #' df$select(
