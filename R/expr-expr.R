@@ -1230,7 +1230,7 @@ expr__dot <- function(other) {
 #' df$select(pl$col("foo")$reshape(8))
 #' df$select(pl$col("foo")$reshape(c(2, 4)))
 #'
-#' # Using `-1` to the first dimension infer the other dimension
+#' # Using `-1` for the first dimension to infer the other dimension
 #' df$select(pl$col("foo")$reshape(c(-1, 4)))
 #' df$select(pl$col("foo")$reshape(c(-1, 2)))
 #'
