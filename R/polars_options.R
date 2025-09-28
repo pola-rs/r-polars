@@ -15,7 +15,7 @@
 #'   default value in parenthesis):
 #'
 #' * `compat_level` will affect
-#'    [`as_nanoarrow_array_stream(<series>)`][s3-as_nanoarrow_array_stream]'s
+#'    [`as_nanoarrow_array_stream(<series>)`][as_nanoarrow_array_stream.polars_series]'s
 #'   `polars_compat_level` argument and [`<lazyframe>$sink_ipc()`][lazyframe__sink_ipc]'s
 #'   `compat_level` argument. See the documentation of those functions for details.
 #' * for all `to_r_vector.*` options, see arguments of [to_r_vector()][series__to_r_vector].
