@@ -2,6 +2,7 @@ patrick::with_parameters_test_that(
   "options are validated by polars_options()",
   .cases = tibble::tribble(
     ~.test_name,
+    "polars.compat_level",
     "polars.df_knitr_print",
     "polars.to_r_vector.uint8",
     "polars.to_r_vector.int64",
@@ -113,6 +114,41 @@ patrick::with_parameters_test_that(
         expect_snapshot(as.list(df, as_series = FALSE), error = error)
         expect_snapshot(tibble::as_tibble(df), error = error)
       })
+    )
+  }
+)
+
+
+patrick::with_parameters_test_that(
+  "polars.compat_level option works",
+  level = list("newest", "oldest", 1, 0),
+  code = {
+    withr::local_options(list(polars.compat_level = level))
+    tmpf <- withr::local_tempfile(fileext = ".arrow")
+
+    expect_snapshot(pl$LazyFrame(x = 1:3)$lazy_sink_ipc(tmpf))
+    expect_snapshot(pl$LazyFrame(x = 1:3)$sink_ipc(tmpf))
+    expect_snapshot(pl$DataFrame(x = 1:3)$write_ipc(tmpf))
+
+    skip_if_not_installed("nanoarrow")
+
+    expect_snapshot(
+      as_polars_series(c("foo", "bar")) |>
+        nanoarrow::as_nanoarrow_array_stream() |>
+        nanoarrow::infer_nanoarrow_schema() |>
+        format()
+    )
+    expect_snapshot(
+      pl$DataFrame(chr = c("foo", "bar")) |>
+        nanoarrow::as_nanoarrow_array_stream() |>
+        nanoarrow::infer_nanoarrow_schema() |>
+        format()
+    )
+
+    skip_if_not_installed("arrow")
+    expect_snapshot(
+      pl$DataFrame(chr = c("foo", "bar")) |>
+        arrow::as_arrow_table()
     )
   }
 )

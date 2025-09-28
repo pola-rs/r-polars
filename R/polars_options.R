@@ -14,6 +14,9 @@
 #' @details The following options are available (in alphabetical order, with the
 #'   default value in parenthesis):
 #'
+#' * `compat_level` will affect [`as_nanoarrow_array_stream(<series>)`][s3-as_nanoarrow_array_stream]'s
+#'   `polars_compat_level` argument and [`<lazyframe>$sink_ipc()`][lazyframe__sink_ipc]'s
+#'   `compat_level` argument. See the documentation of those functions for details.
 #' * for all `to_r_vector.*` options, see arguments of [to_r_vector()][series__to_r_vector].
 #' * `df_knitr_print` (TODO: possible values??)
 #'
@@ -33,6 +36,7 @@
 #' )
 polars_options <- function() {
   out <- list(
+    compat_level = getOption("polars.compat_level", "newest"),
     df_knitr_print = getOption("polars.df_knitr_print", "auto"),
     to_r_vector.uint8 = getOption("polars.to_r_vector.uint8", "integer"),
     to_r_vector.int64 = getOption("polars.to_r_vector.int64", "double"),
@@ -45,6 +49,7 @@ polars_options <- function() {
     to_r_vector.non_existent = getOption("polars.to_r_vector.non_existent", "raise")
   )
 
+  arg_match_compat_level(out[["compat_level"]], arg_nm = "compat_level")
   # TODO: complete possible values
   arg_match0(out[["df_knitr_print"]], c("auto"), arg_nm = "df_knitr_print")
   arg_match0(out[["to_r_vector.uint8"]], c("integer", "raw"), arg_nm = "to_r_vector.uint8")
@@ -76,6 +81,7 @@ polars_options <- function() {
 polars_options_reset <- function() {
   options(
     list(
+      polars.compat_level = "newest",
       polars.df_knitr_print = "auto",
       polars.to_r_vector.uint8 = "integer",
       polars.to_r_vector.int64 = "double",
@@ -107,26 +113,32 @@ print.polars_options_list <- function(x, ...) {
   print_key_values("Options", unlist(x))
 }
 
-#' @param x Argument passed in calling function, e.g. `int64`.
-#' @param is_missing Is `x` missing in the calling function?
-#' @param default The default of `x` in the calling function
+#' @param arg Argument passed in calling function, e.g. `int64`.
+#' @param is_missing Is `arg` missing in the calling function?
+#' @param default The default of `arg` in the calling function
 #' @noRd
-use_option_if_missing <- function(x, is_missing, default, prefix = "polars.") {
-  nm <- deparse(substitute(x))
+use_option_if_missing <- function(
+  arg,
+  is_missing,
+  default,
+  option_name_prefix = "polars.",
+  option_basename = deparse(substitute(arg))
+) {
   if (is_missing) {
-    x <- getOption(paste0(prefix, nm), default)
-    if (!identical(x, default)) {
+    option_name <- sprintf("%s%s", option_name_prefix, option_basename)
+    new <- getOption(option_name, default)
+    if (!identical(new, default)) {
       inform(
         sprintf(
-          '`%s` is overridden by the option "%s" with %s',
-          nm,
-          paste0(prefix, nm),
-          obj_type_friendly(x)
+          '%s is overridden by the option "%s" with %s',
+          format_arg(deparse(substitute(arg))),
+          option_name,
+          obj_type_friendly(new)
         )
       )
     }
+    new
+  } else {
+    arg
   }
-  x
 }
-
-# TODO: add options and functions about global string cache

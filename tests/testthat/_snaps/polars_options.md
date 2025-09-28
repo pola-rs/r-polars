@@ -1,3 +1,11 @@
+# options are validated by polars_options() polars.compat_level
+
+    Code
+      print(polars_options())
+    Condition
+      Error in `polars_options()`:
+      ! `compat_level` must be one of "newest" or "oldest", not "foo".
+
 # options are validated by polars_options() polars.df_knitr_print
 
     Code
@@ -2598,4 +2606,208 @@
       1     1     1 1970-01-02 00'00.000000"        1       1 0.001 secs 1970-01-01 01:00:00 1970-01-01 00:00:00             2020-03-08 00:00:00            
       2     2     2 1970-01-03 00'00.000000"        2       2 0.002 secs 1970-01-01 01:00:00 1970-01-01 00:00:00             2020-03-08 01:00:00            
       3     3     3 1970-01-04 00'00.000000"        3       3 0.003 secs 1970-01-01 01:00:00 1970-01-01 00:00:00             NA                             
+
+# polars.compat_level option works level=newest
+
+    Code
+      pl$LazyFrame(x = 1:3)$lazy_sink_ipc(tmpf)
+    Output
+      <polars_lazy_frame>
+
+---
+
+    Code
+      pl$LazyFrame(x = 1:3)$sink_ipc(tmpf)
+
+---
+
+    Code
+      pl$DataFrame(x = 1:3)$write_ipc(tmpf)
+
+---
+
+    Code
+      format(nanoarrow::infer_nanoarrow_schema(nanoarrow::as_nanoarrow_array_stream(
+        as_polars_series(c("foo", "bar")))))
+    Output
+      [1] "<nanoarrow_schema string_view>"
+
+---
+
+    Code
+      format(nanoarrow::infer_nanoarrow_schema(nanoarrow::as_nanoarrow_array_stream(
+        pl$DataFrame(chr = c("foo", "bar")))))
+    Output
+      [1] "<nanoarrow_schema struct<chr: string_view>>"
+
+---
+
+    Code
+      arrow::as_arrow_table(pl$DataFrame(chr = c("foo", "bar")))
+    Output
+      Table
+      2 rows x 1 columns
+      $chr <string_view>
+
+# polars.compat_level option works level=oldest
+
+    Code
+      pl$LazyFrame(x = 1:3)$lazy_sink_ipc(tmpf)
+    Message
+      `compat_level` is overridden by the option "polars.compat_level" with the string "oldest"
+    Output
+      <polars_lazy_frame>
+
+---
+
+    Code
+      pl$LazyFrame(x = 1:3)$sink_ipc(tmpf)
+    Message
+      `compat_level` is overridden by the option "polars.compat_level" with the string "oldest"
+
+---
+
+    Code
+      pl$DataFrame(x = 1:3)$write_ipc(tmpf)
+    Message
+      `compat_level` is overridden by the option "polars.compat_level" with the string "oldest"
+
+---
+
+    Code
+      format(nanoarrow::infer_nanoarrow_schema(nanoarrow::as_nanoarrow_array_stream(
+        as_polars_series(c("foo", "bar")))))
+    Message
+      `polars_compat_level` is overridden by the option "polars.compat_level" with the string "oldest"
+    Output
+      [1] "<nanoarrow_schema large_string>"
+
+---
+
+    Code
+      format(nanoarrow::infer_nanoarrow_schema(nanoarrow::as_nanoarrow_array_stream(
+        pl$DataFrame(chr = c("foo", "bar")))))
+    Message
+      `polars_compat_level` is overridden by the option "polars.compat_level" with the string "oldest"
+    Output
+      [1] "<nanoarrow_schema struct<chr: large_string>>"
+
+---
+
+    Code
+      arrow::as_arrow_table(pl$DataFrame(chr = c("foo", "bar")))
+    Message
+      `polars_compat_level` is overridden by the option "polars.compat_level" with the string "oldest"
+    Output
+      Table
+      2 rows x 1 columns
+      $chr <large_string>
+
+# polars.compat_level option works level=1
+
+    Code
+      pl$LazyFrame(x = 1:3)$lazy_sink_ipc(tmpf)
+    Message
+      `compat_level` is overridden by the option "polars.compat_level" with the number 1
+    Output
+      <polars_lazy_frame>
+
+---
+
+    Code
+      pl$LazyFrame(x = 1:3)$sink_ipc(tmpf)
+    Message
+      `compat_level` is overridden by the option "polars.compat_level" with the number 1
+
+---
+
+    Code
+      pl$DataFrame(x = 1:3)$write_ipc(tmpf)
+    Message
+      `compat_level` is overridden by the option "polars.compat_level" with the number 1
+
+---
+
+    Code
+      format(nanoarrow::infer_nanoarrow_schema(nanoarrow::as_nanoarrow_array_stream(
+        as_polars_series(c("foo", "bar")))))
+    Message
+      `polars_compat_level` is overridden by the option "polars.compat_level" with the number 1
+    Output
+      [1] "<nanoarrow_schema string_view>"
+
+---
+
+    Code
+      format(nanoarrow::infer_nanoarrow_schema(nanoarrow::as_nanoarrow_array_stream(
+        pl$DataFrame(chr = c("foo", "bar")))))
+    Message
+      `polars_compat_level` is overridden by the option "polars.compat_level" with the number 1
+    Output
+      [1] "<nanoarrow_schema struct<chr: string_view>>"
+
+---
+
+    Code
+      arrow::as_arrow_table(pl$DataFrame(chr = c("foo", "bar")))
+    Message
+      `polars_compat_level` is overridden by the option "polars.compat_level" with the number 1
+    Output
+      Table
+      2 rows x 1 columns
+      $chr <string_view>
+
+# polars.compat_level option works level=0
+
+    Code
+      pl$LazyFrame(x = 1:3)$lazy_sink_ipc(tmpf)
+    Message
+      `compat_level` is overridden by the option "polars.compat_level" with the number 0
+    Output
+      <polars_lazy_frame>
+
+---
+
+    Code
+      pl$LazyFrame(x = 1:3)$sink_ipc(tmpf)
+    Message
+      `compat_level` is overridden by the option "polars.compat_level" with the number 0
+
+---
+
+    Code
+      pl$DataFrame(x = 1:3)$write_ipc(tmpf)
+    Message
+      `compat_level` is overridden by the option "polars.compat_level" with the number 0
+
+---
+
+    Code
+      format(nanoarrow::infer_nanoarrow_schema(nanoarrow::as_nanoarrow_array_stream(
+        as_polars_series(c("foo", "bar")))))
+    Message
+      `polars_compat_level` is overridden by the option "polars.compat_level" with the number 0
+    Output
+      [1] "<nanoarrow_schema large_string>"
+
+---
+
+    Code
+      format(nanoarrow::infer_nanoarrow_schema(nanoarrow::as_nanoarrow_array_stream(
+        pl$DataFrame(chr = c("foo", "bar")))))
+    Message
+      `polars_compat_level` is overridden by the option "polars.compat_level" with the number 0
+    Output
+      [1] "<nanoarrow_schema struct<chr: large_string>>"
+
+---
+
+    Code
+      arrow::as_arrow_table(pl$DataFrame(chr = c("foo", "bar")))
+    Message
+      `polars_compat_level` is overridden by the option "polars.compat_level" with the number 0
+    Output
+      Table
+      2 rows x 1 columns
+      $chr <large_string>
 
