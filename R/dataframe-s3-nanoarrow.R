@@ -8,6 +8,11 @@ as_nanoarrow_array_stream.polars_data_frame <- function(
   schema = NULL,
   polars_compat_level = c("newest", "oldest")
 ) {
+  # Allow override by option at the downstream function
+  if (missing(polars_compat_level)) {
+    polars_compat_level <- missing_arg()
+  }
+
   as_polars_series(x) |>
     as_nanoarrow_array_stream.polars_series(
       ...,

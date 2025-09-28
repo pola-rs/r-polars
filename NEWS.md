@@ -17,6 +17,9 @@ This is an update that corresponds to Python Polars 1.34.0.
 - `<lazyframe>$lazy_sink_*` methods, variants of `<lazyframe>$sink_*` methods, that return a LazyFrame
   instead of executing immediately (#1562).
 - `<lazyframe>$sink_*` methods gain the `engine` argument (#1562).
+- `compat_level` or `polars_compat_level` arguments, which specifies the compatibility level with Apache Arrow format,
+  can be overridden by the `polars.compat_level` option.
+  This can be useful especially when overriding the behavior of `nanoarrow::as_nanoarrow_array_stream()` used in external packages.
 
 ### Bug fixes
 
