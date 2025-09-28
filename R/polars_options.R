@@ -115,7 +115,7 @@ print.polars_options_list <- function(x, ...) {
 
 #' @param arg Argument passed in calling function, e.g. `int64`.
 #' @param is_missing Is `arg` missing in the calling function?
-#' @param default The default of `arg` in the calling function
+#' @param default The default of `arg` in the calling function.
 #' @noRd
 use_option_if_missing <- function(
   arg,
