@@ -30,7 +30,8 @@ value.
 The following options are available (in alphabetical order, with the
 default value in parenthesis):
 \itemize{
-\item \code{compat_level} will affect \code{\link[=s3-as_nanoarrow_array_stream]{as_nanoarrow_array_stream(<series>)}}'s
+\item \code{compat_level} will affect
+\code{\link[=s3-as_nanoarrow_array_stream]{as_nanoarrow_array_stream(<series>)}}'s
 \code{polars_compat_level} argument and \code{\link[=lazyframe__sink_ipc]{<lazyframe>$sink_ipc()}}'s
 \code{compat_level} argument. See the documentation of those functions for details.
 \item for all \verb{to_r_vector.*} options, see arguments of \link[=series__to_r_vector]{to_r_vector()}.
