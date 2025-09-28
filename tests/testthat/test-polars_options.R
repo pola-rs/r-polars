@@ -123,32 +123,33 @@ patrick::with_parameters_test_that(
   "polars.compat_level option works",
   level = list("newest", "oldest", 1, 0),
   code = {
-    withr::local_options(list(polars.compat_level = level))
-    tmpf <- withr::local_tempfile(fileext = ".arrow")
+    withr::with_options(list(polars.compat_level = level), {
+      tmpf <- withr::local_tempfile(fileext = ".arrow")
 
-    expect_snapshot(pl$LazyFrame(x = 1:3)$lazy_sink_ipc(tmpf))
-    expect_snapshot(pl$LazyFrame(x = 1:3)$sink_ipc(tmpf))
-    expect_snapshot(pl$DataFrame(x = 1:3)$write_ipc(tmpf))
+      expect_snapshot(pl$LazyFrame(x = 1:3)$lazy_sink_ipc(tmpf))
+      expect_snapshot(pl$LazyFrame(x = 1:3)$sink_ipc(tmpf))
+      expect_snapshot(pl$DataFrame(x = 1:3)$write_ipc(tmpf))
 
-    skip_if_not_installed("nanoarrow")
+      skip_if_not_installed("nanoarrow")
 
-    expect_snapshot(
-      as_polars_series(c("foo", "bar")) |>
-        nanoarrow::as_nanoarrow_array_stream() |>
-        nanoarrow::infer_nanoarrow_schema() |>
-        format()
-    )
-    expect_snapshot(
-      pl$DataFrame(chr = c("foo", "bar")) |>
-        nanoarrow::as_nanoarrow_array_stream() |>
-        nanoarrow::infer_nanoarrow_schema() |>
-        format()
-    )
+      expect_snapshot(
+        as_polars_series(c("foo", "bar")) |>
+          nanoarrow::as_nanoarrow_array_stream() |>
+          nanoarrow::infer_nanoarrow_schema() |>
+          format()
+      )
+      expect_snapshot(
+        pl$DataFrame(chr = c("foo", "bar")) |>
+          nanoarrow::as_nanoarrow_array_stream() |>
+          nanoarrow::infer_nanoarrow_schema() |>
+          format()
+      )
 
-    skip_if_not_installed("arrow")
-    expect_snapshot(
-      pl$DataFrame(chr = c("foo", "bar")) |>
-        arrow::as_arrow_table()
-    )
+      skip_if_not_installed("arrow")
+      expect_snapshot(
+        pl$DataFrame(chr = c("foo", "bar")) |>
+          arrow::as_arrow_table()
+      )
+    })
   }
 )
