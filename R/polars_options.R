@@ -117,22 +117,26 @@ print.polars_options_list <- function(x, ...) {
 #' @param arg Argument passed in calling function, e.g. `int64`.
 #' @param is_missing Is `arg` missing in the calling function?
 #' @param default The default of `arg` in the calling function.
+#' @param option_name_prefix Prefix of the option name. Default is `"polars."`.
+#' @param option_basename Basename of the option name. If `NULL` (default),
+#'   the name of `arg` is used.
 #' @noRd
 use_option_if_missing <- function(
   arg,
   is_missing,
   default,
   option_name_prefix = "polars.",
-  option_basename = deparse(substitute(arg))
+  option_basename = NULL
 ) {
   if (is_missing) {
-    option_name <- sprintf("%s%s", option_name_prefix, option_basename)
+    arg_name <- deparse(substitute(arg))
+    option_name <- sprintf("%s%s", option_name_prefix, option_basename %||% arg_name)
     new <- getOption(option_name, default)
     if (!identical(new, default)) {
       inform(
         sprintf(
           '%s is overridden by the option "%s" with %s',
-          format_arg(deparse(substitute(arg))),
+          format_arg(arg_name),
           option_name,
           obj_type_friendly(new)
         )
