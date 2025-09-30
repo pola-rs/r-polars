@@ -6,6 +6,9 @@
 \usage{
 datatype_expr__matches(selector)
 }
+\arguments{
+\item{selector}{A \link[=cs]{selector} presenting the data types to match.}
+}
 \value{
 A polars datatype expression. This is not the same as a \link[=polars_expr]{polars expression}.
 }
