@@ -5,9 +5,9 @@
 \alias{knit_print.polars_series}
 \title{knit print polars DataFrame}
 \usage{
-\method{knit_print}{polars_data_frame}(x, ...)
+knit_print.polars_data_frame(x, ...)
 
-\method{knit_print}{polars_series}(x, ...)
+knit_print.polars_series(x, ...)
 }
 \arguments{
 \item{x}{A polars object}

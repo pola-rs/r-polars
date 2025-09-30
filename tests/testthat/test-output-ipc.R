@@ -76,3 +76,39 @@ test_that("write_ipc: wrong compression", {
     "must be one of"
   )
 })
+
+patrick::with_parameters_test_that(
+  "Test writing data to Arrow IPC stream",
+  {
+    skip_if_not_installed("nanoarrow")
+
+    df <- pl$DataFrame(
+      int = 1:3,
+      chr = letters[1:3],
+      cat = factor(letters[1:3])
+    )
+    tmpf <- withr::local_tempfile()
+    expect_null(df$write_ipc_stream(tmpf, compression = compression, compat_level = compat_level))
+    
+    # Read back and verify
+    expect_equal(pl$read_ipc_stream(tmpf), df)
+    
+    # Update with new data
+    df$slice(1, 2)$write_ipc_stream(tmpf)
+    expect_equal(
+      pl$read_ipc_stream(tmpf),
+      df$slice(1, 2)
+    )
+  },
+  compression = list("uncompressed", "zstd", "lz4", NULL),
+  compat_level = list(0, 1, "oldest", "newest")
+)
+
+test_that("write_ipc_stream: wrong compression", {
+  df <- as_polars_df(iris)
+  tmpf <- withr::local_tempfile()
+  expect_error(
+    df$write_ipc_stream(tmpf, compression = "rar"),
+    "must be one of"
+  )
+})

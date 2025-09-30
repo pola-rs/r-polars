@@ -173,3 +173,44 @@ dataframe__write_ipc <- function(
   })
   invisible(NULL)
 }
+
+#' Write to Arrow IPC stream format.
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @inheritParams lazyframe__sink_ipc
+#' @inherit dataframe__write_parquet return
+#' @examplesIf requireNamespace("nanoarrow", quiet = TRUE)
+#' tmpf <- tempfile()
+#' as_polars_df(mtcars)$write_ipc_stream(tmpf)
+#' pl$read_ipc_stream(tmpf)
+dataframe__write_ipc_stream <- function(
+  path,
+  ...,
+  compression = c("zstd", "lz4", "uncompressed"),
+  compat_level = c("newest", "oldest")
+) {
+  wrap({
+    check_dots_empty0(...)
+
+    # Handle missing values with use_option_if_missing (similar to lazy_sink_ipc)
+    compat_level <- use_option_if_missing(
+      compat_level,
+      missing(compat_level),
+      "newest",
+      option_basename = "compat_level"
+    )
+
+    compression <- arg_match0(
+      compression %||% "uncompressed",
+      values = c("zstd", "lz4", "uncompressed")
+    )
+    compat_level <- arg_match_compat_level(compat_level)
+
+    self$`_df`$write_ipc_stream(
+      path = path,
+      compression = compression,
+      compat_level = compat_level
+    )
+  })
+  invisible(NULL)
+}

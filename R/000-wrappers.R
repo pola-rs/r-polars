@@ -688,6 +688,12 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRDataFrame_write_ipc_stream` <- function(self) {
+  function(`path`, `compression`, `compat_level`) {
+    invisible(.Call(savvy_PlRDataFrame_write_ipc_stream__impl, `self`, `path`, `compression`, `compat_level`))
+  }
+}
+
 `PlRDataFrame_write_json` <- function(self) {
   function(`path`) {
     invisible(.Call(savvy_PlRDataFrame_write_json__impl, `self`, `path`))
@@ -732,6 +738,7 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_polars__sealed")
   e$`unpivot` <- `PlRDataFrame_unpivot`(ptr)
   e$`width` <- `PlRDataFrame_width`(ptr)
   e$`with_row_index` <- `PlRDataFrame_with_row_index`(ptr)
+  e$`write_ipc_stream` <- `PlRDataFrame_write_ipc_stream`(ptr)
   e$`write_json` <- `PlRDataFrame_write_json`(ptr)
 
   class(e) <- c("PlRDataFrame", "savvy_polars__sealed")

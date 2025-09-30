@@ -6,14 +6,14 @@
 \alias{as_nanoarrow_array_stream.polars_series}
 \title{Create a nanoarrow_array_stream from a Polars object}
 \usage{
-\method{as_nanoarrow_array_stream}{polars_data_frame}(
+as_nanoarrow_array_stream.polars_data_frame(
   x,
   ...,
   schema = NULL,
   polars_compat_level = c("newest", "oldest")
 )
 
-\method{as_nanoarrow_array_stream}{polars_series}(
+as_nanoarrow_array_stream.polars_series(
   x,
   ...,
   schema = NULL,
