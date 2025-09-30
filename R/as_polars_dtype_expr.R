@@ -3,6 +3,11 @@ as_polars_dtype_expr <- function(x, ...) {
 }
 
 #' @export
+as_polars_dtype_expr.default <- function(x, ...) {
+  abort(sprintf("%s can't be converted to a polars datatype expression.", obj_type_friendly(x)))
+}
+
+#' @export
 as_polars_dtype_expr.polars_datatype_expr <- function(x, ...) {
   x
 }
@@ -11,12 +16,7 @@ as_polars_dtype_expr.polars_datatype_expr <- function(x, ...) {
 as_polars_dtype_expr.character <- function(x, ...) {
   if (!is_string(x)) {
     abort(
-      c(
-        format_error(sprintf(
-          "%s must be a single string.",
-          format_arg("x")
-        ))
-      )
+      "Non-single string character vectors can't be converted to a polars datatype expression."
     )
   }
   col(x) |>
