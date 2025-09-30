@@ -62,7 +62,7 @@ export DEBUG=true  # for debug builds, false for release builds
   - **ALWAYS** set timeout to 30+ minutes minimum
   - Tests run in parallel by default
   - Expect some failures in development environment
-- Single test file: `Rscript -e 'devtools::test(filter="filename")' ` -- takes 10-60 seconds per file
+- Single test file: `Rscript -e 'devtools::test(filter="filename")'` -- takes 10-60 seconds per file
 - Basic functionality test: `Rscript -e 'devtools::load_all(); library(polars); df <- pl$DataFrame(a=1:3, b=letters[1:3]); print(df)'`
 
 ## Validation Scenarios
