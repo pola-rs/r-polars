@@ -8,6 +8,13 @@ as_record_batch_reader.polars_series <- function(
 ) {
   try_fetch(
     {
+      polars_compat_level <- use_option_if_missing(
+        polars_compat_level,
+        missing(polars_compat_level),
+        "newest",
+        option_basename = "compat_level"
+      )
+
       polars_compat_level <- arg_match_compat_level(polars_compat_level)
 
       # This function is not exported from the arrow package

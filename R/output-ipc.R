@@ -43,6 +43,11 @@ lazyframe__sink_ipc <- function(
   wrap({
     check_dots_empty0(...)
 
+    # Allow override by option at the downstream function
+    if (missing(compat_level)) {
+      compat_level <- missing_arg()
+    }
+
     self$lazy_sink_ipc(
       path = path,
       compression = compression,
@@ -88,6 +93,13 @@ lazyframe__lazy_sink_ipc <- function(
 ) {
   wrap({
     check_dots_empty0(...)
+
+    compat_level <- use_option_if_missing(
+      compat_level,
+      missing(compat_level),
+      "newest",
+      option_basename = "compat_level"
+    )
 
     target <- arg_to_sink_target(path)
     compression <- arg_match0(
@@ -144,6 +156,11 @@ dataframe__write_ipc <- function(
 ) {
   wrap({
     check_dots_empty0(...)
+
+    # Allow override by option at the downstream function
+    if (missing(compat_level)) {
+      compat_level <- missing_arg()
+    }
 
     self$lazy()$sink_ipc(
       path = path,
