@@ -23,6 +23,8 @@ wrap.PlRDataTypeExpr <- function(x, ...) {
 
 #' Get whether the output DataType matches a certain selector
 #'
+#' `r lifecycle::badge("experimental")`
+#' Get whether the output DataType matches a certain selector
 #' @inherit pl__dtype_of return
 #' @param selector A [selector][cs] presenting the data types to match.
 #' @examples

@@ -10,9 +10,11 @@ datatype_expr__matches(selector)
 \item{selector}{A \link[=cs]{selector} presenting the data types to match.}
 }
 \value{
-A polars datatype expression. This is not the same as a \link[=polars_expr]{polars expression}.
+A polars datatype expression.
+This is not the same as a \link[=polars_expr]{polars expression}.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 Get whether the output DataType matches a certain selector
 }
 \examples{
