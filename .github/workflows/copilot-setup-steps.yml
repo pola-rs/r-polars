@@ -1,0 +1,71 @@
+name: Copilot Setup Steps
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+  R_KEEP_PKG_SOURCE: yes
+  NOT_CRAN: "true"
+
+jobs:
+  setup-environment:
+    runs-on: ubuntu-latest
+    name: Setup development environment for Copilot
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+          Ncpus: "2"
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: 3.x
+
+      - uses: quarto-dev/quarto-actions/setup@v2
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          needs: dev
+          cache: "always"
+
+      - name: Install Task
+        uses: go-task/setup-task@v1
+
+      - name: Set up Air
+        uses: posit-dev/setup-air@v1
+
+      - uses: rui314/setup-mold@v1
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "src/rust -> target"
+
+      - name: Install savvy-cli
+        run: curl --proto '=https' --tlsv1.2 -LsSf https://github.com/yutannihilation/savvy/releases/latest/download/savvy-cli-installer.sh | sh
+
+      - name: Verify setup
+        run: |
+          echo "R version:"
+          R --version
+          echo "Python version:"
+          python --version
+          echo "Quarto version:"
+          quarto --version
+          echo "Rust version:"
+          rustc --version
+          cargo --version
+          echo "Task version:"
+          task --version
+          echo "Air version:"
+          air --version
+          echo "savvy-cli version:"
+          savvy-cli --version
+          echo "Environment ready for r-polars development"
