@@ -5,7 +5,7 @@
 \alias{as_tibble.polars_lazy_frame}
 \title{Export the polars object as a tibble data frame}
 \usage{
-as_tibble.polars_data_frame(
+\method{as_tibble}{polars_data_frame}(
   x,
   ...,
   .name_repair = c("check_unique", "unique", "universal", "minimal", "unique_quiet",
@@ -20,7 +20,7 @@ as_tibble.polars_data_frame(
   non_existent = c("raise", "null")
 )
 
-as_tibble.polars_lazy_frame(
+\method{as_tibble}{polars_lazy_frame}(
   x,
   ...,
   .name_repair = c("check_unique", "unique", "universal", "minimal", "unique_quiet",
