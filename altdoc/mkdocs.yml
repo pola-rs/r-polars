@@ -699,6 +699,9 @@ nav:
         - cs__time: man/cs__time.md
         - cs__unsigned_integer: man/cs__unsigned_integer.md
         - cs: man/cs.md
+      DataType expressions:
+        - pl__dtype_of: man/pl__dtype_of.md
+        - datatype_expr__matches: man/datatype_expr__matches.md
       Functions:
         - concat: man/pl__concat.md
         - Expr: man/polars_expr.md

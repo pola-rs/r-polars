@@ -5,8 +5,9 @@
 #' `is_*` functions return `TRUE` of `FALSE` depending on the class of the object.
 #' `check_*` functions throw an informative error if the object is not the correct class.
 #' Suffixes are corresponding to the polars object classes:
-#' - `*_dtype`: For polars data types.
 #' - `*_df`: For [polars data frames][DataFrame].
+#' - `*_dtype`: For [polars data types][DataType].
+#' - `*_dtype_expr`:  `r lifecycle::badge("experimental")` For polars data type expressions.
 #' - `*_expr`: For [polars expressions][Expr].
 #' - `*_lf`: For [polars lazy frames][LazyFrame].
 #' - `*_partitioning_scheme`: For [polars partitioning schemes][polars_partitioning_scheme].
@@ -46,14 +47,20 @@ NULL
 
 #' @rdname check_polars
 #' @export
+is_polars_df <- function(x) {
+  inherits(x, "polars_data_frame")
+}
+
+#' @rdname check_polars
+#' @export
 is_polars_dtype <- function(x) {
   inherits(x, "polars_dtype")
 }
 
 #' @rdname check_polars
 #' @export
-is_polars_df <- function(x) {
-  inherits(x, "polars_data_frame")
+is_polars_dtype_expr <- function(x, ...) {
+  inherits(x, "polars_dtype_expr")
 }
 
 #' @rdname check_polars
@@ -103,6 +110,35 @@ is_list_of_polars_dtype <- function(x, n = NULL) {
 
 #' @rdname check_polars
 #' @export
+check_polars_df <- function(
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+) {
+  if (!missing(x)) {
+    if (is_polars_df(x)) {
+      return(invisible(NULL))
+    }
+    if (allow_null && is_null(x)) {
+      return(invisible(NULL))
+    }
+  }
+
+  stop_input_type(
+    x,
+    "a polars data frame",
+    ...,
+    allow_na = FALSE,
+    allow_null = allow_null,
+    arg = arg,
+    call = call
+  )
+}
+
+#' @rdname check_polars
+#' @export
 check_polars_dtype <- function(
   x,
   ...,
@@ -132,7 +168,7 @@ check_polars_dtype <- function(
 
 #' @rdname check_polars
 #' @export
-check_polars_df <- function(
+check_polars_dtype_expr <- function(
   x,
   ...,
   allow_null = FALSE,
@@ -140,7 +176,7 @@ check_polars_df <- function(
   call = caller_env()
 ) {
   if (!missing(x)) {
-    if (is_polars_df(x)) {
+    if (is_polars_dtype_expr(x)) {
       return(invisible(NULL))
     }
     if (allow_null && is_null(x)) {
@@ -150,7 +186,7 @@ check_polars_df <- function(
 
   stop_input_type(
     x,
-    "a polars data frame",
+    "a polars data type expression",
     ...,
     allow_na = FALSE,
     allow_null = allow_null,

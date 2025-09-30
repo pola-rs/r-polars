@@ -883,6 +883,165 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   cat('PlRDataType\n')
 }
 
+### wrapper functions for PlRDataTypeExpr
+
+`PlRDataTypeExpr_arr_inner_dtype` <- function(self) {
+  function() {
+    .savvy_wrap_PlRDataTypeExpr(.Call(savvy_PlRDataTypeExpr_arr_inner_dtype__impl, `self`))
+  }
+}
+
+`PlRDataTypeExpr_arr_shape` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRDataTypeExpr_arr_shape__impl, `self`))
+  }
+}
+
+`PlRDataTypeExpr_arr_width` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRDataTypeExpr_arr_width__impl, `self`))
+  }
+}
+
+`PlRDataTypeExpr_collect_dtype` <- function(self) {
+  function(`schema`) {
+    .savvy_wrap_PlRDataType(.Call(savvy_PlRDataTypeExpr_collect_dtype__impl, `self`, `schema`))
+  }
+}
+
+`PlRDataTypeExpr_default_value` <- function(self) {
+  function(`n`, `numeric_to_one`, `num_list_values`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRDataTypeExpr_default_value__impl, `self`, `n`, `numeric_to_one`, `num_list_values`))
+  }
+}
+
+`PlRDataTypeExpr_display` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRDataTypeExpr_display__impl, `self`))
+  }
+}
+
+`PlRDataTypeExpr_equals` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRDataTypeExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRDataTypeExpr_equals__impl, `self`, `other`))
+  }
+}
+
+`PlRDataTypeExpr_inner_dtype` <- function(self) {
+  function() {
+    .savvy_wrap_PlRDataTypeExpr(.Call(savvy_PlRDataTypeExpr_inner_dtype__impl, `self`))
+  }
+}
+
+`PlRDataTypeExpr_list_inner_dtype` <- function(self) {
+  function() {
+    .savvy_wrap_PlRDataTypeExpr(.Call(savvy_PlRDataTypeExpr_list_inner_dtype__impl, `self`))
+  }
+}
+
+`PlRDataTypeExpr_matches` <- function(self) {
+  function(`selector`) {
+    `selector` <- .savvy_extract_ptr(`selector`, "PlRSelector")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRDataTypeExpr_matches__impl, `self`, `selector`))
+  }
+}
+
+`PlRDataTypeExpr_struct_field_dtype_by_index` <- function(self) {
+  function(`index`) {
+    .savvy_wrap_PlRDataTypeExpr(.Call(savvy_PlRDataTypeExpr_struct_field_dtype_by_index__impl, `self`, `index`))
+  }
+}
+
+`PlRDataTypeExpr_struct_field_dtype_by_name` <- function(self) {
+  function(`name`) {
+    .savvy_wrap_PlRDataTypeExpr(.Call(savvy_PlRDataTypeExpr_struct_field_dtype_by_name__impl, `self`, `name`))
+  }
+}
+
+`PlRDataTypeExpr_struct_field_names` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRDataTypeExpr_struct_field_names__impl, `self`))
+  }
+}
+
+`PlRDataTypeExpr_to_signed_integer` <- function(self) {
+  function() {
+    .savvy_wrap_PlRDataTypeExpr(.Call(savvy_PlRDataTypeExpr_to_signed_integer__impl, `self`))
+  }
+}
+
+`PlRDataTypeExpr_to_unsigned_integer` <- function(self) {
+  function() {
+    .savvy_wrap_PlRDataTypeExpr(.Call(savvy_PlRDataTypeExpr_to_unsigned_integer__impl, `self`))
+  }
+}
+
+`PlRDataTypeExpr_wrap_in_array` <- function(self) {
+  function(`width`) {
+    .savvy_wrap_PlRDataTypeExpr(.Call(savvy_PlRDataTypeExpr_wrap_in_array__impl, `self`, `width`))
+  }
+}
+
+`PlRDataTypeExpr_wrap_in_list` <- function(self) {
+  function() {
+    .savvy_wrap_PlRDataTypeExpr(.Call(savvy_PlRDataTypeExpr_wrap_in_list__impl, `self`))
+  }
+}
+
+`.savvy_wrap_PlRDataTypeExpr` <- function(ptr) {
+  e <- new.env(parent = emptyenv())
+  e$.ptr <- ptr
+  e$`arr_inner_dtype` <- `PlRDataTypeExpr_arr_inner_dtype`(ptr)
+  e$`arr_shape` <- `PlRDataTypeExpr_arr_shape`(ptr)
+  e$`arr_width` <- `PlRDataTypeExpr_arr_width`(ptr)
+  e$`collect_dtype` <- `PlRDataTypeExpr_collect_dtype`(ptr)
+  e$`default_value` <- `PlRDataTypeExpr_default_value`(ptr)
+  e$`display` <- `PlRDataTypeExpr_display`(ptr)
+  e$`equals` <- `PlRDataTypeExpr_equals`(ptr)
+  e$`inner_dtype` <- `PlRDataTypeExpr_inner_dtype`(ptr)
+  e$`list_inner_dtype` <- `PlRDataTypeExpr_list_inner_dtype`(ptr)
+  e$`matches` <- `PlRDataTypeExpr_matches`(ptr)
+  e$`struct_field_dtype_by_index` <- `PlRDataTypeExpr_struct_field_dtype_by_index`(ptr)
+  e$`struct_field_dtype_by_name` <- `PlRDataTypeExpr_struct_field_dtype_by_name`(ptr)
+  e$`struct_field_names` <- `PlRDataTypeExpr_struct_field_names`(ptr)
+  e$`to_signed_integer` <- `PlRDataTypeExpr_to_signed_integer`(ptr)
+  e$`to_unsigned_integer` <- `PlRDataTypeExpr_to_unsigned_integer`(ptr)
+  e$`wrap_in_array` <- `PlRDataTypeExpr_wrap_in_array`(ptr)
+  e$`wrap_in_list` <- `PlRDataTypeExpr_wrap_in_list`(ptr)
+
+  class(e) <- c("PlRDataTypeExpr", "savvy_polars__sealed")
+  e
+}
+
+
+
+`PlRDataTypeExpr` <- new.env(parent = emptyenv())
+
+### associated functions for PlRDataTypeExpr
+
+`PlRDataTypeExpr`$`from_dtype` <- function(`datatype`) {
+  `datatype` <- .savvy_extract_ptr(`datatype`, "PlRDataType")
+  .savvy_wrap_PlRDataTypeExpr(.Call(savvy_PlRDataTypeExpr_from_dtype__impl, `datatype`))
+}
+
+`PlRDataTypeExpr`$`of_expr` <- function(`expr`) {
+  `expr` <- .savvy_extract_ptr(`expr`, "PlRExpr")
+  .savvy_wrap_PlRDataTypeExpr(.Call(savvy_PlRDataTypeExpr_of_expr__impl, `expr`))
+}
+
+`PlRDataTypeExpr`$`self_dtype` <- function() {
+  .savvy_wrap_PlRDataTypeExpr(.Call(savvy_PlRDataTypeExpr_self_dtype__impl))
+}
+
+
+class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
+
+#' @export
+`print.PlRDataTypeExpr__bundle` <- function(x, ...) {
+  cat('PlRDataTypeExpr\n')
+}
+
 ### wrapper functions for PlRExpr
 
 `PlRExpr_abs` <- function(self) {

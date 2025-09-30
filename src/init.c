@@ -604,6 +604,106 @@ SEXP savvy_PlRDataType_new_struct__impl(SEXP c_arg__fields) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataTypeExpr_arr_inner_dtype__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataTypeExpr_arr_inner_dtype__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_arr_shape__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataTypeExpr_arr_shape__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_arr_width__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataTypeExpr_arr_width__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_collect_dtype__impl(SEXP self__, SEXP c_arg__schema) {
+    SEXP res = savvy_PlRDataTypeExpr_collect_dtype__ffi(self__, c_arg__schema);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_default_value__impl(SEXP self__, SEXP c_arg__n, SEXP c_arg__numeric_to_one, SEXP c_arg__num_list_values) {
+    SEXP res = savvy_PlRDataTypeExpr_default_value__ffi(self__, c_arg__n, c_arg__numeric_to_one, c_arg__num_list_values);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_display__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataTypeExpr_display__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_equals__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRDataTypeExpr_equals__ffi(self__, c_arg__other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_from_dtype__impl(SEXP c_arg__datatype) {
+    SEXP res = savvy_PlRDataTypeExpr_from_dtype__ffi(c_arg__datatype);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_inner_dtype__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataTypeExpr_inner_dtype__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_list_inner_dtype__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataTypeExpr_list_inner_dtype__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_matches__impl(SEXP self__, SEXP c_arg__selector) {
+    SEXP res = savvy_PlRDataTypeExpr_matches__ffi(self__, c_arg__selector);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_of_expr__impl(SEXP c_arg__expr) {
+    SEXP res = savvy_PlRDataTypeExpr_of_expr__ffi(c_arg__expr);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_self_dtype__impl(void) {
+    SEXP res = savvy_PlRDataTypeExpr_self_dtype__ffi();
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_struct_field_dtype_by_index__impl(SEXP self__, SEXP c_arg__index) {
+    SEXP res = savvy_PlRDataTypeExpr_struct_field_dtype_by_index__ffi(self__, c_arg__index);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_struct_field_dtype_by_name__impl(SEXP self__, SEXP c_arg__name) {
+    SEXP res = savvy_PlRDataTypeExpr_struct_field_dtype_by_name__ffi(self__, c_arg__name);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_struct_field_names__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataTypeExpr_struct_field_names__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_to_signed_integer__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataTypeExpr_to_signed_integer__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_to_unsigned_integer__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataTypeExpr_to_unsigned_integer__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_wrap_in_array__impl(SEXP self__, SEXP c_arg__width) {
+    SEXP res = savvy_PlRDataTypeExpr_wrap_in_array__ffi(self__, c_arg__width);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataTypeExpr_wrap_in_list__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataTypeExpr_wrap_in_list__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_abs__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_abs__ffi(self__);
     return handle_result(res);
@@ -3375,6 +3475,26 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataType_new_from_name__impl", (DL_FUNC) &savvy_PlRDataType_new_from_name__impl, 1},
     {"savvy_PlRDataType_new_list__impl", (DL_FUNC) &savvy_PlRDataType_new_list__impl, 1},
     {"savvy_PlRDataType_new_struct__impl", (DL_FUNC) &savvy_PlRDataType_new_struct__impl, 1},
+    {"savvy_PlRDataTypeExpr_arr_inner_dtype__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_arr_inner_dtype__impl, 1},
+    {"savvy_PlRDataTypeExpr_arr_shape__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_arr_shape__impl, 1},
+    {"savvy_PlRDataTypeExpr_arr_width__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_arr_width__impl, 1},
+    {"savvy_PlRDataTypeExpr_collect_dtype__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_collect_dtype__impl, 2},
+    {"savvy_PlRDataTypeExpr_default_value__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_default_value__impl, 4},
+    {"savvy_PlRDataTypeExpr_display__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_display__impl, 1},
+    {"savvy_PlRDataTypeExpr_equals__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_equals__impl, 2},
+    {"savvy_PlRDataTypeExpr_from_dtype__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_from_dtype__impl, 1},
+    {"savvy_PlRDataTypeExpr_inner_dtype__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_inner_dtype__impl, 1},
+    {"savvy_PlRDataTypeExpr_list_inner_dtype__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_list_inner_dtype__impl, 1},
+    {"savvy_PlRDataTypeExpr_matches__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_matches__impl, 2},
+    {"savvy_PlRDataTypeExpr_of_expr__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_of_expr__impl, 1},
+    {"savvy_PlRDataTypeExpr_self_dtype__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_self_dtype__impl, 0},
+    {"savvy_PlRDataTypeExpr_struct_field_dtype_by_index__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_struct_field_dtype_by_index__impl, 2},
+    {"savvy_PlRDataTypeExpr_struct_field_dtype_by_name__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_struct_field_dtype_by_name__impl, 2},
+    {"savvy_PlRDataTypeExpr_struct_field_names__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_struct_field_names__impl, 1},
+    {"savvy_PlRDataTypeExpr_to_signed_integer__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_to_signed_integer__impl, 1},
+    {"savvy_PlRDataTypeExpr_to_unsigned_integer__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_to_unsigned_integer__impl, 1},
+    {"savvy_PlRDataTypeExpr_wrap_in_array__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_wrap_in_array__impl, 2},
+    {"savvy_PlRDataTypeExpr_wrap_in_list__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_wrap_in_list__impl, 1},
     {"savvy_PlRExpr_abs__impl", (DL_FUNC) &savvy_PlRExpr_abs__impl, 1},
     {"savvy_PlRExpr_add__impl", (DL_FUNC) &savvy_PlRExpr_add__impl, 2},
     {"savvy_PlRExpr_agg_groups__impl", (DL_FUNC) &savvy_PlRExpr_agg_groups__impl, 1},
