@@ -3,16 +3,18 @@
 \name{check_polars}
 \alias{check_polars}
 \alias{is_polars}
-\alias{is_polars_dtype}
 \alias{is_polars_df}
+\alias{is_polars_dtype}
+\alias{is_polars_dtype_expr}
 \alias{is_polars_expr}
 \alias{is_polars_lf}
 \alias{is_polars_selector}
 \alias{is_polars_series}
 \alias{is_polars_partitioning_scheme}
 \alias{is_list_of_polars_dtype}
-\alias{check_polars_dtype}
 \alias{check_polars_df}
+\alias{check_polars_dtype}
+\alias{check_polars_dtype_expr}
 \alias{check_polars_expr}
 \alias{check_polars_lf}
 \alias{check_polars_selector}
@@ -21,9 +23,11 @@
 \alias{check_list_of_polars_dtype}
 \title{Check if the object is a polars object}
 \usage{
+is_polars_df(x)
+
 is_polars_dtype(x)
 
-is_polars_df(x)
+is_polars_dtype_expr(x, ...)
 
 is_polars_expr(x, ...)
 
@@ -37,6 +41,14 @@ is_polars_partitioning_scheme(x)
 
 is_list_of_polars_dtype(x, n = NULL)
 
+check_polars_df(
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+)
+
 check_polars_dtype(
   x,
   ...,
@@ -45,7 +57,7 @@ check_polars_dtype(
   call = caller_env()
 )
 
-check_polars_df(
+check_polars_dtype_expr(
   x,
   ...,
   allow_null = FALSE,
@@ -131,8 +143,9 @@ Functions to check if the object is a polars object.
 \verb{check_*} functions throw an informative error if the object is not the correct class.
 Suffixes are corresponding to the polars object classes:
 \itemize{
-\item \verb{*_dtype}: For polars data types.
 \item \verb{*_df}: For \link[=DataFrame]{polars data frames}.
+\item \verb{*_dtype}: For \link[=DataType]{polars data types}.
+\item \verb{*_dtype_expr}:  \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} For polars data type expressions.
 \item \verb{*_expr}: For \link[=Expr]{polars expressions}.
 \item \verb{*_lf}: For \link[=LazyFrame]{polars lazy frames}.
 \item \verb{*_partitioning_scheme}: For \link[=polars_partitioning_scheme]{polars partitioning schemes}.

@@ -7,14 +7,17 @@
 #' @return A polars datatype expression.
 #'   This is not the same as a [polars expression][polars_expr].
 pl__dtype_of <- function(col_or_expr) {
-  wrap({
-    if (is_string(col_or_expr)) {
-      e <- pl$col(col_or_expr)
-    } else if (is_polars_expr(col_or_expr)) {
-      e <- col_or_expr
-    } else {
-      abort("`col_or_expr` must be a column name or a Polars expression.")
+  try_fetch(
+    as_polars_dtype_expr(col_or_expr),
+    error = function(e) {
+      abort(
+        sprintf(
+          "%s must be a column name or a polars expression, got: %s",
+          format_arg("col_or_expr"),
+          obj_type_friendly(col_or_expr)
+        ),
+        call = caller_env()
+      )
     }
-    `PlRDataTypeExpr`$`of_expr`(e$`_rexpr`)
-  })
+  )
 }
