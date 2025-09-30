@@ -1,7 +1,4 @@
-use crate::expr::selector::PlRSelector;
-use crate::prelude::Wrap;
-use crate::{PlRDataType, PlRExpr, RPolarsErr, prelude::*};
-use polars::prelude::{DataTypeExpr, Schema};
+use crate::{PlRDataType, PlRExpr, RPolarsErr, expr::selector::PlRSelector, prelude::*};
 use savvy::{ListSexp, NumericScalar, Result, savvy};
 
 #[savvy]
@@ -23,8 +20,8 @@ impl PlRDataTypeExpr {
         Ok(DataTypeExpr::Literal(datatype.dt.clone()).into())
     }
 
-    pub fn of_expr(expr: PlRExpr) -> Result<Self> {
-        Ok(DataTypeExpr::OfExpr(Box::new(expr.inner)).into())
+    pub fn of_expr(expr: &PlRExpr) -> Result<Self> {
+        Ok(DataTypeExpr::OfExpr(Box::new(expr.inner.clone())).into())
     }
 
     pub fn self_dtype() -> Result<Self> {
