@@ -26,6 +26,15 @@ test_that("sink_ndjson: path works", {
   expect_equal(pl$read_ndjson(tmpf), dat$collect())
 })
 
+test_that("lazy_sink_ndjson works", {
+  temp_out <- withr::local_tempfile()
+  lf <- as_polars_lf(mtcars)$lazy_sink_ndjson(temp_out)
+
+  expect_snapshot(lf$explain() |> cat())
+  expect_snapshot(lf$collect())
+  expect_equal(pl$read_ndjson(temp_out), as_polars_df(mtcars))
+})
+
 test_that("sink_ndjson returns the input data", {
   dat <- as_polars_lf(mtcars[1:5, 1:3])
   tmpf <- withr::local_tempfile()

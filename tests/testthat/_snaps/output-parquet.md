@@ -1,3 +1,21 @@
+# lazy_sink_parquet works
+
+    Code
+      cat(lf$explain())
+    Output
+      SINK (file)
+        DF ["mpg", "cyl", "disp", "hp", ...]; PROJECT */11 COLUMNS
+
+---
+
+    Code
+      lf$collect()
+    Output
+      shape: (0, 0)
+      ┌┐
+      ╞╡
+      └┘
+
 # write_parquet can create a hive partition
 
     Code
@@ -7,7 +25,7 @@
       ! Evaluation failed in `$write_parquet()`.
       Caused by error:
       ! Evaluation failed in `$sink_parquet()`.
-      Caused by error in `wrap(lf)$collect()`:
+      Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Column(s) not found: unable to find column "foo"; valid columns: ["mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb"]
@@ -26,7 +44,7 @@
       ! Evaluation failed in `$write_parquet()`.
       Caused by error:
       ! Evaluation failed in `$sink_parquet()`.
-      Caused by error in `wrap(lf)$collect()`:
+      Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Column(s) not found: unable to find column ""; valid columns: ["mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb"]

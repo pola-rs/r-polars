@@ -1,3 +1,21 @@
+# lazy_sink_csv works
+
+    Code
+      cat(lf$explain())
+    Output
+      SINK (file)
+        DF ["mpg", "cyl", "disp", "hp", ...]; PROJECT */11 COLUMNS
+
+---
+
+    Code
+      lf$collect()
+    Output
+      shape: (0, 0)
+      ┌┐
+      ╞╡
+      └┘
+
 # sink_csv: quote_style quote_style=necessary
 
     Code

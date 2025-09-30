@@ -1212,29 +1212,31 @@ expr__dot <- function(other) {
     wrap()
 }
 
-#' Reshape this Expr to a flat Series or a Series of Lists
+#' Reshape this Expr to a flat column or an Array column
 #'
 #' @param dimensions A integer vector of length of the dimension size.
-#' If `-1` is used in any of the dimensions, that dimension is inferred.
+#'   If `-1` is used as the value for the first dimension, that dimension is inferred.
+#'   Because the size of the Column may not be known in advance,
+#'   it is only possible to use -1 for the first dimension.
 #' @inherit as_polars_expr return
 #'
 #' @details
 #' If a single dimension is given, results in an expression of the original data
 #' type. If a multiple dimensions are given, results in an expression of data
-#' type List with shape equal to the dimensions.
+#' type Array with shape dimensions.
 #' @examples
-#' df <- pl$DataFrame(foo = 1:9)
+#' df <- pl$DataFrame(foo = 1:8)
 #'
-#' df$select(pl$col("foo")$reshape(9))
-#' df$select(pl$col("foo")$reshape(c(3, 3)))
+#' df$select(pl$col("foo")$reshape(8))
+#' df$select(pl$col("foo")$reshape(c(2, 4)))
 #'
-#' # Use `-1` to infer the other dimension
-#' df$select(pl$col("foo")$reshape(c(-1, 3)))
-#' df$select(pl$col("foo")$reshape(c(3, -1)))
+#' # Using `-1` for the first dimension to infer the other dimension
+#' df$select(pl$col("foo")$reshape(c(-1, 4)))
+#' df$select(pl$col("foo")$reshape(c(-1, 2)))
 #'
 #' # We can have more than 2 dimensions
-#' df <- pl$DataFrame(foo = 1:8)
 #' df$select(pl$col("foo")$reshape(c(2, 2, 2)))
+#' df$select(pl$col("foo")$reshape(c(-1, 2, 2)))
 expr__reshape <- function(dimensions) {
   self$`_rexpr`$reshape(dimensions) |>
     wrap()
