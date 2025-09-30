@@ -12,7 +12,7 @@ env:
   NOT_CRAN: "true"
 
 jobs:
-  setup-environment:
+  copilot-setup-steps:
     runs-on: ubuntu-latest
     name: Setup development environment for Copilot
     steps:
