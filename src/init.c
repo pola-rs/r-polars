@@ -514,6 +514,11 @@ SEXP savvy_PlRDataFrame_with_row_index__impl(SEXP self__, SEXP c_arg__name, SEXP
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataFrame_write_ipc_stream__impl(SEXP self__, SEXP c_arg__path, SEXP c_arg__compression, SEXP c_arg__compat_level) {
+    SEXP res = savvy_PlRDataFrame_write_ipc_stream__ffi(self__, c_arg__path, c_arg__compression, c_arg__compat_level);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRDataFrame_write_json__impl(SEXP self__, SEXP c_arg__path) {
     SEXP res = savvy_PlRDataFrame_write_json__ffi(self__, c_arg__path);
     return handle_result(res);
@@ -3457,6 +3462,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_unpivot__impl", (DL_FUNC) &savvy_PlRDataFrame_unpivot__impl, 5},
     {"savvy_PlRDataFrame_width__impl", (DL_FUNC) &savvy_PlRDataFrame_width__impl, 1},
     {"savvy_PlRDataFrame_with_row_index__impl", (DL_FUNC) &savvy_PlRDataFrame_with_row_index__impl, 3},
+    {"savvy_PlRDataFrame_write_ipc_stream__impl", (DL_FUNC) &savvy_PlRDataFrame_write_ipc_stream__impl, 4},
     {"savvy_PlRDataFrame_write_json__impl", (DL_FUNC) &savvy_PlRDataFrame_write_json__impl, 2},
     {"savvy_PlRDataType__get_datatype_fields__impl", (DL_FUNC) &savvy_PlRDataType__get_datatype_fields__impl, 1},
     {"savvy_PlRDataType__get_dtype_names__impl", (DL_FUNC) &savvy_PlRDataType__get_dtype_names__impl, 1},

@@ -2627,6 +2627,11 @@
 ---
 
     Code
+      pl$DataFrame(x = 1:3)$write_ipc_stream(tmpf)
+
+---
+
+    Code
       format(nanoarrow::infer_nanoarrow_schema(nanoarrow::as_nanoarrow_array_stream(
         as_polars_series(c("foo", "bar")))))
     Output
@@ -2669,6 +2674,13 @@
 
     Code
       pl$DataFrame(x = 1:3)$write_ipc(tmpf)
+    Message
+      `compat_level` is overridden by the option "polars.compat_level" with the string "oldest"
+
+---
+
+    Code
+      pl$DataFrame(x = 1:3)$write_ipc_stream(tmpf)
     Message
       `compat_level` is overridden by the option "polars.compat_level" with the string "oldest"
 
@@ -2729,6 +2741,13 @@
 ---
 
     Code
+      pl$DataFrame(x = 1:3)$write_ipc_stream(tmpf)
+    Message
+      `compat_level` is overridden by the option "polars.compat_level" with the number 1
+
+---
+
+    Code
       format(nanoarrow::infer_nanoarrow_schema(nanoarrow::as_nanoarrow_array_stream(
         as_polars_series(c("foo", "bar")))))
     Message
@@ -2777,6 +2796,13 @@
 
     Code
       pl$DataFrame(x = 1:3)$write_ipc(tmpf)
+    Message
+      `compat_level` is overridden by the option "polars.compat_level" with the number 0
+
+---
+
+    Code
+      pl$DataFrame(x = 1:3)$write_ipc_stream(tmpf)
     Message
       `compat_level` is overridden by the option "polars.compat_level" with the number 0
 

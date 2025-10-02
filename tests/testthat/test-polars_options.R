@@ -129,6 +129,7 @@ patrick::with_parameters_test_that(
       expect_snapshot(pl$LazyFrame(x = 1:3)$lazy_sink_ipc(tmpf))
       expect_snapshot(pl$LazyFrame(x = 1:3)$sink_ipc(tmpf))
       expect_snapshot(pl$DataFrame(x = 1:3)$write_ipc(tmpf))
+      expect_snapshot(pl$DataFrame(x = 1:3)$write_ipc_stream(tmpf))
 
       skip_if_not_installed("nanoarrow")
 

@@ -76,3 +76,37 @@ test_that("write_ipc: wrong compression", {
     "must be one of"
   )
 })
+
+patrick::with_parameters_test_that(
+  "Test writing data to Arrow stream {rlang::quo_text(compression)} - {compat_level}",
+  .cases = {
+    skip_if_not_installed("arrow")
+
+    expand.grid(
+      compression = list("uncompressed", "zstd", "lz4", NULL),
+      compat_level = list(0, 1, "oldest", "newest")
+    ) |>
+      tibble::as_tibble()
+  },
+  code = {
+    df <- pl$DataFrame(
+      int = 1:3,
+      chr = letters[1:3],
+      cat = factor(letters[1:3]),
+    )
+    tmpf <- withr::local_tempfile()
+    expect_null(df$write_ipc_stream(tmpf, compression = compression, compat_level = compat_level))
+    expect_snapshot(
+      arrow::read_ipc_stream(tmpf, as_data_frame = FALSE)$schema
+    )
+    expect_equal(pl$read_ipc_stream(tmpf), df)
+
+    # update with new data
+    skip_on_os("windows") # Windows has file locking issues
+    df$slice(5, 5)$write_ipc_stream(tmpf)
+    expect_equal(
+      pl$read_ipc_stream(tmpf),
+      df$slice(5, 5)
+    )
+  }
+)

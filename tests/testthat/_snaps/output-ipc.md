@@ -176,3 +176,163 @@
       chr: string_view
       cat: dictionary<values=string_view, indices=uint32>
 
+# Test writing data to Arrow stream "uncompressed" - 0
+
+    Code
+      arrow::read_ipc_stream(tmpf, as_data_frame = FALSE)$schema
+    Output
+      Schema
+      int: int32
+      chr: large_string
+      cat: dictionary<values=large_string, indices=uint32>
+
+# Test writing data to Arrow stream "zstd" - 0
+
+    Code
+      arrow::read_ipc_stream(tmpf, as_data_frame = FALSE)$schema
+    Output
+      Schema
+      int: int32
+      chr: large_string
+      cat: dictionary<values=large_string, indices=uint32>
+
+# Test writing data to Arrow stream "lz4" - 0
+
+    Code
+      arrow::read_ipc_stream(tmpf, as_data_frame = FALSE)$schema
+    Output
+      Schema
+      int: int32
+      chr: large_string
+      cat: dictionary<values=large_string, indices=uint32>
+
+# Test writing data to Arrow stream NULL - 0
+
+    Code
+      arrow::read_ipc_stream(tmpf, as_data_frame = FALSE)$schema
+    Output
+      Schema
+      int: int32
+      chr: large_string
+      cat: dictionary<values=large_string, indices=uint32>
+
+# Test writing data to Arrow stream "uncompressed" - 1
+
+    Code
+      arrow::read_ipc_stream(tmpf, as_data_frame = FALSE)$schema
+    Output
+      Schema
+      int: int32
+      chr: string_view
+      cat: dictionary<values=string_view, indices=uint32>
+
+# Test writing data to Arrow stream "zstd" - 1
+
+    Code
+      arrow::read_ipc_stream(tmpf, as_data_frame = FALSE)$schema
+    Output
+      Schema
+      int: int32
+      chr: string_view
+      cat: dictionary<values=string_view, indices=uint32>
+
+# Test writing data to Arrow stream "lz4" - 1
+
+    Code
+      arrow::read_ipc_stream(tmpf, as_data_frame = FALSE)$schema
+    Output
+      Schema
+      int: int32
+      chr: string_view
+      cat: dictionary<values=string_view, indices=uint32>
+
+# Test writing data to Arrow stream NULL - 1
+
+    Code
+      arrow::read_ipc_stream(tmpf, as_data_frame = FALSE)$schema
+    Output
+      Schema
+      int: int32
+      chr: string_view
+      cat: dictionary<values=string_view, indices=uint32>
+
+# Test writing data to Arrow stream "uncompressed" - oldest
+
+    Code
+      arrow::read_ipc_stream(tmpf, as_data_frame = FALSE)$schema
+    Output
+      Schema
+      int: int32
+      chr: large_string
+      cat: dictionary<values=large_string, indices=uint32>
+
+# Test writing data to Arrow stream "zstd" - oldest
+
+    Code
+      arrow::read_ipc_stream(tmpf, as_data_frame = FALSE)$schema
+    Output
+      Schema
+      int: int32
+      chr: large_string
+      cat: dictionary<values=large_string, indices=uint32>
+
+# Test writing data to Arrow stream "lz4" - oldest
+
+    Code
+      arrow::read_ipc_stream(tmpf, as_data_frame = FALSE)$schema
+    Output
+      Schema
+      int: int32
+      chr: large_string
+      cat: dictionary<values=large_string, indices=uint32>
+
+# Test writing data to Arrow stream NULL - oldest
+
+    Code
+      arrow::read_ipc_stream(tmpf, as_data_frame = FALSE)$schema
+    Output
+      Schema
+      int: int32
+      chr: large_string
+      cat: dictionary<values=large_string, indices=uint32>
+
+# Test writing data to Arrow stream "uncompressed" - newest
+
+    Code
+      arrow::read_ipc_stream(tmpf, as_data_frame = FALSE)$schema
+    Output
+      Schema
+      int: int32
+      chr: string_view
+      cat: dictionary<values=string_view, indices=uint32>
+
+# Test writing data to Arrow stream "zstd" - newest
+
+    Code
+      arrow::read_ipc_stream(tmpf, as_data_frame = FALSE)$schema
+    Output
+      Schema
+      int: int32
+      chr: string_view
+      cat: dictionary<values=string_view, indices=uint32>
+
+# Test writing data to Arrow stream "lz4" - newest
+
+    Code
+      arrow::read_ipc_stream(tmpf, as_data_frame = FALSE)$schema
+    Output
+      Schema
+      int: int32
+      chr: string_view
+      cat: dictionary<values=string_view, indices=uint32>
+
+# Test writing data to Arrow stream NULL - newest
+
+    Code
+      arrow::read_ipc_stream(tmpf, as_data_frame = FALSE)$schema
+    Output
+      Schema
+      int: int32
+      chr: string_view
+      cat: dictionary<values=string_view, indices=uint32>
+
