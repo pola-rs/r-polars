@@ -812,7 +812,7 @@ expr_dt_total_days <- function(..., fractional = FALSE) {
 expr_dt_total_hours <- function(..., fractional = FALSE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$dt_total_hours()
+    self$`_rexpr`$dt_total_hours(fractional)
   })
 }
 
@@ -834,7 +834,7 @@ expr_dt_total_hours <- function(..., fractional = FALSE) {
 expr_dt_total_minutes <- function(..., fractional = FALSE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$dt_total_minutes()
+    self$`_rexpr`$dt_total_minutes(fractional)
   })
 }
 
@@ -854,7 +854,7 @@ expr_dt_total_minutes <- function(..., fractional = FALSE) {
 expr_dt_total_seconds <- function(..., fractional = FALSE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$dt_total_seconds()
+    self$`_rexpr`$dt_total_seconds(fractional)
   })
 }
 
@@ -874,7 +874,7 @@ expr_dt_total_seconds <- function(..., fractional = FALSE) {
 expr_dt_total_milliseconds <- function(..., fractional = FALSE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$dt_total_milliseconds()
+    self$`_rexpr`$dt_total_milliseconds(fractional)
   })
 }
 
@@ -894,7 +894,7 @@ expr_dt_total_milliseconds <- function(..., fractional = FALSE) {
 expr_dt_total_microseconds <- function(..., fractional = FALSE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$dt_total_microseconds()
+    self$`_rexpr`$dt_total_microseconds(fractional)
   })
 }
 
@@ -914,7 +914,7 @@ expr_dt_total_microseconds <- function(..., fractional = FALSE) {
 expr_dt_total_nanoseconds <- function(..., fractional = FALSE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$dt_total_nanoseconds()
+    self$`_rexpr`$dt_total_nanoseconds(fractional)
   })
 }
 
