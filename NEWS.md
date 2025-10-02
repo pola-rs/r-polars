@@ -20,6 +20,7 @@ This is an update that corresponds to Python Polars 1.34.0.
 - `compat_level` or `polars_compat_level` arguments, which specifies the compatibility level with Apache Arrow format,
   can be overridden by the `polars.compat_level` option.
   This can be useful especially when overriding the behavior of `nanoarrow::as_nanoarrow_array_stream()` used in external packages.
+- `<dataframe>$write_ipc_stream()` to write Arrow IPC stream format (`.arrows` file) (#1570).
 
 ### Bug fixes
 
