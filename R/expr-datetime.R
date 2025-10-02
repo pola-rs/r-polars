@@ -774,6 +774,8 @@ expr_dt_cast_time_unit <- function(time_unit) {
 #' Extract the days from a Duration type
 #'
 #' @inherit as_polars_expr return
+#' @inheritParams rlang::args_dots_empty
+#' @param fractional A bool to indicate whether to include the fractional component of the day.
 #' @examples
 #' df <- pl$select(
 #'   date = pl$datetime_range(
@@ -785,14 +787,17 @@ expr_dt_cast_time_unit <- function(time_unit) {
 #' df$with_columns(
 #'   diff_days = pl$col("date")$diff()$dt$total_days()
 #' )
-expr_dt_total_days <- function() {
-  self$`_rexpr`$dt_total_days() |>
-    wrap()
+expr_dt_total_days <- function(..., fractional = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$dt_total_days(fractional)
+  })
 }
 
 #' Extract the hours from a Duration type
 #'
 #' @inherit as_polars_expr return
+#' @inheritParams expr_dt_total_days
 #' @examples
 #' df <- pl$select(
 #'   date = pl$date_range(
@@ -804,14 +809,17 @@ expr_dt_total_days <- function() {
 #' df$with_columns(
 #'   diff_hours = pl$col("date")$diff()$dt$total_hours()
 #' )
-expr_dt_total_hours <- function() {
-  self$`_rexpr`$dt_total_hours() |>
-    wrap()
+expr_dt_total_hours <- function(..., fractional = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$dt_total_hours()
+  })
 }
 
 #' Extract the minutes from a Duration type
 #'
 #' @inherit as_polars_expr return
+#' @inheritParams expr_dt_total_days
 #' @examples
 #' df <- pl$select(
 #'   date = pl$date_range(
@@ -823,14 +831,17 @@ expr_dt_total_hours <- function() {
 #' df$with_columns(
 #'   diff_minutes = pl$col("date")$diff()$dt$total_minutes()
 #' )
-expr_dt_total_minutes <- function() {
-  self$`_rexpr`$dt_total_minutes() |>
-    wrap()
+expr_dt_total_minutes <- function(..., fractional = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$dt_total_minutes()
+  })
 }
 
 #' Extract the seconds from a Duration type
 #'
 #' @inherit as_polars_expr return
+#' @inheritParams expr_dt_total_days
 #' @examples
 #' df <- pl$select(date = pl$datetime_range(
 #'   start = as.POSIXct("2020-1-1", tz = "GMT"),
@@ -840,14 +851,17 @@ expr_dt_total_minutes <- function() {
 #' df$with_columns(
 #'   diff_sec = pl$col("date")$diff()$dt$total_seconds()
 #' )
-expr_dt_total_seconds <- function() {
-  self$`_rexpr`$dt_total_seconds() |>
-    wrap()
+expr_dt_total_seconds <- function(..., fractional = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$dt_total_seconds()
+  })
 }
 
 #' Extract the milliseconds from a Duration type
 #'
 #' @inherit as_polars_expr return
+#' @inheritParams expr_dt_total_days
 #' @examples
 #' df <- pl$select(date = pl$datetime_range(
 #'   start = as.POSIXct("2020-1-1", tz = "GMT"),
@@ -857,14 +871,17 @@ expr_dt_total_seconds <- function() {
 #' df$with_columns(
 #'   diff_millisec = pl$col("date")$diff()$dt$total_milliseconds()
 #' )
-expr_dt_total_milliseconds <- function() {
-  self$`_rexpr`$dt_total_milliseconds() |>
-    wrap()
+expr_dt_total_milliseconds <- function(..., fractional = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$dt_total_milliseconds()
+  })
 }
 
 #' Extract the microseconds from a Duration type
 #'
 #' @inherit as_polars_expr return
+#' @inheritParams expr_dt_total_days
 #' @examples
 #' df <- pl$select(date = pl$datetime_range(
 #'   start = as.POSIXct("2020-1-1", tz = "GMT"),
@@ -874,14 +891,17 @@ expr_dt_total_milliseconds <- function() {
 #' df$with_columns(
 #'   diff_microsec = pl$col("date")$diff()$dt$total_microseconds()
 #' )
-expr_dt_total_microseconds <- function() {
-  self$`_rexpr`$dt_total_microseconds() |>
-    wrap()
+expr_dt_total_microseconds <- function(..., fractional = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$dt_total_microseconds()
+  })
 }
 
 #' Extract the nanoseconds from a Duration type
 #'
 #' @inherit as_polars_expr return
+#' @inheritParams expr_dt_total_days
 #' @examples
 #' df <- pl$select(date = pl$datetime_range(
 #'   start = as.POSIXct("2020-1-1", tz = "GMT"),
@@ -891,9 +911,11 @@ expr_dt_total_microseconds <- function() {
 #' df$with_columns(
 #'   diff_nanosec = pl$col("date")$diff()$dt$total_nanoseconds()
 #' )
-expr_dt_total_nanoseconds <- function() {
-  self$`_rexpr`$dt_total_nanoseconds() |>
-    wrap()
+expr_dt_total_nanoseconds <- function(..., fractional = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$dt_total_nanoseconds()
+  })
 }
 
 # TODO: fix implementation (e.g. should support difftime input) and documentation

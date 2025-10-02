@@ -1775,44 +1775,44 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
 }
 
 `PlRExpr_dt_total_days` <- function(self) {
-  function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_days__impl, `self`))
+  function(`fractional`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_days__impl, `self`, `fractional`))
   }
 }
 
 `PlRExpr_dt_total_hours` <- function(self) {
-  function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_hours__impl, `self`))
+  function(`fractional`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_hours__impl, `self`, `fractional`))
   }
 }
 
 `PlRExpr_dt_total_microseconds` <- function(self) {
-  function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_microseconds__impl, `self`))
+  function(`fractional`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_microseconds__impl, `self`, `fractional`))
   }
 }
 
 `PlRExpr_dt_total_milliseconds` <- function(self) {
-  function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_milliseconds__impl, `self`))
+  function(`fractional`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_milliseconds__impl, `self`, `fractional`))
   }
 }
 
 `PlRExpr_dt_total_minutes` <- function(self) {
-  function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_minutes__impl, `self`))
+  function(`fractional`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_minutes__impl, `self`, `fractional`))
   }
 }
 
 `PlRExpr_dt_total_nanoseconds` <- function(self) {
-  function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_nanoseconds__impl, `self`))
+  function(`fractional`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_nanoseconds__impl, `self`, `fractional`))
   }
 }
 
 `PlRExpr_dt_total_seconds` <- function(self) {
-  function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_seconds__impl, `self`))
+  function(`fractional`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_seconds__impl, `self`, `fractional`))
   }
 }
 

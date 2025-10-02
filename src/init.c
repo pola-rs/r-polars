@@ -1294,38 +1294,38 @@ SEXP savvy_PlRExpr_dt_to_string__impl(SEXP self__, SEXP c_arg__format) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_dt_total_days__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_dt_total_days__ffi(self__);
+SEXP savvy_PlRExpr_dt_total_days__impl(SEXP self__, SEXP c_arg__fractional) {
+    SEXP res = savvy_PlRExpr_dt_total_days__ffi(self__, c_arg__fractional);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_dt_total_hours__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_dt_total_hours__ffi(self__);
+SEXP savvy_PlRExpr_dt_total_hours__impl(SEXP self__, SEXP c_arg__fractional) {
+    SEXP res = savvy_PlRExpr_dt_total_hours__ffi(self__, c_arg__fractional);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_dt_total_microseconds__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_dt_total_microseconds__ffi(self__);
+SEXP savvy_PlRExpr_dt_total_microseconds__impl(SEXP self__, SEXP c_arg__fractional) {
+    SEXP res = savvy_PlRExpr_dt_total_microseconds__ffi(self__, c_arg__fractional);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_dt_total_milliseconds__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_dt_total_milliseconds__ffi(self__);
+SEXP savvy_PlRExpr_dt_total_milliseconds__impl(SEXP self__, SEXP c_arg__fractional) {
+    SEXP res = savvy_PlRExpr_dt_total_milliseconds__ffi(self__, c_arg__fractional);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_dt_total_minutes__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_dt_total_minutes__ffi(self__);
+SEXP savvy_PlRExpr_dt_total_minutes__impl(SEXP self__, SEXP c_arg__fractional) {
+    SEXP res = savvy_PlRExpr_dt_total_minutes__ffi(self__, c_arg__fractional);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_dt_total_nanoseconds__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_dt_total_nanoseconds__ffi(self__);
+SEXP savvy_PlRExpr_dt_total_nanoseconds__impl(SEXP self__, SEXP c_arg__fractional) {
+    SEXP res = savvy_PlRExpr_dt_total_nanoseconds__ffi(self__, c_arg__fractional);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_dt_total_seconds__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_dt_total_seconds__ffi(self__);
+SEXP savvy_PlRExpr_dt_total_seconds__impl(SEXP self__, SEXP c_arg__fractional) {
+    SEXP res = savvy_PlRExpr_dt_total_seconds__ffi(self__, c_arg__fractional);
     return handle_result(res);
 }
 
@@ -3613,13 +3613,13 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_dt_time__impl", (DL_FUNC) &savvy_PlRExpr_dt_time__impl, 1},
     {"savvy_PlRExpr_dt_timestamp__impl", (DL_FUNC) &savvy_PlRExpr_dt_timestamp__impl, 2},
     {"savvy_PlRExpr_dt_to_string__impl", (DL_FUNC) &savvy_PlRExpr_dt_to_string__impl, 2},
-    {"savvy_PlRExpr_dt_total_days__impl", (DL_FUNC) &savvy_PlRExpr_dt_total_days__impl, 1},
-    {"savvy_PlRExpr_dt_total_hours__impl", (DL_FUNC) &savvy_PlRExpr_dt_total_hours__impl, 1},
-    {"savvy_PlRExpr_dt_total_microseconds__impl", (DL_FUNC) &savvy_PlRExpr_dt_total_microseconds__impl, 1},
-    {"savvy_PlRExpr_dt_total_milliseconds__impl", (DL_FUNC) &savvy_PlRExpr_dt_total_milliseconds__impl, 1},
-    {"savvy_PlRExpr_dt_total_minutes__impl", (DL_FUNC) &savvy_PlRExpr_dt_total_minutes__impl, 1},
-    {"savvy_PlRExpr_dt_total_nanoseconds__impl", (DL_FUNC) &savvy_PlRExpr_dt_total_nanoseconds__impl, 1},
-    {"savvy_PlRExpr_dt_total_seconds__impl", (DL_FUNC) &savvy_PlRExpr_dt_total_seconds__impl, 1},
+    {"savvy_PlRExpr_dt_total_days__impl", (DL_FUNC) &savvy_PlRExpr_dt_total_days__impl, 2},
+    {"savvy_PlRExpr_dt_total_hours__impl", (DL_FUNC) &savvy_PlRExpr_dt_total_hours__impl, 2},
+    {"savvy_PlRExpr_dt_total_microseconds__impl", (DL_FUNC) &savvy_PlRExpr_dt_total_microseconds__impl, 2},
+    {"savvy_PlRExpr_dt_total_milliseconds__impl", (DL_FUNC) &savvy_PlRExpr_dt_total_milliseconds__impl, 2},
+    {"savvy_PlRExpr_dt_total_minutes__impl", (DL_FUNC) &savvy_PlRExpr_dt_total_minutes__impl, 2},
+    {"savvy_PlRExpr_dt_total_nanoseconds__impl", (DL_FUNC) &savvy_PlRExpr_dt_total_nanoseconds__impl, 2},
+    {"savvy_PlRExpr_dt_total_seconds__impl", (DL_FUNC) &savvy_PlRExpr_dt_total_seconds__impl, 2},
     {"savvy_PlRExpr_dt_truncate__impl", (DL_FUNC) &savvy_PlRExpr_dt_truncate__impl, 2},
     {"savvy_PlRExpr_dt_week__impl", (DL_FUNC) &savvy_PlRExpr_dt_week__impl, 1},
     {"savvy_PlRExpr_dt_weekday__impl", (DL_FUNC) &savvy_PlRExpr_dt_weekday__impl, 1},

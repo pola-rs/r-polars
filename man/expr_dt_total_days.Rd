@@ -4,7 +4,12 @@
 \alias{expr_dt_total_days}
 \title{Extract the days from a Duration type}
 \usage{
-expr_dt_total_days()
+expr_dt_total_days(..., fractional = FALSE)
+}
+\arguments{
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{fractional}{A bool to indicate whether to include the fractional component of the day.}
 }
 \value{
 A polars \link{expression}
