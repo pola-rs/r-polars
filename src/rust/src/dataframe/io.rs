@@ -60,7 +60,7 @@ impl PlRDataFrame {
             let compat_level = <Wrap<CompatLevel>>::try_from(compat_level)?.0;
 
             let file = std::fs::File::create(path).map_err(RPolarsErr::from)?;
-            
+
             IpcStreamWriter::new(file)
                 .with_compression(compression)
                 .with_compat_level(compat_level)

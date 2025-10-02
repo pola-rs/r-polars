@@ -89,10 +89,10 @@ patrick::with_parameters_test_that(
     )
     tmpf <- withr::local_tempfile()
     expect_null(df$write_ipc_stream(tmpf, compression = compression, compat_level = compat_level))
-    
+
     # Read back and verify
     expect_equal(pl$read_ipc_stream(tmpf), df)
-    
+
     # Update with new data
     df$slice(1, 2)$write_ipc_stream(tmpf)
     expect_equal(
