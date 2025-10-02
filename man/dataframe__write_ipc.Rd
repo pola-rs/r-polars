@@ -2,7 +2,7 @@
 % Please edit documentation in R/output-ipc.R
 \name{dataframe__write_ipc}
 \alias{dataframe__write_ipc}
-\title{Write to Arrow IPC file.}
+\title{Write to Arrow IPC File Format}
 \usage{
 dataframe__write_ipc(
   path,
@@ -59,10 +59,11 @@ information from environment variables.}
 \code{NULL} invisibly.
 }
 \description{
-Write to Arrow IPC file.
+Write to Arrow IPC File Format
 }
 \examples{
-tmpf <- tempfile()
+tmpf <- tempfile(fileext = ".arrow")
 as_polars_df(mtcars)$write_ipc(tmpf)
+
 pl$read_ipc(tmpf)
 }

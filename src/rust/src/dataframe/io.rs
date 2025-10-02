@@ -65,8 +65,8 @@ impl PlRDataFrame {
                 .with_compression(compression)
                 .with_compat_level(compat_level)
                 .finish(&mut self.df)
-                .map_err(RPolarsErr::from)?;
-            Ok(())
+                .map_err(RPolarsErr::from)
+                .map_err(Into::into)
         }
         #[cfg(target_arch = "wasm32")]
         {

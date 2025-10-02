@@ -2,7 +2,7 @@
 % Please edit documentation in R/output-ipc.R
 \name{dataframe__write_ipc_stream}
 \alias{dataframe__write_ipc_stream}
-\title{Write to Arrow IPC stream format.}
+\title{Write to Arrow IPC Streaming Format}
 \usage{
 dataframe__write_ipc_stream(
   path,
@@ -39,12 +39,13 @@ Use the highest level, currently same as \code{1} (Low compatibility).
 \code{NULL} invisibly.
 }
 \description{
-Write to Arrow IPC stream format.
+Write to Arrow IPC Streaming Format
 }
 \examples{
-\dontshow{if (requireNamespace("nanoarrow", quiet = TRUE)) withAutoprint(\{ # examplesIf}
-tmpf <- tempfile()
+\dontshow{if (requireNamespace("nanoarrow", quiet = TRUE) && nanoarrow::nanoarrow_with_zstd()) withAutoprint(\{ # examplesIf}
+tmpf <- tempfile(fileext = ".arrows")
 as_polars_df(mtcars)$write_ipc_stream(tmpf)
-pl$read_ipc_stream(tmpf)
+
+nanoarrow::read_nanoarrow(tmpf)
 \dontshow{\}) # examplesIf}
 }

@@ -1,4 +1,6 @@
-#' Evaluate the query in streaming mode and write to an Arrow IPC file
+# TODO: @2.0.0: Fix the default value of compression to "uncompressed"
+
+#' Evaluate the query in streaming mode and write to Arrow IPC File Format
 #'
 #' @inherit lazyframe__sink_parquet description params return
 #' @inheritParams rlang::args_dots_empty
@@ -19,6 +21,7 @@
 #' @examples
 #' tmpf <- tempfile(fileext = ".arrow")
 #' as_polars_lf(mtcars)$sink_ipc(tmpf)
+#'
 #' pl$read_ipc(tmpf)
 lazyframe__sink_ipc <- function(
   path,
@@ -97,8 +100,7 @@ lazyframe__lazy_sink_ipc <- function(
     compat_level <- use_option_if_missing(
       compat_level,
       missing(compat_level),
-      "newest",
-      option_basename = "compat_level"
+      "newest"
     )
 
     target <- arg_to_sink_target(path)
@@ -137,14 +139,15 @@ lazyframe__lazy_sink_ipc <- function(
   })
 }
 
-#' Write to Arrow IPC file.
+#' Write to Arrow IPC File Format
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams lazyframe__sink_ipc
 #' @inherit dataframe__write_parquet return
 #' @examples
-#' tmpf <- tempfile()
+#' tmpf <- tempfile(fileext = ".arrow")
 #' as_polars_df(mtcars)$write_ipc(tmpf)
+#'
 #' pl$read_ipc(tmpf)
 dataframe__write_ipc <- function(
   path,
@@ -174,15 +177,16 @@ dataframe__write_ipc <- function(
   invisible(NULL)
 }
 
-#' Write to Arrow IPC stream format.
+#' Write to Arrow IPC Streaming Format
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams lazyframe__sink_ipc
 #' @inherit dataframe__write_parquet return
-#' @examplesIf requireNamespace("nanoarrow", quiet = TRUE)
-#' tmpf <- tempfile()
+#' @examplesIf requireNamespace("nanoarrow", quiet = TRUE) && nanoarrow::nanoarrow_with_zstd()
+#' tmpf <- tempfile(fileext = ".arrows")
 #' as_polars_df(mtcars)$write_ipc_stream(tmpf)
-#' pl$read_ipc_stream(tmpf)
+#'
+#' nanoarrow::read_nanoarrow(tmpf)
 dataframe__write_ipc_stream <- function(
   path,
   ...,
@@ -196,8 +200,7 @@ dataframe__write_ipc_stream <- function(
     compat_level <- use_option_if_missing(
       compat_level,
       missing(compat_level),
-      "newest",
-      option_basename = "compat_level"
+      "newest"
     )
 
     compression <- arg_match0(
