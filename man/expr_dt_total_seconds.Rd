@@ -4,7 +4,12 @@
 \alias{expr_dt_total_seconds}
 \title{Extract the seconds from a Duration type}
 \usage{
-expr_dt_total_seconds()
+expr_dt_total_seconds(..., fractional = FALSE)
+}
+\arguments{
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{fractional}{A bool to indicate whether to include the fractional component of the day.}
 }
 \value{
 A polars \link{expression}

@@ -145,26 +145,36 @@ impl PlRExpr {
             .into())
     }
 
-    fn dt_total_days(&self) -> Result<Self> {
-        Ok(self.inner.clone().dt().total_days().into())
+    fn dt_total_days(&self, fractional: bool) -> Result<Self> {
+        Ok(self.inner.clone().dt().total_days(fractional).into())
     }
-    fn dt_total_hours(&self) -> Result<Self> {
-        Ok(self.inner.clone().dt().total_hours().into())
+    fn dt_total_hours(&self, fractional: bool) -> Result<Self> {
+        Ok(self.inner.clone().dt().total_hours(fractional).into())
     }
-    fn dt_total_minutes(&self) -> Result<Self> {
-        Ok(self.inner.clone().dt().total_minutes().into())
+    fn dt_total_minutes(&self, fractional: bool) -> Result<Self> {
+        Ok(self.inner.clone().dt().total_minutes(fractional).into())
     }
-    fn dt_total_seconds(&self) -> Result<Self> {
-        Ok(self.inner.clone().dt().total_seconds().into())
+    fn dt_total_seconds(&self, fractional: bool) -> Result<Self> {
+        Ok(self.inner.clone().dt().total_seconds(fractional).into())
     }
-    fn dt_total_milliseconds(&self) -> Result<Self> {
-        Ok(self.inner.clone().dt().total_milliseconds().into())
+    fn dt_total_milliseconds(&self, fractional: bool) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .dt()
+            .total_milliseconds(fractional)
+            .into())
     }
-    fn dt_total_microseconds(&self) -> Result<Self> {
-        Ok(self.inner.clone().dt().total_microseconds().into())
+    fn dt_total_microseconds(&self, fractional: bool) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .dt()
+            .total_microseconds(fractional)
+            .into())
     }
-    fn dt_total_nanoseconds(&self) -> Result<Self> {
-        Ok(self.inner.clone().dt().total_nanoseconds().into())
+    fn dt_total_nanoseconds(&self, fractional: bool) -> Result<Self> {
+        Ok(self.inner.clone().dt().total_nanoseconds(fractional).into())
     }
 
     fn dt_offset_by(&self, by: &PlRExpr) -> Result<Self> {
