@@ -102,6 +102,7 @@ patrick::with_parameters_test_that(
     expect_equal(pl$read_ipc_stream(tmpf), df)
 
     # update with new data
+    skip_on_os("windows") # Windows has file locking issues
     df$slice(5, 5)$write_ipc_stream(tmpf)
     expect_equal(
       pl$read_ipc_stream(tmpf),
