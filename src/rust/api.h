@@ -102,6 +102,7 @@ SEXP savvy_PlRDataFrame_transpose__ffi(SEXP self__, SEXP c_arg__column_names, SE
 SEXP savvy_PlRDataFrame_unpivot__ffi(SEXP self__, SEXP c_arg__on, SEXP c_arg__index, SEXP c_arg__value_name, SEXP c_arg__variable_name);
 SEXP savvy_PlRDataFrame_width__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_with_row_index__ffi(SEXP self__, SEXP c_arg__name, SEXP c_arg__offset);
+SEXP savvy_PlRDataFrame_write_ipc_stream__ffi(SEXP self__, SEXP c_arg__path, SEXP c_arg__compression, SEXP c_arg__compat_level);
 SEXP savvy_PlRDataFrame_write_json__ffi(SEXP self__, SEXP c_arg__path);
 
 // methods and associated functions for PlRDataType

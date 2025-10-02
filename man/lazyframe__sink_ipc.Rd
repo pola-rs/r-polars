@@ -3,7 +3,7 @@
 \name{lazyframe__sink_ipc}
 \alias{lazyframe__sink_ipc}
 \alias{lazyframe__lazy_sink_ipc}
-\title{Evaluate the query in streaming mode and write to an Arrow IPC file}
+\title{Evaluate the query in streaming mode and write to Arrow IPC File Format}
 \usage{
 lazyframe__sink_ipc(
   path,
@@ -147,5 +147,6 @@ This is useful if you want to save a query to review or run later.
 \examples{
 tmpf <- tempfile(fileext = ".arrow")
 as_polars_lf(mtcars)$sink_ipc(tmpf)
+
 pl$read_ipc(tmpf)
 }

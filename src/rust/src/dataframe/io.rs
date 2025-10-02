@@ -1,6 +1,6 @@
 use crate::{PlRDataFrame, RPolarsErr, prelude::*};
 use polars::io::RowIndex;
-use savvy::{NumericScalar, NumericSexp, Result, StringSexp, savvy};
+use savvy::{NumericScalar, NumericSexp, Result, Sexp, StringSexp, savvy};
 
 #[savvy]
 impl PlRDataFrame {
@@ -40,6 +40,33 @@ impl PlRDataFrame {
                 .finish()
                 .map_err(RPolarsErr::from)?;
             Ok(df.into())
+        }
+        #[cfg(target_arch = "wasm32")]
+        {
+            Err(RPolarsErr::Other(format!("Not supported in WASM")).into())
+        }
+    }
+
+    pub fn write_ipc_stream(
+        &mut self,
+        path: &str,
+        compression: &str,
+        compat_level: Sexp,
+    ) -> Result<()> {
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            let compression: Option<IpcCompression> =
+                <Wrap<Option<IpcCompression>>>::try_from(compression)?.0;
+            let compat_level = <Wrap<CompatLevel>>::try_from(compat_level)?.0;
+
+            let file = std::fs::File::create(path).map_err(RPolarsErr::from)?;
+
+            IpcStreamWriter::new(file)
+                .with_compression(compression)
+                .with_compat_level(compat_level)
+                .finish(&mut self.df)
+                .map_err(RPolarsErr::from)
+                .map_err(Into::into)
         }
         #[cfg(target_arch = "wasm32")]
         {
