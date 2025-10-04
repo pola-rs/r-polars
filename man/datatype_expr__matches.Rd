@@ -15,7 +15,7 @@ This is not the same as a \link[=polars_expr]{polars expression}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-Get whether the output DataType matches a certain selector
+Get whether the output DataType matches a certain selector.
 }
 \examples{
 df <- pl$DataFrame(a = 1:3)

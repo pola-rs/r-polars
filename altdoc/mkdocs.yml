@@ -701,6 +701,8 @@ nav:
         - cs: man/cs.md
       DataType expressions:
         - pl__dtype_of: man/pl__dtype_of.md
+        - datatype_expr__display: man/datatype_expr__display.md
+        - datatype_expr__inner_dtype: man/datatype_expr__inner_dtype.md
         - datatype_expr__matches: man/datatype_expr__matches.md
       Functions:
         - concat: man/pl__concat.md
