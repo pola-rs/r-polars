@@ -33,20 +33,25 @@ test_that("$display() for datatype_expr works", {
     time = 1
   )$cast(arr = pl$Array(pl$Float64, 1), enum = pl$Enum("a"), time = pl$Time)
 
-  expect_snapshot(
-    df$select(
-      int = pl$dtype_of("int")$display(),
-      float = pl$dtype_of("float")$display(),
-      string = pl$dtype_of("string")$display(),
-      cat = pl$dtype_of("cat")$display(),
-      enum = pl$dtype_of("enum")$display(),
-      list = pl$dtype_of("list")$display(),
-      arr = pl$dtype_of("arr")$display(),
-      struct = pl$dtype_of("struct")$display(),
-      date = pl$dtype_of("date")$display(),
-      datetime = pl$dtype_of("datetime")$display(),
-      time = pl$dtype_of("time")$display(),
-    )$transpose(include_header = TRUE)
+  withr::with_envvar(
+    list(POLARS_FMT_MAX_ROWS = 100),
+    {
+      expect_snapshot(
+        df$select(
+          int = pl$dtype_of("int")$display(),
+          float = pl$dtype_of("float")$display(),
+          string = pl$dtype_of("string")$display(),
+          cat = pl$dtype_of("cat")$display(),
+          enum = pl$dtype_of("enum")$display(),
+          list = pl$dtype_of("list")$display(),
+          arr = pl$dtype_of("arr")$display(),
+          struct = pl$dtype_of("struct")$display(),
+          date = pl$dtype_of("date")$display(),
+          datetime = pl$dtype_of("datetime")$display(),
+          time = pl$dtype_of("time")$display(),
+        )$transpose(include_header = TRUE)
+      )
+    }
   )
 })
 

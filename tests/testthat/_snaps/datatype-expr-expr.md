@@ -20,7 +20,7 @@
       │ string   ┆ str           │
       │ cat      ┆ cat           │
       │ enum     ┆ enum          │
-      │ …        ┆ …             │
+      │ list     ┆ list[f64]     │
       │ arr      ┆ array[f64, 1] │
       │ struct   ┆ struct[1]     │
       │ date     ┆ date          │
