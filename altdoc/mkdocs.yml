@@ -757,8 +757,9 @@ nav:
         - pl_api_register_series_namespace: man/pl_api_register_series_namespace.md
         - polars-package: man/polars-package.md
         - pl: man/pl.md
-        - polars_options: man/polars_options.md
+        - polars_envvars: man/polars_envvars.md
         - polars_info: man/polars_info.md
+        - polars_options: man/polars_options.md
         - show_versions: man/pl__show_versions.md
         - thread_pool_size: man/pl__thread_pool_size.md
   - Changelog: NEWS.md
