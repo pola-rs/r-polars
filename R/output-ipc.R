@@ -13,10 +13,13 @@
 #'   Polars' internal data structures. When specifying a new compatibility level,
 #'   Polars exports its internal data structures that might not be interpretable by
 #'   other Arrow implementations. The level can be specified as the name
-#'   (e.g., `"newest"`) or as a scalar integer (Currently, `0` or `1` is supported).
+#'   (e.g., `"newest"`) or as a scalar integer
+#'   (Currently, `r (pl$CompatLevel$oldest:pl$CompatLevel$newest) |> format_code()`
+#'   are supported).
 #'
 #'   - `"newest"` `r lifecycle::badge("experimental")` (default):
-#'     Use the highest level, currently same as `1` (Low compatibility).
+#'     Use the highest level, currently same as
+#'     `r pl$CompatLevel$newest |> format_code()` (Low compatibility).
 #'   - `"oldest"`: Same as `0` (High compatibility).
 #' @examples
 #' tmpf <- tempfile(fileext = ".arrow")
