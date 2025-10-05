@@ -700,11 +700,11 @@ nav:
         - cs__unsigned_integer: man/cs__unsigned_integer.md
         - cs: man/cs.md
       DataType expressions:
-        - pl__dtype_of: man/pl__dtype_of.md
-        - datatype_expr__default_value: man/datatype_expr__default_value.md
-        - datatype_expr__display: man/datatype_expr__display.md
-        - datatype_expr__inner_dtype: man/datatype_expr__inner_dtype.md
-        - datatype_expr__matches: man/datatype_expr__matches.md
+        - default_value: man/datatype_expr__default_value.md
+        - display: man/datatype_expr__display.md
+        - dtype_of: man/pl__dtype_of.md
+        - inner_dtype: man/datatype_expr__inner_dtype.md
+        - matches: man/datatype_expr__matches.md
       Functions:
         - concat: man/pl__concat.md
         - Expr: man/polars_expr.md
