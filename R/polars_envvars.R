@@ -118,12 +118,12 @@ polars_envvars <- function() {
     e <- envvars[[1]][i]
     out[[e]] <- Sys.getenv(e, unset = envvars[[2]][i])
   }
-  structure(out, class = "polars_envvars")
+  structure(out, class = "polars_envvars_list")
 }
 
 #' @noRd
 #' @export
-print.polars_envvars <- function(x, ...) {
+print.polars_envvars_list <- function(x, ...) {
   # Copied from the arrow package
   # https://github.com/apache/arrow/blob/6f3bd2524c2abe3a4a278fc1c62fc5c49b56cab3/r/R/arrow-info.R#L149-L157 # nolint
   print_key_values <- function(title, vals, ...) {
