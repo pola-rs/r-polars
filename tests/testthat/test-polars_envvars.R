@@ -41,7 +41,7 @@ patrick::with_parameters_test_that(
   "non-default value for each envvar:",
   {
     new_envvar <- list(value)
-    names(new_envvar) = envvar
+    names(new_envvar) <- envvar
     withr::with_envvar(
       new_envvar,
       {
