@@ -26,11 +26,12 @@
 #' * `"brotli"`
 #' * `"zstd"`: good compression performance.
 #' @param compression_level `NULL` or integer. The level of compression to use.
-#'  Only used if method is one of `"gzip"`, `"brotli"`, or `"zstd"`. Higher
-#' compression means smaller files on disk:
-#'  * `"gzip"`: min-level: 0, max-level: 10.
-#'  * `"brotli"`: min-level: 0, max-level: 11.
-#'  * `"zstd"`: min-level: 1, max-level: 22.
+#'   Only used if method is one of `"gzip"`, `"brotli"`, or `"zstd"`. Higher
+#'   compression means smaller files on disk:
+#'
+#'   - `"gzip"`: min-level: 0, max-level: 9, default: 6.
+#'   - `"brotli"`: min-level: 0, max-level: 11, default: 1.
+#'   - `"zstd"`: min-level: 1, max-level: 22, default: 3.
 #' @param statistics Whether statistics should be written to the Parquet
 #' headers. Possible values:
 #' * `TRUE`: enable default set of statistics (default). Some statistics may be
