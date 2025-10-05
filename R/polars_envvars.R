@@ -86,7 +86,6 @@
 #' # Or we could set it permanently with `Sys.setenv(POLARS_FMT_STR_LEN = "50")`.
 polars_envvars <- function() {
   envvars <- rbind(
-    # c("POLARS_AUTO_STRUCTIFY", ""),
     c("POLARS_FMT_MAX_COLS", "5"),
     c("POLARS_FMT_MAX_ROWS", "8"),
     # Exist in polars but can't be set (even in py-polars)
