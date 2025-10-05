@@ -21,6 +21,10 @@ This is an update that corresponds to Python Polars 1.34.0.
   can be overridden by the `polars.compat_level` option.
   This can be useful especially when overriding the behavior of `nanoarrow::as_nanoarrow_array_stream()` used in external packages.
 - `<dataframe>$write_ipc_stream()` to write Arrow IPC stream format (`.arrows` file) (#1570).
+- New function `polars_envvars()` to show all environment variables available
+  in polars, for instance to customize the number of rows displayed when printing
+  a DataFrame. This was available in `polars < 1.0.0` but not in the rewritten
+  version until now (#1580).
 
 ### Bug fixes
 
