@@ -7,7 +7,7 @@
 #'   displaying tables. If negative, all columns are displayed.
 #' * `POLARS_FMT_MAX_ROWS` (`8`): Set the number of rows that are visible when
 #'   displaying tables. If negative, all rows are displayed. This applies to both
-#'   [`DataFrame`][DataFrame_class] and [`Series`][Series_class].
+#'   [`DataFrame`][DataFrame] and [`Series`][Series].
 #' * `POLARS_FMT_STR_LEN` (`32`): Maximum number of characters to display;
 #' * `POLARS_FMT_TABLE_CELL_ALIGNMENT` (`"LEFT"`): set the table cell alignment.
 #'   Can be `"LEFT"`, `"CENTER"`, `"RIGHT"`;
@@ -79,11 +79,11 @@
 #'
 #' # We can temporarily allow for wider columns with `withr::with_envvar()`:
 #' withr::with_envvar(
-#'   list(POLARS_FMT_STR_LEN = 50),
-#'   df
+#'   list(POLARS_FMT_STR_LEN = "50"),
+#'   print(df)
 #' )
 #'
-#' # Or we could set it permanently with `Sys.setenv(POLARS_FMT_STR_LEN = 50)`.
+#' # Or we could set it permanently with `Sys.setenv(POLARS_FMT_STR_LEN = "50")`.
 polars_envvars <- function() {
   envvars <- rbind(
     # c("POLARS_AUTO_STRUCTIFY", ""),

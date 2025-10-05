@@ -21,7 +21,7 @@ default value in parenthesis):
 displaying tables. If negative, all columns are displayed.
 \item \code{POLARS_FMT_MAX_ROWS} (\code{8}): Set the number of rows that are visible when
 displaying tables. If negative, all rows are displayed. This applies to both
-\code{\link[=DataFrame_class]{DataFrame}} and \code{\link[=Series_class]{Series}}.
+\code{\link{DataFrame}} and \code{\link{Series}}.
 \item \code{POLARS_FMT_STR_LEN} (\code{32}): Maximum number of characters to display;
 \item \code{POLARS_FMT_TABLE_CELL_ALIGNMENT} (\code{"LEFT"}): set the table cell alignment.
 Can be \code{"LEFT"}, \code{"CENTER"}, \code{"RIGHT"};
@@ -91,9 +91,9 @@ df
 
 # We can temporarily allow for wider columns with `withr::with_envvar()`:
 withr::with_envvar(
-  list(POLARS_FMT_STR_LEN = 50),
-  df
+  list(POLARS_FMT_STR_LEN = "50"),
+  print(df)
 )
 
-# Or we could set it permanently with `Sys.setenv(POLARS_FMT_STR_LEN = 50)`.
+# Or we could set it permanently with `Sys.setenv(POLARS_FMT_STR_LEN = "50")`.
 }
