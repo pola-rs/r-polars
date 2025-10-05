@@ -61,7 +61,7 @@
 #'    evolving, potentially reducing maintenance burden from API changes and bugs.
 #'    Can be `"0"` or `"1"`.
 #'
-# See https://github.com/pola-rs/polars/blob/6913b16c255f38c8609ea11f1b2edab6482cedc5/py-polars/polars/config.py#L73
+# See https://github.com/pola-rs/polars/blob/6913b16c255f38c8609ea11f1b2edab6482cedc5/py-polars/polars/config.py#L73 # nolint
 #' The following configuration options are present in the Python API but
 #' currently cannot be changed in R: decimal separator, thousands separator,
 #' float precision, float formatting, trimming decimal zeros.
@@ -116,7 +116,7 @@ polars_envvars <- function() {
   out <- vector("list", length(envvars))
   for (i in seq_len(nrow(envvars))) {
     e <- envvars[[1]][i]
-    out[[e]] = Sys.getenv(e, unset = envvars[[2]][i])
+    out[[e]] <- Sys.getenv(e, unset = envvars[[2]][i])
   }
   structure(out, class = "polars_envvars")
 }
@@ -125,10 +125,10 @@ polars_envvars <- function() {
 #' @export
 print.polars_envvars <- function(x, ...) {
   # Copied from the arrow package
-  # https://github.com/apache/arrow/blob/6f3bd2524c2abe3a4a278fc1c62fc5c49b56cab3/r/R/arrow-info.R#L149-L157
+  # https://github.com/apache/arrow/blob/6f3bd2524c2abe3a4a278fc1c62fc5c49b56cab3/r/R/arrow-info.R#L149-L157 # nolint
   print_key_values <- function(title, vals, ...) {
     df <- data.frame(vals, ...)
-    names(df) = ""
+    names(df) <- ""
 
     cat(title, ":\n========", sep = "")
     print(df)
