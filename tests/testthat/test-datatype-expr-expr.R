@@ -91,7 +91,7 @@ test_that("$default_value(): basic behavior works", {
   )
 
   withr::with_envvar(
-    list(POLARS_FMT_MAX_COLS = 100, POLARS_TABLE_WIDTH = 300),
+    list(POLARS_FMT_MAX_COLS = 100, POLARS_TABLE_WIDTH = 100),
     expect_snapshot(df)
   )
 })
