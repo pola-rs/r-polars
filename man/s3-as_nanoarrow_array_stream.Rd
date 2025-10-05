@@ -37,10 +37,11 @@ Determines the compatibility level when exporting Polars' internal data structur
 When specifying a new compatibility level, Polars exports its internal data structures
 that might not be interpretable by other Arrow implementations.
 The level can be specified as the name (e.g., \code{"newest"}) or as a scalar integer
-(Currently, \code{0} or \code{1} is supported).
+(Currently, \code{0} and \code{1}
+are supported).
 \itemize{
-\item \code{"newest"} \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} (default): Use the highest level, currently same as \code{1}
-(Low compatibility).
+\item \code{"newest"} \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} (default): Use the highest level,
+currently same as \code{1} (Low compatibility).
 \item \code{"oldest"}: Same as \code{0} (High compatibility).
 }}
 }
