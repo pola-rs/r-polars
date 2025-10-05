@@ -12,7 +12,7 @@ datatype_expr__default_value(
 )
 }
 \arguments{
-\item{n}{Number of types you want the value.}
+\item{n}{Number of values in the output.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 

@@ -101,7 +101,7 @@ datatype_expr__inner_dtype <- function() {
 #' - `pl$Null` and `pl$Categorical` are `null`.
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param n Number of types you want the value.
+#' @param n Number of values in the output.
 #' @param numeric_to_one Use `1` instead of `0` as the default value for numeric
 #' types.
 #' @param num_list_values The amount of values a list contains.
