@@ -41,9 +41,9 @@ older parquet readers.
 Only used if method is one of \code{"gzip"}, \code{"brotli"}, or \code{"zstd"}. Higher
 compression means smaller files on disk:
 \itemize{
-\item \code{"gzip"}: min-level: 0, max-level: 10.
-\item \code{"brotli"}: min-level: 0, max-level: 11.
-\item \code{"zstd"}: min-level: 1, max-level: 22.
+\item \code{"gzip"}: min-level: 0, max-level: 9, default: 6.
+\item \code{"brotli"}: min-level: 0, max-level: 11, default: 1.
+\item \code{"zstd"}: min-level: 1, max-level: 22, default: 3.
 }}
 
 \item{statistics}{Whether statistics should be written to the Parquet
