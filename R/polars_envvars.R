@@ -85,37 +85,36 @@
 #'
 #' # Or we could set it permanently with `Sys.setenv(POLARS_FMT_STR_LEN = "50")`.
 polars_envvars <- function() {
-  envvars <- rbind(
-    c("POLARS_FMT_MAX_COLS", "5"),
-    c("POLARS_FMT_MAX_ROWS", "8"),
+  envvars <- list(
+    POLARS_FMT_MAX_COLS = "5",
+    POLARS_FMT_MAX_ROWS = "8",
     # Exist in polars but can't be set (even in py-polars)
     # c("POLARS_FMT_NUM_DECIMAL", ""),
     # c("POLARS_FMT_NUM_GROUP_SEPARATOR", ""),
     # c("POLARS_FMT_NUM_LEN", ""),
-    c("POLARS_FMT_STR_LEN", "32"),
-    c("POLARS_FMT_TABLE_CELL_ALIGNMENT", "LEFT"),
-    c("POLARS_FMT_TABLE_CELL_LIST_LEN", "3"),
-    c("POLARS_FMT_TABLE_CELL_NUMERIC_ALIGNMENT", "LEFT"),
-    c("POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW", "0"),
-    c("POLARS_FMT_TABLE_FORMATTING", "UTF8_FULL_CONDENSED"),
-    c("POLARS_FMT_TABLE_HIDE_COLUMN_DATA_TYPES", "0"),
-    c("POLARS_FMT_TABLE_HIDE_COLUMN_NAMES", "0"),
-    c("POLARS_FMT_TABLE_HIDE_COLUMN_SEPARATOR", "0"),
-    c("POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION", "0"),
-    c("POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE", "0"),
-    c("POLARS_FMT_TABLE_ROUNDED_CORNERS", "0"),
-    c("POLARS_MAX_THREADS", thread_pool_size()),
-    c("POLARS_STREAMING_CHUNK_SIZE", "variable"),
-    c("POLARS_TABLE_WIDTH", "variable"),
-    c("POLARS_VERBOSE", "0"),
-    c("POLARS_WARN_UNSTABLE", "0")
-  ) |>
-    as.data.frame()
+    POLARS_FMT_STR_LEN = "32",
+    POLARS_FMT_TABLE_CELL_ALIGNMENT = "LEFT",
+    POLARS_FMT_TABLE_CELL_LIST_LEN = "3",
+    POLARS_FMT_TABLE_CELL_NUMERIC_ALIGNMENT = "LEFT",
+    POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW = "0",
+    POLARS_FMT_TABLE_FORMATTING = "UTF8_FULL_CONDENSED",
+    POLARS_FMT_TABLE_HIDE_COLUMN_DATA_TYPES = "0",
+    POLARS_FMT_TABLE_HIDE_COLUMN_NAMES = "0",
+    POLARS_FMT_TABLE_HIDE_COLUMN_SEPARATOR = "0",
+    POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION = "0",
+    POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE = "0",
+    POLARS_FMT_TABLE_ROUNDED_CORNERS = "0",
+    POLARS_MAX_THREADS = thread_pool_size(),
+    POLARS_STREAMING_CHUNK_SIZE = "variable",
+    POLARS_TABLE_WIDTH = "variable",
+    POLARS_VERBOSE = "0",
+    POLARS_WARN_UNSTABLE = "0"
+  )
 
   out <- vector("list", length(envvars))
-  for (i in seq_len(nrow(envvars))) {
-    e <- envvars[[1]][i]
-    out[[e]] <- Sys.getenv(e, unset = envvars[[2]][i])
+  for (i in seq_len(length(envvars))) {
+    e <- names(envvars)[i]
+    out[[e]] <- Sys.getenv(e, unset = envvars[[i]])
   }
   structure(out, class = "polars_envvars_list")
 }
