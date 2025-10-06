@@ -132,7 +132,7 @@ jobs:
           - os: macos-latest
             r: oldrel-1
         include:
-          - os: macos-13
+          - os: macos-15-intel
             r: release
           - os: ubuntu-22.04-arm
             r: release
