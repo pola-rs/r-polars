@@ -43,6 +43,7 @@ env:
   GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
   R_KEEP_PKG_SOURCE: yes
   NOT_CRAN: "true"
+  LIB_SUMS_PATH: "tools/lib-sums.tsv"
 
 jobs:
   R-CMD-check:
@@ -59,6 +60,14 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Check for pre-built binary
+        run: |
+          if [[ -f "${LIB_SUMS_PATH}" ]]; then
+            echo "LIBR_POLARS_BUILD=false" >>"${GITHUB_ENV}"
+          else
+            echo "LIBR_POLARS_BUILD=true" >>"${GITHUB_ENV}"
+          fi
+
       - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-r@v2
@@ -74,6 +83,7 @@ jobs:
           cache: "always"
 
       - id: rust-target
+        if: env.LIBR_POLARS_BUILD == 'true'
         name: Set Rust target
         run: |
           if [ "${{ runner.os }}" == "Windows" ]; then
@@ -85,13 +95,13 @@ jobs:
       - uses: rui314/setup-mold@v1
 
       - uses: Swatinem/rust-cache@v2
+        if: env.LIBR_POLARS_BUILD == 'true'
         with:
           workspaces: "src/rust -> target"
           shared-key: ${{ steps.rust-target.outputs.TARGET }}-release
 
       - name: Build lib
-        env:
-          LIBR_POLARS_BUILD: "true"
+        if: env.LIBR_POLARS_BUILD == 'true'
         run: |
           # make sure savvy is built from source because rust-cache doesn't work well.
           (find ~/.cargo/registry/ src/rust/target -name 'savvy-*' -print0 | xargs -0 rm -rf) || true
@@ -104,7 +114,6 @@ jobs:
 
       - uses: r-lib/actions/check-r-package@v2
         env:
-          LIBR_POLARS_BUILD: "false"
           NOT_CRAN: "false"
         with:
           upload-snapshots: true
@@ -212,10 +221,6 @@ jobs:
         exclude:
           - os: macos-latest
             r: "4.3"
-
-    env:
-      NOT_CRAN: "true"
-      LIB_SUMS_PATH: "tools/lib-sums.tsv"
 
     steps:
       - uses: actions/checkout@v5
