@@ -4,50 +4,45 @@ test_that("default envvars", {
   withr::with_envvar(
     list(POLARS_MAX_THREADS = 2),
     {
-      default_envvars <- polars_envvars()
-      expect_snapshot(default_envvars)
+      expect_snapshot(polars_envvars())
     }
   )
 })
 
-# run snapshots with non-default values
-make_class_cases <- function() {
-  tibble::tribble(
-    ~envvar, ~value,
-    "POLARS_FMT_MAX_COLS", "1",
-    "POLARS_FMT_MAX_ROWS", "1",
-    "POLARS_FMT_STR_LEN", "3",
-    "POLARS_FMT_TABLE_CELL_ALIGNMENT", "CENTER",
-    "POLARS_FMT_TABLE_CELL_LIST_LEN", "1",
-    "POLARS_FMT_TABLE_CELL_NUMERIC_ALIGNMENT", "RIGHT",
-    "POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW", "1",
-    "POLARS_FMT_TABLE_FORMATTING", "ASCII_HORIZONTAL_ONLY",
-    "POLARS_FMT_TABLE_HIDE_COLUMN_DATA_TYPES", "1",
-    "POLARS_FMT_TABLE_HIDE_COLUMN_NAMES", "1",
-    "POLARS_FMT_TABLE_HIDE_COLUMN_SEPARATOR", "1",
-    "POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION", "1",
-    "POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE", "1",
-    "POLARS_FMT_TABLE_ROUNDED_CORNERS", "1",
-  )
-}
-
-test_pl <- pl$DataFrame(
-  string_var = c("some words", "more words", "even more words"),
-  list_var = list(c(1, 2, 3), c(4, 5, 6), c(6, 7, 8)),
-  num_var = c(1, 1.1, 1.1111)
-)
-
 patrick::with_parameters_test_that(
-  "non-default value for each envvar:",
-  {
-    new_envvar <- list(value)
-    names(new_envvar) <- envvar
+  "non-default envvars affect DataFrame printing",
+  .cases = {
+    tibble::tribble(
+      ~envvar, ~value,
+      "POLARS_FMT_MAX_COLS", "1",
+      "POLARS_FMT_MAX_ROWS", "1",
+      "POLARS_FMT_STR_LEN", "3",
+      "POLARS_FMT_TABLE_CELL_ALIGNMENT", "CENTER",
+      "POLARS_FMT_TABLE_CELL_LIST_LEN", "1",
+      "POLARS_FMT_TABLE_CELL_NUMERIC_ALIGNMENT", "RIGHT",
+      "POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW", "1",
+      "POLARS_FMT_TABLE_FORMATTING", "ASCII_HORIZONTAL_ONLY",
+      "POLARS_FMT_TABLE_HIDE_COLUMN_DATA_TYPES", "1",
+      "POLARS_FMT_TABLE_HIDE_COLUMN_NAMES", "1",
+      "POLARS_FMT_TABLE_HIDE_COLUMN_SEPARATOR", "1",
+      "POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION", "1",
+      "POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE", "1",
+      "POLARS_FMT_TABLE_ROUNDED_CORNERS", "1",
+    )
+  },
+  code = {
+    df <- pl$DataFrame(
+      string_var = c("some words", "more words", "even more words"),
+      list_var = list(c(1, 2, 3), c(4, 5, 6), c(6, 7, 8)),
+      num_var = c(1, 1.1, 1.1111)
+    )
+    new_envvar <- list(value) |>
+      set_names(envvar)
     withr::with_envvar(
       new_envvar,
       {
-        expect_snapshot(test_pl)
+        expect_snapshot(df)
       }
     )
-  },
-  .cases = make_class_cases()
+  }
 )

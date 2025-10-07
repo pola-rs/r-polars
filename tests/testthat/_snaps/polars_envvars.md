@@ -1,7 +1,7 @@
 # default envvars
 
     Code
-      default_envvars
+      polars_envvars()
     Output
       Environment variables:
       ========                                                                     
@@ -27,10 +27,10 @@
       
       See `?polars::polars_envvars` for the definition of all envvars.
 
-# non-default value for each envvar: envvar=POLARS_FMT_MAX_COLS, value=1
+# non-default envvars affect DataFrame printing envvar=POLARS_FMT_MAX_COLS, value=1
 
     Code
-      test_pl
+      df
     Output
       shape: (3, 3)
       ┌─────────────────┬───┐
@@ -43,10 +43,10 @@
       │ even more words ┆ … │
       └─────────────────┴───┘
 
-# non-default value for each envvar: envvar=POLARS_FMT_MAX_ROWS, value=1
+# non-default envvars affect DataFrame printing envvar=POLARS_FMT_MAX_ROWS, value=1
 
     Code
-      test_pl
+      df
     Output
       shape: (3, 3)
       ┌────────────┬─────────────────┬─────────┐
@@ -58,10 +58,10 @@
       │ …          ┆ …               ┆ …       │
       └────────────┴─────────────────┴─────────┘
 
-# non-default value for each envvar: envvar=POLARS_FMT_STR_LEN, value=3
+# non-default envvars affect DataFrame printing envvar=POLARS_FMT_STR_LEN, value=3
 
     Code
-      test_pl
+      df
     Output
       shape: (3, 3)
       ┌──────┬──────┬──────┐
@@ -76,10 +76,10 @@
       │ eve… ┆ [6.… ┆ 1.1… │
       └──────┴──────┴──────┘
 
-# non-default value for each envvar: envvar=POLARS_FMT_TABLE_CELL_ALIGNMENT, value=CENTER
+# non-default envvars affect DataFrame printing envvar=POLARS_FMT_TABLE_CELL_ALIGNMENT, value=CENTER
 
     Code
-      test_pl
+      df
     Output
       shape: (3, 3)
       ┌─────────────────┬─────────────────┬─────────┐
@@ -92,10 +92,10 @@
       │ even more words ┆ [6.0, 7.0, 8.0] ┆  1.1111 │
       └─────────────────┴─────────────────┴─────────┘
 
-# non-default value for each envvar: envvar=POLARS_FMT_TABLE_CELL_LIST_LEN, value=1
+# non-default envvars affect DataFrame printing envvar=POLARS_FMT_TABLE_CELL_LIST_LEN, value=1
 
     Code
-      test_pl
+      df
     Output
       shape: (3, 3)
       ┌─────────────────┬───────────┬─────────┐
@@ -108,10 +108,10 @@
       │ even more words ┆ [… 8.0]   ┆ 1.1111  │
       └─────────────────┴───────────┴─────────┘
 
-# non-default value for each envvar: envvar=POLARS_FMT_TABLE_CELL_NUMERIC_ALIGNMENT, value=RIGHT
+# non-default envvars affect DataFrame printing envvar=POLARS_FMT_TABLE_CELL_NUMERIC_ALIGNMENT, value=RIGHT
 
     Code
-      test_pl
+      df
     Output
       shape: (3, 3)
       ┌─────────────────┬─────────────────┬─────────┐
@@ -124,10 +124,10 @@
       │ even more words ┆ [6.0, 7.0, 8.0] ┆  1.1111 │
       └─────────────────┴─────────────────┴─────────┘
 
-# non-default value for each envvar: envvar=POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW, value=1
+# non-default envvars affect DataFrame printing envvar=POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW, value=1
 
     Code
-      test_pl
+      df
     Output
       ┌─────────────────┬─────────────────┬─────────┐
       │ string_var      ┆ list_var        ┆ num_var │
@@ -140,10 +140,10 @@
       └─────────────────┴─────────────────┴─────────┘
       shape: (3, 3)
 
-# non-default value for each envvar: envvar=POLARS_FMT_TABLE_FORMATTING, value=ASCII_HORIZONTAL_ONLY
+# non-default envvars affect DataFrame printing envvar=POLARS_FMT_TABLE_FORMATTING, value=ASCII_HORIZONTAL_ONLY
 
     Code
-      test_pl
+      df
     Output
       shape: (3, 3)
       ---------------------------------------------
@@ -158,10 +158,10 @@
        even more words   [6.0, 7.0, 8.0]   1.1111  
       ---------------------------------------------
 
-# non-default value for each envvar: envvar=POLARS_FMT_TABLE_HIDE_COLUMN_DATA_TYPES, value=1
+# non-default envvars affect DataFrame printing envvar=POLARS_FMT_TABLE_HIDE_COLUMN_DATA_TYPES, value=1
 
     Code
-      test_pl
+      df
     Output
       shape: (3, 3)
       ┌─────────────────┬─────────────────┬─────────┐
@@ -172,10 +172,10 @@
       │ even more words ┆ [6.0, 7.0, 8.0] ┆ 1.1111  │
       └─────────────────┴─────────────────┴─────────┘
 
-# non-default value for each envvar: envvar=POLARS_FMT_TABLE_HIDE_COLUMN_NAMES, value=1
+# non-default envvars affect DataFrame printing envvar=POLARS_FMT_TABLE_HIDE_COLUMN_NAMES, value=1
 
     Code
-      test_pl
+      df
     Output
       shape: (3, 3)
       ┌─────────────────┬─────────────────┬────────┐
@@ -186,10 +186,10 @@
       │ even more words ┆ [6.0, 7.0, 8.0] ┆ 1.1111 │
       └─────────────────┴─────────────────┴────────┘
 
-# non-default value for each envvar: envvar=POLARS_FMT_TABLE_HIDE_COLUMN_SEPARATOR, value=1
+# non-default envvars affect DataFrame printing envvar=POLARS_FMT_TABLE_HIDE_COLUMN_SEPARATOR, value=1
 
     Code
-      test_pl
+      df
     Output
       shape: (3, 3)
       ┌─────────────────┬─────────────────┬─────────┐
@@ -201,10 +201,10 @@
       │ even more words ┆ [6.0, 7.0, 8.0] ┆ 1.1111  │
       └─────────────────┴─────────────────┴─────────┘
 
-# non-default value for each envvar: envvar=POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION, value=1
+# non-default envvars affect DataFrame printing envvar=POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION, value=1
 
     Code
-      test_pl
+      df
     Output
       ┌─────────────────┬─────────────────┬─────────┐
       │ string_var      ┆ list_var        ┆ num_var │
@@ -216,10 +216,10 @@
       │ even more words ┆ [6.0, 7.0, 8.0] ┆ 1.1111  │
       └─────────────────┴─────────────────┴─────────┘
 
-# non-default value for each envvar: envvar=POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE, value=1
+# non-default envvars affect DataFrame printing envvar=POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE, value=1
 
     Code
-      test_pl
+      df
     Output
       shape: (3, 3)
       ┌──────────────────┬──────────────────────┬───────────────┐
@@ -230,10 +230,10 @@
       │ even more words  ┆ [6.0, 7.0, 8.0]      ┆ 1.1111        │
       └──────────────────┴──────────────────────┴───────────────┘
 
-# non-default value for each envvar: envvar=POLARS_FMT_TABLE_ROUNDED_CORNERS, value=1
+# non-default envvars affect DataFrame printing envvar=POLARS_FMT_TABLE_ROUNDED_CORNERS, value=1
 
     Code
-      test_pl
+      df
     Output
       shape: (3, 3)
       ╭─────────────────┬─────────────────┬─────────╮
