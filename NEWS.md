@@ -2,11 +2,13 @@
 
 ## polars (development version)
 
+## polars 1.4.0
+
 This is an update that corresponds to Python Polars 1.34.0.
 
 ### Deprecations
 
-- `pl$Decimal`'s arguments should not be `NULL` (#1553).
+- `pl$Decimal()`'s arguments should not be `NULL` (#1553).
   Since the automatic inference feature has been removed, `precision` and `scale` must always be specified.
 - The `collapse_joins` argument of some LazyFrame methods is deprecated (#1553).
   Use `predicate_pushdown` instead.
@@ -18,9 +20,11 @@ This is an update that corresponds to Python Polars 1.34.0.
   instead of executing immediately (#1562).
 - `<lazyframe>$sink_*` methods gain the `engine` argument (#1562).
 - `compat_level` or `polars_compat_level` arguments, which specifies the compatibility level with Apache Arrow format,
-  can be overridden by the `polars.compat_level` option.
-  This can be useful especially when overriding the behavior of `nanoarrow::as_nanoarrow_array_stream()` used in external packages.
+  can be overridden by the `polars.compat_level` option if not specified (#1565).
+  This can be useful especially when overriding the behavior of `nanoarrow::as_nanoarrow_array_stream()` used in external packages' functions.
 - `<dataframe>$write_ipc_stream()` to write Arrow IPC stream format (`.arrows` file) (#1570).
+- `<expr>$dt$total_*` methods gain the new `fractional` argument
+  ([pola-rs/polars#24598](https://github.com/pola-rs/polars/pull/24598), #1573).
 - New function `polars_envvars()` to show all environment variables available
   in polars, for instance to customize the number of rows displayed when printing
   a DataFrame. This was available in `polars < 1.0.0` but not in the rewritten
