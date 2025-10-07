@@ -11,6 +11,7 @@ polars_envvars()
 of environment variables and values are their values.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 Get polars environment variables
 }
 \details{
@@ -21,7 +22,7 @@ default value in parenthesis):
 displaying tables. If negative, all columns are displayed.
 \item \code{POLARS_FMT_MAX_ROWS} (\code{8}): Set the number of rows that are visible when
 displaying tables. If negative, all rows are displayed. This applies to both
-\code{\link{DataFrame}} and \code{\link{Series}}.
+\link{DataFrame} and \link{Series}.
 \item \code{POLARS_FMT_STR_LEN} (\code{32}): Maximum number of characters to display;
 \item \code{POLARS_FMT_TABLE_CELL_ALIGNMENT} (\code{"LEFT"}): set the table cell alignment.
 Can be \code{"LEFT"}, \code{"CENTER"}, \code{"RIGHT"};

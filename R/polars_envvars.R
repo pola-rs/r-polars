@@ -1,23 +1,26 @@
 #' Get polars environment variables
 #'
-#' @details The following envvars are available (in alphabetical order, with the
+#' `r lifecycle::badge("experimental")`
+#' Get polars environment variables
+#'
+#' The following envvars are available (in alphabetical order, with the
 #'   default value in parenthesis):
 #'
-#' * `POLARS_FMT_MAX_COLS` (`5`): Set the number of columns that are visible when
+#' - `POLARS_FMT_MAX_COLS` (`5`): Set the number of columns that are visible when
 #'   displaying tables. If negative, all columns are displayed.
-#' * `POLARS_FMT_MAX_ROWS` (`8`): Set the number of rows that are visible when
+#' - `POLARS_FMT_MAX_ROWS` (`8`): Set the number of rows that are visible when
 #'   displaying tables. If negative, all rows are displayed. This applies to both
-#'   [`DataFrame`][DataFrame] and [`Series`][Series].
-#' * `POLARS_FMT_STR_LEN` (`32`): Maximum number of characters to display;
-#' * `POLARS_FMT_TABLE_CELL_ALIGNMENT` (`"LEFT"`): set the table cell alignment.
+#'   [DataFrame] and [Series].
+#' - `POLARS_FMT_STR_LEN` (`32`): Maximum number of characters to display;
+#' - `POLARS_FMT_TABLE_CELL_ALIGNMENT` (`"LEFT"`): set the table cell alignment.
 #'   Can be `"LEFT"`, `"CENTER"`, `"RIGHT"`;
-#' * `POLARS_FMT_TABLE_CELL_LIST_LEN` (`3`): Maximum number of elements of list
+#' - `POLARS_FMT_TABLE_CELL_LIST_LEN` (`3`): Maximum number of elements of list
 #'   variables to display;
-#' * `POLARS_FMT_TABLE_CELL_NUMERIC_ALIGNMENT` (`"LEFT"`): Set the table cell
+#' - `POLARS_FMT_TABLE_CELL_NUMERIC_ALIGNMENT` (`"LEFT"`): Set the table cell
 #'   alignment for numeric columns. Can be `"LEFT"`, `"CENTER"`, `"RIGHT"`;
-#' * `POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW` (`"0"`): print the DataFrame shape
+#' - `POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW` (`"0"`): print the DataFrame shape
 #'   information below the data when displaying tables. Can be `"0"` or `"1"`.
-#' * `POLARS_FMT_TABLE_FORMATTING` (`"UTF8_FULL_CONDENSED"`): Set table
+#' - `POLARS_FMT_TABLE_FORMATTING` (`"UTF8_FULL_CONDENSED"`): Set table
 #'   formatting style. Possible values:
 #'    * `"ASCII_FULL"`: ASCII, with all borders and lines, including row dividers.
 #'    * `"ASCII_FULL_CONDENSED"`: Same as ASCII_FULL, but with dense row spacing.
@@ -32,31 +35,31 @@
 #'    * `"UTF8_BORDERS_ONLY"`: UTF8, borders only.
 #'    * `"UTF8_HORIZONTAL_ONLY"`: UTF8, horizontal lines only.
 #'    * `"NOTHING"`: No borders or other lines.
-#' * `POLARS_FMT_TABLE_HIDE_COLUMN_DATA_TYPES` (`"0"`): Hide table column data
+#' - `POLARS_FMT_TABLE_HIDE_COLUMN_DATA_TYPES` (`"0"`): Hide table column data
 #'   types (i64, f64, str etc.). Can be `"0"` or `"1"`.
-#' * `POLARS_FMT_TABLE_HIDE_COLUMN_NAMES` (`"0"`): Hide table column names. Can
+#' - `POLARS_FMT_TABLE_HIDE_COLUMN_NAMES` (`"0"`): Hide table column names. Can
 #'   be `"0"` or `"1"`.
-#' * `POLARS_FMT_TABLE_HIDE_COLUMN_SEPARATOR` (`"0"`): Hide the `"---"` separator
+#' - `POLARS_FMT_TABLE_HIDE_COLUMN_SEPARATOR` (`"0"`): Hide the `"---"` separator
 #'    between the column names and column types. Can be `"0"` or `"1"`.
-#' * `POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION` (`"0"`): Hide the
+#' - `POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION` (`"0"`): Hide the
 #'   DataFrame shape information when displaying tables. Can be `"0"` or `"1"`.
-#' * `POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE` (`"0"`): Moves the data type
+#' - `POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE` (`"0"`): Moves the data type
 #'   inline with the column name (to the right, in parentheses). Can be `"0"`
 #'   or `"1"`.
-#' * `POLARS_FMT_TABLE_ROUNDED_CORNERS` (`"0"`): Apply rounded corners to
+#' - `POLARS_FMT_TABLE_ROUNDED_CORNERS` (`"0"`): Apply rounded corners to
 #'   UTF8-styled tables (only applies to UTF8 formats).
-#' * `POLARS_MAX_THREADS` (`<variable>`): Maximum number of threads used to
+#' - `POLARS_MAX_THREADS` (`<variable>`): Maximum number of threads used to
 #'   initialize the thread pool. The thread pool is locked once polars is loaded,
 #'   so this envvar must be set before loading the package.
-#' * `POLARS_STREAMING_CHUNK_SIZE` (`<variable>`): Chunk size used in the
+#' - `POLARS_STREAMING_CHUNK_SIZE` (`<variable>`): Chunk size used in the
 #'   streaming engine. Integer larger than 1. By default, the chunk size is
 #'   determined by the schema and size of the thread pool. For some datasets
 #'   (esp. when you have large string elements) this can be too optimistic and
 #'   lead to Out of Memory errors.
-#' * `POLARS_TABLE_WIDTH` (`<variable>`): Set the maximum width of a table in
+#' - `POLARS_TABLE_WIDTH` (`<variable>`): Set the maximum width of a table in
 #'   characters.
-#' * `POLARS_VERBOSE` (`"0"`): Enable additional verbose/debug logging.
-#' * `POLARS_WARN_UNSTABLE` (`"0"`): Issue a warning when unstable functionality
+#' - `POLARS_VERBOSE` (`"0"`): Enable additional verbose/debug logging.
+#' - `POLARS_WARN_UNSTABLE` (`"0"`): Issue a warning when unstable functionality
 #'    is used. Enabling this setting may help avoid functionality that is still
 #'    evolving, potentially reducing maintenance burden from API changes and bugs.
 #'    Can be `"0"` or `"1"`.
@@ -89,9 +92,9 @@ polars_envvars <- function() {
     POLARS_FMT_MAX_COLS = "5",
     POLARS_FMT_MAX_ROWS = "8",
     # Exist in polars but can't be set (even in py-polars)
-    # c("POLARS_FMT_NUM_DECIMAL", ""),
-    # c("POLARS_FMT_NUM_GROUP_SEPARATOR", ""),
-    # c("POLARS_FMT_NUM_LEN", ""),
+    # POLARS_FMT_NUM_DECIMAL = "",
+    # POLARS_FMT_NUM_GROUP_SEPARATOR = "",
+    # POLARS_FMT_NUM_LEN = "",
     POLARS_FMT_STR_LEN = "32",
     POLARS_FMT_TABLE_CELL_ALIGNMENT = "LEFT",
     POLARS_FMT_TABLE_CELL_LIST_LEN = "3",
