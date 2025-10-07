@@ -83,3 +83,58 @@ datatype_expr__inner_dtype <- function() {
     self$`_datatype_expr`$inner_dtype()
   })
 }
+
+#' Get a default value of a specific type
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' Get a default value of a specific type:
+#' - Integers and floats are their zero value as default, unless otherwise
+#'   specified;
+#' - Temporals are a physical zero as default;
+#' - `pl$Decimal` is zero as default;
+#' - `pl$String` and `pl$Binary` are an empty string;
+#' - `pl$List` is an empty list, unless otherwise specified;
+#' - `pl$Array` is the inner default value repeated over the shape;
+#' - `pl$Struct` is the inner default value for all fields;
+#' - `pl$Enum` is the first category if it exists;
+#' - `pl$Null` and `pl$Categorical` are `null`.
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @param n Number of values in the output.
+#' @param numeric_to_one Use `1` instead of `0` as the default value for numeric
+#' types.
+#' @param num_list_values The amount of values a list contains.
+#'
+#' @inherit as_polars_expr
+#' @examples
+#' uint32 <- pl$UInt32$to_dtype_expr()
+#' string <- pl$String$to_dtype_expr()
+#' array <- pl$Array(pl$Float64, 2)$to_dtype_expr()
+#'
+#' pl$select(
+#'   uint32_default = uint32$default_value(),
+#'   uint32_default_bis = uint32$default_value(numeric_to_one = TRUE),
+#'   string_default = string$default_value(),
+#'   array_default = array$default_value()
+#' )
+#'
+#' # Return more values with `n`
+#' pl$select(uint32_default = uint32$default_value(n = 3))
+#'
+#' # Customize the number of default values in a list with `num_list_values`
+#' l <- pl$List(pl$Float64)$to_dtype_expr()
+#' pl$select(
+#'   list_default = l$default_value(),
+#'   list_default_bis = l$default_value(num_list_values = 3),
+#' )
+datatype_expr__default_value <- function(n = 1, ..., numeric_to_one = FALSE, num_list_values = 0) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_datatype_expr`$default_value(
+      n = n,
+      numeric_to_one = numeric_to_one,
+      num_list_values = num_list_values
+    )
+  })
+}

@@ -319,3 +319,15 @@ datatype__min <- function() {
   self$`_dt`$min() |>
     wrap()
 }
+
+
+#' Return a DataTypeExpr with a static DataType
+#'
+#' `r lifecycle::badge("experimental")`
+#' Return a DataTypeExpr with a static DataType.
+#'
+#' @inherit pl__dtype_of return
+datatype__to_dtype_expr <- function() {
+  PlRDataTypeExpr$from_dtype(self$`_dt`) |>
+    wrap()
+}

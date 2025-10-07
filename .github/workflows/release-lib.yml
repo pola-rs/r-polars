@@ -80,8 +80,7 @@ jobs:
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
         with:
-          # TODO: `true` after rspm supports arm linux <https://github.com/r-lib/actions/issues/960>
-          use-public-rspm: ${{ runner.os != 'Linux' || runner.arch != 'ARM64' }}
+          use-public-rspm: true
           Ncpus: 2
 
       - uses: r-lib/actions/setup-r-dependencies@v2
@@ -132,7 +131,7 @@ jobs:
           - os: macos-latest
             r: oldrel-1
         include:
-          - os: macos-13
+          - os: macos-15-intel
             r: release
           - os: ubuntu-22.04-arm
             r: release
@@ -176,8 +175,7 @@ jobs:
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.r }}
-          # TODO: `true` after rspm supports arm linux <https://github.com/r-lib/actions/issues/960>
-          use-public-rspm: ${{ runner.os != 'Linux' || runner.arch != 'ARM64' }}
+          use-public-rspm: true
           Ncpus: "2"
 
       - uses: r-lib/actions/setup-r-dependencies@v2
