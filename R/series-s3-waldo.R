@@ -2,12 +2,12 @@
 
 # exported in zzz.R
 compare_proxy.polars_series <- function(x, path) {
+  exported_vec <- x$to_r_vector(int64 = "character", decimal = "character")
+  s_name <- x$name
+  s_dtype <- x$dtype
+
   list(
-    object = structure(
-      x$to_r_vector(int64 = "character", decimal = "character"),
-      name = x$name,
-      dtype = x$dtype
-    ),
+    object = structure(exported_vec, name = s_name, dtype = s_dtype),
     path = path
   )
 }
