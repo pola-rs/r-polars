@@ -88,7 +88,7 @@
 #'
 #' # Or we could set it permanently with `Sys.setenv(POLARS_FMT_STR_LEN = "50")`.
 polars_envvars <- function() {
-  envvars <- list(
+  defaults <- list(
     POLARS_FMT_MAX_COLS = "5",
     POLARS_FMT_MAX_ROWS = "8",
     # Exist in polars but can't be set (even in py-polars)
@@ -114,12 +114,16 @@ polars_envvars <- function() {
     POLARS_WARN_UNSTABLE = "0"
   )
 
-  out <- vector("list", length(envvars))
-  for (i in seq_len(length(envvars))) {
-    e <- names(envvars)[i]
-    out[[e]] <- Sys.getenv(e, unset = envvars[[i]])
-  }
-  structure(out, class = "polars_envvars_list")
+  out <- mapply(
+    \(envvar_name, default_value) Sys.getenv(envvar_name, unset = default_value),
+    names(defaults),
+    defaults,
+    USE.NAMES = TRUE,
+    SIMPLIFY = FALSE
+  )
+
+  class(out) <- "polars_envvars_list"
+  out
 }
 
 #' @noRd
