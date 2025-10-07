@@ -1,6 +1,6 @@
 # NEWS
 
-## polars (development version)
+## polars 1.4.0
 
 This is an update that corresponds to Python Polars 1.34.0.
 
