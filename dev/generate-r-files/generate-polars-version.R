@@ -1,0 +1,15 @@
+git_rev <- RcppTOML::parseTOML("src/rust/Cargo.toml")$dependencies$`polars-core`$rev
+
+target_file <- glue::glue(
+  "https://raw.githubusercontent.com/pola-rs/polars/{git_rev}/py-polars/pyproject.toml"
+)
+
+py_version <- readr::read_file(target_file) |>
+  RcppTOML::parseTOML(fromFile = FALSE) |>
+  _$project$version
+
+# TODO: reverse check? (the py version is released and the rev is the same?)
+
+template <- readr::read_file("dev/generate-r-files/templates/polars-version.R.txt")
+glue::glue(template, .open = "{{", .close = "}}", .trim = FALSE) |>
+  readr::write_file("R/generated-polars-version.R")
