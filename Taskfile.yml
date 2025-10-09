@@ -105,8 +105,14 @@ tasks:
       - R/generated-*.R
     deps:
       - format-devscripts
+    vars:
+      SCRIPTS:
+        - dev/generate-r-files/generate-polars-version.R
+        - dev/generate-r-files/generate-s3methods-dollar.R
     cmds:
-      - Rscript dev/generate-r-files/generate-s3methods-dollar.R
+      - for:
+          var: SCRIPTS
+        cmd: Rscript {{.ITEM}}
 
   build-documents:
     desc: Build the R package and generate documents.
