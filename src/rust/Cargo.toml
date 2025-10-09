@@ -119,6 +119,7 @@ features = [
     "is_unique",
     "lazy",
     "list_any_all",
+    "list_arithmetic",
     "list_count",
     "list_drop_nulls",
     "list_eval",
