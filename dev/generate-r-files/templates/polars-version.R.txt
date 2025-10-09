@@ -1,1 +1,1 @@
-PY_VERSION <- {{py_version}}
+PY_VERSION <- "{{py_version}}"
