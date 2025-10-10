@@ -14,6 +14,8 @@ test_that("print polars_info()", {
     },
     .self_version = "0.0.0",
     rust_polars_version = function() "0.0.0",
+    PY_VERSION = "0.0.0",
+    pl__CompatLevel = list(newest = 16L),
     thread_pool_size = function() 1L,
     feature_nightly_enabled = function() TRUE
   )

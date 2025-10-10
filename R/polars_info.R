@@ -5,6 +5,7 @@
 #'
 #' - Package versions (the Polars R package version and the dependent Rust
 #'   Polars crate version)
+#' - Compatibility information of Polars.
 #' - Number of threads used by Polars
 #' - Rust feature flags (See `vignette("install", "polars")` for details)
 #'
@@ -23,12 +24,19 @@ polars_info <- function() {
       r_package = .self_version,
       rust_crate = rust_polars_version()
     ),
+    interchange = list(
+      py_version = PY_VERSION,
+      compat_level = list(
+        newest = pl__CompatLevel$newest
+      )
+    ),
     thread_pool_size = thread_pool_size(),
     features = list(
       nightly = feature_nightly_enabled()
     )
   )
-  structure(out, class = "polars_info_list")
+  class(out) <- "polars_info_list"
+  out
 }
 
 #' @export
@@ -44,8 +52,12 @@ print.polars_info_list <- function(x, ...) {
     cat("\n")
   }
 
-  cat("Polars R package version : ", format(x$versions$r_package), "\n", sep = "")
-  cat("Rust Polars crate version: ", format(x$versions$rust_crate), "\n", sep = "")
+  cat("Polars R package version   : ", format(x$versions$r_package), "\n", sep = "")
+  cat("Rust Polars crate version  : ", format(x$versions$rust_crate), "\n", sep = "")
+  cat("\n")
+  cat("Corresponding Python Polars: ", format(x$interchange$py_version), "\n", sep = "")
+  cat("\n")
+  cat("Newest Polars CompatLevel: ", format(x$interchange$compat_level$newest), "\n", sep = "")
   cat("\n")
   cat("Thread pool size:", x$thread_pool_size, "\n")
   cat("\n")
