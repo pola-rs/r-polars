@@ -1,6 +1,6 @@
 [package]
 name = "r-polars"
-version = "1.4.0-rc.1"
+version = "1.5.0-rc.1"
 edition = "2024"
 rust-version = "1.89.0"
 publish = false
@@ -119,6 +119,7 @@ features = [
     "is_unique",
     "lazy",
     "list_any_all",
+    "list_arithmetic",
     "list_count",
     "list_drop_nulls",
     "list_eval",

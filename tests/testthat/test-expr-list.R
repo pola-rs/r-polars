@@ -720,3 +720,25 @@ test_that("list$to_struct's deprecated argument", {
   )
   expect_snapshot(pl$col("foo")$list$to_struct(), cnd_class = TRUE)
 })
+
+patrick::with_parameters_test_that(
+  "list arithmetic",
+  .cases = {
+    tibble::tribble(
+      ~fun, ~expected_output,
+      "add", list(5, 7),
+      "sub", list(-3, -3),
+      "mul", list(4, 10),
+      "truediv", list(0.25, 0.4)
+    )
+  },
+  code = {
+    df <- pl$DataFrame(x = list(1, 2), y = list(4, 5))
+    expr <- paste0("pl$col('x')$", fun, "(pl$col('y'))")
+
+    expect_equal(
+      df$select(eval(parse(text = expr))),
+      pl$DataFrame(x = expected_output)
+    )
+  }
+)
