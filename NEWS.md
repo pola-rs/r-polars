@@ -6,7 +6,7 @@
 
 - Arithmetic operations between list columns are supported (#1589).
 - `polars_info()` shows the corresponding Python Polars version and the supported
-  Polars CompatLevel.
+  Polars CompatLevel (#1591).
 
 ## polars 1.4.0
 
