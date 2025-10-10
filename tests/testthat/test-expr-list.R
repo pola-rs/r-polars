@@ -724,8 +724,6 @@ test_that("list$to_struct's deprecated argument", {
 patrick::with_parameters_test_that(
   "list arithmetic",
   .cases = {
-    skip_if_not_installed("tibble", minimum_version = "3.3.0")
-
     tibble::tribble(
       ~fun, ~expected_output,
       "add", list(5, 7),
