@@ -15,6 +15,7 @@ This function reports the following information:
 \itemize{
 \item Package versions (the Polars R package version and the dependent Rust
 Polars crate version)
+\item Compatibility information of Polars.
 \item Number of threads used by Polars
 \item Rust feature flags (See \code{vignette("install", "polars")} for details)
 }
