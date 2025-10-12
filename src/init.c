@@ -74,6 +74,11 @@ SEXP savvy_cols__impl(SEXP c_arg__names) {
     return handle_result(res);
 }
 
+SEXP savvy_compat_level_range__impl(void) {
+    SEXP res = savvy_compat_level_range__ffi();
+    return handle_result(res);
+}
+
 SEXP savvy_concat_arr__impl(SEXP c_arg__s) {
     SEXP res = savvy_concat_arr__ffi(c_arg__s);
     return handle_result(res);
@@ -3374,6 +3379,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_coalesce__impl", (DL_FUNC) &savvy_coalesce__impl, 1},
     {"savvy_col__impl", (DL_FUNC) &savvy_col__impl, 1},
     {"savvy_cols__impl", (DL_FUNC) &savvy_cols__impl, 1},
+    {"savvy_compat_level_range__impl", (DL_FUNC) &savvy_compat_level_range__impl, 0},
     {"savvy_concat_arr__impl", (DL_FUNC) &savvy_concat_arr__impl, 1},
     {"savvy_concat_df__impl", (DL_FUNC) &savvy_concat_df__impl, 1},
     {"savvy_concat_df_diagonal__impl", (DL_FUNC) &savvy_concat_df_diagonal__impl, 1},

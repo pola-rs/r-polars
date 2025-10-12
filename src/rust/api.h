@@ -6,6 +6,7 @@ SEXP savvy_as_struct__ffi(SEXP c_arg__exprs);
 SEXP savvy_coalesce__ffi(SEXP c_arg__exprs);
 SEXP savvy_col__ffi(SEXP c_arg__name);
 SEXP savvy_cols__ffi(SEXP c_arg__names);
+SEXP savvy_compat_level_range__ffi(void);
 SEXP savvy_concat_arr__ffi(SEXP c_arg__s);
 SEXP savvy_concat_df__ffi(SEXP c_arg__dfs);
 SEXP savvy_concat_df_diagonal__ffi(SEXP c_arg__dfs);

@@ -79,6 +79,11 @@ NULL
 }
 
 
+`compat_level_range` <- function() {
+  .Call(savvy_compat_level_range__impl)
+}
+
+
 `concat_arr` <- function(`s`) {
   .savvy_wrap_PlRExpr(.Call(savvy_concat_arr__impl, `s`))
 }
