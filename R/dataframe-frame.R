@@ -1078,17 +1078,16 @@ dataframe__explode <- function(...) {
 #'   a = 1:5,
 #'   b = c("one", "two", "three", "four", "five"),
 #'   c = 6:10
-#' )$
-#'   select(
+#' )$select(
 #'   pl$struct("b"),
 #'   pl$struct(c("a", "c"))$alias("a_and_c")
 #' )
 #' df
 #'
 #' df$unnest("a_and_c")
-#' df$unnest(pl$col("a_and_c"))
-dataframe__unnest <- function(...) {
-  self$lazy()$unnest(...)$collect(`_eager` = TRUE) |>
+#' df$unnest("a_and_c", separator = ":")$collect()
+dataframe__unnest <- function(..., separator = NULL) {
+  self$lazy()$unnest(..., separator = separator)$collect(`_eager` = TRUE) |>
     wrap()
 }
 

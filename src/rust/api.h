@@ -578,7 +578,7 @@ SEXP savvy_PlRLazyFrame_tail__ffi(SEXP self__, SEXP c_arg__n);
 SEXP savvy_PlRLazyFrame_to_dot__ffi(SEXP self__, SEXP c_arg__optimized);
 SEXP savvy_PlRLazyFrame_top_k__ffi(SEXP self__, SEXP c_arg__k, SEXP c_arg__by, SEXP c_arg__reverse);
 SEXP savvy_PlRLazyFrame_unique__ffi(SEXP self__, SEXP c_arg__maintain_order, SEXP c_arg__keep, SEXP c_arg__subset);
-SEXP savvy_PlRLazyFrame_unnest__ffi(SEXP self__, SEXP c_arg__columns);
+SEXP savvy_PlRLazyFrame_unnest__ffi(SEXP self__, SEXP c_arg__columns, SEXP c_arg__separator);
 SEXP savvy_PlRLazyFrame_unpivot__ffi(SEXP self__, SEXP c_arg__on, SEXP c_arg__index, SEXP c_arg__value_name, SEXP c_arg__variable_name);
 SEXP savvy_PlRLazyFrame_var__ffi(SEXP self__, SEXP c_arg__ddof);
 SEXP savvy_PlRLazyFrame_with_columns__ffi(SEXP self__, SEXP c_arg__exprs);

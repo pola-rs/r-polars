@@ -4145,9 +4145,9 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_polars__sealed")
 }
 
 `PlRLazyFrame_unnest` <- function(self) {
-  function(`columns`) {
+  function(`columns`, `separator` = NULL) {
     `columns` <- .savvy_extract_ptr(`columns`, "PlRSelector")
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_unnest__impl, `self`, `columns`))
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_unnest__impl, `self`, `columns`, `separator`))
   }
 }
 

@@ -315,7 +315,7 @@ impl PlRSeries {
                     let df = series
                         .clone()
                         .into_frame()
-                        .unnest([series.name().clone()])
+                        .unnest([series.name().clone()], None)
                         .unwrap();
                     let len = df.width();
                     let mut list = OwnedListSexp::new(len, true)?;
