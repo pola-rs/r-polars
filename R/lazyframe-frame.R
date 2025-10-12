@@ -1667,24 +1667,26 @@ lazyframe__clone <- function() {
 #'
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Name of the struct column(s)
 #'   or [selectors][polars_selector]  that should be unnested.
+#' @param separator `NULL` (default) or single string.
+#'   Rename output column names as combination of the struct column name,
+#'   name separator and field name.
 #' @inherit as_polars_lf return
 #' @examples
 #' lf <- pl$LazyFrame(
 #'   a = 1:5,
 #'   b = c("one", "two", "three", "four", "five"),
 #'   c = 6:10
-#' )$
-#'   select(
+#' )$select(
 #'   pl$struct("b"),
 #'   pl$struct(c("a", "c"))$alias("a_and_c")
 #' )
 #' lf$collect()
 #'
 #' lf$unnest("a_and_c")$collect()
-#' lf$unnest(pl$col("a_and_c"))$collect()
-lazyframe__unnest <- function(...) {
+#' lf$unnest("a_and_c", separator = ":")$collect()
+lazyframe__unnest <- function(..., separator = NULL) {
   parse_into_selector(...)$`_rselector` |>
-    self$`_ldf`$unnest() |>
+    self$`_ldf`$unnest(separator = separator) |>
     wrap()
 }
 

@@ -2,8 +2,11 @@
 
 ## polars (development version)
 
+This is an update that corresponds to Python Polars 1.35.0.
+
 ### New features
 
+- `<lazyframe>$unnest()` and `<dataframe>$unnest()` gain the `separator` argument.
 - Arithmetic operations between list columns are supported (#1589).
 - `polars_info()` shows the corresponding Python Polars version and the supported
   Polars CompatLevel (#1591).

@@ -4,11 +4,15 @@
 \alias{dataframe__unnest}
 \title{Decompose struct columns into separate columns for each of their fields}
 \usage{
-dataframe__unnest(...)
+dataframe__unnest(..., separator = NULL)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Name of the struct column(s)
 or \link[=polars_selector]{selectors}  that should be unnested.}
+
+\item{separator}{\code{NULL} (default) or single string.
+Rename output column names as combination of the struct column name,
+name separator and field name.}
 }
 \value{
 A polars \link{DataFrame}
@@ -21,13 +25,12 @@ df <- pl$DataFrame(
   a = 1:5,
   b = c("one", "two", "three", "four", "five"),
   c = 6:10
-)$
-  select(
+)$select(
   pl$struct("b"),
   pl$struct(c("a", "c"))$alias("a_and_c")
 )
 df
 
 df$unnest("a_and_c")
-df$unnest(pl$col("a_and_c"))
+df$unnest("a_and_c", separator = ":")
 }

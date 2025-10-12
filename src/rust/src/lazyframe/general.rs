@@ -693,8 +693,12 @@ impl PlRLazyFrame {
         Ok(self.ldf.clone().into())
     }
 
-    fn unnest(&self, columns: &PlRSelector) -> Result<Self> {
-        Ok(self.ldf.clone().unnest(columns.inner.clone()).into())
+    fn unnest(&self, columns: &PlRSelector, separator: Option<&str>) -> Result<Self> {
+        Ok(self
+            .ldf
+            .clone()
+            .unnest(columns.inner.clone(), separator.map(PlSmallStr::from_str))
+            .into())
     }
 
     fn count(&self) -> Result<Self> {

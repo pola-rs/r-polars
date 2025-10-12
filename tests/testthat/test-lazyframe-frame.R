@@ -1087,6 +1087,17 @@ test_that("unnest", {
   )
 
   expect_query_equal(
+    .input$unnest("first_struct", separator = ":"),
+    .input = df2,
+    df$select(
+      `first_struct:a` = pl$col("a"),
+      `first_struct:b` = pl$col("b"),
+      `first_struct:c` = pl$col("c"),
+      df2$select("second_struct")$to_series()
+    )
+  )
+
+  expect_query_equal(
     .input$unnest(cs$ends_with("_struct")),
     .input = df2,
     df

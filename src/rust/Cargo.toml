@@ -28,11 +28,11 @@ too_many_arguments = "allow"
 ciborium = "0.2"
 either = "1.15"
 flume = "0.11"
-polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "24b23d025f28e7023abd3ac4b023f0f87b2af862", default-features = false }
-polars-error = { git = "https://github.com/pola-rs/polars.git", rev = "24b23d025f28e7023abd3ac4b023f0f87b2af862", default-features = false }
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "9d4208581d87a86834d1e017cae8dc6be36e5378", default-features = false }
+polars-error = { git = "https://github.com/pola-rs/polars.git", rev = "9d4208581d87a86834d1e017cae8dc6be36e5378", default-features = false }
 # TODO: remove polars-compute after dec128_verify_prec_scale is exposed in polars-core
 #       https://github.com/pola-rs/polars/pull/24556
-polars-compute = { git = "https://github.com/pola-rs/polars.git", rev = "24b23d025f28e7023abd3ac4b023f0f87b2af862", default-features = false, features = [
+polars-compute = { git = "https://github.com/pola-rs/polars.git", rev = "9d4208581d87a86834d1e017cae8dc6be36e5378", default-features = false, features = [
     "dtype-decimal",
 ] }
 savvy = { version = "0.8", features = ["use-custom-error"] }
@@ -46,7 +46,7 @@ thiserror = "2"
 # <https://github.com/pola-rs/polars/blob/93ceaccdac6f05c9b07a5117f3a4a90c238dbd29/.github/workflows/test-pyodide.yml#L40-L45>
 [target.'cfg(not(target_os = "emscripten"))'.dependencies.polars]
 git = "https://github.com/pola-rs/polars.git"
-rev = "24b23d025f28e7023abd3ac4b023f0f87b2af862"
+rev = "9d4208581d87a86834d1e017cae8dc6be36e5378"
 default-features = false
 features = [
     "aws",
@@ -64,19 +64,19 @@ features = [
 
 [target.'cfg(not(target_os = "emscripten"))'.dependencies.polars-lazy]
 git = "https://github.com/pola-rs/polars.git"
-rev = "24b23d025f28e7023abd3ac4b023f0f87b2af862"
+rev = "9d4208581d87a86834d1e017cae8dc6be36e5378"
 default-features = false
 features = ["new_streaming"]
 
 [target.'cfg(not(target_os = "emscripten"))'.dependencies.polars-mem-engine]
 git = "https://github.com/pola-rs/polars.git"
-rev = "24b23d025f28e7023abd3ac4b023f0f87b2af862"
+rev = "9d4208581d87a86834d1e017cae8dc6be36e5378"
 default-features = false
 features = ["csv", "ipc", "json", "parquet"]
 
 [dependencies.polars]
 git = "https://github.com/pola-rs/polars.git"
-rev = "24b23d025f28e7023abd3ac4b023f0f87b2af862"
+rev = "9d4208581d87a86834d1e017cae8dc6be36e5378"
 default-features = false
 features = [
     "abs",
