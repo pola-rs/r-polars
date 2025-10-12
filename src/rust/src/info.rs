@@ -18,7 +18,7 @@ fn thread_pool_size() -> Result<Sexp> {
 
 #[savvy]
 fn compat_level_range() -> Result<Sexp> {
-    let oldest: i32 = CompatLevel::oldest().get_level().try_into()?;
-    let newest: i32 = CompatLevel::newest().get_level().try_into()?;
-    OwnedIntegerSexp::try_from_slice(&[oldest, newest]).map(Into::into)
+    let oldest: i32 = CompatLevel::oldest().get_level().into();
+    let newest: i32 = CompatLevel::newest().get_level().into();
+    OwnedIntegerSexp::try_from_slice([oldest, newest]).map(Into::into)
 }
