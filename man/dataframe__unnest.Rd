@@ -32,5 +32,5 @@ df <- pl$DataFrame(
 df
 
 df$unnest("a_and_c")
-df$unnest("a_and_c", separator = ":")$collect()
+df$unnest("a_and_c", separator = ":")
 }

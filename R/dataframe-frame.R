@@ -1085,7 +1085,7 @@ dataframe__explode <- function(...) {
 #' df
 #'
 #' df$unnest("a_and_c")
-#' df$unnest("a_and_c", separator = ":")$collect()
+#' df$unnest("a_and_c", separator = ":")
 dataframe__unnest <- function(..., separator = NULL) {
   self$lazy()$unnest(..., separator = separator)$collect(`_eager` = TRUE) |>
     wrap()
