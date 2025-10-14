@@ -706,6 +706,7 @@ nav:
         - inner_dtype: man/datatype_expr__inner_dtype.md
         - matches: man/datatype_expr__matches.md
       Functions:
+        - collect_all: man/pl__collect_all.md
         - concat: man/pl__concat.md
         - Expr: man/polars_expr.md
         - DataFrame: man/pl__DataFrame.md

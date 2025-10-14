@@ -1,7 +1,10 @@
-use crate::{PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr, prelude::*};
+use crate::{
+    PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr,
+    lazyframe::PlROptFlags, prelude::*,
+};
 use polars::functions;
 use polars::lazy::dsl;
-use savvy::{ListSexp, LogicalSexp, RawSexp, Result, StringSexp, savvy};
+use savvy::{ListSexp, LogicalSexp, OwnedListSexp, RawSexp, Result, Sexp, StringSexp, savvy};
 
 macro_rules! set_unwrapped_or_0 {
     ($($var:ident),+ $(,)?) => {
@@ -276,4 +279,24 @@ pub fn repeat_(value: &PlRExpr, n: &PlRExpr, dtype: Option<&PlRDataType>) -> Res
 #[savvy]
 pub fn len() -> Result<PlRExpr> {
     Ok(dsl::len().into())
+}
+
+fn lfs_to_plans(lfs: Vec<LazyFrame>) -> Result<Vec<DslPlan>> {
+    Ok(lfs.into_iter().map(|lf| lf.logical_plan).collect())
+}
+
+#[savvy]
+pub fn collect_all(lfs: ListSexp, engine: &str, optflags: ListSexp) -> Result<Sexp> {
+    let lfs = <Wrap<Vec<LazyFrame>>>::try_from(lfs)?.0;
+    let engine = <Wrap<Engine>>::try_from(engine)?.0;
+    let plans = lfs_to_plans(lfs)?;
+    let optflags = <Wrap<PlROptFlags>>::try_from(optflags)?.0;
+    let dfs = LazyFrame::collect_all_with_engine(plans, engine, optflags.inner.into_inner())
+        .map_err(RPolarsErr::from)?;
+
+    let mut out = OwnedListSexp::new(dfs.len(), false)?;
+    for (i, df) in dfs.iter().enumerate() {
+        let _ = out.set_value(i, Sexp::try_from(PlRDataFrame::from(df.clone()))?);
+    }
+    Ok(out.into())
 }

@@ -12,6 +12,7 @@
 \alias{is_polars_series}
 \alias{is_polars_partitioning_scheme}
 \alias{is_list_of_polars_dtype}
+\alias{is_list_of_polars_lf}
 \alias{check_polars_df}
 \alias{check_polars_dtype}
 \alias{check_polars_dtype_expr}
@@ -21,6 +22,7 @@
 \alias{check_polars_series}
 \alias{check_polars_partitioning_scheme}
 \alias{check_list_of_polars_dtype}
+\alias{check_list_of_polars_lf}
 \title{Check if the object is a polars object}
 \usage{
 is_polars_df(x)
@@ -40,6 +42,8 @@ is_polars_series(x)
 is_polars_partitioning_scheme(x)
 
 is_list_of_polars_dtype(x, n = NULL)
+
+is_list_of_polars_lf(x, n = NULL)
 
 check_polars_df(
   x,
@@ -106,6 +110,14 @@ check_polars_partitioning_scheme(
 )
 
 check_list_of_polars_dtype(
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+)
+
+check_list_of_polars_lf(
   x,
   ...,
   allow_null = FALSE,

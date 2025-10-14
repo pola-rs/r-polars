@@ -10,6 +10,7 @@ This is an update that corresponds to Python Polars 1.35.0.
 - Arithmetic operations between list columns are supported (#1589).
 - `polars_info()` shows the corresponding Python Polars version and the supported
   Polars CompatLevel (#1591).
+- `pl$collect_all()` to efficiently collect a list of LazyFrames (#1598).
 
 ## polars 1.4.0
 

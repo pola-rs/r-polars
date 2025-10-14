@@ -41,6 +41,7 @@ state = "0.6"
 strum = "0.27"
 strum_macros = "0.27"
 thiserror = "2"
+parking_lot = "0.12.5"
 
 # These features are enabled by default, but not supported on emscripten
 # <https://github.com/pola-rs/polars/blob/93ceaccdac6f05c9b07a5117f3a4a90c238dbd29/.github/workflows/test-pyodide.yml#L40-L45>
