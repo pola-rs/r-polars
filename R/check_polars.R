@@ -110,6 +110,21 @@ is_list_of_polars_dtype <- function(x, n = NULL) {
 
 #' @rdname check_polars
 #' @export
+is_list_of_polars_lf <- function(x, n = NULL) {
+  is_list_of_polars_lf_impl <- function(x) {
+    for (i in seq_along(x)) {
+      if (!is_polars_lf(x[[i]])) {
+        return(FALSE)
+      }
+    }
+    TRUE
+  }
+
+  is_list(x, n = n) && is_list_of_polars_lf_impl(x)
+}
+
+#' @rdname check_polars
+#' @export
 check_polars_df <- function(
   x,
   ...,
@@ -364,6 +379,35 @@ check_list_of_polars_dtype <- function(
   stop_input_type(
     x,
     "a list of polars data types",
+    ...,
+    allow_na = FALSE,
+    allow_null = allow_null,
+    arg = arg,
+    call = call
+  )
+}
+
+#' @rdname check_polars
+#' @export
+check_list_of_polars_lf <- function(
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+) {
+  if (!missing(x)) {
+    if (is_list_of_polars_lf(x)) {
+      return(invisible(NULL))
+    }
+    if (allow_null && is_null(x)) {
+      return(invisible(NULL))
+    }
+  }
+
+  stop_input_type(
+    x,
+    "a list of polars lazyframes",
     ...,
     allow_na = FALSE,
     allow_null = allow_null,
