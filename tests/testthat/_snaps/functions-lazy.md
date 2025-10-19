@@ -31,3 +31,13 @@
       Caused by error in `pl$collect_all()`:
       ! `engine` must be one of "auto", "in-memory", or "streaming", not "foo".
 
+---
+
+    Code
+      pl$collect_all(list(cyl_4), type_coercion = 1)
+    Condition
+      Error in `pl$collect_all()`:
+      ! Evaluation failed in `$collect_all()`.
+      Caused by error in `pl$collect_all()`:
+      ! The following options should be logical but are not: type_coercion
+

@@ -174,6 +174,14 @@ pl__collect_all <- function(
       comm_subexpr_elim = comm_subexpr_elim,
       cluster_with_columns = cluster_with_columns
     )
+    not_logical <- Filter(\(x) !is_logical(x), optflags)
+    if (length(not_logical) > 0) {
+      abort(c(paste(
+        "The following options should be logical but are not:",
+        toString(names(not_logical))
+      )))
+    }
+
     collect_all(lfs, engine = engine, optflags) |>
       lapply(\(ptr) .savvy_wrap_PlRDataFrame(ptr) |> wrap())
   })
