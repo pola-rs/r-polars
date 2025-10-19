@@ -20,7 +20,7 @@ impl PlROptFlags {
 
     pub fn copy(&self) -> Result<Self> {
         Ok(Self {
-            inner: RwLock::new(self.inner.read().clone()),
+            inner: RwLock::new(*self.inner.read()),
         })
     }
 
@@ -33,7 +33,7 @@ impl PlROptFlags {
     }
 
     fn set_type_coercion(&self, value: bool) -> Result<()> {
-        let _ = self.inner.write().set(OptFlags::TYPE_COERCION, value);
+        self.inner.write().set(OptFlags::TYPE_COERCION, value);
         Ok(())
     }
 
@@ -43,7 +43,7 @@ impl PlROptFlags {
     }
 
     fn set_type_check(&self, value: bool) -> Result<()> {
-        let _ = self.inner.write().set(OptFlags::TYPE_CHECK, value);
+        self.inner.write().set(OptFlags::TYPE_CHECK, value);
         Ok(())
     }
 
@@ -56,7 +56,7 @@ impl PlROptFlags {
     }
 
     fn set_projection_pushdown(&self, value: bool) -> Result<()> {
-        let _ = self.inner.write().set(OptFlags::PROJECTION_PUSHDOWN, value);
+        self.inner.write().set(OptFlags::PROJECTION_PUSHDOWN, value);
         Ok(())
     }
 
@@ -69,7 +69,7 @@ impl PlROptFlags {
     }
 
     fn set_predicate_pushdown(&self, value: bool) -> Result<()> {
-        let _ = self.inner.write().set(OptFlags::PREDICATE_PUSHDOWN, value);
+        self.inner.write().set(OptFlags::PREDICATE_PUSHDOWN, value);
         Ok(())
     }
 
@@ -82,8 +82,7 @@ impl PlROptFlags {
     }
 
     fn set_cluster_with_columns(&self, value: bool) -> Result<()> {
-        let _ = self
-            .inner
+        self.inner
             .write()
             .set(OptFlags::CLUSTER_WITH_COLUMNS, value);
         Ok(())
@@ -98,7 +97,7 @@ impl PlROptFlags {
     }
 
     fn set_simplify_expression(&self, value: bool) -> Result<()> {
-        let _ = self.inner.write().set(OptFlags::SIMPLIFY_EXPR, value);
+        self.inner.write().set(OptFlags::SIMPLIFY_EXPR, value);
         Ok(())
     }
 
@@ -111,7 +110,7 @@ impl PlROptFlags {
     }
 
     fn set_slice_pushdown(&self, value: bool) -> Result<()> {
-        let _ = self.inner.write().set(OptFlags::SLICE_PUSHDOWN, value);
+        self.inner.write().set(OptFlags::SLICE_PUSHDOWN, value);
         Ok(())
     }
 
@@ -124,7 +123,7 @@ impl PlROptFlags {
     }
 
     fn set_comm_subplan_elim(&self, value: bool) -> Result<()> {
-        let _ = self.inner.write().set(OptFlags::COMM_SUBPLAN_ELIM, value);
+        self.inner.write().set(OptFlags::COMM_SUBPLAN_ELIM, value);
         Ok(())
     }
 
@@ -137,7 +136,7 @@ impl PlROptFlags {
     }
 
     fn set_comm_subexpr_elim(&self, value: bool) -> Result<()> {
-        let _ = self.inner.write().set(OptFlags::COMM_SUBEXPR_ELIM, value);
+        self.inner.write().set(OptFlags::COMM_SUBEXPR_ELIM, value);
         Ok(())
     }
 
@@ -150,7 +149,7 @@ impl PlROptFlags {
     }
 
     fn set_check_order_observe(&self, value: bool) -> Result<()> {
-        let _ = self.inner.write().set(OptFlags::CHECK_ORDER_OBSERVE, value);
+        self.inner.write().set(OptFlags::CHECK_ORDER_OBSERVE, value);
         Ok(())
     }
 
@@ -163,7 +162,7 @@ impl PlROptFlags {
     }
 
     fn set_fast_projection(&self, value: bool) -> Result<()> {
-        let _ = self.inner.write().set(OptFlags::FAST_PROJECTION, value);
+        self.inner.write().set(OptFlags::FAST_PROJECTION, value);
         Ok(())
     }
 
@@ -173,7 +172,7 @@ impl PlROptFlags {
     }
 
     fn set_eager(&self, value: bool) -> Result<()> {
-        let _ = self.inner.write().set(OptFlags::EAGER, value);
+        self.inner.write().set(OptFlags::EAGER, value);
         Ok(())
     }
 
@@ -186,7 +185,7 @@ impl PlROptFlags {
     }
 
     fn set_streaming(&self, value: bool) -> Result<()> {
-        let _ = self.inner.write().set(OptFlags::NEW_STREAMING, value);
+        self.inner.write().set(OptFlags::NEW_STREAMING, value);
         Ok(())
     }
 }
