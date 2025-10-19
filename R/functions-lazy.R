@@ -140,7 +140,7 @@ pl__arg_sort_by <- function(
 #' cyl_4 <- lf$filter(pl$col("cyl") == 4)
 #' cyl_6 <- lf$filter(pl$col("cyl") == 6)
 #'
-#' # We could do `cyl_4$collect()` and `cyl_4$collect()`, but this would be
+#' # We could do `cyl_4$collect()` and `cyl_6$collect()`, but this would be
 #' # wasteful because `sqrt_mpg` would be computed twice.
 #' # `pl$collect_all()` executes only once the parts of the query that are
 #' # identical across LazyFrames.

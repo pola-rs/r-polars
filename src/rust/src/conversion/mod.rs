@@ -1051,9 +1051,8 @@ impl TryFrom<ListSexp> for Wrap<PlROptFlags> {
 
     fn try_from(list: ListSexp) -> Result<Self, savvy::Error> {
         let opts = PlROptFlags::empty()?;
-        let _ = list.names_iter().map(|x| {
-            let elem_name: &str = x;
-            let elem_value = list.get(x).unwrap().into_typed();
+        for name in list.names_iter() {
+            let elem_value = list.get(name).unwrap().into_typed();
             let elem_value = match elem_value {
                 TypedSexp::Logical(s) => {
                     let vec = s.to_vec().to_owned();
@@ -1062,7 +1061,7 @@ impl TryFrom<ListSexp> for Wrap<PlROptFlags> {
                 _ => unreachable!(),
             };
 
-            match elem_name {
+            let _ = match name {
                 "predicate_pushdown" => opts.set_predicate_pushdown(elem_value),
                 "projection_pushdown" => opts.set_projection_pushdown(elem_value),
                 "simplify_expression" => opts.set_simplify_expression(elem_value),
@@ -1072,8 +1071,8 @@ impl TryFrom<ListSexp> for Wrap<PlROptFlags> {
                 "cluster_with_columns" => opts.set_cluster_with_columns(elem_value),
                 "check_order_observe" => opts.set_check_order_observe(elem_value),
                 _ => unreachable!(),
-            }
-        });
+            };
+        }
         Ok(Wrap(opts))
     }
 }
