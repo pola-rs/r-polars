@@ -148,14 +148,6 @@ pl__arg_sort_by <- function(
 pl__collect_all <- function(
   lazy_frames,
   ...,
-  type_coercion = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  comm_subplan_elim = TRUE,
-  comm_subexpr_elim = TRUE,
-  cluster_with_columns = TRUE,
   engine = c("auto", "in-memory", "streaming")
 ) {
   wrap({
@@ -165,22 +157,15 @@ pl__collect_all <- function(
 
     lfs <- lapply(lazy_frames, \(x) x$`_ldf`)
     optflags <- list(
-      type_coercion = type_coercion,
-      predicate_pushdown = predicate_pushdown,
-      projection_pushdown = projection_pushdown,
-      simplify_expression = simplify_expression,
-      slice_pushdown = slice_pushdown,
-      comm_subplan_elim = comm_subplan_elim,
-      comm_subexpr_elim = comm_subexpr_elim,
-      cluster_with_columns = cluster_with_columns
+      type_coercion = TRUE,
+      predicate_pushdown = TRUE,
+      projection_pushdown = TRUE,
+      simplify_expression = TRUE,
+      slice_pushdown = TRUE,
+      comm_subplan_elim = TRUE,
+      comm_subexpr_elim = TRUE,
+      cluster_with_columns = TRUE
     )
-    not_logical <- Filter(\(x) !is_logical(x), optflags)
-    if (length(not_logical) > 0) {
-      abort(c(paste(
-        "The following options should be logical but are not:",
-        toString(names(not_logical))
-      )))
-    }
 
     collect_all(lfs, engine = engine, optflags) |>
       lapply(\(ptr) .savvy_wrap_PlRDataFrame(ptr) |> wrap())

@@ -4,42 +4,12 @@
 \alias{pl__collect_all}
 \title{Collect multiple LazyFrames at the same time}
 \usage{
-pl__collect_all(
-  lazy_frames,
-  ...,
-  type_coercion = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  comm_subplan_elim = TRUE,
-  comm_subexpr_elim = TRUE,
-  cluster_with_columns = TRUE,
-  engine = c("auto", "in-memory", "streaming")
-)
+pl__collect_all(lazy_frames, ..., engine = c("auto", "in-memory", "streaming"))
 }
 \arguments{
 \item{lazy_frames}{A list of LazyFrames to collect.}
 
 \item{...}{These dots are for future extensions and must be empty.}
-
-\item{type_coercion}{A logical, indicates type coercion optimization.}
-
-\item{predicate_pushdown}{A logical, indicates predicate pushdown optimization.}
-
-\item{projection_pushdown}{A logical, indicates projection pushdown optimization.}
-
-\item{simplify_expression}{A logical, indicates simplify expression optimization.}
-
-\item{slice_pushdown}{A logical, indicates slice pushdown optimization.}
-
-\item{comm_subplan_elim}{A logical, indicates trying to cache branching subplans that occur
-on self-joins or unions.}
-
-\item{comm_subexpr_elim}{A logical, indicates trying to cache common subexpressions.}
-
-\item{cluster_with_columns}{A logical, indicates to combine sequential independent calls
-to with_columns.}
 
 \item{engine}{The engine name to use for processing the query.
 One of the followings:

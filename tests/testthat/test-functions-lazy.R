@@ -80,7 +80,6 @@ test_that("pl$collect_all() works", {
   )
 
   expect_snapshot(pl$collect_all(cyl_4), error = TRUE)
-  expect_snapshot(pl$collect_all(list(cyl_4), TRUE), error = TRUE)
+  expect_snapshot(pl$collect_all(list(cyl_4), "foo"), error = TRUE)
   expect_snapshot(pl$collect_all(list(cyl_4), engine = "foo"), error = TRUE)
-  expect_snapshot(pl$collect_all(list(cyl_4), type_coercion = 1), error = TRUE)
 })
