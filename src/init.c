@@ -69,6 +69,11 @@ SEXP savvy_col__impl(SEXP c_arg__name) {
     return handle_result(res);
 }
 
+SEXP savvy_collect_all__impl(SEXP c_arg__lfs, SEXP c_arg__engine, SEXP c_arg__optflags) {
+    SEXP res = savvy_collect_all__ffi(c_arg__lfs, c_arg__engine, c_arg__optflags);
+    return handle_result(res);
+}
+
 SEXP savvy_cols__impl(SEXP c_arg__names) {
     SEXP res = savvy_cols__ffi(c_arg__names);
     return handle_result(res);
@@ -2904,6 +2909,151 @@ SEXP savvy_PlRLazyGroupBy_tail__impl(SEXP self__, SEXP c_arg__n) {
     return handle_result(res);
 }
 
+SEXP savvy_PlROptFlags_copy__impl(SEXP self__) {
+    SEXP res = savvy_PlROptFlags_copy__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_default__impl(void) {
+    SEXP res = savvy_PlROptFlags_default__ffi();
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_empty__impl(void) {
+    SEXP res = savvy_PlROptFlags_empty__ffi();
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_get_check_order_observe__impl(SEXP self__) {
+    SEXP res = savvy_PlROptFlags_get_check_order_observe__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_get_cluster_with_columns__impl(SEXP self__) {
+    SEXP res = savvy_PlROptFlags_get_cluster_with_columns__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_get_comm_subexpr_elim__impl(SEXP self__) {
+    SEXP res = savvy_PlROptFlags_get_comm_subexpr_elim__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_get_comm_subplan_elim__impl(SEXP self__) {
+    SEXP res = savvy_PlROptFlags_get_comm_subplan_elim__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_get_eager__impl(SEXP self__) {
+    SEXP res = savvy_PlROptFlags_get_eager__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_get_fast_projection__impl(SEXP self__) {
+    SEXP res = savvy_PlROptFlags_get_fast_projection__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_get_predicate_pushdown__impl(SEXP self__) {
+    SEXP res = savvy_PlROptFlags_get_predicate_pushdown__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_get_projection_pushdown__impl(SEXP self__) {
+    SEXP res = savvy_PlROptFlags_get_projection_pushdown__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_get_simplify_expression__impl(SEXP self__) {
+    SEXP res = savvy_PlROptFlags_get_simplify_expression__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_get_slice_pushdown__impl(SEXP self__) {
+    SEXP res = savvy_PlROptFlags_get_slice_pushdown__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_get_streaming__impl(SEXP self__) {
+    SEXP res = savvy_PlROptFlags_get_streaming__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_get_type_check__impl(SEXP self__) {
+    SEXP res = savvy_PlROptFlags_get_type_check__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_get_type_coercion__impl(SEXP self__) {
+    SEXP res = savvy_PlROptFlags_get_type_coercion__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_set_check_order_observe__impl(SEXP self__, SEXP c_arg__value) {
+    SEXP res = savvy_PlROptFlags_set_check_order_observe__ffi(self__, c_arg__value);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_set_cluster_with_columns__impl(SEXP self__, SEXP c_arg__value) {
+    SEXP res = savvy_PlROptFlags_set_cluster_with_columns__ffi(self__, c_arg__value);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_set_comm_subexpr_elim__impl(SEXP self__, SEXP c_arg__value) {
+    SEXP res = savvy_PlROptFlags_set_comm_subexpr_elim__ffi(self__, c_arg__value);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_set_comm_subplan_elim__impl(SEXP self__, SEXP c_arg__value) {
+    SEXP res = savvy_PlROptFlags_set_comm_subplan_elim__ffi(self__, c_arg__value);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_set_eager__impl(SEXP self__, SEXP c_arg__value) {
+    SEXP res = savvy_PlROptFlags_set_eager__ffi(self__, c_arg__value);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_set_fast_projection__impl(SEXP self__, SEXP c_arg__value) {
+    SEXP res = savvy_PlROptFlags_set_fast_projection__ffi(self__, c_arg__value);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_set_predicate_pushdown__impl(SEXP self__, SEXP c_arg__value) {
+    SEXP res = savvy_PlROptFlags_set_predicate_pushdown__ffi(self__, c_arg__value);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_set_projection_pushdown__impl(SEXP self__, SEXP c_arg__value) {
+    SEXP res = savvy_PlROptFlags_set_projection_pushdown__ffi(self__, c_arg__value);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_set_simplify_expression__impl(SEXP self__, SEXP c_arg__value) {
+    SEXP res = savvy_PlROptFlags_set_simplify_expression__ffi(self__, c_arg__value);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_set_slice_pushdown__impl(SEXP self__, SEXP c_arg__value) {
+    SEXP res = savvy_PlROptFlags_set_slice_pushdown__ffi(self__, c_arg__value);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_set_streaming__impl(SEXP self__, SEXP c_arg__value) {
+    SEXP res = savvy_PlROptFlags_set_streaming__ffi(self__, c_arg__value);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_set_type_check__impl(SEXP self__, SEXP c_arg__value) {
+    SEXP res = savvy_PlROptFlags_set_type_check__ffi(self__, c_arg__value);
+    return handle_result(res);
+}
+
+SEXP savvy_PlROptFlags_set_type_coercion__impl(SEXP self__, SEXP c_arg__value) {
+    SEXP res = savvy_PlROptFlags_set_type_coercion__ffi(self__, c_arg__value);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRPartitioning_base_path__impl(SEXP self__) {
     SEXP res = savvy_PlRPartitioning_base_path__ffi(self__);
     return handle_result(res);
@@ -3378,6 +3528,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_as_struct__impl", (DL_FUNC) &savvy_as_struct__impl, 1},
     {"savvy_coalesce__impl", (DL_FUNC) &savvy_coalesce__impl, 1},
     {"savvy_col__impl", (DL_FUNC) &savvy_col__impl, 1},
+    {"savvy_collect_all__impl", (DL_FUNC) &savvy_collect_all__impl, 3},
     {"savvy_cols__impl", (DL_FUNC) &savvy_cols__impl, 1},
     {"savvy_compat_level_range__impl", (DL_FUNC) &savvy_compat_level_range__impl, 0},
     {"savvy_concat_arr__impl", (DL_FUNC) &savvy_concat_arr__impl, 1},
@@ -3945,6 +4096,35 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyGroupBy_agg__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_agg__impl, 2},
     {"savvy_PlRLazyGroupBy_head__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_head__impl, 2},
     {"savvy_PlRLazyGroupBy_tail__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_tail__impl, 2},
+    {"savvy_PlROptFlags_copy__impl", (DL_FUNC) &savvy_PlROptFlags_copy__impl, 1},
+    {"savvy_PlROptFlags_default__impl", (DL_FUNC) &savvy_PlROptFlags_default__impl, 0},
+    {"savvy_PlROptFlags_empty__impl", (DL_FUNC) &savvy_PlROptFlags_empty__impl, 0},
+    {"savvy_PlROptFlags_get_check_order_observe__impl", (DL_FUNC) &savvy_PlROptFlags_get_check_order_observe__impl, 1},
+    {"savvy_PlROptFlags_get_cluster_with_columns__impl", (DL_FUNC) &savvy_PlROptFlags_get_cluster_with_columns__impl, 1},
+    {"savvy_PlROptFlags_get_comm_subexpr_elim__impl", (DL_FUNC) &savvy_PlROptFlags_get_comm_subexpr_elim__impl, 1},
+    {"savvy_PlROptFlags_get_comm_subplan_elim__impl", (DL_FUNC) &savvy_PlROptFlags_get_comm_subplan_elim__impl, 1},
+    {"savvy_PlROptFlags_get_eager__impl", (DL_FUNC) &savvy_PlROptFlags_get_eager__impl, 1},
+    {"savvy_PlROptFlags_get_fast_projection__impl", (DL_FUNC) &savvy_PlROptFlags_get_fast_projection__impl, 1},
+    {"savvy_PlROptFlags_get_predicate_pushdown__impl", (DL_FUNC) &savvy_PlROptFlags_get_predicate_pushdown__impl, 1},
+    {"savvy_PlROptFlags_get_projection_pushdown__impl", (DL_FUNC) &savvy_PlROptFlags_get_projection_pushdown__impl, 1},
+    {"savvy_PlROptFlags_get_simplify_expression__impl", (DL_FUNC) &savvy_PlROptFlags_get_simplify_expression__impl, 1},
+    {"savvy_PlROptFlags_get_slice_pushdown__impl", (DL_FUNC) &savvy_PlROptFlags_get_slice_pushdown__impl, 1},
+    {"savvy_PlROptFlags_get_streaming__impl", (DL_FUNC) &savvy_PlROptFlags_get_streaming__impl, 1},
+    {"savvy_PlROptFlags_get_type_check__impl", (DL_FUNC) &savvy_PlROptFlags_get_type_check__impl, 1},
+    {"savvy_PlROptFlags_get_type_coercion__impl", (DL_FUNC) &savvy_PlROptFlags_get_type_coercion__impl, 1},
+    {"savvy_PlROptFlags_set_check_order_observe__impl", (DL_FUNC) &savvy_PlROptFlags_set_check_order_observe__impl, 2},
+    {"savvy_PlROptFlags_set_cluster_with_columns__impl", (DL_FUNC) &savvy_PlROptFlags_set_cluster_with_columns__impl, 2},
+    {"savvy_PlROptFlags_set_comm_subexpr_elim__impl", (DL_FUNC) &savvy_PlROptFlags_set_comm_subexpr_elim__impl, 2},
+    {"savvy_PlROptFlags_set_comm_subplan_elim__impl", (DL_FUNC) &savvy_PlROptFlags_set_comm_subplan_elim__impl, 2},
+    {"savvy_PlROptFlags_set_eager__impl", (DL_FUNC) &savvy_PlROptFlags_set_eager__impl, 2},
+    {"savvy_PlROptFlags_set_fast_projection__impl", (DL_FUNC) &savvy_PlROptFlags_set_fast_projection__impl, 2},
+    {"savvy_PlROptFlags_set_predicate_pushdown__impl", (DL_FUNC) &savvy_PlROptFlags_set_predicate_pushdown__impl, 2},
+    {"savvy_PlROptFlags_set_projection_pushdown__impl", (DL_FUNC) &savvy_PlROptFlags_set_projection_pushdown__impl, 2},
+    {"savvy_PlROptFlags_set_simplify_expression__impl", (DL_FUNC) &savvy_PlROptFlags_set_simplify_expression__impl, 2},
+    {"savvy_PlROptFlags_set_slice_pushdown__impl", (DL_FUNC) &savvy_PlROptFlags_set_slice_pushdown__impl, 2},
+    {"savvy_PlROptFlags_set_streaming__impl", (DL_FUNC) &savvy_PlROptFlags_set_streaming__impl, 2},
+    {"savvy_PlROptFlags_set_type_check__impl", (DL_FUNC) &savvy_PlROptFlags_set_type_check__impl, 2},
+    {"savvy_PlROptFlags_set_type_coercion__impl", (DL_FUNC) &savvy_PlROptFlags_set_type_coercion__impl, 2},
     {"savvy_PlRPartitioning_base_path__impl", (DL_FUNC) &savvy_PlRPartitioning_base_path__impl, 1},
     {"savvy_PlRPartitioning_new_by_key__impl", (DL_FUNC) &savvy_PlRPartitioning_new_by_key__impl, 4},
     {"savvy_PlRPartitioning_new_max_size__impl", (DL_FUNC) &savvy_PlRPartitioning_new_max_size__impl, 3},
