@@ -156,6 +156,7 @@ pl__collect_all <- function(
     engine <- arg_match0(engine, c("auto", "in-memory", "streaming"))
 
     lfs <- lapply(lazy_frames, \(x) x$`_ldf`)
+    # TODO: add support for argument `optimizations`
     optflags <- list(
       type_coercion = TRUE,
       predicate_pushdown = TRUE,
