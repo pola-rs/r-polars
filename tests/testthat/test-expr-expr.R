@@ -1865,50 +1865,10 @@ test_that("diff", {
 })
 
 test_that("pct_change", {
-  l <- list(a = c(10L, 11L, 12L, NA_integer_, NA_integer_, 12L))
+  df <- pl$DataFrame(a = c(10:12, NA, 12L))
 
-  r_shift <- \(x, n) {
-    idx <- seq_along(x) - n
-    idx[idx <= 0] <- Inf
-    x[idx]
-  }
-
-  r_fill_fwd <- \(x, lim = Inf) {
-    last_seen <- NA
-    lim_ct <- 0L
-    sapply(x, \(this_val) {
-      if (is.na(this_val)) {
-        lim_ct <<- lim_ct + 1L
-        if (lim_ct > lim) {
-          this_val # lim_ct exceed lim since last_seen, return NA
-        } else {
-          last_seen # return last_seen
-        }
-      } else {
-        lim_ct <<- 0L # reset counter
-        last_seen <<- this_val # reset last_seen
-        this_val
-      }
-    })
-  }
-
-  r_pct_chg <- function(x, n = 1) {
-    xf <- r_fill_fwd(x)
-    xs <- r_shift(xf, n)
-    (xf - xs) / xs
-  }
-
-  expect_equal(
-    pl$DataFrame(!!!l)$select(
-      n1 = pl$col("a")$pct_change(),
-      n2 = pl$col("a")$pct_change(2),
-      n0 = pl$col("a")$pct_change(0)
-    ),
-    pl$DataFrame(
-      n1 = r_pct_chg(l$a),
-      n2 = r_pct_chg(l$a, n = 2),
-      n0 = r_pct_chg(l$a, n = 0)
-    )
+  expect_snapshot(
+    df$select(pl$col("a")$pct_change())
   )
 })
 
