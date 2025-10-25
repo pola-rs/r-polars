@@ -801,9 +801,8 @@ impl PlRLazyFrame {
                 }
                 unified_scan_args.cloud_options = Some(cloud_options.with_max_retries(retries));
             }
-            let lf =
-                LazyFrame::scan_ipc_sources(sources.into(), Default::default(), unified_scan_args)
-                    .map_err(RPolarsErr::from)?;
+            let lf = LazyFrame::scan_ipc_sources(sources, Default::default(), unified_scan_args)
+                .map_err(RPolarsErr::from)?;
             Ok(lf.into())
         }
         #[cfg(target_arch = "wasm32")]
