@@ -178,6 +178,12 @@ jobs:
 
       - uses: rui314/setup-mold@v1
 
+      - name: Install mold on Rtools
+        if: runner.os == 'Windows'
+        run: |
+          pacman -Sy --noconfirm
+          pacman -S --noconfirm --needed mingw-w64-x86_64-mold
+
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: "src/rust -> target"
