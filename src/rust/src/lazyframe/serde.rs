@@ -22,10 +22,7 @@ impl PlRLazyFrame {
 
     fn deserialize_binary(data: RawSexp) -> Result<Self> {
         let reader = BufReader::new(data.as_slice());
-        let lp = DslPlan::deserialize_versioned(reader)
-            .map_err(|_| "The input value is not a valid serialized LazyFrame.")?;
+        let lp = DslPlan::deserialize_versioned(reader).map_err(RPolarsErr::from)?;
         Ok(LazyFrame::from(lp).into())
     }
-
-    // TODO: deserialize_json
 }
