@@ -82,10 +82,6 @@ pl__scan_ipc <- function(
   include_file_paths = NULL
 ) {
   check_dots_empty0(...)
-  check_character(source, allow_na = FALSE)
-  if (length(source) == 0) {
-    abort("`source` must have length > 0.")
-  }
   check_list_of_polars_dtype(hive_schema, allow_null = TRUE)
 
   if (!is.null(hive_schema)) {
