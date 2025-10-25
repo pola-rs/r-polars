@@ -114,6 +114,7 @@ jobs:
 
       - uses: r-lib/actions/check-r-package@v2
         env:
+          LIBR_POLARS_BUILD: "false"
           NOT_CRAN: "false"
         with:
           upload-snapshots: true
