@@ -2,14 +2,15 @@
 
 # exported in zzz.R
 compare_proxy.polars_expr <- function(x, path) {
-  obj <- tryCatch(
-    x$meta$serialize(format = "json"),
-    error = function(e) {
-      x$`_rexpr`$as_str()
-    }
+  list(
+    object = tryCatch(
+      x$meta$serialize(format = "json"),
+      error = function(e) {
+        x$`_rexpr`$as_str()
+      }
+    ),
+    path = path
   )
-
-  list(object = obj, path = path)
 }
 
 # nolint end
