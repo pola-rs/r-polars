@@ -5,17 +5,7 @@
 r_to_py.polars_series <- function(x, convert = FALSE) {
   check_installed("nanoarrow", version = "0.7.0.9000") # TODO: update to 0.8.0 after the release
 
-  pypl <- try_fetch(
-    reticulate::import("polars", convert = FALSE),
-    error = function(cnd) {
-      abort(
-        c(
-          "Python Polars is not available in the reticulate environment."
-        ),
-        parent = cnd
-      )
-    }
-  )
+  pypl <- import_py_polars()
 
   target_compat_level <- get_target_compat_level(pypl)
 
