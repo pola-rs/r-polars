@@ -42,6 +42,7 @@ Suggests:
     pkgload,
     purrr (>= 1.1.0),
     rmarkdown,
+    reticulate,
     testthat (>= 3.0.0),
     tibble (>= 3.3.0),
     vctrs,

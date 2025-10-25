@@ -230,3 +230,11 @@ infer_polars_dtype.vctrs_vctr <- function(x, ...) {
     dtype_from_sliced
   }
 }
+
+#' @export
+infer_polars_dtype.polars.series.series.Series <- function(x, ...) {
+  as_polars_series(x$clear())$dtype
+}
+
+#' @export
+infer_polars_dtype.polars.dataframe.frame.DataFrame <- infer_polars_dtype.polars.series.series.Series
