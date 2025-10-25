@@ -11,6 +11,11 @@ This is an update that corresponds to Python Polars 1.35.0.
 - `polars_info()` shows the corresponding Python Polars version and the supported
   Polars CompatLevel (#1591).
 
+### Bug fixes
+
+- `<expr>$pct_change()` preserves null values
+  ([pola-rs/polars#24952](https://github.com/pola-rs/polars/pull/24952/files)).
+
 ## polars 1.4.0
 
 This is an update that corresponds to Python Polars 1.34.0.
