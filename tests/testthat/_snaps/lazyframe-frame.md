@@ -6,7 +6,9 @@
       Error:
       ! Evaluation failed in `$serialize()`.
       Caused by error:
-      ! serialization not supported for this 'opaque' function
+      ! serialization failed
+      
+      error: serialization not supported for this 'opaque' function
 
 # deserialize lazyframe' error
 

@@ -1,10 +1,12 @@
 # Test reading data from Apache Arrow file
 
     Code
-      pl$scan_ipc(character(0))
+      pl$scan_ipc(character(0))$collect()
     Condition
-      Error in `pl$scan_ipc()`:
-      ! `source` must have length > 0.
+      Error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! failed to retrieve first file schema (ipc): empty input: paths: [].: 'ipc scan': 'sink'
 
 ---
 
@@ -12,7 +14,19 @@
       pl$scan_ipc(0)
     Condition
       Error in `pl$scan_ipc()`:
-      ! `source` must be a character vector, not the number 0.
+      ! Evaluation failed in `$scan_ipc()`.
+      Caused by error:
+      ! Argument `source` must be character, not double
+
+---
+
+    Code
+      pl$scan_ipc(c("foo", NA_character_, "bar"))
+    Condition
+      Error in `pl$scan_ipc()`:
+      ! Evaluation failed in `$scan_ipc()`.
+      Caused by error:
+      ! `NA` can't be included in scan sources.
 
 ---
 

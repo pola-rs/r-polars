@@ -732,11 +732,9 @@ impl PlRLazyFrame {
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            let source = source
-                .to_vec()
-                .iter()
-                .map(|s| PlPath::new(s))
-                .collect::<Vec<_>>();
+            use polars::polars_utils::slice_enum::Slice;
+
+            let sources = <Wrap<ScanSources>>::try_from(source)?.0;
             let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
             let retries = <Wrap<usize>>::try_from(retries)?.0;
             let hive_schema = match hive_schema {
@@ -779,17 +777,18 @@ impl PlRLazyFrame {
             #[cfg(target_arch = "wasm32")]
             let cloud_options: Option<Vec<(String, String)>> = None;
 
-            let mut args = ScanArgsIpc {
-                n_rows,
+            let mut unified_scan_args = UnifiedScanArgs {
+                pre_slice: n_rows.map(|len| Slice::Positive { offset: 0, len }),
                 cache,
                 rechunk,
                 row_index,
                 cloud_options: None,
                 hive_options,
                 include_file_paths: include_file_paths.map(|x| x.into()),
+                ..Default::default()
             };
 
-            let first_path = source.first().unwrap().clone().into();
+            let first_path = sources.first_path().map(|p| p.into_owned());
 
             // TODO: Refactor with adding `cloud` feature as like Python Polars
             #[cfg(not(target_arch = "wasm32"))]
@@ -800,9 +799,11 @@ impl PlRLazyFrame {
                 if let Some(file_cache_ttl) = file_cache_ttl {
                     cloud_options.file_cache_ttl = file_cache_ttl;
                 }
-                args.cloud_options = Some(cloud_options.with_max_retries(retries));
+                unified_scan_args.cloud_options = Some(cloud_options.with_max_retries(retries));
             }
-            let lf = LazyFrame::scan_ipc_files(source.into(), args).map_err(RPolarsErr::from)?;
+            let lf =
+                LazyFrame::scan_ipc_sources(sources.into(), Default::default(), unified_scan_args)
+                    .map_err(RPolarsErr::from)?;
             Ok(lf.into())
         }
         #[cfg(target_arch = "wasm32")]
