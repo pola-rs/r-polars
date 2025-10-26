@@ -6,7 +6,8 @@ patrick::with_parameters_test_that(
       "int32", as_polars_series(1:3),
       "int128", as_polars_series(1:3)$cast(pl$Int128),
       "string (with name)", as_polars_series(letters[1:3], "foo"),
-      # TODO: test categorical and enum, after the bug is fixed
+      # TODO: test categorical and enum, after the bug is fixed in upstream
+      # https://github.com/pola-rs/polars/issues/25025
     )
   },
   code = {
