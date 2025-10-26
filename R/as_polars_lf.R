@@ -36,3 +36,15 @@ as_polars_lf.default <- function(x, ...) {
 as_polars_lf.polars_lazy_frame <- function(x, ...) {
   x
 }
+
+#' @export
+# nolint start: object_length_linter
+as_polars_lf.polars.lazyframe.frame.LazyFrame <- function(x, ...) {
+  # nolint end
+  pypl <- import_py_polars()
+  check_py_version(pypl)
+
+  x$serialize() |>
+    as.raw() |>
+    pl__deserialize_lf()
+}
