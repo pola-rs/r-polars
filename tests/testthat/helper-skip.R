@@ -23,7 +23,8 @@ skip_if_no_py_polars <- function(version = NULL) {
   }
 
   if (!is.null(version)) {
-    current_version <- reticulate::import("polars", convert = FALSE)$`__version__` |>
+    current_version <- reticulate::import("polars", convert = FALSE)$`__package__` |>
+      reticulate::import("importlib.metadata")$version() |>
       reticulate::py_to_r()
     if (!identical(current_version, version)) {
       skip(sprintf(

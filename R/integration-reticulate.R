@@ -28,7 +28,8 @@ get_target_compat_level <- function(python_polars) {
 check_py_version <- function(python_polars) {
   call <- caller_env()
 
-  current_version <- python_polars$`__version__` |>
+  current_version <- python_polars$`__package__` |>
+    reticulate::import("importlib.metadata")$version() |>
     reticulate::py_to_r()
   required_version <- PY_VERSION
 
