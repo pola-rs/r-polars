@@ -237,4 +237,6 @@ infer_polars_dtype.polars.series.series.Series <- function(x, ...) {
 }
 
 #' @export
+# nolint start: object_length_linter
 infer_polars_dtype.polars.dataframe.frame.DataFrame <- infer_polars_dtype.polars.series.series.Series
+# nolint end
