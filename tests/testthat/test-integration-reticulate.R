@@ -11,6 +11,7 @@ patrick::with_parameters_test_that(
     )
   },
   code = {
+    skip_on_cran_except_r_universe()
     skip_if_no_py_polars()
     skip_if_no_nanoarrow_py_integration()
 
@@ -27,6 +28,7 @@ patrick::with_parameters_test_that(
 )
 
 test_that("LazyFrame roundtrip via py-polars", {
+  skip_on_cran_except_r_universe()
   skip_if_no_py_polars(version = PY_VERSION)
   # In dev version, we may depends on non-released polars,
   # so they may have the different DSL versions and are not compatible.

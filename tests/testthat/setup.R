@@ -19,7 +19,10 @@ if (rlang::is_installed("mirai")) {
 }
 
 # Set up for reticulate tests
-if (rlang::is_installed("reticulate", version = "1.43.0")) {
+if (
+  rlang::is_installed("reticulate", version = "1.43.0") &&
+    (identical(Sys.getenv("NOT_CRAN"), "true") || !nzchar(Sys.getenv("MY_UNIVERSE")))
+) {
   withr::local_envvar(
     list(UV_PRERELEASE = "allow"),
     .local_envir = teardown_env()

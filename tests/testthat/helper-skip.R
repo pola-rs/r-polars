@@ -15,6 +15,13 @@ skip_on_dev_version <- function() {
   }
 }
 
+# Skip on CRAN, but run on R-universe
+skip_on_cran_except_r_universe <- function() {
+  if (!nzchar(Sys.getenv("MY_UNIVERSE"))) {
+    skip_on_cran()
+  }
+}
+
 skip_if_no_py_polars <- function(version = NULL) {
   skip_if_not_installed("reticulate")
 
