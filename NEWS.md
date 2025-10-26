@@ -10,6 +10,11 @@ This is an update that corresponds to Python Polars 1.35.0.
 - Arithmetic operations between list columns are supported (#1589).
 - `polars_info()` shows the corresponding Python Polars version and the supported
   Polars CompatLevel (#1591).
+- Experimental `{reticulate}` integration.
+  Series, DataFrame, and LazyFrame can be exchanged between R Polars and Python Polars
+  using `reticulate::r_to_py()` and `as_polars_*` functions (#1607).
+  Conversion of Series and DataFrame relies on `{nanoarrow}`
+  ([apache/arrow-nanoarrow#817](https://github.com/apache/arrow-nanoarrow/pull/817)).
 
 ### Bug fixes
 
