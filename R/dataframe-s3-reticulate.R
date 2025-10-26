@@ -4,7 +4,7 @@
 # TODO: support `convert = TRUE`
 r_to_py.polars_data_frame <- function(x, convert = FALSE) {
   py_series <- as_polars_series(x) |>
-    r_to_py.polars_series(convert = convert)
+    r_to_py.polars_series(convert = FALSE)
 
   py_series$struct$unnest()
 }
