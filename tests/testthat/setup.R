@@ -17,3 +17,15 @@ if (rlang::is_installed("mirai")) {
     if (!rlang::is_installed("polars")) pkgload::load_all()
   })
 }
+
+# Set up for reticulate tests
+if (rlang::is_installed("reticulate", version = "1.43.0")) {
+  withr::local_envvar(
+    list(UV_PRERELEASE = "allow"),
+    .local_envir = teardown_env()
+  )
+  reticulate::py_require(sprintf("polars==%s", PY_VERSION))
+  reticulate::py_require("nanoarrow")
+  # Required Python Polars may not be installable, so wrap in try()
+  try(reticulate::py_config())
+}
