@@ -26,6 +26,6 @@ if (rlang::is_installed("reticulate", version = "1.43.0")) {
   )
   reticulate::py_require(sprintf("polars==%s", PY_VERSION))
   reticulate::py_require("nanoarrow")
-  # Required Python Polars may not be installable, so wrap in try()
+  # Required Python Polars may not be installed, so wrap in try()
   try(reticulate::py_config(), silent = TRUE)
 }
