@@ -34,7 +34,7 @@ test_that("LazyFrame roundtrip via py-polars", {
   expect_equal(
     reticulate::r_to_py(lf) |>
       as_polars_lf() |>
-      lf$collect(),
+      as_polars_df(),
     lf$collect()
   )
 })
