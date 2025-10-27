@@ -106,7 +106,7 @@ jobs:
           echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >>"$GITHUB_ENV"
 
       - name: upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: libs-${{ matrix.target }}
           path: ${{ env.ARTIFACT_NAME }}
