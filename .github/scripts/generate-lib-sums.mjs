@@ -6,6 +6,13 @@ const TAG_PREFIX = "lib-v";
 
 async function getLatestLibRelease() {
   const response = await fetch(`https://api.github.com/repos/${REPO}/releases`);
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch releases: ${response.status} ${response.statusText}`
+    );
+  }
+
   const releases = await response.json();
 
   const libReleases = releases.filter((r) => r.tag_name.startsWith(TAG_PREFIX));
