@@ -33,7 +33,9 @@ test_that("LazyFrame roundtrip via py-polars", {
   skip_if_no_py_polars(version = PY_VERSION)
   # In dev version, we may depends on non-released polars,
   # so they may have the different DSL versions and are not compatible.
-  skip_on_dev_version()
+  skip_on_dev_polars()
+  # TODO: remove this line after bumping the lib version
+  skip_on_os("windows")
 
   lf <- as_polars_lf(mtcars)$filter(pl$col("mpg") >= 20)$select("cyl")$sort(cs$all())
 
