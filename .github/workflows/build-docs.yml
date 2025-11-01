@@ -10,7 +10,6 @@ on:
       - man/**
       - R/**
       - src/**
-      - tests/**
       - tools/**
       - vignettes/*
       - configure*
@@ -29,7 +28,6 @@ on:
       - man/**
       - R/**
       - src/**
-      - tests/**
       - tools/**
       - vignettes/*
       - configure*
