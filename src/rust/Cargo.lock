@@ -2254,6 +2254,7 @@ dependencies = [
  "either",
  "flume",
  "mimalloc",
+ "parking_lot",
  "polars",
  "polars-core",
  "polars-error",

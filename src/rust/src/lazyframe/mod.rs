@@ -1,8 +1,10 @@
 mod general;
+mod optflags;
 mod serde;
 mod sink;
 
 use crate::prelude::*;
+use parking_lot::RwLock;
 use savvy::{EnvironmentSexp, savvy};
 
 #[savvy]
@@ -27,5 +29,26 @@ impl TryFrom<EnvironmentSexp> for &PlRLazyFrame {
             .expect("Failed to get `.ptr` from the object")
             .ok_or("The object is not a valid polars lazy frame")?;
         <&PlRLazyFrame>::try_from(ptr).map_err(|e| e.to_string())
+    }
+}
+
+#[repr(transparent)]
+pub struct PlROptFlags {
+    pub inner: RwLock<OptFlags>,
+}
+
+impl Clone for PlROptFlags {
+    fn clone(&self) -> Self {
+        Self {
+            inner: RwLock::new(*self.inner.read()),
+        }
+    }
+}
+
+impl From<OptFlags> for PlROptFlags {
+    fn from(inner: OptFlags) -> Self {
+        PlROptFlags {
+            inner: RwLock::new(inner),
+        }
     }
 }

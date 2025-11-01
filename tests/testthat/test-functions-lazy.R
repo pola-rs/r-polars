@@ -64,3 +64,22 @@ test_that("arg_sort_by", {
     fixed = TRUE
   )
 })
+
+test_that("pl$collect_all() works", {
+  lf <- as_polars_lf(mtcars)
+  cyl_4 <- lf$filter(pl$col("cyl") == 4)
+  cyl_6 <- lf$filter(pl$col("cyl") == 6)
+  out <- pl$collect_all(list(cyl_4, cyl_6))
+
+  expect_equal(
+    out,
+    list(
+      as_polars_df(mtcars[mtcars$cyl == 4, ]),
+      as_polars_df(mtcars[mtcars$cyl == 6, ])
+    )
+  )
+
+  expect_snapshot(pl$collect_all(cyl_4), error = TRUE)
+  expect_snapshot(pl$collect_all(list(cyl_4), "foo"), error = TRUE)
+  expect_snapshot(pl$collect_all(list(cyl_4), engine = "foo"), error = TRUE)
+})
