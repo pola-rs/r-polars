@@ -76,6 +76,9 @@ jobs:
           http-user-agent: ${{ runner.os == 'Windows' && 'release' || '' }}
           use-public-rspm: true
           Ncpus: "2"
+          # To install the edge version of nanoarrow
+          # TODO: remove this after nanoarrow 0.8.0 release
+          extra-repositories: https://apache.r-universe.dev/nanoarrow
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
