@@ -158,14 +158,14 @@ pl__collect_all <- function(
     lfs <- lapply(lazy_frames, \(x) x$`_ldf`)
     # TODO: add support for argument `optimizations`
     optflags <- list(
-      type_coercion = TRUE,
+      comm_subexpr_elim = TRUE,
+      comm_subplan_elim = TRUE,
+      cluster_with_columns = TRUE,
       predicate_pushdown = TRUE,
       projection_pushdown = TRUE,
       simplify_expression = TRUE,
       slice_pushdown = TRUE,
-      comm_subplan_elim = TRUE,
-      comm_subexpr_elim = TRUE,
-      cluster_with_columns = TRUE
+      type_coercion = TRUE
     )
 
     collect_all(lfs, engine = engine, optflags) |>

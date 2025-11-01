@@ -52,7 +52,7 @@ impl PlROptFlags {
         self.inner.write().set(OptFlags::COMM_SUBEXPR_ELIM, value);
     }
 
-    pub fn set_check_order_observe(&self, value: bool) {
-        self.inner.write().set(OptFlags::CHECK_ORDER_OBSERVE, value);
+    pub fn set_type_coercion(&self, value: bool) {
+        self.inner.write().set(OptFlags::TYPE_COERCION, value);
     }
 }
