@@ -48,6 +48,11 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Disable auto crlf on Windows
+        if: runner.os == 'Windows'
+        # https://github.com/pola-rs/r-polars/issues/1625
+        run: git config --global core.autocrlf false
+
       - name: prep Rust
         working-directory: src/rust
         run: |
