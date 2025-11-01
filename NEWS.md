@@ -1,6 +1,6 @@
 # NEWS
 
-## polars (development version)
+## polars 1.5.0
 
 This is an update that corresponds to Python Polars 1.35.1.
 
@@ -19,7 +19,7 @@ This is an update that corresponds to Python Polars 1.35.1.
 ### Bug fixes
 
 - `<expr>$pct_change()` preserves null values
-  ([pola-rs/polars#24952](https://github.com/pola-rs/polars/pull/24952/files)).
+  (#1603, [pola-rs/polars#24952](https://github.com/pola-rs/polars/pull/24952/files)).
 
 ## polars 1.4.0
 
