@@ -7,6 +7,11 @@ on:
       - edited
       - synchronize
       - reopened
+      - labeled
+      - unlabeled
+      - ready_for_review
+      - review_requested
+      - review_request_removed
 
 permissions:
   pull-requests: read

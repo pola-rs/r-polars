@@ -32,3 +32,4 @@ jobs:
         with:
           title: "chore: Regen the sums file for installing with binary rust libraries"
           delete-branch: true
+          base: main
