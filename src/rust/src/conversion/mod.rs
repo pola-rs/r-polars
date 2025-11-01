@@ -1050,7 +1050,7 @@ impl TryFrom<ListSexp> for Wrap<PlROptFlags> {
     type Error = savvy::Error;
 
     fn try_from(list: ListSexp) -> Result<Self, savvy::Error> {
-        let opts = PlROptFlags::empty()?;
+        let opts = PlROptFlags::empty();
         let _ = list.names_iter().map(|x| {
             let elem_name: &str = x;
             let elem_value = list.get(elem_name).unwrap().into_typed();

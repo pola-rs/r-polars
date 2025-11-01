@@ -592,9 +592,6 @@ SEXP savvy_PlRLazyGroupBy_agg__ffi(SEXP self__, SEXP c_arg__aggs);
 SEXP savvy_PlRLazyGroupBy_head__ffi(SEXP self__, SEXP c_arg__n);
 SEXP savvy_PlRLazyGroupBy_tail__ffi(SEXP self__, SEXP c_arg__n);
 
-// methods and associated functions for PlROptFlags
-
-
 // methods and associated functions for PlRPartitioning
 SEXP savvy_PlRPartitioning_base_path__ffi(SEXP self__);
 SEXP savvy_PlRPartitioning_new_by_key__ffi(SEXP c_arg__base_path, SEXP c_arg__by, SEXP c_arg__include_key, SEXP c_arg__per_partition_sort_by);

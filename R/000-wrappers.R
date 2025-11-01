@@ -4341,33 +4341,6 @@ class(`PlRLazyGroupBy`) <- c("PlRLazyGroupBy__bundle", "savvy_polars__sealed")
   cat('PlRLazyGroupBy\n')
 }
 
-### wrapper functions for PlROptFlags
-
-
-`.savvy_wrap_PlROptFlags` <- function(ptr) {
-  e <- new.env(parent = emptyenv())
-  e$.ptr <- ptr
-
-
-  class(e) <- c("PlROptFlags", "savvy_polars__sealed")
-  e
-}
-
-
-
-`PlROptFlags` <- new.env(parent = emptyenv())
-
-### associated functions for PlROptFlags
-
-
-
-class(`PlROptFlags`) <- c("PlROptFlags__bundle", "savvy_polars__sealed")
-
-#' @export
-`print.PlROptFlags__bundle` <- function(x, ...) {
-  cat('PlROptFlags\n')
-}
-
 ### wrapper functions for PlRPartitioning
 
 `PlRPartitioning_base_path` <- function(self) {

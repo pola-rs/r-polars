@@ -32,7 +32,6 @@ impl TryFrom<EnvironmentSexp> for &PlRLazyFrame {
     }
 }
 
-#[savvy]
 #[repr(transparent)]
 pub struct PlROptFlags {
     pub inner: RwLock<OptFlags>,
