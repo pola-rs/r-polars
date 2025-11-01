@@ -104,7 +104,6 @@ lazyframe__serialize <- function(..., format = c("binary", "json")) {
   })
 }
 
-# TODO: support json format
 #' @param data A raw vector of serialized [LazyFrame].
 #' @rdname lazyframe__serialize
 pl__deserialize_lf <- function(data) {

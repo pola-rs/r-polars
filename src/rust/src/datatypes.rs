@@ -133,7 +133,7 @@ impl PlRDataType {
     pub fn new_decimal(scale: NumericScalar, precision: NumericScalar) -> Result<Self> {
         let precision = <Wrap<usize>>::try_from(precision)?.0;
         let scale = <Wrap<usize>>::try_from(scale)?.0;
-        polars_compute::decimal::dec128_verify_prec_scale(precision, scale)
+        polars::polars_compute::decimal::dec128_verify_prec_scale(precision, scale)
             .map_err(RPolarsErr::from)?;
         Ok(DataType::Decimal(precision, scale).into())
     }

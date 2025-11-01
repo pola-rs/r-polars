@@ -106,3 +106,9 @@ in the `src/rust/Cargo.toml` file's `package.rust-version` field.
 
 This MSRV is for the default features.
 For other features, the nightly Rust toolchain is required.
+
+### Builds for WASM/Emscripten
+
+For builds targeting WASM/Emscripten (e.g., [webR](https://docs.r-wasm.org/webr/latest/)),
+features that are not supported in upstream Polars for WASM,
+such as the streaming engine and file I/O, are automatically disabled.

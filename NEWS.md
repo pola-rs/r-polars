@@ -2,7 +2,13 @@
 
 ## polars (development version)
 
-This is an update that corresponds to Python Polars 1.35.0.
+### New features
+
+- `pl$collect_all()` to efficiently collect a list of LazyFrames (#1598).
+
+## polars 1.5.0
+
+This is an update that corresponds to Python Polars 1.35.1.
 
 ### New features
 
@@ -10,7 +16,16 @@ This is an update that corresponds to Python Polars 1.35.0.
 - Arithmetic operations between list columns are supported (#1589).
 - `polars_info()` shows the corresponding Python Polars version and the supported
   Polars CompatLevel (#1591).
-- `pl$collect_all()` to efficiently collect a list of LazyFrames (#1598).
+- Experimental `{reticulate}` integration.
+  Series, DataFrame, and LazyFrame can be exchanged between R Polars and Python Polars
+  using `reticulate::r_to_py()` and `as_polars_*` functions (#1607).
+  Conversion of Series and DataFrame relies on `{nanoarrow}`
+  ([apache/arrow-nanoarrow#817](https://github.com/apache/arrow-nanoarrow/pull/817)).
+
+### Bug fixes
+
+- `<expr>$pct_change()` preserves null values
+  (#1603, [pola-rs/polars#24952](https://github.com/pola-rs/polars/pull/24952/files)).
 
 ## polars 1.4.0
 

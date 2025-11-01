@@ -1,0 +1,35 @@
+name: Build tools/lib-sums.tsv
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build-lib-sums:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'release' && startsWith(github.event.release.tag_name, 'lib-v'))
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Generate lib-sums.tsv
+        run: node .github/scripts/generate-lib-sums.mjs
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          title: "chore: Regen the sums file for installing with binary rust libraries"
+          delete-branch: true
+          base: main

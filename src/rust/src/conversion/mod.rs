@@ -8,8 +8,8 @@ pub use categorical::PlRCategories;
 use polars::prelude::cloud::CloudOptions;
 use polars::series::ops::NullBehavior;
 use savvy::{
-    ListSexp, NumericScalar, NumericSexp, NumericTypedSexp, Sexp, StringSexp, TypedSexp,
-    sexp::na::NotAvailableValue,
+    ListSexp, NotAvailableValue, NumericScalar, NumericSexp, NumericTypedSexp, Sexp, StringSexp,
+    TypedSexp,
 };
 use search_sorted::SearchSortedSide;
 pub mod base_date;
@@ -1043,6 +1043,28 @@ impl TryFrom<&str> for Wrap<UnicodeForm> {
             _ => return Err("unreachable".to_string()),
         };
         Ok(Wrap(parsed))
+    }
+}
+
+impl TryFrom<StringSexp> for Wrap<ScanSources> {
+    type Error = savvy::Error;
+
+    fn try_from(source: StringSexp) -> Result<Self, Self::Error> {
+        if source.is_empty() {
+            return Ok(Wrap(ScanSources::default()));
+        }
+
+        let plpaths = source
+            .iter()
+            .map(|s| {
+                if s.is_na() {
+                    return Err("`NA` can't be included in scan sources.");
+                }
+                Ok(PlPath::new(s))
+            })
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Wrap(ScanSources::Paths(plpaths.into())))
     }
 }
 

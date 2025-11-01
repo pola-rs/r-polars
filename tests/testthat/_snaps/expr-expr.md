@@ -236,6 +236,24 @@
       Caused by error:
       ! `null_behavior` must be one of "ignore" or "drop", not "not a null behavior".
 
+# pct_change
+
+    Code
+      df$select(pl$col("a")$pct_change())
+    Output
+      shape: (5, 1)
+      ┌──────────┐
+      │ a        │
+      │ ---      │
+      │ f64      │
+      ╞══════════╡
+      │ null     │
+      │ 0.1      │
+      │ 0.090909 │
+      │ null     │
+      │ null     │
+      └──────────┘
+
 # reshape
 
     Code

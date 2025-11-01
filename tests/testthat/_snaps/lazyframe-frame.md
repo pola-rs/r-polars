@@ -6,7 +6,9 @@
       Error:
       ! Evaluation failed in `$serialize()`.
       Caused by error:
-      ! serialization not supported for this 'opaque' function
+      ! serialization failed
+      
+      error: serialization not supported for this 'opaque' function
 
 # deserialize lazyframe' error
 
@@ -26,7 +28,7 @@
       Error in `pl$deserialize_lf()`:
       ! Evaluation failed in `$deserialize_lf()`.
       Caused by error:
-      ! The input value is not a valid serialized LazyFrame.
+      ! failed to read incoming DSL_VERSION: failed to fill whole buffer
 
 ---
 
@@ -36,7 +38,7 @@
       Error in `pl$deserialize_lf()`:
       ! Evaluation failed in `$deserialize_lf()`.
       Caused by error:
-      ! The input value is not a valid serialized LazyFrame.
+      ! dsl magic bytes not found
 
 # $to_dot() works
 
