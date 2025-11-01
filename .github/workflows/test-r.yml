@@ -158,8 +158,10 @@ jobs:
 
       - name: Disable auto crlf on Windows
         if: runner.os == 'Windows'
+        shell: powershell
         # https://github.com/pola-rs/r-polars/issues/1625
         run: |
+          git config --list --show-origin
           git config --global core.autocrlf false
           git config --global core.eol lf
 
