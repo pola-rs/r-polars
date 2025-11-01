@@ -25,6 +25,7 @@ polars_info <- function() {
       rust_crate = rust_polars_version()
     ),
     interchange = list(
+      # TODO: show schema hash related info
       py_version = PY_VERSION,
       compat_level = list(
         newest = pl__CompatLevel$newest

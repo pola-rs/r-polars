@@ -4,15 +4,35 @@ SCRIPT_ROOT <- "dev/generate-r-files/polars-version"
 
 git_rev <- RcppTOML::parseTOML("src/rust/Cargo.toml")$dependencies$`polars-core`$rev
 
-target_file <- glue::glue(
+py_version <- glue::glue(
   "https://raw.githubusercontent.com/pola-rs/polars/{git_rev}/py-polars/pyproject.toml"
-)
-
-py_version <- readr::read_file(target_file) |>
+) |>
+  readr::read_file() |>
   RcppTOML::parseTOML(fromFile = FALSE) |>
   _$project$version
 
-# TODO: reverse check? (the py version is released and the rev is the same?)
+py_semver <- glue::glue(
+  "https://raw.githubusercontent.com/pola-rs/polars/{git_rev}/py-polars/runtime/Cargo.toml"
+) |>
+  readr::read_file() |>
+  RcppTOML::parseTOML(fromFile = FALSE) |>
+  _$package$version
+
+# nolint start: line_length_linter
+dsl_schema_hash_current <- glue::glue(
+  "https://raw.githubusercontent.com/pola-rs/polars/{git_rev}/crates/polars-plan/dsl-schema-hashes.json"
+) |>
+  readr::read_file() |>
+  charToRaw() |>
+  tools::sha256sum(bytes = _)
+
+dsl_schema_hash_py <- glue::glue(
+  "https://raw.githubusercontent.com/pola-rs/polars/refs/tags/py-{py_semver}/crates/polars-plan/dsl-schema-hashes.json"
+) |>
+  readr::read_file() |>
+  charToRaw() |>
+  tools::sha256sum(bytes = _)
+# nolint end
 
 template <- readr::read_file(
   file.path(SCRIPT_ROOT, "templates", "polars-version.R.txt")

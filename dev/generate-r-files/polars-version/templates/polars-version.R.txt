@@ -1,1 +1,4 @@
 PY_VERSION <- "{{py_version}}"
+
+DSL_SCHEMA_HASH_PY <- "{{dsl_schema_hash_py}}"
+DSL_SCHEMA_HASH_CURRENT <- "{{dsl_schema_hash_current}}"

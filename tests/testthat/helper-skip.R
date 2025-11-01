@@ -1,5 +1,4 @@
-# https://github.com/r-lib/testthat/issues/2236
-skip_on_dev_version <- function() {
+skip_on_dev_polars <- function() {
   version <- asNamespace(testing_package())[[".__NAMESPACE__."]][["spec"]][[
     "version"
   ]] |>
@@ -7,8 +6,13 @@ skip_on_dev_version <- function() {
     unclass() |>
     getElement(1L)
 
+  is_released_dsl_hash <- identical(
+    DSL_SCHEMA_HASH_CURRENT,
+    DSL_SCHEMA_HASH_PY
+  )
+
   # We use larger than `9000` version for the development versions
-  if (tail(version, 1L) < 9000) {
+  if (tail(version, 1L) < 9000 || is_released_dsl_hash) {
     invisible()
   } else {
     skip("Skip on development versions.")
