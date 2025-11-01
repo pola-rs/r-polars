@@ -593,35 +593,7 @@ SEXP savvy_PlRLazyGroupBy_head__ffi(SEXP self__, SEXP c_arg__n);
 SEXP savvy_PlRLazyGroupBy_tail__ffi(SEXP self__, SEXP c_arg__n);
 
 // methods and associated functions for PlROptFlags
-SEXP savvy_PlROptFlags_copy__ffi(SEXP self__);
-SEXP savvy_PlROptFlags_default__ffi(void);
-SEXP savvy_PlROptFlags_empty__ffi(void);
-SEXP savvy_PlROptFlags_get_check_order_observe__ffi(SEXP self__);
-SEXP savvy_PlROptFlags_get_cluster_with_columns__ffi(SEXP self__);
-SEXP savvy_PlROptFlags_get_comm_subexpr_elim__ffi(SEXP self__);
-SEXP savvy_PlROptFlags_get_comm_subplan_elim__ffi(SEXP self__);
-SEXP savvy_PlROptFlags_get_eager__ffi(SEXP self__);
-SEXP savvy_PlROptFlags_get_fast_projection__ffi(SEXP self__);
-SEXP savvy_PlROptFlags_get_predicate_pushdown__ffi(SEXP self__);
-SEXP savvy_PlROptFlags_get_projection_pushdown__ffi(SEXP self__);
-SEXP savvy_PlROptFlags_get_simplify_expression__ffi(SEXP self__);
-SEXP savvy_PlROptFlags_get_slice_pushdown__ffi(SEXP self__);
-SEXP savvy_PlROptFlags_get_streaming__ffi(SEXP self__);
-SEXP savvy_PlROptFlags_get_type_check__ffi(SEXP self__);
-SEXP savvy_PlROptFlags_get_type_coercion__ffi(SEXP self__);
-SEXP savvy_PlROptFlags_set_check_order_observe__ffi(SEXP self__, SEXP c_arg__value);
-SEXP savvy_PlROptFlags_set_cluster_with_columns__ffi(SEXP self__, SEXP c_arg__value);
-SEXP savvy_PlROptFlags_set_comm_subexpr_elim__ffi(SEXP self__, SEXP c_arg__value);
-SEXP savvy_PlROptFlags_set_comm_subplan_elim__ffi(SEXP self__, SEXP c_arg__value);
-SEXP savvy_PlROptFlags_set_eager__ffi(SEXP self__, SEXP c_arg__value);
-SEXP savvy_PlROptFlags_set_fast_projection__ffi(SEXP self__, SEXP c_arg__value);
-SEXP savvy_PlROptFlags_set_predicate_pushdown__ffi(SEXP self__, SEXP c_arg__value);
-SEXP savvy_PlROptFlags_set_projection_pushdown__ffi(SEXP self__, SEXP c_arg__value);
-SEXP savvy_PlROptFlags_set_simplify_expression__ffi(SEXP self__, SEXP c_arg__value);
-SEXP savvy_PlROptFlags_set_slice_pushdown__ffi(SEXP self__, SEXP c_arg__value);
-SEXP savvy_PlROptFlags_set_streaming__ffi(SEXP self__, SEXP c_arg__value);
-SEXP savvy_PlROptFlags_set_type_check__ffi(SEXP self__, SEXP c_arg__value);
-SEXP savvy_PlROptFlags_set_type_coercion__ffi(SEXP self__, SEXP c_arg__value);
+
 
 // methods and associated functions for PlRPartitioning
 SEXP savvy_PlRPartitioning_base_path__ffi(SEXP self__);
