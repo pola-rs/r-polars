@@ -20,19 +20,22 @@ predicate evaluates as \code{null}).
 }
 \examples{
 df <- pl$DataFrame(
-  foo = c(2, 3, NA, 4, 0),
-  bar = c(5, 6, NA, NA, 0),
-  ham = c("a", "b", NA, "c", "d")
+  ccy = c("USD", "EUR", "USD", "JPY"),
+  year = c(2021, 2022, 2023, 2023),
+  total = c(3245, NA, -6680, 25000),
 )
 
-# Remove rows matching a condition:
-df$remove(pl$col("bar") >= 5)
+# Remove rows matching a condition. Note that the row where `total` is null
+# is kept:
+df$remove(pl$col("total") >= 0)
 
-# Discard rows based on multiple conditions, combined with and/or operators:
-df$remove((pl$col("foo") >= 0) & (pl$col("bar") >= 0))
+# Note that this is *not* the same as simply inverting the condition in
+# `$filter()` because `$filter()` doesn't keep predicates that evaluate to
+# null:
+df$filter(pl$col("total") < 0)
 
-df$remove((pl$col("foo") >= 0) | (pl$col("bar") >= 0))
+# We can use multiple conditions, combined with and/or operators:
+df$remove((pl$col("total") >= 0) & (pl$col("ccy") == "USD"))
 
-# Remove rows by comparing two columns against each other:
-df$remove(pl$col("foo")$ne_missing(pl$col("bar")))
+df$remove((pl$col("total") >= 0) | (pl$col("ccy") == "USD"))
 }

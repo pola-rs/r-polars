@@ -20,19 +20,22 @@ predicate evaluates as \code{null}).
 }
 \examples{
 lf <- pl$LazyFrame(
-  foo = c(2, 3, NA, 4, 0),
-  bar = c(5, 6, NA, NA, 0),
-  ham = c("a", "b", NA, "c", "d")
+  ccy = c("USD", "EUR", "USD", "JPY"),
+  year = c(2021, 2022, 2023, 2023),
+  total = c(3245, NA, -6680, 25000),
 )
 
-# Remove rows matching a condition:
-lf$remove(pl$col("bar") >= 5)$collect()
+# Remove rows matching a condition. Note that the row where `total` is null
+# is kept:
+lf$remove(pl$col("total") >= 0)$collect()
 
-# Discard rows based on multiple conditions, combined with and/or operators:
-lf$remove((pl$col("foo") >= 0) & (pl$col("bar") >= 0))$collect()
+# Note that this is *not* the same as simply inverting the condition in
+# `$filter()` because `$filter()` doesn't keep predicates that evaluate to
+# null:
+lf$filter(pl$col("total") < 0)$collect()
 
-lf$remove((pl$col("foo") >= 0) | (pl$col("bar") >= 0))$collect()
+# We can use multiple conditions, combined with and/or operators:
+lf$remove((pl$col("total") >= 0) & (pl$col("ccy") == "USD"))$collect()
 
-# Remove rows by comparing two columns against each other:
-lf$remove(pl$col("foo")$ne_missing(pl$col("bar")))$collect()
+lf$remove((pl$col("total") >= 0) | (pl$col("ccy") == "USD"))$collect()
 }
