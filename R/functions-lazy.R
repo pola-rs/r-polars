@@ -121,3 +121,54 @@ pl__arg_sort_by <- function(
     )
   })
 }
+
+#' Collect multiple LazyFrames at the same time
+#'
+#' This can run all the computation graphs in parallel or combined. Common
+#' Subplan Elimination is applied on the combined plan, meaning that diverging
+#' queries will run only once.
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @inheritParams lazyframe__collect
+#' @param lazy_frames A list of LazyFrames to collect.
+#'
+#' @return A list containing all the collected DataFrames, in the same order
+#' as the input LazyFrames.
+#' @examples
+#' lf <- as_polars_lf(mtcars)$with_columns(sqrt_mpg = pl$col("mpg")$sqrt())
+#'
+#' cyl_4 <- lf$filter(pl$col("cyl") == 4)
+#' cyl_6 <- lf$filter(pl$col("cyl") == 6)
+#'
+#' # We could do `cyl_4$collect()` and `cyl_6$collect()`, but this would be
+#' # wasteful because `sqrt_mpg` would be computed twice.
+#' # `pl$collect_all()` executes only once the parts of the query that are
+#' # identical across LazyFrames.
+#' pl$collect_all(list(cyl_4, cyl_6))
+pl__collect_all <- function(
+  lazy_frames,
+  ...,
+  engine = c("auto", "in-memory", "streaming")
+) {
+  wrap({
+    check_dots_empty0(...)
+    check_list_of_polars_lf(lazy_frames)
+    engine <- arg_match0(engine, c("auto", "in-memory", "streaming"))
+
+    lfs <- lapply(lazy_frames, \(x) x$`_ldf`)
+    # TODO: add support for argument `optimizations`
+    optflags <- list(
+      comm_subexpr_elim = TRUE,
+      comm_subplan_elim = TRUE,
+      cluster_with_columns = TRUE,
+      predicate_pushdown = TRUE,
+      projection_pushdown = TRUE,
+      simplify_expression = TRUE,
+      slice_pushdown = TRUE,
+      type_coercion = TRUE
+    )
+
+    collect_all(lfs, engine = engine, optflags) |>
+      lapply(\(ptr) .savvy_wrap_PlRDataFrame(ptr) |> wrap())
+  })
+}

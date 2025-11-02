@@ -69,6 +69,11 @@ SEXP savvy_col__impl(SEXP c_arg__name) {
     return handle_result(res);
 }
 
+SEXP savvy_collect_all__impl(SEXP c_arg__lfs, SEXP c_arg__engine, SEXP c_arg__optflags) {
+    SEXP res = savvy_collect_all__ffi(c_arg__lfs, c_arg__engine, c_arg__optflags);
+    return handle_result(res);
+}
+
 SEXP savvy_cols__impl(SEXP c_arg__names) {
     SEXP res = savvy_cols__ffi(c_arg__names);
     return handle_result(res);
@@ -3383,6 +3388,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_as_struct__impl", (DL_FUNC) &savvy_as_struct__impl, 1},
     {"savvy_coalesce__impl", (DL_FUNC) &savvy_coalesce__impl, 1},
     {"savvy_col__impl", (DL_FUNC) &savvy_col__impl, 1},
+    {"savvy_collect_all__impl", (DL_FUNC) &savvy_collect_all__impl, 3},
     {"savvy_cols__impl", (DL_FUNC) &savvy_cols__impl, 1},
     {"savvy_compat_level_range__impl", (DL_FUNC) &savvy_compat_level_range__impl, 0},
     {"savvy_concat_arr__impl", (DL_FUNC) &savvy_concat_arr__impl, 1},

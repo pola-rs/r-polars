@@ -74,6 +74,11 @@ NULL
 }
 
 
+`collect_all` <- function(`lfs`, `engine`, `optflags`) {
+  .Call(savvy_collect_all__impl, `lfs`, `engine`, `optflags`)
+}
+
+
 `cols` <- function(`names`) {
   .savvy_wrap_PlRExpr(.Call(savvy_cols__impl, `names`))
 }

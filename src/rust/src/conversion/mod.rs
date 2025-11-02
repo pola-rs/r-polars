@@ -1,6 +1,7 @@
 use std::num::NonZeroUsize;
 use std::str::FromStr;
 
+use crate::lazyframe::PlROptFlags;
 use crate::prelude::*;
 use crate::{PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr};
 pub use categorical::PlRCategories;
@@ -1064,5 +1065,33 @@ impl TryFrom<StringSexp> for Wrap<ScanSources> {
             .collect::<Result<Vec<_>, _>>()?;
 
         Ok(Wrap(ScanSources::Paths(plpaths.into())))
+    }
+}
+
+impl TryFrom<ListSexp> for Wrap<PlROptFlags> {
+    type Error = savvy::Error;
+
+    fn try_from(list: ListSexp) -> Result<Self, savvy::Error> {
+        let opts = PlROptFlags::empty();
+
+        list.iter().for_each(|(elem_name, elem_value)| {
+            let elem_value = match elem_value.into_typed() {
+                TypedSexp::Logical(l) => l.iter().next().unwrap(),
+                _ => unreachable!(),
+            };
+
+            match elem_name {
+                "cluster_with_columns" => opts.set_cluster_with_columns(elem_value),
+                "comm_subexpr_elim" => opts.set_comm_subexpr_elim(elem_value),
+                "comm_subplan_elim" => opts.set_comm_subplan_elim(elem_value),
+                "predicate_pushdown" => opts.set_predicate_pushdown(elem_value),
+                "projection_pushdown" => opts.set_projection_pushdown(elem_value),
+                "simplify_expression" => opts.set_simplify_expression(elem_value),
+                "slice_pushdown" => opts.set_slice_pushdown(elem_value),
+                "type_coercion" => opts.set_type_coercion(elem_value),
+                _ => unreachable!(),
+            }
+        });
+        Ok(Wrap(opts))
     }
 }
