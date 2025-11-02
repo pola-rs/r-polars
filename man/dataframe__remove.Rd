@@ -11,7 +11,7 @@ dataframe__remove(...)
 a boolean Series.}
 }
 \value{
-A polars \link{LazyFrame}
+A polars \link{DataFrame}
 }
 \description{
 The original order of the remaining rows is preserved. Rows where the filter

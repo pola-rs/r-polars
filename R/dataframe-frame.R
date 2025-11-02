@@ -623,7 +623,8 @@ dataframe__filter <- function(...) {
     wrap()
 }
 
-#' @inherit lazyframe__remove title description params return
+#' @inherit lazyframe__remove title description params
+#' @inherit as_polars_df return
 #' @examples
 #' df <- pl$DataFrame(
 #'   foo = c(2, 3, NA, 4, 0),
