@@ -5,6 +5,8 @@
 ### New features
 
 - `pl$collect_all()` to efficiently collect a list of LazyFrames (#1598).
+- `<lazyframe>$remove()` and `<dataframe>$remove()` as a complement to
+  `$filter()` (#1632).
 
 ## polars 1.5.0
 

@@ -623,6 +623,33 @@ dataframe__filter <- function(...) {
     wrap()
 }
 
+#' @inherit lazyframe__remove title description params
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(
+#'   ccy = c("USD", "EUR", "USD", "JPY"),
+#'   year = c(2021, 2022, 2023, 2023),
+#'   total = c(3245, NA, -6680, 25000),
+#' )
+#'
+#' # Remove rows matching a condition. Note that the row where `total` is null
+#' # is kept:
+#' df$remove(pl$col("total") >= 0)
+#'
+#' # Note that this is *not* the same as simply inverting the condition in
+#' # `$filter()` because `$filter()` doesn't keep predicates that evaluate to
+#' # null:
+#' df$filter(pl$col("total") < 0)
+#'
+#' # We can use multiple conditions, combined with and/or operators:
+#' df$remove((pl$col("total") >= 0) & (pl$col("ccy") == "USD"))
+#'
+#' df$remove((pl$col("total") >= 0) | (pl$col("ccy") == "USD"))
+dataframe__remove <- function(...) {
+  self$lazy()$remove(...)$collect(`_eager` = TRUE) |>
+    wrap()
+}
+
 #' Sort a DataFrame by the given columns
 #'
 #' @inherit lazyframe__sort description params details

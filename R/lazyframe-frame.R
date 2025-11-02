@@ -629,6 +629,42 @@ lazyframe__filter <- function(...) {
     wrap()
 }
 
+#' Remove rows, dropping those that match the given predicate expression(s)
+#'
+#' The original order of the remaining rows is preserved. Rows where the filter
+#' does not evaluate to `TRUE` are retained (this includes rows where the
+#' predicate evaluates as `null`).
+#'
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Expression that evaluates to
+#' a boolean Series.
+#'
+#' @inherit as_polars_lf return
+#' @examples
+#' lf <- pl$LazyFrame(
+#'   ccy = c("USD", "EUR", "USD", "JPY"),
+#'   year = c(2021, 2022, 2023, 2023),
+#'   total = c(3245, NA, -6680, 25000),
+#' )
+#'
+#' # Remove rows matching a condition. Note that the row where `total` is null
+#' # is kept:
+#' lf$remove(pl$col("total") >= 0)$collect()
+#'
+#' # Note that this is *not* the same as simply inverting the condition in
+#' # `$filter()` because `$filter()` doesn't keep predicates that evaluate to
+#' # null:
+#' lf$filter(pl$col("total") < 0)$collect()
+#'
+#' # We can use multiple conditions, combined with and/or operators:
+#' lf$remove((pl$col("total") >= 0) & (pl$col("ccy") == "USD"))$collect()
+#'
+#' lf$remove((pl$col("total") >= 0) | (pl$col("ccy") == "USD"))$collect()
+lazyframe__remove <- function(...) {
+  parse_predicates_constraints_into_expression(...) |>
+    self$`_ldf`$remove() |>
+    wrap()
+}
+
 #' Sort the LazyFrame by the given columns
 #'
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column(s) to sort by. Can be

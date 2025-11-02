@@ -1337,6 +1337,71 @@ test_that("filter with nulls", {
   )
 })
 
+test_that("remove() works", {
+  df <- pl$DataFrame(
+    x = c(1, 2, 3, 4, 5),
+    y = letters[1:5],
+    z = c(TRUE, TRUE, FALSE, TRUE, FALSE)
+  )
+
+  # single condition
+  expect_query_equal(
+    .input$remove(pl$col("x") == 1),
+    df,
+    pl$DataFrame(x = c(2, 3, 4, 5), y = letters[2:5], z = c(TRUE, FALSE, TRUE, FALSE))
+  )
+  expect_query_equal(
+    .input$remove(pl$col("z")),
+    df,
+    pl$DataFrame(x = c(3, 5), y = c("c", "e"), z = c(FALSE, FALSE))
+  )
+  expect_query_equal(
+    .input$remove(!pl$col("z")),
+    df,
+    pl$DataFrame(x = c(1, 2, 4), y = c("a", "b", "d"), z = c(TRUE, TRUE, TRUE))
+  )
+  expect_query_equal(
+    .input$remove(pl$col("x") > 4),
+    df,
+    pl$DataFrame(x = c(1, 2, 3, 4), y = letters[1:4], z = c(TRUE, TRUE, FALSE, TRUE))
+  )
+
+  # using multiple conditions
+  expect_query_equal(
+    .input$remove(pl$col("x") <= 3 & pl$col("z")),
+    df,
+    pl$DataFrame(x = c(3, 4, 5), y = c("c", "d", "e"), z = c(FALSE, TRUE, FALSE))
+  )
+  expect_query_equal(
+    .input$remove(pl$col("x") <= 3, pl$col("z")),
+    df,
+    pl$DataFrame(x = c(3, 4, 5), y = c("c", "d", "e"), z = c(FALSE, TRUE, FALSE))
+  )
+  expect_query_equal(
+    .input$remove(pl$col("x") <= 3 | pl$col("z")),
+    df,
+    pl$DataFrame(
+      x = 5,
+      y = "e",
+      z = FALSE
+    )
+  )
+})
+
+test_that("remove with nulls", {
+  df <- pl$DataFrame(x = c(1, 2, NA))
+  expect_query_equal(
+    .input$remove(pl$col("x") == 1),
+    df,
+    pl$DataFrame(x = c(2, NA))
+  )
+  expect_query_equal(
+    .input$remove(pl$col("x")$is_null()),
+    df,
+    pl$DataFrame(x = c(1, 2))
+  )
+})
+
 test_that("quantile", {
   df <- pl$DataFrame(x = c(1, 2, 3, 1, 5, 6), y = 1:6)
   expect_query_equal(
