@@ -1,6 +1,6 @@
 [package]
 name = "r-polars"
-version = "1.5.0-rc.2"
+version = "1.6.0-rc.1"
 edition = "2024"
 rust-version = "1.89.0"
 publish = false
@@ -36,6 +36,7 @@ state = "0.6"
 strum = "0.27"
 strum_macros = "0.27"
 thiserror = "2"
+parking_lot = "0.12"
 
 # These features are enabled by default, but not supported on emscripten
 # <https://github.com/pola-rs/polars/blob/93ceaccdac6f05c9b07a5117f3a4a90c238dbd29/.github/workflows/test-pyodide.yml#L40-L45>

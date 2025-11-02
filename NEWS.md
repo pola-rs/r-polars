@@ -2,6 +2,10 @@
 
 ## polars (development version)
 
+### New features
+
+- `pl$collect_all()` to efficiently collect a list of LazyFrames (#1598).
+
 ## polars 1.5.0
 
 This is an update that corresponds to Python Polars 1.35.1.
