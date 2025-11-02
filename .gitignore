@@ -4,7 +4,8 @@
 .task
 
 # cache files
-.cache
+.cache/
+target/
 
 # Generated Makefiles
 src/Makevars

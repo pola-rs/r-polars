@@ -13,7 +13,11 @@ patrick::with_parameters_test_that(
   },
   code = {
     serialized <- x$serialize()
-    expect_type(serialized, "raw")
+
+    if (.test_name != "scan") {
+      # Because the file path is changed during every test run
+      expect_snapshot(serialized)
+    }
 
     expect_equal(pl$deserialize_lf(serialized)$collect(), x$collect())
   }
