@@ -629,6 +629,39 @@ lazyframe__filter <- function(...) {
     wrap()
 }
 
+#' Remove rows, dropping those that match the given predicate expression(s)
+#'
+#' The original order of the remaining rows is preserved. Rows where the filter
+#' does not evaluate to `TRUE` are retained (this includes rows where the
+#' predicate evaluates as `null`).
+#'
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Expression that evaluates to
+#' a boolean Series.
+#'
+#' @inherit as_polars_lf return
+#' @examples
+#' lf <- pl$LazyFrame(
+#'   foo = c(2, 3, NA, 4, 0),
+#'   bar = c(5, 6, NA, NA, 0),
+#'   ham = c("a", "b", NA, "c", "d")
+#' )
+#'
+#' # Remove rows matching a condition:
+#' lf$remove(pl$col("bar") >= 5)$collect()
+#'
+#' # Discard rows based on multiple conditions, combined with and/or operators:
+#' lf$remove((pl$col("foo") >= 0) & (pl$col("bar") >= 0))$collect()
+#'
+#' lf$remove((pl$col("foo") >= 0) | (pl$col("bar") >= 0))$collect()
+#'
+#' # Remove rows by comparing two columns against each other:
+#' lf$remove(pl$col("foo")$ne_missing(pl$col("bar")))$collect()
+lazyframe__remove <- function(...) {
+  parse_predicates_constraints_into_expression(...) |>
+    self$`_ldf`$remove() |>
+    wrap()
+}
+
 #' Sort the LazyFrame by the given columns
 #'
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column(s) to sort by. Can be

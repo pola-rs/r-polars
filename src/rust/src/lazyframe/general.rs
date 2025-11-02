@@ -111,6 +111,11 @@ impl PlRLazyFrame {
         Ok(ldf.filter(predicate.inner.clone()).into())
     }
 
+    fn remove(&self, predicate: &PlRExpr) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        Ok(ldf.remove(predicate.inner.clone()).into())
+    }
+
     fn select(&mut self, exprs: ListSexp) -> Result<Self> {
         let ldf = self.ldf.clone();
         let exprs = <Wrap<Vec<Expr>>>::from(exprs).0;

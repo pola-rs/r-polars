@@ -623,6 +623,29 @@ dataframe__filter <- function(...) {
     wrap()
 }
 
+#' @inherit lazyframe__remove title description params return
+#' @examples
+#' df <- pl$DataFrame(
+#'   foo = c(2, 3, NA, 4, 0),
+#'   bar = c(5, 6, NA, NA, 0),
+#'   ham = c("a", "b", NA, "c", "d")
+#' )
+#'
+#' # Remove rows matching a condition:
+#' df$remove(pl$col("bar") >= 5)
+#'
+#' # Discard rows based on multiple conditions, combined with and/or operators:
+#' df$remove((pl$col("foo") >= 0) & (pl$col("bar") >= 0))
+#'
+#' df$remove((pl$col("foo") >= 0) | (pl$col("bar") >= 0))
+#'
+#' # Remove rows by comparing two columns against each other:
+#' df$remove(pl$col("foo")$ne_missing(pl$col("bar")))
+dataframe__remove <- function(...) {
+  self$lazy()$remove(...)$collect(`_eager` = TRUE) |>
+    wrap()
+}
+
 #' Sort a DataFrame by the given columns
 #'
 #' @inherit lazyframe__sort description params details

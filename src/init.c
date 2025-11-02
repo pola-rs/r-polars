@@ -2749,6 +2749,11 @@ SEXP savvy_PlRLazyFrame_quantile__impl(SEXP self__, SEXP c_arg__quantile, SEXP c
     return handle_result(res);
 }
 
+SEXP savvy_PlRLazyFrame_remove__impl(SEXP self__, SEXP c_arg__predicate) {
+    SEXP res = savvy_PlRLazyFrame_remove__ffi(self__, c_arg__predicate);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRLazyFrame_rename__impl(SEXP self__, SEXP c_arg__existing, SEXP c_arg__new, SEXP c_arg__strict) {
     SEXP res = savvy_PlRLazyFrame_rename__ffi(self__, c_arg__existing, c_arg__new, c_arg__strict);
     return handle_result(res);
@@ -3914,6 +3919,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_optimization_toggle__impl", (DL_FUNC) &savvy_PlRLazyFrame_optimization_toggle__impl, 12},
     {"savvy_PlRLazyFrame_profile__impl", (DL_FUNC) &savvy_PlRLazyFrame_profile__impl, 1},
     {"savvy_PlRLazyFrame_quantile__impl", (DL_FUNC) &savvy_PlRLazyFrame_quantile__impl, 3},
+    {"savvy_PlRLazyFrame_remove__impl", (DL_FUNC) &savvy_PlRLazyFrame_remove__impl, 2},
     {"savvy_PlRLazyFrame_rename__impl", (DL_FUNC) &savvy_PlRLazyFrame_rename__impl, 4},
     {"savvy_PlRLazyFrame_reverse__impl", (DL_FUNC) &savvy_PlRLazyFrame_reverse__impl, 1},
     {"savvy_PlRLazyFrame_rolling__impl", (DL_FUNC) &savvy_PlRLazyFrame_rolling__impl, 6},

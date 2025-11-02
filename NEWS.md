@@ -2,6 +2,11 @@
 
 ## polars (development version)
 
+### New features
+
+- `<lazyframe>$remove()` and `<dataframe>$remove()` as a complement to
+  `$filter()` (#1632).
+
 ## polars 1.5.0
 
 This is an update that corresponds to Python Polars 1.35.1.

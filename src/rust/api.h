@@ -557,6 +557,7 @@ SEXP savvy_PlRLazyFrame_null_count__ffi(SEXP self__);
 SEXP savvy_PlRLazyFrame_optimization_toggle__ffi(SEXP self__, SEXP c_arg__type_coercion, SEXP c_arg___type_check, SEXP c_arg__predicate_pushdown, SEXP c_arg__projection_pushdown, SEXP c_arg__simplify_expression, SEXP c_arg__slice_pushdown, SEXP c_arg__comm_subplan_elim, SEXP c_arg__comm_subexpr_elim, SEXP c_arg__cluster_with_columns, SEXP c_arg___eager, SEXP c_arg___check_order);
 SEXP savvy_PlRLazyFrame_profile__ffi(SEXP self__);
 SEXP savvy_PlRLazyFrame_quantile__ffi(SEXP self__, SEXP c_arg__quantile, SEXP c_arg__interpolation);
+SEXP savvy_PlRLazyFrame_remove__ffi(SEXP self__, SEXP c_arg__predicate);
 SEXP savvy_PlRLazyFrame_rename__ffi(SEXP self__, SEXP c_arg__existing, SEXP c_arg__new, SEXP c_arg__strict);
 SEXP savvy_PlRLazyFrame_reverse__ffi(SEXP self__);
 SEXP savvy_PlRLazyFrame_rolling__ffi(SEXP self__, SEXP c_arg__index_column, SEXP c_arg__period, SEXP c_arg__offset, SEXP c_arg__closed, SEXP c_arg__by);
