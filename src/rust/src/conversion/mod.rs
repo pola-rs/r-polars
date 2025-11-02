@@ -1073,14 +1073,10 @@ impl TryFrom<ListSexp> for Wrap<PlROptFlags> {
 
     fn try_from(list: ListSexp) -> Result<Self, savvy::Error> {
         let opts = PlROptFlags::empty();
-        let _ = list.names_iter().map(|x| {
-            let elem_name: &str = x;
-            let elem_value = list.get(elem_name).unwrap().into_typed();
-            let elem_value = match elem_value {
-                TypedSexp::Logical(s) => {
-                    let vec = s.to_vec().to_owned();
-                    *vec.first().unwrap()
-                }
+
+        list.iter().for_each(|(elem_name, elem_value)| {
+            let elem_value = match elem_value.into_typed() {
+                TypedSexp::Logical(l) => l.iter().next().unwrap(),
                 _ => unreachable!(),
             };
 
