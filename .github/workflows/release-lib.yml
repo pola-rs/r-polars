@@ -60,6 +60,7 @@ jobs:
           git config --global core.eol lf
           git config --show-origin core.autocrlf
           git config --show-origin core.eol
+          echo "CARGO_NET_GIT_FETCH_WITH_CLI=true" >>$env:GITHUB_ENV
 
       - name: prep Rust
         working-directory: src/rust
