@@ -56,8 +56,8 @@ jobs:
           git config --list --show-origin
           git config --show-origin core.autocrlf
           git config --show-origin core.eol
-          git config --global core.autocrlf false
-          git config --global core.eol lf
+          git config --system core.autocrlf false
+          git config --system core.eol lf
           git config --show-origin core.autocrlf
           git config --show-origin core.eol
           echo "CARGO_NET_GIT_FETCH_WITH_CLI=true" >>$env:GITHUB_ENV
