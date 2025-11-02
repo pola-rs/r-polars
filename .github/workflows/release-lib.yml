@@ -46,21 +46,15 @@ jobs:
       packages: write
 
     steps:
-      - uses: actions/checkout@v5
-
       - name: Disable auto crlf on Windows
         if: runner.os == 'Windows'
-        shell: powershell
         # https://github.com/pola-rs/r-polars/issues/1625
         run: |
-          git config --list --show-origin
-          git config --show-origin core.autocrlf
-          git config --show-origin core.eol
-          git config --system core.autocrlf false
-          git config --system core.eol lf
-          git config --show-origin core.autocrlf
-          git config --show-origin core.eol
-          echo "CARGO_NET_GIT_FETCH_WITH_CLI=true" >>$env:GITHUB_ENV
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+          echo "CARGO_NET_GIT_FETCH_WITH_CLI=true" >>$GITHUB_ENV
+
+      - uses: actions/checkout@v5
 
       - name: prep Rust
         working-directory: src/rust
