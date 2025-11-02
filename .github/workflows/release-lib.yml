@@ -48,14 +48,6 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Vendoring to avoid CRLF issues
-        if: runner.os == 'Windows'
-        # https://github.com/pola-rs/r-polars/issues/1625
-        working-directory: src
-        run: |
-          mkdir .cargo
-          cargo vendor --locked --manifest-path rust/Cargo.toml rust/vendor >.cargo/config.toml
-
       - name: prep Rust
         working-directory: src/rust
         run: |
@@ -67,7 +59,17 @@ jobs:
 
       - uses: rui314/setup-mold@v1
 
+      - name: Vendoring to avoid CRLF issues
+        if: runner.os == 'Windows'
+        # https://github.com/pola-rs/r-polars/issues/1625
+        working-directory: src
+        run: |
+          mkdir .cargo
+          cargo vendor --locked --manifest-path rust/Cargo.toml rust/vendor >.cargo/config.toml
+
       - uses: Swatinem/rust-cache@v2
+        # See the above step for windows
+        if: runner.os != 'Windows'
         with:
           workspaces: "src/rust -> target"
           shared-key: ${{ matrix.target }}-dist-release
