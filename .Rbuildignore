@@ -16,6 +16,7 @@
 ^src/rust/\.cargo$
 ^src/rust-toolchain\.toml$
 ^src/rust/target$
+^src/rust/vendor$
 ^bootstrap\.R$
 ^README\.Rmd$
 ^DEVELOPMENT\.md$

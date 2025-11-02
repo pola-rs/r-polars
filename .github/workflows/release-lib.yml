@@ -46,15 +46,15 @@ jobs:
       packages: write
 
     steps:
-      - name: Disable auto crlf on Windows
+      - uses: actions/checkout@v5
+
+      - name: Vendoring to avoid CRLF issues
         if: runner.os == 'Windows'
         # https://github.com/pola-rs/r-polars/issues/1625
+        working-directory: src
         run: |
-          git config --global core.autocrlf false
-          git config --global core.eol lf
-          echo "CARGO_NET_GIT_FETCH_WITH_CLI=true" >>$GITHUB_ENV
-
-      - uses: actions/checkout@v5
+          mkdir .cargo
+          cargo vendor --locked --manifest-path rust/Cargo.toml rust/vendor >.cargo/config.toml
 
       - name: prep Rust
         working-directory: src/rust
