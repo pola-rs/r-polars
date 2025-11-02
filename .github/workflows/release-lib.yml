@@ -64,6 +64,8 @@ jobs:
         # https://github.com/pola-rs/r-polars/issues/1625
         working-directory: src
         run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
           mkdir .cargo
           cargo vendor --locked --manifest-path rust/Cargo.toml rust/vendor >.cargo/config.toml
 
