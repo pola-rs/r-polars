@@ -110,7 +110,7 @@ local({
 # https://github.com/RConsortium/S7/issues/522
 eager_opt_flags <- function() {
   QueryOptFlags()$no_optimizations() |>
-    set_props(
+    set_props_uncheck(
       eager = TRUE,
       simplify_expression = TRUE
     )
@@ -119,7 +119,7 @@ eager_opt_flags <- function() {
 # Because of immutability, unlike Python Polars, there are no side effects,
 # and a new modified OptFlags is returned
 QueryOptFlags__no_optimizations <- function() {
-  set_props(
+  set_props_uncheck(
     self,
     predicate_pushdown = FALSE,
     projection_pushdown = FALSE,
