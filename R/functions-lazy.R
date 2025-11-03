@@ -154,21 +154,14 @@ pl__collect_all <- function(
     check_dots_empty0(...)
     check_list_of_polars_lf(lazy_frames)
     engine <- arg_match0(engine, c("auto", "in-memory", "streaming"))
+    # TODO: add support for argument `optimizations`
+    optflags <- QueryOptFlags()
+    check_is_S7(optflags, QueryOptFlags)
+    validate(optflags)
 
     lfs <- lapply(lazy_frames, \(x) x$`_ldf`)
-    # TODO: add support for argument `optimizations`
-    optflags <- list(
-      comm_subexpr_elim = TRUE,
-      comm_subplan_elim = TRUE,
-      cluster_with_columns = TRUE,
-      predicate_pushdown = TRUE,
-      projection_pushdown = TRUE,
-      simplify_expression = TRUE,
-      slice_pushdown = TRUE,
-      type_coercion = TRUE
-    )
 
-    collect_all(lfs, engine = engine, optflags) |>
+    collect_all(lfs, engine = engine, optflags = optflags) |>
       lapply(\(ptr) .savvy_wrap_PlRDataFrame(ptr) |> wrap())
   })
 }

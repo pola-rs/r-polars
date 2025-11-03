@@ -1,4 +1,4 @@
-# The env for storing rolling_group_by methods
+# The env for storing QueryOptFlags methods
 polars_query_opt_flags__methods <- new.env(parent = emptyenv())
 
 QueryOptFlags <- new_class(

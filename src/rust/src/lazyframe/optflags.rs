@@ -8,51 +8,34 @@ impl PlROptFlags {
             inner: RwLock::new(OptFlags::empty()),
         }
     }
+}
 
-    #[allow(clippy::should_implement_trait)]
-    pub fn default() -> Self {
-        Self {
-            inner: RwLock::default(),
+macro_rules! flag_setters {
+    ($(($flag:ident, $setter:ident))+) => {
+        impl PlROptFlags {
+            $(
+            pub fn $setter(&self, value: bool) {
+                self.inner.write().set(OptFlags::$flag, value)
+            }
+            )+
         }
-    }
+    };
+}
 
-    pub fn copy(&self) -> Self {
-        Self {
-            inner: RwLock::new(*self.inner.read()),
-        }
-    }
+flag_setters! {
+    (TYPE_COERCION, set_type_coercion)
+    (TYPE_CHECK, set_type_check)
 
-    pub fn set_projection_pushdown(&self, value: bool) {
-        self.inner.write().set(OptFlags::PROJECTION_PUSHDOWN, value);
-    }
+    (PROJECTION_PUSHDOWN, set_projection_pushdown)
+    (PREDICATE_PUSHDOWN, set_predicate_pushdown)
+    (CLUSTER_WITH_COLUMNS, set_cluster_with_columns)
+    (SIMPLIFY_EXPR, set_simplify_expression)
+    (SLICE_PUSHDOWN, set_slice_pushdown)
+    (COMM_SUBPLAN_ELIM, set_comm_subplan_elim)
+    (COMM_SUBEXPR_ELIM, set_comm_subexpr_elim)
+    (CHECK_ORDER_OBSERVE, set_check_order_observe)
+    (FAST_PROJECTION, set_fast_projection)
 
-    pub fn set_predicate_pushdown(&self, value: bool) {
-        self.inner.write().set(OptFlags::PREDICATE_PUSHDOWN, value);
-    }
-
-    pub fn set_cluster_with_columns(&self, value: bool) {
-        self.inner
-            .write()
-            .set(OptFlags::CLUSTER_WITH_COLUMNS, value);
-    }
-
-    pub fn set_simplify_expression(&self, value: bool) {
-        self.inner.write().set(OptFlags::SIMPLIFY_EXPR, value);
-    }
-
-    pub fn set_slice_pushdown(&self, value: bool) {
-        self.inner.write().set(OptFlags::SLICE_PUSHDOWN, value);
-    }
-
-    pub fn set_comm_subplan_elim(&self, value: bool) {
-        self.inner.write().set(OptFlags::COMM_SUBPLAN_ELIM, value);
-    }
-
-    pub fn set_comm_subexpr_elim(&self, value: bool) {
-        self.inner.write().set(OptFlags::COMM_SUBEXPR_ELIM, value);
-    }
-
-    pub fn set_type_coercion(&self, value: bool) {
-        self.inner.write().set(OptFlags::TYPE_COERCION, value);
-    }
+    (EAGER, set_eager)
+    (NEW_STREAMING, set_streaming)
 }
