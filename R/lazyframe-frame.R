@@ -234,16 +234,8 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 #' Individual optimizations may be disabled by setting the corresponding parameter to `FALSE`.
 #' @inherit pl__DataFrame return
 #' @inheritParams rlang::args_dots_empty
+#' @inheritParams QueryOptFlags
 #' @param type_coercion A logical, indicates type coercion optimization.
-#' @param predicate_pushdown A logical, indicates predicate pushdown optimization.
-#' @param projection_pushdown A logical, indicates projection pushdown optimization.
-#' @param simplify_expression A logical, indicates simplify expression optimization.
-#' @param slice_pushdown A logical, indicates slice pushdown optimization.
-#' @param comm_subplan_elim A logical, indicates trying to cache branching subplans that occur
-#' on self-joins or unions.
-#' @param comm_subexpr_elim A logical, indicates trying to cache common subexpressions.
-#' @param cluster_with_columns A logical, indicates to combine sequential independent calls
-#' to with_columns.
 #' @param collapse_joins `r lifecycle::badge("deprecated")`
 #'   Use `predicate_pushdown` instead.
 #' @param no_optimization A logical. If `TRUE`, turn off (certain) optimizations.

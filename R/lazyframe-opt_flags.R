@@ -3,6 +3,34 @@
 # The env for storing QueryOptFlags methods
 polars_query_opt_flags__methods <- new.env(parent = emptyenv())
 
+#' The set of the optimizations considered during query optimization
+#'
+#' `r lifecycle::badge("experimental")`
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @param predicate_pushdown A logical, indicates predicate pushdown optimization.
+#' @param projection_pushdown A logical, indicates projection pushdown optimization.
+#' @param simplify_expression A logical, indicates simplify expression optimization.
+#' @param slice_pushdown A logical, indicates slice pushdown optimization.
+#' @param comm_subplan_elim A logical, indicates trying to cache branching subplans that occur
+#'   on self-joins or unions.
+#' @param comm_subexpr_elim A logical, indicates trying to cache common subexpressions.
+#' @param cluster_with_columns A logical, indicates to combine sequential independent calls
+#'   to with_columns.
+#' @param check_order_observe A logical, indicates not to maintain order
+#'   if the order would not be observed.
+#' @param fast_projection A logical, indicates to replace simple projections
+#'   with a faster inlined projection that skips the expression engine.
+#' @return A `QueryOptFlags` object.
+#' @name QueryOptFlags
+#' @examples
+#' opt_flags <- pl$QueryOptFlags()
+#' opt_flags
+#'
+#' S7::check_is_S7(opt_flags, pl$QueryOptFlags)
+#' @keywords internal
+NULL
+
 QueryOptFlags <- new_class(
   "QueryOptFlags",
   properties = list(
@@ -76,6 +104,7 @@ QueryOptFlags <- new_class(
   }
 )
 
+#' @rdname QueryOptFlags
 pl__QueryOptFlags <- QueryOptFlags
 
 # TODO: moved to generated file
