@@ -286,11 +286,11 @@ fn lfs_to_plans(lfs: Vec<LazyFrame>) -> Result<Vec<DslPlan>> {
 }
 
 #[savvy]
-pub fn collect_all(lfs: ListSexp, engine: &str, optflags: ListSexp) -> Result<Sexp> {
+pub fn collect_all(lfs: ListSexp, engine: &str, optflags: Sexp) -> Result<Sexp> {
     let lfs = <Wrap<Vec<LazyFrame>>>::try_from(lfs)?.0;
     let engine = <Wrap<Engine>>::try_from(engine)?.0;
     let plans = lfs_to_plans(lfs)?;
-    let optflags = <Wrap<PlROptFlags>>::try_from(optflags)?.0;
+    let optflags = <PlROptFlags>::try_from(optflags)?;
     let dfs = LazyFrame::collect_all_with_engine(plans, engine, optflags.inner.into_inner())
         .map_err(RPolarsErr::from)?;
 

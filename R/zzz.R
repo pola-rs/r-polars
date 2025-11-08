@@ -71,7 +71,8 @@ POLARS_STORE_ENVS <- list(
   "groupby__" = polars_groupby__methods,
   "rolling_groupby__" = polars_rolling_groupby__methods,
   "group_by_dynamic__" = polars_group_by_dynamic__methods,
-  "sql_context__" = polars_sql_context__methods
+  "sql_context__" = polars_sql_context__methods,
+  QueryOptFlags__ = polars_query_opt_flags__methods
 )
 
 lapply(names(POLARS_STORE_ENVS), function(name) {
@@ -92,6 +93,7 @@ utils::globalVariables("self")
 on_load(local_use_cli())
 
 .onLoad <- function(libname, pkgname) {
+  methods_register()
   run_on_load()
 
   # Register S3 methods for optional packages
