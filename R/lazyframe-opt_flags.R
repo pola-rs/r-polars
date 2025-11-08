@@ -1,3 +1,5 @@
+# nolint start: object_length_linter
+
 # The env for storing QueryOptFlags methods
 polars_query_opt_flags__methods <- new.env(parent = emptyenv())
 
@@ -132,3 +134,5 @@ QueryOptFlags__no_optimizations <- function() {
     fast_projection = FALSE
   )
 }
+
+# nolint end
