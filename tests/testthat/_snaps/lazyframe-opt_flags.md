@@ -93,3 +93,64 @@
        @ eager               : logi TRUE
        @ streaming           : logi FALSE
 
+---
+
+    Code
+      opt_flags@type_coercion <- 1L
+    Condition <simpleError>
+      Error:
+      ! <polars::QueryOptFlags>@type_coercion must be <logical>, not <integer>
+
+---
+
+    Code
+      opt_flags@type_coercion <- NA
+    Condition <rlang_error>
+      Error:
+      ! `type_coercion` must be `TRUE` or `FALSE`, not `NA`.
+
+---
+
+    Code
+      opt_flags@type_coercion <- c(TRUE, TRUE)
+    Condition <rlang_error>
+      Error:
+      ! `type_coercion` must be `TRUE` or `FALSE`, not a logical vector.
+
+---
+
+    Code
+      opt_flags$type_coercion
+    Output
+      [1] TRUE
+
+---
+
+    Code
+      opt_flags$type
+    Condition <rlang_error>
+      Error in `opt_flags$type`:
+      ! Evaluation failed.
+      Caused by error:
+      ! Can't find property <polars::QueryOptFlags>@type
+
+---
+
+    Code
+      opt_flags$no_optimizations()
+    Output
+      <polars::QueryOptFlags>
+       @ type_coercion       : logi TRUE
+       @ type_check          : logi TRUE
+       @ predicate_pushdown  : logi FALSE
+       @ projection_pushdown : logi FALSE
+       @ simplify_expression : logi FALSE
+       @ slice_pushdown      : logi FALSE
+       @ comm_subplan_elim   : logi FALSE
+       @ comm_subexpr_elim   : logi FALSE
+       @ cluster_with_columns: logi FALSE
+       @ check_order_observe : logi FALSE
+       @ fast_projection     : logi FALSE
+       @ eager               : logi FALSE
+       @ streaming           : logi FALSE
+
