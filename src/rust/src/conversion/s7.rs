@@ -1,5 +1,6 @@
+use super::try_extract_attribute;
 use crate::lazyframe::PlROptFlags;
-use savvy::{Sexp, TypedSexp};
+use savvy::Sexp;
 
 impl TryFrom<Sexp> for PlROptFlags {
     type Error = savvy::Error;
@@ -23,13 +24,10 @@ impl TryFrom<Sexp> for PlROptFlags {
             "streaming",
         ];
 
-        ATTR_NAMES.iter().for_each(|attr_name| {
-            // Safety: validated on the R side
-            let attr_value = match obj.get_attrib(attr_name).unwrap().unwrap().into_typed() {
-                TypedSexp::Logical(l) => l.iter().next().unwrap(),
-                _ => unreachable!(),
-            };
-            match *attr_name {
+        for &attr_name in ATTR_NAMES {
+            let attr_value: bool = try_extract_attribute(&obj, attr_name)?.try_into()?;
+
+            match attr_name {
                 "type_coercion" => opts.set_type_coercion(attr_value),
                 "type_check" => opts.set_type_check(attr_value),
                 "predicate_pushdown" => opts.set_predicate_pushdown(attr_value),
@@ -45,7 +43,7 @@ impl TryFrom<Sexp> for PlROptFlags {
                 "streaming" => opts.set_streaming(attr_value),
                 _ => unreachable!(),
             }
-        });
+        }
         Ok(opts)
     }
 }

@@ -157,7 +157,6 @@ pl__collect_all <- function(
     # TODO: add support for argument `optimizations`
     optflags <- QueryOptFlags()
     check_is_S7(optflags, QueryOptFlags)
-    validate(optflags)
 
     lfs <- lapply(lazy_frames, \(x) x$`_ldf`)
 

@@ -40,6 +40,12 @@ impl<T> From<T> for Wrap<T> {
     }
 }
 
+// TODO: Move this to upstream?
+pub(crate) fn try_extract_attribute(obj: &Sexp, attr_name: &str) -> savvy::Result<Sexp> {
+    obj.get_attrib(attr_name)?
+        .ok_or_else(|| savvy::Error::from(format!("Attribute '{}' does not exist.", attr_name)))
+}
+
 impl TryFrom<&str> for PlRDataType {
     type Error = String;
 
