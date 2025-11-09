@@ -446,59 +446,60 @@ lazyframe__profile <- function(
 #' lazy_query <- lazy_frame$sort("Species")$filter(pl$col("Species") != "setosa")
 #'
 #' # This is the query that was written by the user, without any optimizations
-#' # (use cat() for better printing)
-#' lazy_query$explain(optimized = FALSE) |> cat()
+#' # (use writeLines() for better printing)
+#' lazy_query$explain(optimized = FALSE) |> writeLines()
 #'
 #' # This is the query after `polars` optimizes it: instead of sorting first and
 #' # then filtering, it is faster to filter first and then sort the rest.
-#' lazy_query$explain() |> cat()
+#' lazy_query$explain() |> writeLines()
+#'
+#' # You can disable specific optimizations.
+#' lazy_query$explain(
+#'   optimizations = pl$QueryOptFlags(predicate_pushdown = FALSE)
+#' ) |>
+#'   writeLines()
 #'
 #' # Also possible to see this as tree format
-#' lazy_query$explain(format = "tree") |> cat()
+#' lazy_query$explain(format = "tree") |> writeLines()
 lazyframe__explain <- function(
   ...,
   format = c("plain", "tree"),
+  engine = c("auto", "in-memory", "streaming"),
   optimized = TRUE,
-  type_coercion = TRUE,
-  `_type_check` = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  comm_subplan_elim = TRUE,
-  comm_subexpr_elim = TRUE,
-  cluster_with_columns = TRUE,
-  collapse_joins = deprecated(),
-  `_check_order` = TRUE
+  optimizations = QueryOptFlags(),
+  type_coercion = deprecated(),
+  predicate_pushdown = deprecated(),
+  projection_pushdown = deprecated(),
+  simplify_expression = deprecated(),
+  slice_pushdown = deprecated(),
+  comm_subplan_elim = deprecated(),
+  comm_subexpr_elim = deprecated(),
+  cluster_with_columns = deprecated(),
+  collapse_joins = deprecated()
 ) {
   wrap({
     check_dots_empty0(...)
 
     format <- arg_match0(format, c("plain", "tree"))
+    engine <- arg_match0(engine, c("auto", "in-memory", "streaming"))
+    check_is_S7(optimizations, QueryOptFlags)
 
-    if (is_present(collapse_joins)) {
-      deprecate_warn(
-        c(
-          `!` = sprintf("%s is deprecated.", format_arg("collapse_joins")),
-          `i` = sprintf("Use %s instead.", format_arg("predicate_pushdown"))
-        )
-      )
-    }
+    optimizations <- forward_old_opt_flags(
+      optimizations,
+      type_coercion = type_coercion,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      comm_subplan_elim = comm_subplan_elim,
+      comm_subexpr_elim = comm_subexpr_elim,
+      cluster_with_columns = cluster_with_columns,
+      collapse_joins = collapse_joins
+    )
 
     if (isTRUE(optimized)) {
-      ldf <- self$`_ldf`$optimization_toggle(
-        type_coercion = type_coercion,
-        `_type_check` = `_type_check`,
-        predicate_pushdown = predicate_pushdown,
-        projection_pushdown = projection_pushdown,
-        simplify_expression = simplify_expression,
-        slice_pushdown = slice_pushdown,
-        comm_subplan_elim = comm_subplan_elim,
-        comm_subexpr_elim = comm_subexpr_elim,
-        cluster_with_columns = cluster_with_columns,
-        `_check_order` = `_check_order`,
-        `_eager` = FALSE
-      )
+      prop(optimizations, "streaming", check = FALSE) <- engine == "streaming"
+      ldf <- self$`_ldf`$with_optimizations(optimizations)
 
       if (format == "tree") {
         ldf$describe_optimized_plan_tree()

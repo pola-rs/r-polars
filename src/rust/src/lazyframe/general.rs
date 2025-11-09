@@ -2,6 +2,7 @@ use super::sink::RSinkTarget;
 use crate::{
     PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRLazyGroupBy, PlRSeries, RPolarsErr,
     expr::selector::PlRSelector,
+    lazyframe::PlROptFlags,
     prelude::{sync_on_close::SyncOnCloseType, *},
 };
 use polars::io::{HiveOptions, RowIndex};
@@ -311,6 +312,14 @@ impl PlRLazyFrame {
     fn cache(&self) -> Result<Self> {
         let ldf = self.ldf.clone();
         Ok(ldf.cache().into())
+    }
+
+    fn with_optimizations(&self, optimizations: Sexp) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let optimizations = <PlROptFlags>::try_from(optimizations)?;
+        Ok(ldf
+            .with_optimizations(optimizations.inner.into_inner())
+            .into())
     }
 
     fn profile(&self) -> Result<Sexp> {

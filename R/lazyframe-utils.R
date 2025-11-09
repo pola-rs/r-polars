@@ -158,3 +158,82 @@ parse_percentiles <- function(percentiles, inject_median = FALSE) {
 
   c(sub_50_percentiles, at_or_above_50_percentiles)
 }
+
+forward_old_opt_flags <- function(
+  optimizations,
+  type_coercion = deprecated(),
+  predicate_pushdown = deprecated(),
+  projection_pushdown = deprecated(),
+  simplify_expression = deprecated(),
+  slice_pushdown = deprecated(),
+  comm_subplan_elim = deprecated(),
+  comm_subexpr_elim = deprecated(),
+  cluster_with_columns = deprecated(),
+  collapse_joins = deprecated()
+) {
+  call <- caller_env(2L)
+  warn_func <- function(arg_name) {
+    deprecate_warn(
+      c(
+        `!` = sprintf("%s is deprecated.", format_arg(arg_name)),
+        `i` = sprintf("Use %s instead.", format_arg("optimizations"))
+      ),
+      always = TRUE,
+      user_env = call
+    )
+  }
+
+  need_validation <- FALSE
+
+  if (is_present(type_coercion)) {
+    warn_func("type_coercion")
+    prop(optimizations, "type_coercion", check = FALSE) <- type_coercion
+    need_validation <- TRUE
+  }
+  if (is_present(predicate_pushdown)) {
+    warn_func("predicate_pushdown")
+    prop(optimizations, "predicate_pushdown", check = FALSE) <- predicate_pushdown
+    need_validation <- TRUE
+  }
+  if (is_present(projection_pushdown)) {
+    warn_func("projection_pushdown")
+    prop(optimizations, "projection_pushdown", check = FALSE) <- projection_pushdown
+    need_validation <- TRUE
+  }
+  if (is_present(simplify_expression)) {
+    warn_func("simplify_expression")
+    prop(optimizations, "simplify_expression", check = FALSE) <- simplify_expression
+    need_validation <- TRUE
+  }
+  if (is_present(slice_pushdown)) {
+    warn_func("slice_pushdown")
+    prop(optimizations, "slice_pushdown", check = FALSE) <- slice_pushdown
+    need_validation <- TRUE
+  }
+  if (is_present(comm_subplan_elim)) {
+    warn_func("comm_subplan_elim")
+    prop(optimizations, "comm_subplan_elim", check = FALSE) <- comm_subplan_elim
+    need_validation <- TRUE
+  }
+  if (is_present(comm_subexpr_elim)) {
+    warn_func("comm_subexpr_elim")
+    prop(optimizations, "comm_subexpr_elim", check = FALSE) <- comm_subexpr_elim
+    need_validation <- TRUE
+  }
+  if (is_present(cluster_with_columns)) {
+    warn_func("cluster_with_columns")
+    prop(optimizations, "cluster_with_columns", check = FALSE) <- cluster_with_columns
+    need_validation <- TRUE
+  }
+
+  if (is_present(collapse_joins)) {
+    warn_func("collapse_joins")
+    # collapse_joins was merged to predicate_pushdown, so there is no flag anymore
+  }
+
+  if (need_validation) {
+    validate(optimizations)
+  }
+
+  optimizations
+}

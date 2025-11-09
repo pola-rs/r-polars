@@ -586,6 +586,7 @@ SEXP savvy_PlRLazyFrame_unpivot__ffi(SEXP self__, SEXP c_arg__on, SEXP c_arg__in
 SEXP savvy_PlRLazyFrame_var__ffi(SEXP self__, SEXP c_arg__ddof);
 SEXP savvy_PlRLazyFrame_with_columns__ffi(SEXP self__, SEXP c_arg__exprs);
 SEXP savvy_PlRLazyFrame_with_columns_seq__ffi(SEXP self__, SEXP c_arg__exprs);
+SEXP savvy_PlRLazyFrame_with_optimizations__ffi(SEXP self__, SEXP c_arg__optimizations);
 SEXP savvy_PlRLazyFrame_with_row_index__ffi(SEXP self__, SEXP c_arg__name, SEXP c_arg__offset);
 
 // methods and associated functions for PlRLazyGroupBy
