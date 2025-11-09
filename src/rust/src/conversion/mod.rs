@@ -6,7 +6,7 @@ pub use categorical::PlRCategories;
 use polars::series::ops::NullBehavior;
 use savvy::{
     ListSexp, NotAvailableValue, NumericScalar, NumericSexp, NumericTypedSexp, Sexp, StringSexp,
-    TypedSexp,
+    TypedSexp, savvy_err,
 };
 use search_sorted::SearchSortedSide;
 use std::{num::NonZeroUsize, str::FromStr};
@@ -43,7 +43,7 @@ impl<T> From<T> for Wrap<T> {
 // TODO: Move this to upstream?
 pub(crate) fn try_extract_attribute(obj: &Sexp, attr_name: &str) -> savvy::Result<Sexp> {
     obj.get_attrib(attr_name)?
-        .ok_or_else(|| savvy::Error::from(format!("Attribute '{}' does not exist.", attr_name)))
+        .ok_or(savvy_err!("Attribute '{attr_name}' does not exist."))
 }
 
 impl TryFrom<&str> for PlRDataType {
