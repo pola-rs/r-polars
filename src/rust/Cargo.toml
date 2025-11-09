@@ -109,6 +109,7 @@ features = [
     "interpolate",
     "interpolate_by",
     "is_between",
+    "is_close",
     "is_first_distinct",
     "is_in",
     "is_last_distinct",

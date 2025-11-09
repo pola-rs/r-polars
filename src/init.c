@@ -1519,6 +1519,11 @@ SEXP savvy_PlRExpr_is_between__impl(SEXP self__, SEXP c_arg__lower, SEXP c_arg__
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_is_close__impl(SEXP self__, SEXP c_arg__other, SEXP c_arg__abs_tol, SEXP c_arg__rel_tol, SEXP c_arg__nans_equal) {
+    SEXP res = savvy_PlRExpr_is_close__ffi(self__, c_arg__other, c_arg__abs_tol, c_arg__rel_tol, c_arg__nans_equal);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_is_duplicated__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_is_duplicated__ffi(self__);
     return handle_result(res);
@@ -3678,6 +3683,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_interpolate_by__impl", (DL_FUNC) &savvy_PlRExpr_interpolate_by__impl, 2},
     {"savvy_PlRExpr_into_selector__impl", (DL_FUNC) &savvy_PlRExpr_into_selector__impl, 1},
     {"savvy_PlRExpr_is_between__impl", (DL_FUNC) &savvy_PlRExpr_is_between__impl, 4},
+    {"savvy_PlRExpr_is_close__impl", (DL_FUNC) &savvy_PlRExpr_is_close__impl, 5},
     {"savvy_PlRExpr_is_duplicated__impl", (DL_FUNC) &savvy_PlRExpr_is_duplicated__impl, 1},
     {"savvy_PlRExpr_is_finite__impl", (DL_FUNC) &savvy_PlRExpr_is_finite__impl, 1},
     {"savvy_PlRExpr_is_first_distinct__impl", (DL_FUNC) &savvy_PlRExpr_is_first_distinct__impl, 1},
