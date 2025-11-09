@@ -1035,4 +1035,18 @@ impl PlRExpr {
     fn index_of(&self, element: &PlRExpr) -> Result<Self> {
         Ok(self.inner.clone().index_of(element.inner.clone()).into())
     }
+
+    fn is_close(
+        &self,
+        other: &PlRExpr,
+        abs_tol: f64,
+        rel_tol: f64,
+        nans_equal: bool,
+    ) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .is_close(other.inner.clone(), abs_tol, rel_tol, nans_equal)
+            .into())
+    }
 }

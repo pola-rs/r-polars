@@ -2935,3 +2935,68 @@ test_that("index_of works", {
 test_that("Deprecated shrink_dtype", {
   expect_snapshot(pl$col("foo")$shrink_dtype(), cnd_class = TRUE)
 })
+
+test_that("is_close works", {
+  df <- pl$DataFrame(a = c(1.5, 2.0, NaN), b = c(1.55, 2.2, NaN))
+
+  # abs_tol works
+  expect_equal(
+    df$select(
+      is_close = pl$col("a")$is_close("b", abs_tol = 0.1)
+    ),
+    pl$DataFrame(is_close = c(TRUE, FALSE, FALSE))
+  )
+  # rel_tol works
+  expect_equal(
+    df$select(
+      is_close = pl$col("a")$is_close("b", rel_tol = 0.1)
+    ),
+    pl$DataFrame(is_close = c(TRUE, TRUE, FALSE))
+  )
+  # nans_equal works
+  expect_equal(
+    df$select(
+      is_close = pl$col("a")$is_close("b", nans_equal = TRUE)
+    ),
+    pl$DataFrame(is_close = c(FALSE, FALSE, TRUE))
+  )
+
+  # abs_tol and rel_tol can't take negative values
+  expect_snapshot(
+    df$select(
+      is_close = pl$col("a")$is_close("b", abs_tol = -1)
+    ),
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(
+      is_close = pl$col("a")$is_close("b", rel_tol = -1)
+    ),
+    error = TRUE
+  )
+  # abs_tol and rel_tol must be a single numeric value
+  expect_snapshot(
+    df$select(
+      is_close = pl$col("a")$is_close("b", abs_tol = "a")
+    ),
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(
+      is_close = pl$col("a")$is_close("b", rel_tol = "a")
+    ),
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(
+      is_close = pl$col("a")$is_close("b", abs_tol = c(1, 2))
+    ),
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(
+      is_close = pl$col("a")$is_close("b", rel_tol = c(1, 2))
+    ),
+    error = TRUE
+  )
+})
