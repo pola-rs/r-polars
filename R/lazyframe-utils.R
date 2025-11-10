@@ -169,7 +169,8 @@ forward_old_opt_flags <- function(
   comm_subplan_elim = deprecated(),
   comm_subexpr_elim = deprecated(),
   cluster_with_columns = deprecated(),
-  collapse_joins = deprecated()
+  collapse_joins = deprecated(),
+  no_optimization = deprecated()
 ) {
   call <- caller_env(2L)
   warn_func <- function(arg_name) {
@@ -229,6 +230,20 @@ forward_old_opt_flags <- function(
   if (is_present(collapse_joins)) {
     warn_func("collapse_joins")
     # collapse_joins was merged to predicate_pushdown, so there is no flag anymore
+  }
+
+  if (is_present(no_optimization)) {
+    warn_func("no_optimization")
+    props_uncheck(optimizations) <- list(
+      predicate_pushdown <- FALSE
+      projection_pushdown <- FALSE
+      slice_pushdown <- FALSE
+      comm_subplan_elim <- FALSE
+      comm_subexpr_elim <- FALSE
+      cluster_with_columns <- FALSE
+      check_order_observe <- FALSE
+    )
+    need_validation <- TRUE
   }
 
   if (need_validation) {

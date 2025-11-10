@@ -268,6 +268,7 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 #' )
 lazyframe__collect <- function(
   ...,
+  engine = c("auto", "in-memory", "streaming"),
   type_coercion = TRUE,
   `_type_check` = TRUE,
   predicate_pushdown = TRUE,
@@ -278,7 +279,6 @@ lazyframe__collect <- function(
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
   no_optimization = FALSE,
-  engine = c("auto", "in-memory", "streaming"),
   `_check_order` = TRUE,
   `_eager` = FALSE,
   collapse_joins = deprecated()
