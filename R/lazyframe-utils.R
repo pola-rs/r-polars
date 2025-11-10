@@ -235,13 +235,13 @@ forward_old_opt_flags <- function(
   if (is_present(no_optimization)) {
     warn_func("no_optimization")
     props_uncheck(optimizations) <- list(
-      predicate_pushdown <- FALSE
-      projection_pushdown <- FALSE
-      slice_pushdown <- FALSE
-      comm_subplan_elim <- FALSE
-      comm_subexpr_elim <- FALSE
-      cluster_with_columns <- FALSE
-      check_order_observe <- FALSE
+      predicate_pushdown = FALSE,
+      projection_pushdown = FALSE,
+      slice_pushdown = FALSE,
+      comm_subplan_elim = FALSE,
+      comm_subexpr_elim = FALSE,
+      cluster_with_columns = FALSE,
+      check_order_observe = FALSE
     )
     need_validation <- TRUE
   }

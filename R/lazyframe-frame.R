@@ -234,20 +234,50 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 #' Individual optimizations may be disabled by setting the corresponding parameter to `FALSE`.
 #' @inherit pl__DataFrame return
 #' @inheritParams rlang::args_dots_empty
-#' @inheritParams QueryOptFlags
-#' @param type_coercion A logical, indicates type coercion optimization.
-#' @param collapse_joins `r lifecycle::badge("deprecated")`
-#'   Use `predicate_pushdown` instead.
-#' @param no_optimization A logical. If `TRUE`, turn off (certain) optimizations.
 #' @param engine The engine name to use for processing the query.
-#' One of the followings:
-#' - `"auto"` (default): Select the engine automatically.
-#'   The `"in-memory"` engine will be selected for most cases.
-#' - `"in-memory"`: Use the in-memory engine.
-#' - `"streaming"`: `r lifecycle::badge("experimental")` Use the (new) streaming engine.
-#' @param _eager A logical, indicates to turn off multi-node optimizations and
-#' the other optimizations. This option is intended for internal use only.
-#' @param _check_order,_type_check For internal use only.
+#'   One of the followings:
+#'   - `"auto"` (default): Select the engine automatically.
+#'     The `"in-memory"` engine will be selected for most cases.
+#'   - `"in-memory"`: Use the in-memory engine.
+#'   - `"streaming"`: `r lifecycle::badge("experimental")` Use the (new) streaming engine.
+#' @param optimizations `r lifecycle::badge("experimental")`
+#'   A [QueryOptFlags] object to indicate optimization passes done during query optimization.
+#' @param type_coercion `r lifecycle::badge("deprecated")`
+#'   Use the `type_coercion` property of a [QueryOptFlags] object, then pass
+#'   that to the `optimizations` argument instead.
+#' @param predicate_pushdown `r lifecycle::badge("deprecated")`
+#'   Use the `predicate_pushdown` property of a [QueryOptFlags] object, then pass
+#'   that to the `optimizations` argument instead.
+#' @param projection_pushdown `r lifecycle::badge("deprecated")`
+#'   Use the `projection_pushdown` property of a [QueryOptFlags] object, then pass
+#'   that to the `optimizations` argument instead.
+#' @param simplify_expression `r lifecycle::badge("deprecated")`
+#'   Use the `simplify_expression` property of a [QueryOptFlags] object, then pass
+#'   that to the `optimizations` argument instead.
+#' @param slice_pushdown `r lifecycle::badge("deprecated")`
+#'   Use the `slice_pushdown` property of a [QueryOptFlags] object, then pass
+#'   that to the `optimizations` argument instead.
+#' @param comm_subplan_elim `r lifecycle::badge("deprecated")`
+#'   Use the `comm_subplan_elim` property of a [QueryOptFlags] object, then pass
+#'   that to the `optimizations` argument instead.
+#' @param comm_subexpr_elim `r lifecycle::badge("deprecated")`
+#'   Use the `comm_subexpr_elim` property of a [QueryOptFlags] object, then pass
+#'   that to the `optimizations` argument instead.
+#' @param cluster_with_columns `r lifecycle::badge("deprecated")`
+#'   Use the `cluster_with_columns` property of a [QueryOptFlags] object, then pass
+#'   that to the `optimizations` argument instead.
+#' @param check_order_observe `r lifecycle::badge("deprecated")`
+#'   Use the `check_order_observe` property of a [QueryOptFlags] object, then pass
+#'   that to the `optimizations` argument instead.
+#' @param fast_projection `r lifecycle::badge("deprecated")`
+#'   Use the `fast_projection` property of a [QueryOptFlags] object, then pass
+#'   that to the `optimizations` argument instead.
+#' @param collapse_joins `r lifecycle::badge("deprecated")`
+#'   Use the `predicate_pushdown` property of a [QueryOptFlags] object, then pass
+#'   that to the `optimizations` argument instead.
+#' @param no_optimization `r lifecycle::badge("deprecated")`
+#'   Use the `optimizations` argument with
+#'   [`pl$QueryOptFlags()$no_optimizations()`][QueryOptFlags] instead.
 #' @seealso
 #'  - [`$profile()`][lazyframe__profile] - same as `$collect()` but also returns
 #'    a table with each operation profiled.
@@ -269,46 +299,26 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 lazyframe__collect <- function(
   ...,
   engine = c("auto", "in-memory", "streaming"),
-  type_coercion = TRUE,
-  `_type_check` = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  comm_subplan_elim = TRUE,
-  comm_subexpr_elim = TRUE,
-  cluster_with_columns = TRUE,
-  no_optimization = FALSE,
-  `_check_order` = TRUE,
-  `_eager` = FALSE,
-  collapse_joins = deprecated()
+  optimizations = QueryOptFlags(),
+  type_coercion = deprecated(),
+  predicate_pushdown = deprecated(),
+  projection_pushdown = deprecated(),
+  simplify_expression = deprecated(),
+  slice_pushdown = deprecated(),
+  comm_subplan_elim = deprecated(),
+  comm_subexpr_elim = deprecated(),
+  cluster_with_columns = deprecated(),
+  collapse_joins = deprecated(),
+  no_optimization = deprecated()
 ) {
   wrap({
     check_dots_empty0(...)
     engine <- arg_match0(engine, c("auto", "in-memory", "streaming"))
+    check_is_S7(optimizations, QueryOptFlags)
 
-    if (is_present(collapse_joins)) {
-      deprecate_warn(
-        c(
-          `!` = sprintf("%s is deprecated.", format_arg("collapse_joins")),
-          `i` = sprintf("Use %s instead.", format_arg("predicate_pushdown"))
-        )
-      )
-    }
-
-    if (isTRUE(no_optimization) || isTRUE(`_eager`)) {
-      predicate_pushdown <- FALSE
-      projection_pushdown <- FALSE
-      slice_pushdown <- FALSE
-      comm_subplan_elim <- FALSE
-      comm_subexpr_elim <- FALSE
-      cluster_with_columns <- FALSE
-      `_check_order` <- FALSE
-    }
-
-    ldf <- self$`_ldf`$optimization_toggle(
+    optimizations <- forward_old_opt_flags(
+      optimizations,
       type_coercion = type_coercion,
-      `_type_check` = `_type_check`,
       predicate_pushdown = predicate_pushdown,
       projection_pushdown = projection_pushdown,
       simplify_expression = simplify_expression,
@@ -316,9 +326,11 @@ lazyframe__collect <- function(
       comm_subplan_elim = comm_subplan_elim,
       comm_subexpr_elim = comm_subexpr_elim,
       cluster_with_columns = cluster_with_columns,
-      `_check_order` = `_check_order`,
-      `_eager` = `_eager`
+      collapse_joins = collapse_joins,
+      no_optimization = no_optimization
     )
+
+    ldf <- self$`_ldf`$with_optimizations(optimizations)
 
     ldf$collect(engine)
   })
