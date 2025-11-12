@@ -23,11 +23,13 @@
 
   Functions affected are those that gained the `optimizations` argument.
   See the New features section below for details.
-  Also, for the experimental `sink_*` methods, the above arguments are removed instead of being deprecated.
+  Also, for the experimental `<lazyframe>$sink_*` methods,
+  the above arguments are removed instead of being deprecated.
 
 ### New features
 
-- The following functions gain the `optimizations` argument taking a `QueryOptFlags` object (#1633, #1634, #1635).
+- The following functions gain the experimental `optimizations` argument
+  taking a `QueryOptFlags` object (#1633, #1634, #1635).
   - `<lazyframe>$collect()`
   - `<lazyframe>$explain()`
   - `<lazyframe>$profile()`
