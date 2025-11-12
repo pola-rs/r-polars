@@ -4,6 +4,7 @@
 #'
 #' @inherit lazyframe__sink_parquet description params return
 #' @inheritParams rlang::args_dots_empty
+#' @inheritParams lazyframe__collect
 #' @param compression Determines the compression algorithm.
 #' Must be one of:
 #' - `"uncompressed"` or `NULL`: Write an uncompressed Arrow file.
@@ -32,19 +33,12 @@ lazyframe__sink_ipc <- function(
   compression = c("zstd", "lz4", "uncompressed"),
   compat_level = c("newest", "oldest"),
   maintain_order = TRUE,
-  type_coercion = TRUE,
-  `_type_check` = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  no_optimization = FALSE,
   storage_options = NULL,
   retries = 2,
   sync_on_close = c("none", "data", "all"),
   mkdir = FALSE,
   engine = c("auto", "in-memory", "streaming"),
-  collapse_joins = deprecated()
+  optimizations = QueryOptFlags()
 ) {
   wrap({
     check_dots_empty0(...)
@@ -59,21 +53,13 @@ lazyframe__sink_ipc <- function(
       compression = compression,
       compat_level = compat_level,
       maintain_order = maintain_order,
-      type_coercion = type_coercion,
-      `_type_check` = `_type_check`,
-      predicate_pushdown = predicate_pushdown,
-      projection_pushdown = projection_pushdown,
-      simplify_expression = simplify_expression,
-      slice_pushdown = slice_pushdown,
-      no_optimization = no_optimization,
       storage_options = storage_options,
       retries = retries,
       sync_on_close = sync_on_close,
       mkdir = mkdir,
-      collapse_joins = collapse_joins
-    )$collect(engine = engine)
+    )$collect(engine = engine, optimizations = optimizations)
   })
-  # TODO: support `optimizations` argument
+
   invisible(NULL)
 }
 
@@ -84,18 +70,10 @@ lazyframe__lazy_sink_ipc <- function(
   compression = c("zstd", "lz4", "uncompressed"),
   compat_level = c("newest", "oldest"),
   maintain_order = TRUE,
-  type_coercion = TRUE,
-  `_type_check` = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  no_optimization = FALSE,
   storage_options = NULL,
   retries = 2,
   sync_on_close = c("none", "data", "all"),
-  mkdir = FALSE,
-  collapse_joins = deprecated()
+  mkdir = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
@@ -117,19 +95,7 @@ lazyframe__lazy_sink_ipc <- function(
       values = c("none", "data", "all")
     )
 
-    lf <- set_sink_optimizations(
-      self,
-      type_coercion = type_coercion,
-      `_type_check` = `_type_check`,
-      predicate_pushdown = predicate_pushdown,
-      projection_pushdown = projection_pushdown,
-      simplify_expression = simplify_expression,
-      slice_pushdown = slice_pushdown,
-      collapse_joins = collapse_joins,
-      no_optimization = no_optimization
-    )
-
-    lf$sink_ipc(
+    self$`_ldf`$sink_ipc(
       target = target,
       compression = compression,
       compat_level = compat_level,
@@ -174,6 +140,7 @@ dataframe__write_ipc <- function(
       compat_level = compat_level,
       storage_options = storage_options,
       retries = retries,
+      optimizations = DEFAULT_EAGER_OPT_FLAGS,
       engine = "in-memory"
     )
   })

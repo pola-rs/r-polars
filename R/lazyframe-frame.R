@@ -370,46 +370,29 @@ lazyframe__collect <- function(
 #' )$sort("a")$profile()
 lazyframe__profile <- function(
   ...,
-  type_coercion = TRUE,
-  `_type_check` = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  comm_subplan_elim = TRUE,
-  comm_subexpr_elim = TRUE,
-  cluster_with_columns = TRUE,
-  no_optimization = FALSE,
-  `_check_order` = TRUE,
   show_plot = FALSE,
   truncate_nodes = 0,
-  collapse_joins = deprecated()
+  engine = c("auto", "in-memory", "streaming"),
+  optimizations = QueryOptFlags(),
+  type_coercion = deprecated(),
+  predicate_pushdown = deprecated(),
+  projection_pushdown = deprecated(),
+  simplify_expression = deprecated(),
+  slice_pushdown = deprecated(),
+  comm_subplan_elim = deprecated(),
+  comm_subexpr_elim = deprecated(),
+  cluster_with_columns = deprecated(),
+  collapse_joins = deprecated(),
+  no_optimization = deprecated()
 ) {
   wrap({
     check_dots_empty0(...)
+    engine <- arg_match0(engine, c("auto", "in-memory", "streaming"))
+    check_is_S7(optimizations, QueryOptFlags)
 
-    if (is_present(collapse_joins)) {
-      deprecate_warn(
-        c(
-          `!` = sprintf("%s is deprecated.", format_arg("collapse_joins")),
-          `i` = sprintf("Use %s instead.", format_arg("predicate_pushdown"))
-        )
-      )
-    }
-
-    if (isTRUE(no_optimization)) {
-      predicate_pushdown <- FALSE
-      projection_pushdown <- FALSE
-      slice_pushdown <- FALSE
-      comm_subplan_elim <- FALSE
-      comm_subexpr_elim <- FALSE
-      cluster_with_columns <- FALSE
-      `_check_order` <- FALSE
-    }
-
-    lf <- self$`_ldf`$optimization_toggle(
+    optimizations <- forward_old_opt_flags(
+      optimizations,
       type_coercion = type_coercion,
-      `_type_check` = `_type_check`,
       predicate_pushdown = predicate_pushdown,
       projection_pushdown = projection_pushdown,
       simplify_expression = simplify_expression,
@@ -417,11 +400,13 @@ lazyframe__profile <- function(
       comm_subplan_elim = comm_subplan_elim,
       comm_subexpr_elim = comm_subexpr_elim,
       cluster_with_columns = cluster_with_columns,
-      `_check_order` = `_check_order`,
-      `_eager` = FALSE
+      collapse_joins = collapse_joins,
+      no_optimization = no_optimization
     )
 
-    out <- lapply(lf$profile(), \(x) {
+    ldf <- self$`_ldf`$with_optimizations(optimizations)
+
+    out <- lapply(ldf$profile(), \(x) {
       x |>
         .savvy_wrap_PlRDataFrame() |>
         wrap()
@@ -2005,7 +1990,7 @@ lazyframe__group_by_dynamic <- function(
 #' This only returns the "dot" output that can be passed to other packages, such
 #' as `DiagrammeR::grViz()`.
 #'
-#' @param ... Not used..
+#' @param ... `r lifecycle::badge("deprecated")` Ignored.
 #' @param optimized Optimize the query plan.
 #' @inheritParams lazyframe__explain
 #'
@@ -2029,42 +2014,50 @@ lazyframe__group_by_dynamic <- function(
 lazyframe__to_dot <- function(
   ...,
   optimized = TRUE,
-  type_coercion = TRUE,
-  `_type_check` = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  comm_subplan_elim = TRUE,
-  comm_subexpr_elim = TRUE,
-  cluster_with_columns = TRUE,
-  collapse_joins = deprecated(),
-  `_check_order` = TRUE
+  optimizations = QueryOptFlags(),
+  type_coercion = deprecated(),
+  predicate_pushdown = deprecated(),
+  projection_pushdown = deprecated(),
+  simplify_expression = deprecated(),
+  slice_pushdown = deprecated(),
+  comm_subplan_elim = deprecated(),
+  comm_subexpr_elim = deprecated(),
+  cluster_with_columns = deprecated(),
+  collapse_joins = deprecated()
 ) {
-  if (is_present(collapse_joins)) {
-    deprecate_warn(
-      c(
-        `!` = sprintf("%s is deprecated.", format_arg("collapse_joins")),
-        `i` = sprintf("Use %s instead.", format_arg("predicate_pushdown"))
+  wrap({
+    check_dots_empty(
+      error = deprecate_warn(
+        format_warning(
+          c(
+            `!` = sprintf(
+              "%s of %s will raise an error in a future version.",
+              format_arg("..."),
+              format_code("$to_dot()")
+            )
+          )
+        )
       )
     )
-  }
+    check_is_S7(optimizations, QueryOptFlags)
 
-  ldf <- self$`_ldf`$optimization_toggle(
-    type_coercion = type_coercion,
-    `_type_check` = `_type_check`,
-    predicate_pushdown = predicate_pushdown,
-    projection_pushdown = projection_pushdown,
-    simplify_expression = simplify_expression,
-    slice_pushdown = slice_pushdown,
-    comm_subplan_elim = comm_subplan_elim,
-    comm_subexpr_elim = comm_subexpr_elim,
-    cluster_with_columns = cluster_with_columns,
-    `_check_order` = `_check_order`,
-    `_eager` = FALSE
-  )
+    optimizations <- forward_old_opt_flags(
+      optimizations,
+      type_coercion = type_coercion,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      comm_subplan_elim = comm_subplan_elim,
+      comm_subexpr_elim = comm_subexpr_elim,
+      cluster_with_columns = cluster_with_columns,
+      collapse_joins = collapse_joins
+    )
 
-  ldf$to_dot(optimized)
+    ldf <- self$`_ldf`$with_optimizations(optimizations)
+
+    ldf$to_dot(optimized)
+  })
 }
 
 #' Create an empty or `n`-row null-filled copy of the frame

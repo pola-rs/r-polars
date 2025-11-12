@@ -159,16 +159,14 @@ pl__concat <- function(
           wrap()
       },
       vertical_relaxed = {
-        (
-          dots |>
-            lapply(\(x) x$lazy()$`_ldf`) |>
-            concat_lf(
-              rechunk = rechunk,
-              parallel = parallel,
-              to_supertypes = TRUE
-            ) |>
-            wrap()
-        )$collect(no_optimization = TRUE)
+        (dots |>
+          lapply(\(x) x$lazy()$`_ldf`) |>
+          concat_lf(
+            rechunk = rechunk,
+            parallel = parallel,
+            to_supertypes = TRUE
+          ) |>
+          wrap())$collect(optimizations = QueryOptFlags()$no_optimizations())
       },
       diagonal = {
         dots |>
@@ -177,16 +175,14 @@ pl__concat <- function(
           wrap()
       },
       diagonal_relaxed = {
-        (
-          dots |>
-            lapply(\(x) x$lazy()$`_ldf`) |>
-            concat_lf_diagonal(
-              rechunk = rechunk,
-              parallel = parallel,
-              to_supertypes = TRUE
-            ) |>
-            wrap()
-        )$collect(no_optimization = TRUE)
+        (dots |>
+          lapply(\(x) x$lazy()$`_ldf`) |>
+          concat_lf_diagonal(
+            rechunk = rechunk,
+            parallel = parallel,
+            to_supertypes = TRUE
+          ) |>
+          wrap())$collect(optimizations = QueryOptFlags()$no_optimizations())
       },
       horizontal = {
         dots |>

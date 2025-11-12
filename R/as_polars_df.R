@@ -146,18 +146,21 @@ as_polars_df.polars_group_by <- function(x, ...) {
 as_polars_df.polars_lazy_frame <- function(
   x,
   ...,
-  type_coercion = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  comm_subplan_elim = TRUE,
-  comm_subexpr_elim = TRUE,
-  cluster_with_columns = TRUE,
-  no_optimization = FALSE,
-  engine = c("auto", "in-memory", "streaming")
+  engine = c("auto", "in-memory", "streaming"),
+  optimizations = QueryOptFlags(),
+  type_coercion = deprecated(),
+  predicate_pushdown = deprecated(),
+  projection_pushdown = deprecated(),
+  simplify_expression = deprecated(),
+  slice_pushdown = deprecated(),
+  comm_subplan_elim = deprecated(),
+  comm_subexpr_elim = deprecated(),
+  cluster_with_columns = deprecated(),
+  no_optimization = deprecated()
 ) {
   x$collect(
+    engine = engine,
+    optimizations = optimizations,
     type_coercion = type_coercion,
     predicate_pushdown = predicate_pushdown,
     projection_pushdown = projection_pushdown,
@@ -166,8 +169,7 @@ as_polars_df.polars_lazy_frame <- function(
     comm_subplan_elim = comm_subplan_elim,
     comm_subexpr_elim = comm_subexpr_elim,
     cluster_with_columns = cluster_with_columns,
-    no_optimization = no_optimization,
-    engine = engine
+    no_optimization = no_optimization
   )
 }
 

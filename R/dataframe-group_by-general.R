@@ -38,7 +38,7 @@ groupby__agg <- function(...) {
   self$df$lazy()$group_by(
     !!!self$by,
     .maintain_order = self$maintain_order
-  )$agg(...)$collect(no_optimization = TRUE) |>
+  )$agg(...)$collect(optimizations = QueryOptFlags()$no_optimizations()) |>
     wrap()
 }
 
@@ -56,7 +56,7 @@ groupby__head <- function(n = 5) {
   self$df$lazy()$group_by(
     !!!self$by,
     .maintain_order = self$maintain_order
-  )$head(n)$collect(no_optimization = TRUE) |>
+  )$head(n)$collect(optimizations = QueryOptFlags()$no_optimizations()) |>
     wrap()
 }
 
@@ -74,7 +74,7 @@ groupby__tail <- function(n = 5) {
   self$df$lazy()$group_by(
     !!!self$by,
     .maintain_order = self$maintain_order
-  )$tail(n)$collect(no_optimization = TRUE) |>
+  )$tail(n)$collect(optimizations = QueryOptFlags()$no_optimizations()) |>
     wrap()
 }
 

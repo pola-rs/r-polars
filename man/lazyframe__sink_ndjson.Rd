@@ -9,37 +9,22 @@ lazyframe__sink_ndjson(
   path,
   ...,
   maintain_order = TRUE,
-  type_coercion = TRUE,
-  `_type_check` = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  no_optimization = FALSE,
   storage_options = NULL,
   retries = 2,
   sync_on_close = c("none", "data", "all"),
   mkdir = FALSE,
   engine = c("auto", "in-memory", "streaming"),
-  collapse_joins = deprecated()
+  optimizations = QueryOptFlags()
 )
 
 lazyframe__lazy_sink_ndjson(
   path,
   ...,
   maintain_order = TRUE,
-  type_coercion = TRUE,
-  `_type_check` = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  no_optimization = FALSE,
   storage_options = NULL,
   retries = 2,
   sync_on_close = c("none", "data", "all"),
-  mkdir = FALSE,
-  collapse_joins = deprecated()
+  mkdir = FALSE
 )
 }
 \arguments{
@@ -49,20 +34,6 @@ lazyframe__lazy_sink_ndjson(
 
 \item{maintain_order}{Maintain the order in which data is processed. Setting
 this to \code{FALSE} will be slightly faster.}
-
-\item{type_coercion}{A logical, indicates type coercion optimization.}
-
-\item{_type_check}{For internal use only.}
-
-\item{predicate_pushdown}{A logical, indicates predicate pushdown optimization.}
-
-\item{projection_pushdown}{A logical, indicates projection pushdown optimization.}
-
-\item{simplify_expression}{A logical, indicates simplify expression optimization.}
-
-\item{slice_pushdown}{A logical, indicates slice pushdown optimization.}
-
-\item{no_optimization}{A logical. If \code{TRUE}, turn off (certain) optimizations.}
 
 \item{storage_options}{Named vector containing options that indicate how to
 connect to a cloud provider. The cloud providers currently supported are
@@ -100,8 +71,8 @@ The \code{"in-memory"} engine will be selected for most cases.
 \item \code{"streaming"}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Use the (new) streaming engine.
 }}
 
-\item{collapse_joins}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-Use \code{predicate_pushdown} instead.}
+\item{optimizations}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+A \link{QueryOptFlags} object to indicate optimization passes done during query optimization.}
 }
 \value{
 \itemize{

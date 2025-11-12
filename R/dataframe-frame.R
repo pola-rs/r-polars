@@ -745,10 +745,12 @@ dataframe__rechunk <- function() {
 #' df$bottom_k(4, by = c("a", "b"))
 dataframe__bottom_k <- function(k, ..., by, reverse = FALSE) {
   self$lazy()$bottom_k(k, by = by, reverse = reverse)$collect(
-    projection_pushdown = FALSE,
-    predicate_pushdown = FALSE,
-    comm_subplan_elim = FALSE,
-    slice_pushdown = TRUE
+    optimizations = QueryOptFlags(
+      projection_pushdown = FALSE,
+      predicate_pushdown = FALSE,
+      comm_subplan_elim = FALSE,
+      slice_pushdown = TRUE
+    )
   ) |>
     wrap()
 }
@@ -770,10 +772,12 @@ dataframe__bottom_k <- function(k, ..., by, reverse = FALSE) {
 #' df$top_k(4, by = c("a", "b"))
 dataframe__top_k <- function(k, ..., by, reverse = FALSE) {
   self$lazy()$top_k(k, by = by, reverse = reverse)$collect(
-    projection_pushdown = FALSE,
-    predicate_pushdown = FALSE,
-    comm_subplan_elim = FALSE,
-    slice_pushdown = TRUE
+    optimizations = QueryOptFlags(
+      projection_pushdown = FALSE,
+      predicate_pushdown = FALSE,
+      comm_subplan_elim = FALSE,
+      slice_pushdown = TRUE
+    )
   ) |>
     wrap()
 }

@@ -85,19 +85,12 @@ lazyframe__sink_parquet <- function(
   row_group_size = NULL,
   data_page_size = NULL,
   maintain_order = TRUE,
-  type_coercion = TRUE,
-  `_type_check` = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  no_optimization = FALSE,
   storage_options = NULL,
   retries = 2,
   sync_on_close = c("none", "data", "all"),
   mkdir = FALSE,
   engine = c("auto", "in-memory", "streaming"),
-  collapse_joins = deprecated()
+  optimizations = QueryOptFlags()
 ) {
   wrap({
     check_dots_empty0(...)
@@ -110,19 +103,11 @@ lazyframe__sink_parquet <- function(
       row_group_size = row_group_size,
       data_page_size = data_page_size,
       maintain_order = maintain_order,
-      type_coercion = type_coercion,
-      `_type_check` = `_type_check`,
-      predicate_pushdown = predicate_pushdown,
-      projection_pushdown = projection_pushdown,
-      simplify_expression = simplify_expression,
-      slice_pushdown = slice_pushdown,
-      no_optimization = no_optimization,
       storage_options = storage_options,
       retries = retries,
       sync_on_close = sync_on_close,
-      mkdir = mkdir,
-      collapse_joins = collapse_joins
-    )$collect(engine = engine)
+      mkdir = mkdir
+    )$collect(engine = engine, optimizations = optimizations)
   })
   invisible(NULL)
 }
@@ -137,18 +122,10 @@ lazyframe__lazy_sink_parquet <- function(
   row_group_size = NULL,
   data_page_size = NULL,
   maintain_order = TRUE,
-  type_coercion = TRUE,
-  `_type_check` = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  no_optimization = FALSE,
   storage_options = NULL,
   retries = 2,
   sync_on_close = c("none", "data", "all"),
-  mkdir = FALSE,
-  collapse_joins = deprecated()
+  mkdir = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
@@ -163,17 +140,6 @@ lazyframe__lazy_sink_parquet <- function(
       values = c("none", "data", "all")
     )
 
-    lf <- set_sink_optimizations(
-      self,
-      type_coercion = type_coercion,
-      `_type_check` = `_type_check`,
-      predicate_pushdown = predicate_pushdown,
-      projection_pushdown = projection_pushdown,
-      simplify_expression = simplify_expression,
-      slice_pushdown = slice_pushdown,
-      collapse_joins = collapse_joins,
-      no_optimization = no_optimization
-    )
     if (is_bool(statistics)) {
       statistics <- parquet_statistics(
         min = statistics,
@@ -193,7 +159,7 @@ lazyframe__lazy_sink_parquet <- function(
       abort("`statistics` must be TRUE, FALSE, 'full', or a call to `parquet_statistics()`.")
     }
 
-    lf$sink_parquet(
+    self$`_ldf`$sink_parquet(
       target = target,
       compression = compression,
       compression_level = compression_level,
@@ -279,6 +245,7 @@ dataframe__write_parquet <- function(
       storage_options = storage_options,
       retries = retries,
       mkdir = mkdir,
+      optimizations = DEFAULT_EAGER_OPT_FLAGS,
       engine = "in-memory"
     )
   })

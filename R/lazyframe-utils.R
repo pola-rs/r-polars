@@ -91,51 +91,6 @@ parquet_statistics <- function(
   )
 }
 
-set_sink_optimizations <- function(
-  self,
-  type_coercion = TRUE,
-  `_type_check` = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  no_optimization = FALSE,
-  `_check_order` = TRUE,
-  collapse_joins = deprecated(),
-  call = caller_env()
-) {
-  if (isTRUE(no_optimization)) {
-    predicate_pushdown <- FALSE
-    projection_pushdown <- FALSE
-    slice_pushdown <- FALSE
-    `_check_order` <- FALSE
-  }
-
-  if (is_present(collapse_joins)) {
-    deprecate_warn(
-      c(
-        `!` = sprintf("%s is deprecated.", format_arg("collapse_joins")),
-        `i` = sprintf("Use %s instead.", format_arg("predicate_pushdown"))
-      ),
-      user_env = call
-    )
-  }
-
-  self$`_ldf`$optimization_toggle(
-    type_coercion = type_coercion,
-    `_type_check` = `_type_check`,
-    predicate_pushdown = predicate_pushdown,
-    projection_pushdown = projection_pushdown,
-    simplify_expression = simplify_expression,
-    slice_pushdown = slice_pushdown,
-    comm_subplan_elim = FALSE,
-    comm_subexpr_elim = FALSE,
-    cluster_with_columns = FALSE,
-    `_eager` = FALSE,
-    `_check_order` = `_check_order`
-  )
-}
-
 #' Transforms raw percentiles into our preferred format, adding the 50th
 #' percentile.
 #' Raises an error if the percentile sequence is invalid (e.g. outside the
