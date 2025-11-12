@@ -2,9 +2,43 @@
 
 ## polars (development version)
 
+### Deprecations
+
+- The following arguments of certain LazyFrame methods, which were previously used for query optimization,
+  are deprecated in favor of the new `optimizations` argument (#1635).
+  Some arguments that were intended for internal use have been removed without deprecation.
+
+  - `time_coercion`
+  - `predicate_pushdown`
+  - `projection_pushdown`
+  - `simplify_expression`
+  - `slice_pushdown`
+  - `comm_subplan_elim`
+  - `comm_subexpr_elim`
+  - `cluster_with_columns`
+  - `no_optimization`
+  - `_type_check` (removed)
+  - `_check_order` (removed)
+  - `_eager` (removed)
+
+  Functions affected are those that gained the `optimizations` argument.
+  See the New features section below for details.
+  Also, for the experimental `sink_*` methods, the above arguments are removed instead of being deprecated.
+
 ### New features
 
-- `pl$collect_all()` to efficiently collect a list of LazyFrames (#1598).
+- The following functions gain the `optimizations` taking a `QueryOptFlags` object (#1633, #1634, #1635).
+  - `<lazyframe>$collect()`
+  - `<lazyframe>$explain()`
+  - `<lazyframe>$profile()`
+  - `<lazyframe>$to_dot()`
+  - `<lazyframe>sink_batches()`
+  - `<lazyframe>sink_csv()`
+  - `<lazyframe>sink_ipc()`
+  - `<lazyframe>sink_parquet()`
+  - `pl$collect_all()`
+  - `as_polars_df(<lazyframe>)`
+- `pl$collect_all()` to efficiently collect a list of LazyFrames (#1598, #1635).
 - `<lazyframe>$remove()` and `<dataframe>$remove()` as a complement to
   `$filter()` (#1632).
 
