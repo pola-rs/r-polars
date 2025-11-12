@@ -3999,12 +3999,6 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_polars__sealed")
   }
 }
 
-`PlRLazyFrame_optimization_toggle` <- function(self) {
-  function(`type_coercion`, `_type_check`, `predicate_pushdown`, `projection_pushdown`, `simplify_expression`, `slice_pushdown`, `comm_subplan_elim`, `comm_subexpr_elim`, `cluster_with_columns`, `_eager`, `_check_order`) {
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_optimization_toggle__impl, `self`, `type_coercion`, `_type_check`, `predicate_pushdown`, `projection_pushdown`, `simplify_expression`, `slice_pushdown`, `comm_subplan_elim`, `comm_subexpr_elim`, `cluster_with_columns`, `_eager`, `_check_order`))
-  }
-}
-
 `PlRLazyFrame_profile` <- function(self) {
   function() {
     .Call(savvy_PlRLazyFrame_profile__impl, `self`)
@@ -4238,7 +4232,6 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_polars__sealed")
   e$`merge_sorted` <- `PlRLazyFrame_merge_sorted`(ptr)
   e$`min` <- `PlRLazyFrame_min`(ptr)
   e$`null_count` <- `PlRLazyFrame_null_count`(ptr)
-  e$`optimization_toggle` <- `PlRLazyFrame_optimization_toggle`(ptr)
   e$`profile` <- `PlRLazyFrame_profile`(ptr)
   e$`quantile` <- `PlRLazyFrame_quantile`(ptr)
   e$`remove` <- `PlRLazyFrame_remove`(ptr)
