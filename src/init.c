@@ -69,8 +69,8 @@ SEXP savvy_col__impl(SEXP c_arg__name) {
     return handle_result(res);
 }
 
-SEXP savvy_collect_all__impl(SEXP c_arg__lfs, SEXP c_arg__engine, SEXP c_arg__optflags) {
-    SEXP res = savvy_collect_all__ffi(c_arg__lfs, c_arg__engine, c_arg__optflags);
+SEXP savvy_collect_all__impl(SEXP c_arg__lfs, SEXP c_arg__engine, SEXP c_arg__optimizations) {
+    SEXP res = savvy_collect_all__ffi(c_arg__lfs, c_arg__engine, c_arg__optimizations);
     return handle_result(res);
 }
 

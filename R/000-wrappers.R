@@ -74,8 +74,8 @@ NULL
 }
 
 
-`collect_all` <- function(`lfs`, `engine`, `optflags`) {
-  .Call(savvy_collect_all__impl, `lfs`, `engine`, `optflags`)
+`collect_all` <- function(`lfs`, `engine`, `optimizations`) {
+  .Call(savvy_collect_all__impl, `lfs`, `engine`, `optimizations`)
 }
 
 
