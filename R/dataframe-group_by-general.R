@@ -208,7 +208,7 @@ groupby__n_unique <- function() {
     wrap()
 }
 
-#' @inherit lazygroupby__n_unique title params
+#' @inherit lazygroupby__len title params
 #' @inherit as_polars_df return
 #' @examples
 #' df <- pl$DataFrame(

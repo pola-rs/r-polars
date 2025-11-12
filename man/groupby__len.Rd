@@ -2,15 +2,19 @@
 % Please edit documentation in R/dataframe-group_by-general.R
 \name{groupby__len}
 \alias{groupby__len}
-\title{Count the unique values per group}
+\title{Return the number of rows in each group}
 \usage{
 groupby__len(name = NULL)
+}
+\arguments{
+\item{name}{Assign a name to the resulting column. If \code{NULL}, defaults to
+\code{"len"}.}
 }
 \value{
 A polars \link{DataFrame}
 }
 \description{
-Count the unique values per group
+Return the number of rows in each group
 }
 \examples{
 df <- pl$DataFrame(
