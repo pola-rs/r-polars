@@ -147,6 +147,11 @@ eager_opt_flags <- function() {
     )
 }
 
+on_load({
+  # Used inside of DataFrame methods
+  DEFAULT_EAGER_OPT_FLAGS <- eager_opt_flags()
+})
+
 # Because of immutability, unlike Python Polars, there are no side effects,
 # and a new modified OptFlags is returned
 QueryOptFlags__no_optimizations <- function() {
