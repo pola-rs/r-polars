@@ -266,12 +266,6 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 #' @param cluster_with_columns `r lifecycle::badge("deprecated")`
 #'   Use the `cluster_with_columns` property of a [QueryOptFlags] object, then pass
 #'   that to the `optimizations` argument instead.
-#' @param check_order_observe `r lifecycle::badge("deprecated")`
-#'   Use the `check_order_observe` property of a [QueryOptFlags] object, then pass
-#'   that to the `optimizations` argument instead.
-#' @param fast_projection `r lifecycle::badge("deprecated")`
-#'   Use the `fast_projection` property of a [QueryOptFlags] object, then pass
-#'   that to the `optimizations` argument instead.
 #' @param collapse_joins `r lifecycle::badge("deprecated")`
 #'   Use the `predicate_pushdown` property of a [QueryOptFlags] object, then pass
 #'   that to the `optimizations` argument instead.

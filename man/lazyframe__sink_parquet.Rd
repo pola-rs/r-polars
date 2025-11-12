@@ -140,8 +140,6 @@ The \code{"in-memory"} engine will be selected for most cases.
 
 \item{optimizations}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 A \link{QueryOptFlags} object to indicate optimization passes done during query optimization.}
-
-\item{_type_check}{For internal use only.}
 }
 \value{
 \itemize{

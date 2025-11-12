@@ -74,14 +74,6 @@ that to the \code{optimizations} argument instead.}
 \item{no_optimization}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 Use the \code{optimizations} argument with
 \code{\link[=QueryOptFlags]{pl$QueryOptFlags()$no_optimizations()}} instead.}
-
-\item{check_order_observe}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-Use the \code{check_order_observe} property of a \link{QueryOptFlags} object, then pass
-that to the \code{optimizations} argument instead.}
-
-\item{fast_projection}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-Use the \code{fast_projection} property of a \link{QueryOptFlags} object, then pass
-that to the \code{optimizations} argument instead.}
 }
 \value{
 A polars \link{DataFrame}

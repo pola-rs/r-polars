@@ -26,9 +26,6 @@ polars_query_opt_flags__methods <- new.env(parent = emptyenv())
 #' @examples
 #' opt_flags <- pl$QueryOptFlags()
 #' opt_flags
-#'
-#' S7::check_is_S7(opt_flags, pl$QueryOptFlags)
-#' @keywords internal
 NULL
 
 QueryOptFlags <- new_class(
