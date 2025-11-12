@@ -8,7 +8,7 @@
   are deprecated in favor of the new `optimizations` argument (#1635).
   Some arguments that were intended for internal use have been removed without deprecation.
 
-  - `time_coercion`
+  - `type_coercion`
   - `predicate_pushdown`
   - `projection_pushdown`
   - `simplify_expression`
@@ -27,15 +27,16 @@
 
 ### New features
 
-- The following functions gain the `optimizations` taking a `QueryOptFlags` object (#1633, #1634, #1635).
+- The following functions gain the `optimizations` argument taking a `QueryOptFlags` object (#1633, #1634, #1635).
   - `<lazyframe>$collect()`
   - `<lazyframe>$explain()`
   - `<lazyframe>$profile()`
   - `<lazyframe>$to_dot()`
-  - `<lazyframe>sink_batches()`
-  - `<lazyframe>sink_csv()`
-  - `<lazyframe>sink_ipc()`
-  - `<lazyframe>sink_parquet()`
+  - `<lazyframe>$sink_batches()`
+  - `<lazyframe>$sink_csv()`
+  - `<lazyframe>$sink_ipc()`
+  - `<lazyframe>$sink_parquet()`
+  - `<lazyframe>$sink_ndjson()`
   - `pl$collect_all()`
   - `as_polars_df(<lazyframe>)`
 - `pl$collect_all()` to efficiently collect a list of LazyFrames (#1598, #1635).
