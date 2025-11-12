@@ -74,6 +74,7 @@ nav:
         - GroupBy:
             - agg: man/groupby__agg.md
             - head: man/groupby__head.md
+            - len: man/groupby__len.md
             - mean: man/groupby__mean.md
             - median: man/groupby__median.md
             - min: man/groupby__min.md
@@ -155,6 +156,7 @@ nav:
         - GroupBy:
             - agg: man/lazygroupby__agg.md
             - head: man/lazygroupby__head.md
+            - len: man/lazygroupby__len.md
             - mean: man/lazygroupby__mean.md
             - median: man/lazygroupby__median.md
             - min: man/lazygroupby__min.md
