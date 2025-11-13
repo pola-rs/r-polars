@@ -628,3 +628,27 @@
        [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear"
       [11] "carb"
 
+# group_by() + len()
+
+    Code
+      df$group_by("a", .maintain_order = TRUE)$len(1)
+    Condition
+      Error:
+      ! Evaluation failed in `$len()`.
+      Caused by error in `len_expr$alias()`:
+      ! Evaluation failed in `$alias()`.
+      Caused by error:
+      ! Argument `name` must be character, not double
+
+---
+
+    Code
+      df$group_by("a", .maintain_order = TRUE)$len(TRUE)
+    Condition
+      Error:
+      ! Evaluation failed in `$len()`.
+      Caused by error in `len_expr$alias()`:
+      ! Evaluation failed in `$alias()`.
+      Caused by error:
+      ! Argument `name` must be character, not logical
+

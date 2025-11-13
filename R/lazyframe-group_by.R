@@ -207,3 +207,26 @@ lazygroupby__n_unique <- function() {
   self$agg(pl$all()$n_unique()) |>
     wrap()
 }
+
+#' Return the number of rows in each group
+#'
+#' @param name Assign a name to the resulting column. If `NULL`, defaults to
+#' `"len"`.
+#' @inherit as_polars_lf return
+#' @examples
+#' lf <- pl$LazyFrame(
+#'   a = c("Apple", "Apple", "Orange"),
+#'   b = c(1, NA, 2)
+#' )
+#' lf$group_by("a")$len()$collect()
+#'
+#' lf$group_by("a")$len("n")$collect()
+lazygroupby__len <- function(name = NULL) {
+  wrap({
+    len_expr <- pl$len()
+    if (!is.null(name)) {
+      len_expr <- len_expr$alias(name)
+    }
+    self$agg(len_expr)
+  })
+}

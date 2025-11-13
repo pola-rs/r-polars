@@ -207,3 +207,23 @@ groupby__n_unique <- function() {
   self$agg(pl$all()$n_unique()) |>
     wrap()
 }
+
+#' @inherit lazygroupby__len title params
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(
+#'   a = c("Apple", "Apple", "Orange"),
+#'   b = c(1, NA, 2)
+#' )
+#' df$group_by("a")$len()
+#'
+#' df$group_by("a")$len("n")
+groupby__len <- function(name = NULL) {
+  wrap({
+    len_expr <- pl$len()
+    if (!is.null(name)) {
+      len_expr <- len_expr$alias(name)
+    }
+    self$agg(len_expr)
+  })
+}

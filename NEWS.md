@@ -8,6 +8,7 @@
 - `<lazyframe>$remove()` and `<dataframe>$remove()` as a complement to
   `$filter()` (#1632).
 - New method `<expr>$is_close()` (#1637).
+- New methods `<group_by>$len()` and `<lazy_group_by>$len()` (#1638).
 
 ## polars 1.5.0
 
