@@ -762,6 +762,9 @@ test_that("explain() works", {
 
   expect_snapshot(cat(lazy_query$explain(optimized = FALSE)))
   expect_snapshot(cat(lazy_query$explain()))
+  expect_snapshot(cat(lazy_query$explain(
+    optimizations = pl$QueryOptFlags(predicate_pushdown = FALSE)
+  )))
 
   expect_snapshot(cat(lazy_query$explain(format = "tree", optimized = FALSE)))
   expect_snapshot(cat(lazy_query$explain(format = "tree", )))
