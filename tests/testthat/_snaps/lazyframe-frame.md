@@ -416,6 +416,20 @@
 ---
 
     Code
+      cat(lazy_query$explain(predicate_pushdown = FALSE))
+    Condition
+      Warning:
+      ! `predicate_pushdown` is deprecated.
+      i Use `optimizations` instead.
+    Output
+      FILTER [(col("Species")) != ("setosa")]
+      FROM
+        SORT BY [col("Species")]
+          DF ["Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width", ...]; PROJECT */5 COLUMNS
+
+---
+
+    Code
       cat(lazy_query$explain(format = "tree", optimized = FALSE))
     Output
                              0                            1                                               2

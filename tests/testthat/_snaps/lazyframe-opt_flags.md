@@ -178,7 +178,7 @@
 
     Code
       validate(opt_flags)
-    Condition <simpleError>
+    Condition <rlang_error>
       Error:
       ! <polars::QueryOptFlags> object properties are invalid:
       - @eager must be <logical>, not <integer>
