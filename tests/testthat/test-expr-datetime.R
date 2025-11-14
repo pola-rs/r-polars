@@ -927,7 +927,7 @@ test_that("dt$add_business_days", {
 })
 
 patrick::with_parameters_test_that(
-  "dt$replace() basic behavior",
+  "dt$replace() basic behavior {arg}",
   .cases = {
     tibble::tribble(
       ~arg, ~new_value, ~expected_date, ~expected_datetime, ~should_error, ~out_of_range,
