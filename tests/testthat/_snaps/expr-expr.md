@@ -589,3 +589,83 @@
     Output
       col("foo")
 
+# is_close works
+
+    Code
+      df$select(is_close = pl$col("a")$is_close("b", abs_tol = -1))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! `abs_tol` must be non-negative but got -1
+
+---
+
+    Code
+      df$select(is_close = pl$col("a")$is_close("b", rel_tol = -1))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! `rel_tol` must be non-negative but got -1
+
+---
+
+    Code
+      df$select(is_close = pl$col("a")$is_close("b", abs_tol = "a"))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$is_close()`.
+      Caused by error:
+      ! Argument `abs_tol` must be double, not character
+
+---
+
+    Code
+      df$select(is_close = pl$col("a")$is_close("b", rel_tol = "a"))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$is_close()`.
+      Caused by error:
+      ! Argument `rel_tol` must be double, not character
+
+---
+
+    Code
+      df$select(is_close = pl$col("a")$is_close("b", abs_tol = c(1, 2)))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$is_close()`.
+      Caused by error:
+      ! Argument `abs_tol` must be be length 1 of non-missing value
+
+---
+
+    Code
+      df$select(is_close = pl$col("a")$is_close("b", rel_tol = c(1, 2)))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$is_close()`.
+      Caused by error:
+      ! Argument `rel_tol` must be be length 1 of non-missing value
+

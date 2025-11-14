@@ -2062,6 +2062,13 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRExpr_is_close` <- function(self) {
+  function(`other`, `abs_tol`, `rel_tol`, `nans_equal`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_close__impl, `self`, `other`, `abs_tol`, `rel_tol`, `nans_equal`))
+  }
+}
+
 `PlRExpr_is_duplicated` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_duplicated__impl, `self`))
@@ -3567,6 +3574,7 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   e$`interpolate_by` <- `PlRExpr_interpolate_by`(ptr)
   e$`into_selector` <- `PlRExpr_into_selector`(ptr)
   e$`is_between` <- `PlRExpr_is_between`(ptr)
+  e$`is_close` <- `PlRExpr_is_close`(ptr)
   e$`is_duplicated` <- `PlRExpr_is_duplicated`(ptr)
   e$`is_finite` <- `PlRExpr_is_finite`(ptr)
   e$`is_first_distinct` <- `PlRExpr_is_first_distinct`(ptr)

@@ -4759,3 +4759,31 @@ expr__index_of <- function(element) {
   self$`_rexpr`$index_of(as_polars_expr(element, as_lit = TRUE)$`_rexpr`) |>
     wrap()
 }
+
+#' Check if this expression is close, i.e. almost equal, to the other expression
+#'
+#' @description
+#' Two values `a` and `b` are considered close if the following condition holds:
+#' \eqn{|a - b| \le \max \{ \text{rel\_tol} \cdot \max \{ |a|, |b| \}, \text{abs\_tol} \}}
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @param other A literal or expression value to compare with.
+#' @param abs_tol Absolute tolerance. This is the maximum allowed absolute
+#' difference between two values. Must be non-negative.
+#' @param rel_tol Relative tolerance. This is the maximum allowed difference
+#' between two values, relative to the larger absolute value. Must be
+#' non-negative.
+#' @param nans_equal Whether `NaN` values should be considered equal.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(a = c(1.5, 2.0, 2.5), b = c(1.55, 2.2, 3.0))
+#' df$with_columns(
+#'   is_close = pl$col("a")$is_close("b", abs_tol = 0.1)
+#' )
+expr__is_close <- function(other, ..., abs_tol = 0, rel_tol = 1e-09, nans_equal = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$is_close(as_polars_expr(other)$`_rexpr`, abs_tol, rel_tol, nans_equal)
+  })
+}

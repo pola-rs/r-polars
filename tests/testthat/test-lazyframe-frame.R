@@ -1192,7 +1192,8 @@ test_that("join_asof", {
       on = "date",
       by_left = "group",
       by_right = "group_right",
-      strategy = "backward"
+      strategy = "backward",
+      check_sortedness = FALSE
     ),
     .input = l_gdp,
     .input2 = l_pop,
@@ -1209,7 +1210,8 @@ test_that("join_asof", {
       on = "date",
       by_left = "group",
       by_right = "group_right",
-      strategy = "forward"
+      strategy = "forward",
+      check_sortedness = FALSE
     ),
     .input = l_gdp,
     .input2 = l_pop,
@@ -2619,4 +2621,30 @@ test_that("group_by() warns with arg maintain_order", {
 test_that("active bindings", {
   expect_snapshot(as_polars_lf(mtcars)$width)
   expect_snapshot(as_polars_lf(mtcars)$columns)
+})
+
+test_that("group_by() + len()", {
+  df <- pl$DataFrame(
+    a = c("Apple", "Apple", "Orange"),
+    b = c(1, NA, 2)
+  )
+
+  expect_query_equal(
+    .input$group_by("a", .maintain_order = TRUE)$len(),
+    df,
+    pl$DataFrame(a = c("Apple", "Orange"), len = c(2, 1))$cast(len = pl$UInt32)
+  )
+  expect_query_equal(
+    .input$group_by("a", .maintain_order = TRUE)$len("n"),
+    df,
+    pl$DataFrame(a = c("Apple", "Orange"), n = c(2, 1))$cast(n = pl$UInt32)
+  )
+  expect_snapshot(
+    df$group_by("a", .maintain_order = TRUE)$len(1),
+    error = TRUE
+  )
+  expect_snapshot(
+    df$group_by("a", .maintain_order = TRUE)$len(TRUE),
+    error = TRUE
+  )
 })

@@ -74,6 +74,7 @@ nav:
         - GroupBy:
             - agg: man/groupby__agg.md
             - head: man/groupby__head.md
+            - len: man/groupby__len.md
             - mean: man/groupby__mean.md
             - median: man/groupby__median.md
             - min: man/groupby__min.md
@@ -155,6 +156,7 @@ nav:
         - GroupBy:
             - agg: man/lazygroupby__agg.md
             - head: man/lazygroupby__head.md
+            - len: man/lazygroupby__len.md
             - mean: man/lazygroupby__mean.md
             - median: man/lazygroupby__median.md
             - min: man/lazygroupby__min.md
@@ -317,6 +319,7 @@ nav:
             - interpolate_by: man/expr__interpolate_by.md
             - interpolate: man/expr__interpolate.md
             - is_between: man/expr__is_between.md
+            - is_close: man/expr__is_close.md
             - is_duplicated: man/expr__is_duplicated.md
             - is_finite: man/expr__is_finite.md
             - is_first_distinct: man/expr__is_first_distinct.md

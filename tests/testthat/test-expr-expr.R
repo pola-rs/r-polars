@@ -481,43 +481,46 @@ test_that("and or xor", {
 test_that("is_in", {
   df <- pl$DataFrame(a = c(1:3, NA))
   expect_equal(
-    df$select(pl$lit(1L)$is_in(pl$col("a"))),
+    df$select(pl$lit(1L)$is_in(pl$col("a")$implode())),
     pl$DataFrame(literal = TRUE)
   )
   expect_equal(
-    df$select(pl$lit(4L)$is_in(pl$col("a"))),
+    df$select(pl$lit(4L)$is_in(pl$col("a")$implode())),
     pl$DataFrame(literal = FALSE)
   )
 
   # NA_int == NA_int
   expect_equal(
-    pl$DataFrame(a = c(1:4, NA))$select(pl$col("a")$is_in(NA_integer_)),
+    pl$DataFrame(a = c(1:4, NA))$select(pl$col("a")$is_in(list(NA_integer_))),
     pl$DataFrame(a = c(rep(FALSE, 4), NA))
   )
   expect_equal(
-    pl$DataFrame(a = c(1:4, NA))$select(pl$col("a")$is_in(NA_integer_, nulls_equal = TRUE)),
+    pl$DataFrame(a = c(1:4, NA))$select(pl$col("a")$is_in(list(NA_integer_), nulls_equal = TRUE)),
     pl$DataFrame(a = c(rep(FALSE, 4), TRUE))
   )
 
   # can compare NA_int with NA_real
   expect_equal(
-    pl$DataFrame(a = c(1:4, NA_integer_))$select(pl$col("a")$is_in(NA_real_)),
+    pl$DataFrame(a = c(1:4, NA_integer_))$select(pl$col("a")$is_in(list(NA_real_))),
     pl$DataFrame(a = c(rep(FALSE, 4), NA))
   )
   expect_equal(
-    pl$DataFrame(a = c(1:4, NA_integer_))$select(pl$col("a")$is_in(NA_real_, nulls_equal = TRUE)),
+    pl$DataFrame(a = c(1:4, NA_integer_))$select(pl$col("a")$is_in(
+      list(NA_real_),
+      nulls_equal = TRUE
+    )),
     pl$DataFrame(a = c(rep(FALSE, 4), TRUE))
   )
 
   # behavior for NA and NULL
   # TODO: replace `pl$lit(NULL)$cast(pl$Boolean)` to `pl$lit(NA)` causes panic
   expect_equal(
-    pl$select(pl$lit(NULL)$cast(pl$Boolean)$is_in(NA)),
+    pl$select(pl$lit(NULL)$cast(pl$Boolean)$is_in(list(NA))),
     pl$DataFrame(literal = NA)
   )
   # TODO: replace `pl$lit(NULL)$cast(pl$Boolean)` to `pl$lit(NA)` causes panic
   expect_equal(
-    pl$select(pl$lit(NULL)$cast(pl$Boolean)$is_in(NULL)),
+    pl$select(pl$lit(NULL)$cast(pl$Boolean)$is_in(list(NULL))),
     pl$DataFrame(literal = NA)
   )
   # TODO: replace the first `pl$lit(NULL)$cast(pl$Boolean)` to `NULL` causes panic
@@ -525,7 +528,7 @@ test_that("is_in", {
   #  and the second `pl$lit(NULL)$cast(pl$Boolean)` to `NA` causes panic
   #  Original code: pl$select(pl$lit(NULL)$is_in(NA))
   expect_equal(
-    pl$select(pl$lit(NULL)$cast(pl$Boolean)$is_in(pl$lit(NULL)$cast(pl$Boolean))),
+    pl$select(pl$lit(NULL)$cast(pl$Boolean)$is_in(pl$lit(NULL)$cast(pl$Boolean)$implode())),
     pl$DataFrame(literal = NA)
   )
 
@@ -2934,4 +2937,69 @@ test_that("index_of works", {
 
 test_that("Deprecated shrink_dtype", {
   expect_snapshot(pl$col("foo")$shrink_dtype(), cnd_class = TRUE)
+})
+
+test_that("is_close works", {
+  df <- pl$DataFrame(a = c(1.5, 2.0, NaN), b = c(1.55, 2.2, NaN))
+
+  # abs_tol works
+  expect_equal(
+    df$select(
+      is_close = pl$col("a")$is_close("b", abs_tol = 0.1)
+    ),
+    pl$DataFrame(is_close = c(TRUE, FALSE, FALSE))
+  )
+  # rel_tol works
+  expect_equal(
+    df$select(
+      is_close = pl$col("a")$is_close("b", rel_tol = 0.1)
+    ),
+    pl$DataFrame(is_close = c(TRUE, TRUE, FALSE))
+  )
+  # nans_equal works
+  expect_equal(
+    df$select(
+      is_close = pl$col("a")$is_close("b", nans_equal = TRUE)
+    ),
+    pl$DataFrame(is_close = c(FALSE, FALSE, TRUE))
+  )
+
+  # abs_tol and rel_tol can't take negative values
+  expect_snapshot(
+    df$select(
+      is_close = pl$col("a")$is_close("b", abs_tol = -1)
+    ),
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(
+      is_close = pl$col("a")$is_close("b", rel_tol = -1)
+    ),
+    error = TRUE
+  )
+  # abs_tol and rel_tol must be a single numeric value
+  expect_snapshot(
+    df$select(
+      is_close = pl$col("a")$is_close("b", abs_tol = "a")
+    ),
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(
+      is_close = pl$col("a")$is_close("b", rel_tol = "a")
+    ),
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(
+      is_close = pl$col("a")$is_close("b", abs_tol = c(1, 2))
+    ),
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(
+      is_close = pl$col("a")$is_close("b", rel_tol = c(1, 2))
+    ),
+    error = TRUE
+  )
 })

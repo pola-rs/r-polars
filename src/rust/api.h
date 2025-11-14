@@ -309,6 +309,7 @@ SEXP savvy_PlRExpr_interpolate__ffi(SEXP self__, SEXP c_arg__method);
 SEXP savvy_PlRExpr_interpolate_by__ffi(SEXP self__, SEXP c_arg__by);
 SEXP savvy_PlRExpr_into_selector__ffi(SEXP self__);
 SEXP savvy_PlRExpr_is_between__ffi(SEXP self__, SEXP c_arg__lower, SEXP c_arg__upper, SEXP c_arg__closed);
+SEXP savvy_PlRExpr_is_close__ffi(SEXP self__, SEXP c_arg__other, SEXP c_arg__abs_tol, SEXP c_arg__rel_tol, SEXP c_arg__nans_equal);
 SEXP savvy_PlRExpr_is_duplicated__ffi(SEXP self__);
 SEXP savvy_PlRExpr_is_finite__ffi(SEXP self__);
 SEXP savvy_PlRExpr_is_first_distinct__ffi(SEXP self__);
