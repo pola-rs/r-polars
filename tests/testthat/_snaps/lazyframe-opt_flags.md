@@ -97,7 +97,7 @@
 
     Code
       opt_flags@type_coercion <- 1L
-    Condition <simpleError>
+    Condition <rlang_error>
       Error:
       ! <polars::QueryOptFlags>@type_coercion must be <logical>, not <integer>
 

@@ -1188,7 +1188,8 @@ test_that("join_asof", {
       on = "date",
       by_left = "group",
       by_right = "group_right",
-      strategy = "backward"
+      strategy = "backward",
+      check_sortedness = FALSE
     ),
     .input = l_gdp,
     .input2 = l_pop,
@@ -1205,7 +1206,8 @@ test_that("join_asof", {
       on = "date",
       by_left = "group",
       by_right = "group_right",
-      strategy = "forward"
+      strategy = "forward",
+      check_sortedness = FALSE
     ),
     .input = l_gdp,
     .input2 = l_pop,

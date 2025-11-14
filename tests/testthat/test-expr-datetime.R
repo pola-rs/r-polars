@@ -302,7 +302,7 @@ test_that("hour minute", {
   )
 })
 
-
+# TODO: rewrite tests
 test_that("second, milli, micro, nano", {
   df <- pl$select(
     date = pl$datetime_range(
@@ -334,19 +334,16 @@ test_that("second, milli, micro, nano", {
 
   # check fractional second
   vals <- df$select("f64") |>
-    as_polars_series() |>
-    as.vector()
+    as.data.frame()
   vals <- vals$f64
   n <- vals / 1E9
 
   frac <- df$select("second_frac") |>
-    as_polars_series() |>
-    as.vector()
+    as.data.frame()
   frac <- frac$second_frac
 
   dts <- df$select("date") |>
-    as_polars_series() |>
-    as.vector()
+    as.data.frame()
   dts <- dts$date
 
   expect_equal(
