@@ -794,7 +794,9 @@ test_that("$glimpse() works", {
   expect_snapshot(df$glimpse())
   expect_snapshot(df$glimpse(max_items_per_column = 2))
   expect_snapshot(df$glimpse(max_colname_length = 2))
-  expect_type(invisible(df$glimpse()), "character")
+
+  capture.output(out <- df$glimpse())
+  expect_type(out, "character")
 })
 
 patrick::with_parameters_test_that(
