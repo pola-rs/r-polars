@@ -199,7 +199,6 @@ forward_old_opt_flags <- function(
         cluster_with_columns = FALSE,
         check_order_observe = FALSE
       )
-      need_validation <- TRUE
     }
   }
 
