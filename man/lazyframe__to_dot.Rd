@@ -7,7 +7,7 @@
 lazyframe__to_dot(
   ...,
   optimized = TRUE,
-  optimizations = QueryOptFlags(),
+  optimizations = pl$QueryOptFlags(),
   type_coercion = deprecated(),
   predicate_pushdown = deprecated(),
   projection_pushdown = deprecated(),

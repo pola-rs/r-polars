@@ -8,7 +8,7 @@ pl__collect_all(
   lazy_frames,
   ...,
   engine = c("auto", "in-memory", "streaming"),
-  optimizations = QueryOptFlags()
+  optimizations = pl$QueryOptFlags()
 )
 }
 \arguments{

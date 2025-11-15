@@ -11,7 +11,7 @@ lazyframe__sink_batches(
   chunk_size = NULL,
   maintain_order = TRUE,
   engine = c("auto", "in-memory", "streaming"),
-  optimizations = QueryOptFlags()
+  optimizations = pl$QueryOptFlags()
 )
 
 lazyframe__lazy_sink_batches(

@@ -38,7 +38,7 @@ lazyframe__sink_ipc <- function(
   sync_on_close = c("none", "data", "all"),
   mkdir = FALSE,
   engine = c("auto", "in-memory", "streaming"),
-  optimizations = QueryOptFlags()
+  optimizations = pl$QueryOptFlags()
 ) {
   wrap({
     check_dots_empty0(...)

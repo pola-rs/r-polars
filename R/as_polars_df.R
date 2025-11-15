@@ -147,7 +147,7 @@ as_polars_df.polars_lazy_frame <- function(
   x,
   ...,
   engine = c("auto", "in-memory", "streaming"),
-  optimizations = QueryOptFlags(),
+  optimizations = pl$QueryOptFlags(),
   type_coercion = deprecated(),
   predicate_pushdown = deprecated(),
   projection_pushdown = deprecated(),

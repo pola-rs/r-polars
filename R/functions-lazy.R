@@ -149,7 +149,7 @@ pl__collect_all <- function(
   lazy_frames,
   ...,
   engine = c("auto", "in-memory", "streaming"),
-  optimizations = QueryOptFlags()
+  optimizations = pl$QueryOptFlags()
 ) {
   wrap({
     check_dots_empty0(...)

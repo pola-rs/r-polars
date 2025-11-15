@@ -16,7 +16,7 @@ lazyframe__sink_ipc(
   sync_on_close = c("none", "data", "all"),
   mkdir = FALSE,
   engine = c("auto", "in-memory", "streaming"),
-  optimizations = QueryOptFlags()
+  optimizations = pl$QueryOptFlags()
 )
 
 lazyframe__lazy_sink_ipc(

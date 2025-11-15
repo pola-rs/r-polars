@@ -111,7 +111,7 @@ lazyframe__sink_batches <- function(
   chunk_size = NULL,
   maintain_order = TRUE,
   engine = c("auto", "in-memory", "streaming"),
-  optimizations = QueryOptFlags()
+  optimizations = pl$QueryOptFlags()
 ) {
   wrap({
     check_dots_empty0(...)

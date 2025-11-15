@@ -9,7 +9,7 @@ lazyframe__explain(
   format = c("plain", "tree"),
   engine = c("auto", "in-memory", "streaming"),
   optimized = TRUE,
-  optimizations = QueryOptFlags(),
+  optimizations = pl$QueryOptFlags(),
   type_coercion = deprecated(),
   predicate_pushdown = deprecated(),
   projection_pushdown = deprecated(),
