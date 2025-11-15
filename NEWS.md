@@ -2,6 +2,11 @@
 
 ## polars 1.6.0
 
+This is an update that corresponds to Python Polars 1.35.2.
+
+As of this version, this package depends on `{S7}`.
+The newly added `QueryOptFlags` object is an S7 object.
+
 ### Deprecations
 
 - The following arguments of certain LazyFrame methods, which were previously used for query optimization,
@@ -51,6 +56,10 @@
   `$filter()` (#1632).
 - New method `<expr>$is_close()` (#1637).
 - New methods `<group_by>$len()` and `<lazy_group_by>$len()` (#1638).
+
+### Bug fixes
+
+- Bump Rust Polars to py-1.35.2 (#1636).
 
 ## polars 1.5.0
 
