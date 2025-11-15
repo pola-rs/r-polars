@@ -89,7 +89,14 @@ lazyframe__sink_parquet <- function(
   sync_on_close = c("none", "data", "all"),
   mkdir = FALSE,
   engine = c("auto", "in-memory", "streaming"),
-  optimizations = pl$QueryOptFlags()
+  optimizations = pl$QueryOptFlags(),
+  type_coercion = deprecated(),
+  predicate_pushdown = deprecated(),
+  projection_pushdown = deprecated(),
+  simplify_expression = deprecated(),
+  slice_pushdown = deprecated(),
+  collapse_joins = deprecated(),
+  no_optimization = deprecated()
 ) {
   wrap({
     check_dots_empty0(...)
@@ -106,7 +113,17 @@ lazyframe__sink_parquet <- function(
       retries = retries,
       sync_on_close = sync_on_close,
       mkdir = mkdir
-    )$collect(engine = engine, optimizations = optimizations)
+    )$collect(
+      engine = engine,
+      optimizations = optimizations,
+      type_coercion = type_coercion,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      collapse_joins = collapse_joins,
+      no_optimization = no_optimization
+    )
   })
   invisible(NULL)
 }

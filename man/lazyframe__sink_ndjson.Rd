@@ -14,7 +14,14 @@ lazyframe__sink_ndjson(
   sync_on_close = c("none", "data", "all"),
   mkdir = FALSE,
   engine = c("auto", "in-memory", "streaming"),
-  optimizations = pl$QueryOptFlags()
+  optimizations = pl$QueryOptFlags(),
+  type_coercion = deprecated(),
+  predicate_pushdown = deprecated(),
+  projection_pushdown = deprecated(),
+  simplify_expression = deprecated(),
+  slice_pushdown = deprecated(),
+  collapse_joins = deprecated(),
+  no_optimization = deprecated()
 )
 
 lazyframe__lazy_sink_ndjson(
@@ -73,6 +80,34 @@ The \code{"in-memory"} engine will be selected for most cases.
 
 \item{optimizations}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 A \link{QueryOptFlags} object to indicate optimization passes done during query optimization.}
+
+\item{type_coercion}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{type_coercion} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
+
+\item{predicate_pushdown}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{predicate_pushdown} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
+
+\item{projection_pushdown}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{projection_pushdown} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
+
+\item{simplify_expression}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{simplify_expression} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
+
+\item{slice_pushdown}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{slice_pushdown} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
+
+\item{collapse_joins}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{predicate_pushdown} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
+
+\item{no_optimization}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{optimizations} argument with
+\code{\link[=QueryOptFlags]{pl$QueryOptFlags()$no_optimizations()}} instead.}
 }
 \value{
 \itemize{

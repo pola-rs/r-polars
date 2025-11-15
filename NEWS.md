@@ -22,9 +22,10 @@
   - `_eager` (removed)
 
   Functions affected are those that gained the `optimizations` argument.
-  See the New features section below for details.
-  Also, for the experimental `<lazyframe>$sink_*` methods,
-  the above arguments are removed instead of being deprecated.
+  See the next new features section for details.
+
+  For the experimental `<lazyframe>$lazy_sink_*` methods,
+  the above arguments and the `collapse_joins` argument (deprecated as of polars 1.4.0) are removed.
 
 ### New features
 
@@ -34,12 +35,11 @@
   - `<lazyframe>$explain()`
   - `<lazyframe>$profile()`
   - `<lazyframe>$to_dot()`
-  - `<lazyframe>$sink_batches()`
-  - `<lazyframe>$sink_csv()`
-  - `<lazyframe>$sink_ipc()`
-  - `<lazyframe>$sink_parquet()`
-  - `<lazyframe>$sink_ndjson()`
-  - `pl$collect_all()`
+  - `<lazyframe>$sink_batches()` / `<lazyframe>$lazy_sink_batches()`
+  - `<lazyframe>$sink_csv()` / `<lazyframe>$lazy_sink_csv()`
+  - `<lazyframe>$sink_ipc()` / `<lazyframe>$lazy_sink_ipc()`
+  - `<lazyframe>$sink_parquet()` / `<lazyframe>$lazy_sink_parquet()`
+  - `<lazyframe>$sink_ndjson()` / `<lazyframe>$lazy_sink_ndjson()`
   - `as_polars_df(<lazyframe>)`
 - `pl$collect_all()` to efficiently collect a list of LazyFrames (#1598, #1635).
 - `<lazyframe>$remove()` and `<dataframe>$remove()` as a complement to
