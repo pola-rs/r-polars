@@ -255,8 +255,10 @@ jobs:
         if: env.TEST_BIN_LIB == 'true'
         with:
           # Only install minimum dependencies for testing
+          dependencies: "'hard'"
           # TODO: move to the DESCRIPTION file
           packages: >-
+            deps::.,
             any::pkgload,
             any::testthat,
             any::knitr,
