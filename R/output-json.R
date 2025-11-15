@@ -25,19 +25,19 @@ lazyframe__sink_ndjson <- function(
   path,
   ...,
   maintain_order = TRUE,
-  type_coercion = TRUE,
-  `_type_check` = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  no_optimization = FALSE,
   storage_options = NULL,
   retries = 2,
   sync_on_close = c("none", "data", "all"),
   mkdir = FALSE,
   engine = c("auto", "in-memory", "streaming"),
-  collapse_joins = deprecated()
+  optimizations = pl$QueryOptFlags(),
+  type_coercion = deprecated(),
+  predicate_pushdown = deprecated(),
+  projection_pushdown = deprecated(),
+  simplify_expression = deprecated(),
+  slice_pushdown = deprecated(),
+  collapse_joins = deprecated(),
+  no_optimization = deprecated()
 ) {
   wrap({
     check_dots_empty0(...)
@@ -45,21 +45,23 @@ lazyframe__sink_ndjson <- function(
     self$lazy_sink_ndjson(
       path = path,
       maintain_order = maintain_order,
+      storage_options = storage_options,
+      retries = retries,
+      sync_on_close = sync_on_close,
+      mkdir = mkdir
+    )$collect(
+      engine = engine,
+      optimizations = optimizations,
       type_coercion = type_coercion,
-      `_type_check` = `_type_check`,
       predicate_pushdown = predicate_pushdown,
       projection_pushdown = projection_pushdown,
       simplify_expression = simplify_expression,
       slice_pushdown = slice_pushdown,
-      no_optimization = no_optimization,
-      storage_options = storage_options,
-      retries = retries,
-      sync_on_close = sync_on_close,
-      mkdir = mkdir,
-      collapse_joins = collapse_joins
-    )$collect(engine = engine)
+      collapse_joins = collapse_joins,
+      no_optimization = no_optimization
+    )
   })
-  # TODO: support `optimizations` argument
+
   invisible(NULL)
 }
 
@@ -68,18 +70,10 @@ lazyframe__lazy_sink_ndjson <- function(
   path,
   ...,
   maintain_order = TRUE,
-  type_coercion = TRUE,
-  `_type_check` = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  no_optimization = FALSE,
   storage_options = NULL,
   retries = 2,
   sync_on_close = c("none", "data", "all"),
-  mkdir = FALSE,
-  collapse_joins = deprecated()
+  mkdir = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
@@ -90,19 +84,7 @@ lazyframe__lazy_sink_ndjson <- function(
       values = c("none", "data", "all")
     )
 
-    lf <- set_sink_optimizations(
-      self,
-      type_coercion = type_coercion,
-      `_type_check` = `_type_check`,
-      predicate_pushdown = predicate_pushdown,
-      projection_pushdown = projection_pushdown,
-      simplify_expression = simplify_expression,
-      slice_pushdown = slice_pushdown,
-      collapse_joins = collapse_joins,
-      no_optimization = no_optimization
-    )
-
-    lf$sink_json(
+    self$`_ldf`$sink_json(
       target = target,
       maintain_order = maintain_order,
       sync_on_close = sync_on_close,
@@ -143,7 +125,11 @@ dataframe__write_json <- function(file) {
 #' jsonlite::stream_in(file(destination))
 dataframe__write_ndjson <- function(file) {
   wrap({
-    self$lazy()$sink_ndjson(file, engine = "in-memory")
+    self$lazy()$sink_ndjson(
+      file,
+      optimizations = DEFAULT_EAGER_OPT_FLAGS,
+      engine = "in-memory"
+    )
   })
   invisible(NULL)
 }

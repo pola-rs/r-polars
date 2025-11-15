@@ -10,7 +10,8 @@ lazyframe__sink_batches(
   ...,
   chunk_size = NULL,
   maintain_order = TRUE,
-  engine = c("auto", "in-memory", "streaming")
+  engine = c("auto", "in-memory", "streaming"),
+  optimizations = pl$QueryOptFlags()
 )
 
 lazyframe__lazy_sink_batches(
@@ -42,6 +43,9 @@ The \code{"in-memory"} engine will be selected for most cases.
 \item \code{"in-memory"}: Use the in-memory engine.
 \item \code{"streaming"}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Use the (new) streaming engine.
 }}
+
+\item{optimizations}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+A \link{QueryOptFlags} object to indicate optimization passes done during query optimization.}
 }
 \value{
 \itemize{

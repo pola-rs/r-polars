@@ -21,6 +21,6 @@ rolling_groupby__agg <- function(...) {
     offset = self$offset,
     closed = self$closed,
     group_by = self$group_by
-  )$agg(...)$collect(no_optimization = TRUE) |>
+  )$agg(...)$collect(optimizations = QueryOptFlags()$no_optimizations()) |>
     wrap()
 }

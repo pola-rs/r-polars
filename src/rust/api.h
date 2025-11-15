@@ -5,7 +5,7 @@ SEXP savvy_arg_where__ffi(SEXP c_arg__condition);
 SEXP savvy_as_struct__ffi(SEXP c_arg__exprs);
 SEXP savvy_coalesce__ffi(SEXP c_arg__exprs);
 SEXP savvy_col__ffi(SEXP c_arg__name);
-SEXP savvy_collect_all__ffi(SEXP c_arg__lfs, SEXP c_arg__engine, SEXP c_arg__optflags);
+SEXP savvy_collect_all__ffi(SEXP c_arg__lfs, SEXP c_arg__engine, SEXP c_arg__optimizations);
 SEXP savvy_cols__ffi(SEXP c_arg__names);
 SEXP savvy_compat_level_range__ffi(void);
 SEXP savvy_concat_arr__ffi(SEXP c_arg__s);
@@ -556,7 +556,6 @@ SEXP savvy_PlRLazyFrame_new_from_ipc__ffi(SEXP c_arg__source, SEXP c_arg__cache,
 SEXP savvy_PlRLazyFrame_new_from_ndjson__ffi(SEXP c_arg__source, SEXP c_arg__low_memory, SEXP c_arg__rechunk, SEXP c_arg__ignore_errors, SEXP c_arg__retries, SEXP c_arg__row_index_offset, SEXP c_arg__row_index_name, SEXP c_arg__infer_schema_length, SEXP c_arg__schema, SEXP c_arg__schema_overrides, SEXP c_arg__batch_size, SEXP c_arg__n_rows, SEXP c_arg__include_file_paths, SEXP c_arg__storage_options, SEXP c_arg__file_cache_ttl);
 SEXP savvy_PlRLazyFrame_new_from_parquet__ffi(SEXP c_arg__source, SEXP c_arg__cache, SEXP c_arg__parallel, SEXP c_arg__rechunk, SEXP c_arg__low_memory, SEXP c_arg__use_statistics, SEXP c_arg__try_parse_hive_dates, SEXP c_arg__retries, SEXP c_arg__glob, SEXP c_arg__allow_missing_columns, SEXP c_arg__row_index_offset, SEXP c_arg__storage_options, SEXP c_arg__n_rows, SEXP c_arg__row_index_name, SEXP c_arg__hive_partitioning, SEXP c_arg__schema, SEXP c_arg__hive_schema, SEXP c_arg__include_file_paths);
 SEXP savvy_PlRLazyFrame_null_count__ffi(SEXP self__);
-SEXP savvy_PlRLazyFrame_optimization_toggle__ffi(SEXP self__, SEXP c_arg__type_coercion, SEXP c_arg___type_check, SEXP c_arg__predicate_pushdown, SEXP c_arg__projection_pushdown, SEXP c_arg__simplify_expression, SEXP c_arg__slice_pushdown, SEXP c_arg__comm_subplan_elim, SEXP c_arg__comm_subexpr_elim, SEXP c_arg__cluster_with_columns, SEXP c_arg___eager, SEXP c_arg___check_order);
 SEXP savvy_PlRLazyFrame_profile__ffi(SEXP self__);
 SEXP savvy_PlRLazyFrame_quantile__ffi(SEXP self__, SEXP c_arg__quantile, SEXP c_arg__interpolation);
 SEXP savvy_PlRLazyFrame_remove__ffi(SEXP self__, SEXP c_arg__predicate);
@@ -587,6 +586,7 @@ SEXP savvy_PlRLazyFrame_unpivot__ffi(SEXP self__, SEXP c_arg__on, SEXP c_arg__in
 SEXP savvy_PlRLazyFrame_var__ffi(SEXP self__, SEXP c_arg__ddof);
 SEXP savvy_PlRLazyFrame_with_columns__ffi(SEXP self__, SEXP c_arg__exprs);
 SEXP savvy_PlRLazyFrame_with_columns_seq__ffi(SEXP self__, SEXP c_arg__exprs);
+SEXP savvy_PlRLazyFrame_with_optimizations__ffi(SEXP self__, SEXP c_arg__optimizations);
 SEXP savvy_PlRLazyFrame_with_row_index__ffi(SEXP self__, SEXP c_arg__name, SEXP c_arg__offset);
 
 // methods and associated functions for PlRLazyGroupBy

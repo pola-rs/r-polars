@@ -74,8 +74,8 @@ NULL
 }
 
 
-`collect_all` <- function(`lfs`, `engine`, `optflags`) {
-  .Call(savvy_collect_all__impl, `lfs`, `engine`, `optflags`)
+`collect_all` <- function(`lfs`, `engine`, `optimizations`) {
+  .Call(savvy_collect_all__impl, `lfs`, `engine`, `optimizations`)
 }
 
 
@@ -4007,12 +4007,6 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_polars__sealed")
   }
 }
 
-`PlRLazyFrame_optimization_toggle` <- function(self) {
-  function(`type_coercion`, `_type_check`, `predicate_pushdown`, `projection_pushdown`, `simplify_expression`, `slice_pushdown`, `comm_subplan_elim`, `comm_subexpr_elim`, `cluster_with_columns`, `_eager`, `_check_order`) {
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_optimization_toggle__impl, `self`, `type_coercion`, `_type_check`, `predicate_pushdown`, `projection_pushdown`, `simplify_expression`, `slice_pushdown`, `comm_subplan_elim`, `comm_subexpr_elim`, `cluster_with_columns`, `_eager`, `_check_order`))
-  }
-}
-
 `PlRLazyFrame_profile` <- function(self) {
   function() {
     .Call(savvy_PlRLazyFrame_profile__impl, `self`)
@@ -4202,6 +4196,12 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRLazyFrame_with_optimizations` <- function(self) {
+  function(`optimizations`) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_with_optimizations__impl, `self`, `optimizations`))
+  }
+}
+
 `PlRLazyFrame_with_row_index` <- function(self) {
   function(`name`, `offset` = NULL) {
     .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_with_row_index__impl, `self`, `name`, `offset`))
@@ -4240,7 +4240,6 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_polars__sealed")
   e$`merge_sorted` <- `PlRLazyFrame_merge_sorted`(ptr)
   e$`min` <- `PlRLazyFrame_min`(ptr)
   e$`null_count` <- `PlRLazyFrame_null_count`(ptr)
-  e$`optimization_toggle` <- `PlRLazyFrame_optimization_toggle`(ptr)
   e$`profile` <- `PlRLazyFrame_profile`(ptr)
   e$`quantile` <- `PlRLazyFrame_quantile`(ptr)
   e$`remove` <- `PlRLazyFrame_remove`(ptr)
@@ -4271,6 +4270,7 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_polars__sealed")
   e$`var` <- `PlRLazyFrame_var`(ptr)
   e$`with_columns` <- `PlRLazyFrame_with_columns`(ptr)
   e$`with_columns_seq` <- `PlRLazyFrame_with_columns_seq`(ptr)
+  e$`with_optimizations` <- `PlRLazyFrame_with_optimizations`(ptr)
   e$`with_row_index` <- `PlRLazyFrame_with_row_index`(ptr)
 
   class(e) <- c("PlRLazyFrame", "savvy_polars__sealed")

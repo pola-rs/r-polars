@@ -364,7 +364,7 @@ dataframe__group_by <- function(..., .maintain_order = FALSE) {
 #'   add_2_SL = pl$col("Sepal.Length") + 2
 #' )
 dataframe__select <- function(...) {
-  self$lazy()$select(...)$collect(`_eager` = TRUE) |>
+  self$lazy()$select(...)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -381,7 +381,7 @@ dataframe__select <- function(...) {
 #' )
 #' df$select_seq("foo", bar2 = pl$col("bar") * 2)
 dataframe__select_seq <- function(...) {
-  self$lazy()$select_seq(...)$collect(`_eager` = TRUE) |>
+  self$lazy()$select_seq(...)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -415,7 +415,7 @@ dataframe__select_seq <- function(...) {
 #'   `not c` = pl$col("c")$not(),
 #' )
 dataframe__with_columns <- function(...) {
-  self$lazy()$with_columns(...)$collect(`_eager` = TRUE) |>
+  self$lazy()$with_columns(...)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -450,7 +450,7 @@ dataframe__with_columns <- function(...) {
 #'   `not c` = pl$col("c")$not(),
 #' )
 dataframe__with_columns_seq <- function(...) {
-  self$lazy()$with_columns_seq(...)$collect(`_eager` = TRUE) |>
+  self$lazy()$with_columns_seq(...)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -573,7 +573,7 @@ dataframe__tail <- function(n = 5) {
 #' # Drop multiple columns by passing a selector
 #' df$drop(cs$all())
 dataframe__drop <- function(..., strict = TRUE) {
-  self$lazy()$drop(..., strict = strict)$collect(`_eager` = TRUE) |>
+  self$lazy()$drop(..., strict = strict)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -595,7 +595,7 @@ dataframe__drop <- function(..., strict = TRUE) {
 #' # Cast all columns to the same type
 #' df$cast(pl$String)
 dataframe__cast <- function(..., .strict = TRUE) {
-  self$lazy()$cast(..., .strict = .strict)$collect(`_eager` = TRUE) |>
+  self$lazy()$cast(..., .strict = .strict)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -619,7 +619,7 @@ dataframe__cast <- function(..., .strict = TRUE) {
 #'
 #' df$filter(pl$col("Species") == "setosa")
 dataframe__filter <- function(...) {
-  self$lazy()$filter(...)$collect(`_eager` = TRUE) |>
+  self$lazy()$filter(...)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -646,7 +646,7 @@ dataframe__filter <- function(...) {
 #'
 #' df$remove((pl$col("total") >= 0) | (pl$col("ccy") == "USD"))
 dataframe__remove <- function(...) {
-  self$lazy()$remove(...)$collect(`_eager` = TRUE) |>
+  self$lazy()$remove(...)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -686,7 +686,7 @@ dataframe__sort <- function(
     nulls_last = nulls_last,
     multithreaded = multithreaded,
     maintain_order = maintain_order
-  )$collect(`_eager` = TRUE) |>
+  )$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -745,10 +745,12 @@ dataframe__rechunk <- function() {
 #' df$bottom_k(4, by = c("a", "b"))
 dataframe__bottom_k <- function(k, ..., by, reverse = FALSE) {
   self$lazy()$bottom_k(k, by = by, reverse = reverse)$collect(
-    projection_pushdown = FALSE,
-    predicate_pushdown = FALSE,
-    comm_subplan_elim = FALSE,
-    slice_pushdown = TRUE
+    optimizations = QueryOptFlags(
+      projection_pushdown = FALSE,
+      predicate_pushdown = FALSE,
+      comm_subplan_elim = FALSE,
+      slice_pushdown = TRUE
+    )
   ) |>
     wrap()
 }
@@ -770,10 +772,12 @@ dataframe__bottom_k <- function(k, ..., by, reverse = FALSE) {
 #' df$top_k(4, by = c("a", "b"))
 dataframe__top_k <- function(k, ..., by, reverse = FALSE) {
   self$lazy()$top_k(k, by = by, reverse = reverse)$collect(
-    projection_pushdown = FALSE,
-    predicate_pushdown = FALSE,
-    comm_subplan_elim = FALSE,
-    slice_pushdown = TRUE
+    optimizations = QueryOptFlags(
+      projection_pushdown = FALSE,
+      predicate_pushdown = FALSE,
+      comm_subplan_elim = FALSE,
+      slice_pushdown = TRUE
+    )
   ) |>
     wrap()
 }
@@ -802,7 +806,7 @@ dataframe__top_k <- function(k, ..., by, reverse = FALSE) {
 #'
 #' df1$merge_sorted(df2, key = "age")
 dataframe__merge_sorted <- function(other, key) {
-  self$lazy()$merge_sorted(other$lazy(), key)$collect(`_eager` = TRUE) |>
+  self$lazy()$merge_sorted(other$lazy(), key)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -819,7 +823,9 @@ dataframe__merge_sorted <- function(other, key) {
 #'
 #' df1$flags
 dataframe__set_sorted <- function(column, ..., descending = FALSE) {
-  self$lazy()$set_sorted(column, descending = descending)$collect(`_eager` = TRUE) |>
+  self$lazy()$set_sorted(column, descending = descending)$collect(
+    optimizations = DEFAULT_EAGER_OPT_FLAGS
+  ) |>
     wrap()
 }
 
@@ -847,9 +853,7 @@ dataframe__unique <- function(
     subset = subset,
     keep = keep,
     maintain_order = maintain_order
-  )$collect(
-    `_eager` = TRUE
-  ) |>
+  )$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -914,7 +918,7 @@ dataframe__join <- function(
       nulls_equal = nulls_equal,
       coalesce = coalesce,
       maintain_order = maintain_order
-    )$collect(`_eager` = TRUE)
+    )$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS)
   })
 }
 
@@ -945,7 +949,7 @@ dataframe__join <- function(
 #' )
 #' df$filter(!pl$all_horizontal(pl$all()$is_nan()))
 dataframe__drop_nans <- function(...) {
-  self$lazy()$drop_nans(...)$collect(`_eager` = TRUE) |>
+  self$lazy()$drop_nans(...)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -967,7 +971,7 @@ dataframe__drop_nans <- function(...) {
 #' # a null in any of the integer columns:
 #' df$drop_nulls(cs$integer())
 dataframe__drop_nulls <- function(...) {
-  self$lazy()$drop_nulls(...)$collect(`_eager` = TRUE) |>
+  self$lazy()$drop_nulls(...)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -1051,7 +1055,7 @@ dataframe__gather_every <- function(n, offset = 0) {
 #'
 #' df$rename(foo = "apple")
 dataframe__rename <- function(..., .strict = TRUE) {
-  self$lazy()$rename(..., .strict = .strict)$collect(`_eager` = TRUE) |>
+  self$lazy()$rename(..., .strict = .strict)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -1077,7 +1081,7 @@ dataframe__fill_null <- function(
   matches_supertype = TRUE
 ) {
   self$lazy()$fill_null(value, strategy, limit, ..., matches_supertype = matches_supertype)$collect(
-    `_eager` = TRUE
+    optimizations = DEFAULT_EAGER_OPT_FLAGS
   ) |>
     wrap()
 }
@@ -1093,7 +1097,7 @@ dataframe__fill_null <- function(
 #'
 #' df$explode("numbers")
 dataframe__explode <- function(...) {
-  self$lazy()$explode(...)$collect(`_eager` = TRUE) |>
+  self$lazy()$explode(...)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -1114,7 +1118,7 @@ dataframe__explode <- function(...) {
 #' df$unnest("a_and_c")
 #' df$unnest("a_and_c", separator = ":")
 dataframe__unnest <- function(..., separator = NULL) {
-  self$lazy()$unnest(..., separator = separator)$collect(`_eager` = TRUE) |>
+  self$lazy()$unnest(..., separator = separator)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -1231,7 +1235,7 @@ dataframe__join_asof <- function(
     coalesce = coalesce,
     allow_exact_matches = allow_exact_matches,
     check_sortedness = check_sortedness,
-  )$collect(`_eager` = TRUE) |>
+  )$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -1245,7 +1249,7 @@ dataframe__join_asof <- function(
 #' )
 #' df$fill_nan(99)
 dataframe__fill_nan <- function(value) {
-  self$lazy()$fill_nan(value)$collect(`_eager` = TRUE) |>
+  self$lazy()$fill_nan(value)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -1300,7 +1304,7 @@ dataframe__clear <- function(n = 0) {
 dataframe__shift <- function(n = 1, ..., fill_value = NULL) {
   wrap({
     check_dots_empty0(...)
-    self$lazy()$shift(n, fill_value = fill_value)$collect(`_eager` = TRUE)
+    self$lazy()$shift(n, fill_value = fill_value)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS)
   })
 }
 
@@ -1345,7 +1349,9 @@ dataframe__join_where <- function(
 ) {
   wrap({
     check_polars_df(other)
-    self$lazy()$join_where(other$lazy(), ..., suffix = suffix)$collect(`_eager` = TRUE)
+    self$lazy()$join_where(other$lazy(), ..., suffix = suffix)$collect(
+      optimizations = DEFAULT_EAGER_OPT_FLAGS
+    )
   })
 }
 
@@ -1711,7 +1717,7 @@ dataframe__sum_horizontal <- function(..., ignore_nulls = TRUE) {
 #' df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, 1))
 #' df$max()
 dataframe__max <- function() {
-  self$lazy()$max()$collect(`_eager` = TRUE) |>
+  self$lazy()$max()$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -1722,7 +1728,7 @@ dataframe__max <- function() {
 #' df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, 1))
 #' df$min()
 dataframe__min <- function() {
-  self$lazy()$min()$collect(`_eager` = TRUE) |>
+  self$lazy()$min()$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -1733,7 +1739,7 @@ dataframe__min <- function() {
 #' df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, 1))
 #' df$mean()
 dataframe__mean <- function() {
-  self$lazy()$mean()$collect(`_eager` = TRUE) |>
+  self$lazy()$mean()$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -1744,7 +1750,7 @@ dataframe__mean <- function() {
 #' df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, 1))
 #' df$median()
 dataframe__median <- function() {
-  self$lazy()$median()$collect(`_eager` = TRUE) |>
+  self$lazy()$median()$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -1755,7 +1761,7 @@ dataframe__median <- function() {
 #' df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, 1))
 #' df$sum()
 dataframe__sum <- function() {
-  self$lazy()$sum()$collect(`_eager` = TRUE) |>
+  self$lazy()$sum()$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -1768,7 +1774,7 @@ dataframe__sum <- function() {
 #' df$var()
 #' df$var(ddof = 0)
 dataframe__var <- function(ddof = 1) {
-  self$lazy()$var(ddof)$collect(`_eager` = TRUE) |>
+  self$lazy()$var(ddof)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -1781,7 +1787,7 @@ dataframe__var <- function(ddof = 1) {
 #' df$std()
 #' df$std(ddof = 0)
 dataframe__std <- function(ddof = 1) {
-  self$lazy()$std(ddof)$collect(`_eager` = TRUE) |>
+  self$lazy()$std(ddof)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -1800,7 +1806,7 @@ dataframe__quantile <- function(
       interpolation,
       values = c("nearest", "higher", "lower", "midpoint", "linear")
     )
-    self$lazy()$quantile(quantile, interpolation)$collect(`_eager` = TRUE)
+    self$lazy()$quantile(quantile, interpolation)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS)
   })
 }
 
@@ -2370,7 +2376,7 @@ dataframe__reverse <- function() {
 #' df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, NA), c = rep(NA, 4))
 #' df$count()
 dataframe__count <- function() {
-  self$lazy()$count()$collect(`_eager` = TRUE) |>
+  self$lazy()$count()$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 

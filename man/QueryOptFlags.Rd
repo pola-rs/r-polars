@@ -52,7 +52,4 @@ A \code{QueryOptFlags} object.
 \examples{
 opt_flags <- pl$QueryOptFlags()
 opt_flags
-
-S7::check_is_S7(opt_flags, pl$QueryOptFlags)
 }
-\keyword{internal}

@@ -7,46 +7,61 @@
 lazyframe__to_dot(
   ...,
   optimized = TRUE,
-  type_coercion = TRUE,
-  `_type_check` = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  comm_subplan_elim = TRUE,
-  comm_subexpr_elim = TRUE,
-  cluster_with_columns = TRUE,
-  collapse_joins = deprecated(),
-  `_check_order` = TRUE
+  optimizations = pl$QueryOptFlags(),
+  type_coercion = deprecated(),
+  predicate_pushdown = deprecated(),
+  projection_pushdown = deprecated(),
+  simplify_expression = deprecated(),
+  slice_pushdown = deprecated(),
+  comm_subplan_elim = deprecated(),
+  comm_subexpr_elim = deprecated(),
+  cluster_with_columns = deprecated(),
+  collapse_joins = deprecated()
 )
 }
 \arguments{
-\item{...}{Not used..}
+\item{...}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Ignored.}
 
 \item{optimized}{Optimize the query plan.}
 
-\item{type_coercion}{A logical, indicates type coercion optimization.}
+\item{optimizations}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+A \link{QueryOptFlags} object to indicate optimization passes done during query optimization.}
 
-\item{predicate_pushdown}{A logical, indicates predicate pushdown optimization.}
+\item{type_coercion}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{type_coercion} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
 
-\item{projection_pushdown}{A logical, indicates projection pushdown optimization.}
+\item{predicate_pushdown}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{predicate_pushdown} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
 
-\item{simplify_expression}{A logical, indicates simplify expression optimization.}
+\item{projection_pushdown}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{projection_pushdown} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
 
-\item{slice_pushdown}{A logical, indicates slice pushdown optimization.}
+\item{simplify_expression}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{simplify_expression} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
 
-\item{comm_subplan_elim}{A logical, indicates trying to cache branching subplans that occur
-on self-joins or unions.}
+\item{slice_pushdown}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{slice_pushdown} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
 
-\item{comm_subexpr_elim}{A logical, indicates trying to cache common subexpressions.}
+\item{comm_subplan_elim}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{comm_subplan_elim} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
 
-\item{cluster_with_columns}{A logical, indicates to combine sequential independent calls
-to with_columns.}
+\item{comm_subexpr_elim}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{comm_subexpr_elim} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
+
+\item{cluster_with_columns}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{cluster_with_columns} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
 
 \item{collapse_joins}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-Use \code{predicate_pushdown} instead.}
-
-\item{_check_order, _type_check}{For internal use only.}
+Use the \code{predicate_pushdown} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
 }
 \value{
 A character vector

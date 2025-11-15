@@ -7,18 +7,18 @@
 lazyframe__explain(
   ...,
   format = c("plain", "tree"),
+  engine = c("auto", "in-memory", "streaming"),
   optimized = TRUE,
-  type_coercion = TRUE,
-  `_type_check` = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  comm_subplan_elim = TRUE,
-  comm_subexpr_elim = TRUE,
-  cluster_with_columns = TRUE,
-  collapse_joins = deprecated(),
-  `_check_order` = TRUE
+  optimizations = pl$QueryOptFlags(),
+  type_coercion = deprecated(),
+  predicate_pushdown = deprecated(),
+  projection_pushdown = deprecated(),
+  simplify_expression = deprecated(),
+  slice_pushdown = deprecated(),
+  comm_subplan_elim = deprecated(),
+  comm_subexpr_elim = deprecated(),
+  cluster_with_columns = deprecated(),
+  collapse_joins = deprecated()
 )
 }
 \arguments{
@@ -27,31 +27,56 @@ lazyframe__explain(
 \item{format}{The format to use for displaying the logical plan. Must be
 either \code{"plain"} (default) or \code{"tree"}.}
 
+\item{engine}{The engine name to use for processing the query.
+One of the followings:
+\itemize{
+\item \code{"auto"} (default): Select the engine automatically.
+The \code{"in-memory"} engine will be selected for most cases.
+\item \code{"in-memory"}: Use the in-memory engine.
+\item \code{"streaming"}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Use the (new) streaming engine.
+}}
+
 \item{optimized}{Return an optimized query plan. If \code{TRUE} (default), the
 subsequent optimization flags control which optimizations run.}
 
-\item{type_coercion}{A logical, indicates type coercion optimization.}
+\item{optimizations}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+A \link{QueryOptFlags} object to indicate optimization passes done during query optimization.}
 
-\item{predicate_pushdown}{A logical, indicates predicate pushdown optimization.}
+\item{type_coercion}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{type_coercion} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
 
-\item{projection_pushdown}{A logical, indicates projection pushdown optimization.}
+\item{predicate_pushdown}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{predicate_pushdown} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
 
-\item{simplify_expression}{A logical, indicates simplify expression optimization.}
+\item{projection_pushdown}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{projection_pushdown} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
 
-\item{slice_pushdown}{A logical, indicates slice pushdown optimization.}
+\item{simplify_expression}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{simplify_expression} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
 
-\item{comm_subplan_elim}{A logical, indicates trying to cache branching subplans that occur
-on self-joins or unions.}
+\item{slice_pushdown}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{slice_pushdown} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
 
-\item{comm_subexpr_elim}{A logical, indicates trying to cache common subexpressions.}
+\item{comm_subplan_elim}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{comm_subplan_elim} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
 
-\item{cluster_with_columns}{A logical, indicates to combine sequential independent calls
-to with_columns.}
+\item{comm_subexpr_elim}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{comm_subexpr_elim} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
+
+\item{cluster_with_columns}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use the \code{cluster_with_columns} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
 
 \item{collapse_joins}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-Use \code{predicate_pushdown} instead.}
-
-\item{_check_order, _type_check}{For internal use only.}
+Use the \code{predicate_pushdown} property of a \link{QueryOptFlags} object, then pass
+that to the \code{optimizations} argument instead.}
 }
 \value{
 A character value containing the query plan.
@@ -70,13 +95,19 @@ lazy_frame <- as_polars_lf(iris)
 lazy_query <- lazy_frame$sort("Species")$filter(pl$col("Species") != "setosa")
 
 # This is the query that was written by the user, without any optimizations
-# (use cat() for better printing)
-lazy_query$explain(optimized = FALSE) |> cat()
+# (use writeLines() for better printing)
+lazy_query$explain(optimized = FALSE) |> writeLines()
 
 # This is the query after `polars` optimizes it: instead of sorting first and
 # then filtering, it is faster to filter first and then sort the rest.
-lazy_query$explain() |> cat()
+lazy_query$explain() |> writeLines()
+
+# You can disable specific optimizations.
+lazy_query$explain(
+  optimizations = pl$QueryOptFlags(predicate_pushdown = FALSE)
+) |>
+  writeLines()
 
 # Also possible to see this as tree format
-lazy_query$explain(format = "tree") |> cat()
+lazy_query$explain(format = "tree") |> writeLines()
 }

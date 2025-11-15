@@ -154,3 +154,42 @@
        @ eager               : logi FALSE
        @ streaming           : logi FALSE
 
+---
+
+    Code
+      DEFAULT_EAGER_OPT_FLAGS
+    Output
+      <polars::QueryOptFlags>
+       @ type_coercion       : logi TRUE
+       @ type_check          : logi TRUE
+       @ predicate_pushdown  : logi FALSE
+       @ projection_pushdown : logi FALSE
+       @ simplify_expression : logi TRUE
+       @ slice_pushdown      : logi FALSE
+       @ comm_subplan_elim   : logi FALSE
+       @ comm_subexpr_elim   : logi FALSE
+       @ cluster_with_columns: logi FALSE
+       @ check_order_observe : logi FALSE
+       @ fast_projection     : logi FALSE
+       @ eager               : logi TRUE
+       @ streaming           : logi FALSE
+
+# Rust side validation
+
+    Code
+      validate(opt_flags)
+    Condition <rlang_error>
+      Error:
+      ! <polars::QueryOptFlags> object properties are invalid:
+      - @eager must be <logical>, not <integer>
+
+---
+
+    Code
+      pl$collect_all(list(), optimizations = opt_flags)
+    Condition <rlang_error>
+      Error in `pl$collect_all()`:
+      ! Evaluation failed in `$collect_all()`.
+      Caused by error:
+      ! Must be logical, not integer
+

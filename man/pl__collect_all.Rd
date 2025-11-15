@@ -4,7 +4,12 @@
 \alias{pl__collect_all}
 \title{Collect multiple LazyFrames at the same time}
 \usage{
-pl__collect_all(lazy_frames, ..., engine = c("auto", "in-memory", "streaming"))
+pl__collect_all(
+  lazy_frames,
+  ...,
+  engine = c("auto", "in-memory", "streaming"),
+  optimizations = pl$QueryOptFlags()
+)
 }
 \arguments{
 \item{lazy_frames}{A list of LazyFrames to collect.}
@@ -19,6 +24,9 @@ The \code{"in-memory"} engine will be selected for most cases.
 \item \code{"in-memory"}: Use the in-memory engine.
 \item \code{"streaming"}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Use the (new) streaming engine.
 }}
+
+\item{optimizations}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+A \link{QueryOptFlags} object to indicate optimization passes done during query optimization.}
 }
 \value{
 A list containing all the collected DataFrames, in the same order

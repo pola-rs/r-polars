@@ -209,6 +209,7 @@ nav:
             - with_columns: man/lazyframe__with_columns.md
             - with_row_index: man/lazyframe__with_row_index.md
         - Misc:
+            - QueryOptFlags: man/QueryOptFlags.md
             - collect: man/lazyframe__collect.md
             - collect_schema: man/lazyframe__collect_schema.md
             - sink_batches: man/lazyframe__sink_batches.md

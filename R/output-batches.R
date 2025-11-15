@@ -110,7 +110,8 @@ lazyframe__sink_batches <- function(
   ...,
   chunk_size = NULL,
   maintain_order = TRUE,
-  engine = c("auto", "in-memory", "streaming")
+  engine = c("auto", "in-memory", "streaming"),
+  optimizations = pl$QueryOptFlags()
 ) {
   wrap({
     check_dots_empty0(...)
@@ -119,11 +120,9 @@ lazyframe__sink_batches <- function(
       lambda,
       chunk_size = chunk_size,
       maintain_order = maintain_order
-    )$collect(
-      engine = engine
-    )
-    # TODO: support `optimizations` argument
+    )$collect(engine = engine, optimizations = optimizations)
   })
+
   invisible()
 }
 

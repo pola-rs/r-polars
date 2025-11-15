@@ -40,6 +40,6 @@ group_by_dynamic__agg <- function(...) {
     label = self$label,
     group_by = self$group_by,
     start_by = self$start_by
-  )$agg(...)$collect(no_optimization = TRUE) |>
+  )$agg(...)$collect(optimizations = QueryOptFlags()$no_optimizations()) |>
     wrap()
 }

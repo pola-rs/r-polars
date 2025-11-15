@@ -2,6 +2,7 @@ use super::sink::RSinkTarget;
 use crate::{
     PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRLazyGroupBy, PlRSeries, RPolarsErr,
     expr::selector::PlRSelector,
+    lazyframe::PlROptFlags,
     prelude::{sync_on_close::SyncOnCloseType, *},
 };
 use polars::io::{HiveOptions, RowIndex};
@@ -41,38 +42,6 @@ impl PlRLazyFrame {
             .map_err(RPolarsErr::from)?;
         let sexp = OwnedStringSexp::try_from_scalar(string)?;
         Ok(sexp.into())
-    }
-
-    fn optimization_toggle(
-        &self,
-        type_coercion: bool,
-        _type_check: bool,
-        predicate_pushdown: bool,
-        projection_pushdown: bool,
-        simplify_expression: bool,
-        slice_pushdown: bool,
-        comm_subplan_elim: bool,
-        comm_subexpr_elim: bool,
-        cluster_with_columns: bool,
-        _eager: bool,
-        _check_order: bool,
-    ) -> Result<Self> {
-        let ldf = self
-            .ldf
-            .clone()
-            .with_type_coercion(type_coercion)
-            .with_type_check(_type_check)
-            .with_predicate_pushdown(predicate_pushdown)
-            .with_simplify_expr(simplify_expression)
-            .with_slice_pushdown(slice_pushdown)
-            .with_check_order(_check_order)
-            .with_comm_subplan_elim(comm_subplan_elim)
-            .with_comm_subexpr_elim(comm_subexpr_elim)
-            .with_cluster_with_columns(cluster_with_columns)
-            ._with_eager(_eager)
-            .with_projection_pushdown(projection_pushdown);
-
-        Ok(ldf.into())
     }
 
     fn sink_batches(
@@ -311,6 +280,14 @@ impl PlRLazyFrame {
     fn cache(&self) -> Result<Self> {
         let ldf = self.ldf.clone();
         Ok(ldf.cache().into())
+    }
+
+    fn with_optimizations(&self, optimizations: Sexp) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let optimizations = <PlROptFlags>::try_from(optimizations)?;
+        Ok(ldf
+            .with_optimizations(optimizations.inner.into_inner())
+            .into())
     }
 
     fn profile(&self) -> Result<Sexp> {

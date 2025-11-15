@@ -26,9 +26,6 @@ polars_query_opt_flags__methods <- new.env(parent = emptyenv())
 #' @examples
 #' opt_flags <- pl$QueryOptFlags()
 #' opt_flags
-#'
-#' S7::check_is_S7(opt_flags, pl$QueryOptFlags)
-#' @keywords internal
 NULL
 
 QueryOptFlags <- new_class(
@@ -146,6 +143,11 @@ eager_opt_flags <- function() {
       simplify_expression = TRUE
     )
 }
+
+on_load({
+  # Used inside of DataFrame methods
+  DEFAULT_EAGER_OPT_FLAGS <- eager_opt_flags()
+})
 
 # Because of immutability, unlike Python Polars, there are no side effects,
 # and a new modified OptFlags is returned

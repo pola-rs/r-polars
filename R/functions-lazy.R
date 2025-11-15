@@ -148,19 +148,18 @@ pl__arg_sort_by <- function(
 pl__collect_all <- function(
   lazy_frames,
   ...,
-  engine = c("auto", "in-memory", "streaming")
+  engine = c("auto", "in-memory", "streaming"),
+  optimizations = pl$QueryOptFlags()
 ) {
   wrap({
     check_dots_empty0(...)
     check_list_of_polars_lf(lazy_frames)
     engine <- arg_match0(engine, c("auto", "in-memory", "streaming"))
-    # TODO: add support for argument `optimizations`
-    optflags <- QueryOptFlags()
-    check_is_S7(optflags, QueryOptFlags)
+    check_is_S7(optimizations, QueryOptFlags)
 
     lfs <- lapply(lazy_frames, \(x) x$`_ldf`)
 
-    collect_all(lfs, engine = engine, optflags = optflags) |>
+    collect_all(lfs, engine = engine, optimizations = optimizations) |>
       lapply(\(ptr) .savvy_wrap_PlRDataFrame(ptr) |> wrap())
   })
 }

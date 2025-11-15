@@ -37,4 +37,24 @@ test_that("QueryOptFlags", {
   expect_snapshot(opt_flags$type, error = TRUE, cnd_class = TRUE)
 
   expect_snapshot(opt_flags$no_optimizations())
+
+  # Pre-defined
+  expect_snapshot(DEFAULT_EAGER_OPT_FLAGS)
+})
+
+test_that("Rust side validation", {
+  opt_flags <- pl$QueryOptFlags()
+  prop(opt_flags, "eager", check = FALSE) <- 1L
+
+  expect_snapshot(
+    validate(opt_flags),
+    error = TRUE,
+    cnd_class = TRUE
+  )
+
+  expect_snapshot(
+    pl$collect_all(list(), optimizations = opt_flags),
+    error = TRUE,
+    cnd_class = TRUE
+  )
 })
