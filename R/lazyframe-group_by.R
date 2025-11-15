@@ -90,10 +90,7 @@ lazygroupby__tail <- function(n = 5) {
 #' lf$collect()
 #'
 #' lf$group_by("grp")$max()$collect()
-lazygroupby__max <- function() {
-  self$agg(pl$all()$max()) |>
-    wrap()
-}
+lazygroupby__max <- groupby__max
 
 #' Reduce the groups to the minimal value
 #'
@@ -108,10 +105,7 @@ lazygroupby__max <- function() {
 #' lf$collect()
 #'
 #' lf$group_by("grp")$min()$collect()
-lazygroupby__min <- function() {
-  self$agg(pl$all()$min()) |>
-    wrap()
-}
+lazygroupby__min <- groupby__min
 
 #' Return the median per group
 #'
@@ -126,10 +120,7 @@ lazygroupby__min <- function() {
 #' lf$collect()
 #'
 #' lf$group_by("grp")$median()$collect()
-lazygroupby__median <- function() {
-  self$agg(pl$all()$median()) |>
-    wrap()
-}
+lazygroupby__median <- groupby__median
 
 #' Return the mean per group
 #'
@@ -144,10 +135,7 @@ lazygroupby__median <- function() {
 #' lf$collect()
 #'
 #' lf$group_by("grp")$mean()$collect()
-lazygroupby__mean <- function() {
-  self$agg(pl$all()$mean()) |>
-    wrap()
-}
+lazygroupby__mean <- groupby__mean
 
 #' Return the sum per group
 #'
@@ -162,10 +150,7 @@ lazygroupby__mean <- function() {
 #' lf$collect()
 #'
 #' lf$group_by("grp")$sum()$collect()
-lazygroupby__sum <- function() {
-  self$agg(pl$all()$sum()) |>
-    wrap()
-}
+lazygroupby__sum <- groupby__sum
 
 #' Compute the quantile per group
 #'
@@ -181,14 +166,7 @@ lazygroupby__sum <- function() {
 #' lf$collect()
 #'
 #' lf$group_by("grp")$quantile(0.5)$collect()
-lazygroupby__quantile <- function(
-  quantile,
-  interpolation = c("nearest", "higher", "lower", "midpoint", "linear", "equiprobable")
-) {
-  wrap({
-    self$agg(pl$all()$quantile(quantile = quantile, interpolation = interpolation))
-  })
-}
+lazygroupby__quantile <- groupby__quantile
 
 #' Count the unique values per group
 #'
@@ -203,10 +181,7 @@ lazygroupby__quantile <- function(
 #' lf$collect()
 #'
 #' lf$group_by("grp")$n_unique()$collect()
-lazygroupby__n_unique <- function() {
-  self$agg(pl$all()$n_unique()) |>
-    wrap()
-}
+lazygroupby__n_unique <- groupby__n_unique
 
 #' Return the number of rows in each group
 #'
@@ -221,12 +196,4 @@ lazygroupby__n_unique <- function() {
 #' lf$group_by("a")$len()$collect()
 #'
 #' lf$group_by("a")$len("n")$collect()
-lazygroupby__len <- function(name = NULL) {
-  wrap({
-    len_expr <- pl$len()
-    if (!is.null(name)) {
-      len_expr <- len_expr$alias(name)
-    }
-    self$agg(len_expr)
-  })
-}
+lazygroupby__len <- groupby__len
