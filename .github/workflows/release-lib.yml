@@ -181,6 +181,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           # Only install minimum dependencies for testing
+          dependencies: "'hard'"
           # TODO: move to the DESCRIPTION file
           packages: >-
             deps::.,
