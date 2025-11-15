@@ -1,6 +1,6 @@
 # NEWS
 
-## polars (development version)
+## polars 1.6.0
 
 ### Deprecations
 
