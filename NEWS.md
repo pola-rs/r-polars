@@ -26,6 +26,8 @@
 
   For the experimental `<lazyframe>$lazy_sink_*` methods,
   the above arguments and the `collapse_joins` argument (deprecated as of polars 1.4.0) are removed.
+- `<lazyframe>$to_dot()`s ignored `...` (dots) argument is deprecated (#1635).
+  In future versions, an error will be raised if dots are not empty.
 
 ### New features
 
@@ -41,6 +43,9 @@
   - `<lazyframe>$sink_parquet()` / `<lazyframe>$lazy_sink_parquet()`
   - `<lazyframe>$sink_ndjson()` / `<lazyframe>$lazy_sink_ndjson()`
   - `as_polars_df(<lazyframe>)`
+- The following functions gain the `engine` argument (#1635).
+  - `<lazyframe>$explain()`
+  - `<lazyframe>$profile()`
 - `pl$collect_all()` to efficiently collect a list of LazyFrames (#1598, #1635).
 - `<lazyframe>$remove()` and `<dataframe>$remove()` as a complement to
   `$filter()` (#1632).
