@@ -257,6 +257,7 @@ jobs:
           # Only install minimum dependencies for testing
           # TODO: move to the DESCRIPTION file
           packages: >-
+            deps::.,
             any::pkgload,
             any::testthat,
             any::knitr,
