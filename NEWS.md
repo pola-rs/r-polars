@@ -37,11 +37,11 @@
   - `<lazyframe>$explain()`
   - `<lazyframe>$profile()`
   - `<lazyframe>$to_dot()`
-  - `<lazyframe>$sink_batches()` / `<lazyframe>$lazy_sink_batches()`
-  - `<lazyframe>$sink_csv()` / `<lazyframe>$lazy_sink_csv()`
-  - `<lazyframe>$sink_ipc()` / `<lazyframe>$lazy_sink_ipc()`
-  - `<lazyframe>$sink_parquet()` / `<lazyframe>$lazy_sink_parquet()`
-  - `<lazyframe>$sink_ndjson()` / `<lazyframe>$lazy_sink_ndjson()`
+  - `<lazyframe>$sink_batches()`
+  - `<lazyframe>$sink_csv()`
+  - `<lazyframe>$sink_ipc()`
+  - `<lazyframe>$sink_parquet()`
+  - `<lazyframe>$sink_ndjson()`
   - `as_polars_df(<lazyframe>)`
 - The following functions gain the `engine` argument (#1635).
   - `<lazyframe>$explain()`
