@@ -81,7 +81,6 @@ groupby__tail <- function(n = 5) {
 #' @inherit lazygroupby__max title
 #'
 #' @inherit as_polars_df return
-#' @include lazyframe-group_by.R
 #' @examples
 #' df <- pl$DataFrame(
 #'   grp = c("c", "c", "a", "c", "a", "b"),
@@ -92,7 +91,10 @@ groupby__tail <- function(n = 5) {
 #' df
 #'
 #' df$group_by("grp")$max()
-groupby__max <- lazygroupby__max
+groupby__max <- function() {
+  self$agg(pl$all()$max()) |>
+    wrap()
+}
 
 #' @inherit lazygroupby__min title
 #'
@@ -107,7 +109,10 @@ groupby__max <- lazygroupby__max
 #' df
 #'
 #' df$group_by("grp")$min()
-groupby__min <- lazygroupby__min
+groupby__min <- function() {
+  self$agg(pl$all()$min()) |>
+    wrap()
+}
 
 #' @inherit lazygroupby__median title
 #'
@@ -122,7 +127,10 @@ groupby__min <- lazygroupby__min
 #' df
 #'
 #' df$group_by("grp")$median()
-groupby__median <- lazygroupby__median
+groupby__median <- function() {
+  self$agg(pl$all()$median()) |>
+    wrap()
+}
 
 #' @inherit lazygroupby__mean title
 #'
@@ -137,7 +145,10 @@ groupby__median <- lazygroupby__median
 #' df
 #'
 #' df$group_by("grp")$mean()
-groupby__mean <- lazygroupby__mean
+groupby__mean <- function() {
+  self$agg(pl$all()$mean()) |>
+    wrap()
+}
 
 #' @inherit lazygroupby__sum title
 #'
@@ -152,7 +163,10 @@ groupby__mean <- lazygroupby__mean
 #' df
 #'
 #' df$group_by("grp")$sum()
-groupby__sum <- lazygroupby__sum
+groupby__sum <- function() {
+  self$agg(pl$all()$sum()) |>
+    wrap()
+}
 
 #' @inherit lazygroupby__quantile title params
 #'
@@ -167,7 +181,14 @@ groupby__sum <- lazygroupby__sum
 #' df
 #'
 #' df$group_by("grp")$quantile(0.5)
-groupby__quantile <- lazygroupby__quantile
+groupby__quantile <- function(
+  quantile,
+  interpolation = c("nearest", "higher", "lower", "midpoint", "linear", "equiprobable")
+) {
+  wrap({
+    self$agg(pl$all()$quantile(quantile = quantile, interpolation = interpolation))
+  })
+}
 
 #' @inherit lazygroupby__n_unique title
 #'
@@ -182,7 +203,10 @@ groupby__quantile <- lazygroupby__quantile
 #' df
 #'
 #' df$group_by("grp")$n_unique()
-groupby__n_unique <- lazygroupby__n_unique
+groupby__n_unique <- function() {
+  self$agg(pl$all()$n_unique()) |>
+    wrap()
+}
 
 #' @inherit lazygroupby__len title params
 #' @inherit as_polars_df return
@@ -194,4 +218,12 @@ groupby__n_unique <- lazygroupby__n_unique
 #' df$group_by("a")$len()
 #'
 #' df$group_by("a")$len("n")
-groupby__len <- lazygroupby__len
+groupby__len <- function(name = NULL) {
+  wrap({
+    len_expr <- pl$len()
+    if (!is.null(name)) {
+      len_expr <- len_expr$alias(name)
+    }
+    self$agg(len_expr)
+  })
+}
