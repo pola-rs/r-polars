@@ -1,5 +1,9 @@
 # Ensure running snapshot tests on GitHub Actions CI
-if (identical(Sys.getenv("GITHUB_ACTIONS"), "true")) {
+if (
+  identical(Sys.getenv("GITHUB_ACTIONS"), "true") &&
+    # testthat 3.3.0 is required for snapshot tests, but maybe older version is installed on CI
+    rlang::is_installed("testthat", version = "3.3.0")
+) {
   withr::local_envvar(
     list(NOT_CRAN = "true"),
     .local_envir = teardown_env()
