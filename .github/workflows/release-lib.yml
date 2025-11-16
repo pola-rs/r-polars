@@ -122,18 +122,18 @@ jobs:
           - windows-latest
           - ubuntu-latest
         r:
-          - oldrel-1
+          - "4.3"
           - release
           - devel
         exclude:
           - os: macos-latest
             r: devel
           - os: macos-latest
-            r: oldrel-1
+            r: "4.3"
         include:
           - os: macos-15-intel
             r: release
-          - os: ubuntu-22.04-arm
+          - os: ubuntu-24.04-arm # Use 24.04, because P3M does not provide binaries for 22.04 arm64
             r: release
 
     permissions:
@@ -230,10 +230,10 @@ jobs:
       - name: create release
         uses: ncipollo/release-action@v1.20.0
         with:
-          draft: true # TODO: remove this line after checking this workflow works well
+          draft: true
           immutableCreate: true
           prerelease: true
           commit: ${{ github.sha }}
           tag: ${{ env.TAG_NAME }}
-          token: ${{ secrets.GITHUB_TOKEN }} # It seems that the `commit` input requires this
+          token: ${{ secrets.GITHUB_TOKEN }} # The `commit` input requires this
           artifacts: libs/*,sha256sums.txt
