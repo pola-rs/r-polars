@@ -190,7 +190,7 @@ forward_old_opt_flags <- function(
   if (is_present(no_optimization)) {
     warn_func("no_optimization")
     if (isTRUE(no_optimization)) {
-      props_uncheck(optimizations) <- list(
+      props(optimizations, check = FALSE) <- list(
         predicate_pushdown = FALSE,
         projection_pushdown = FALSE,
         slice_pushdown = FALSE,

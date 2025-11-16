@@ -21,7 +21,7 @@ Depends:
     R (>= 4.3)
 Imports:
     rlang (>= 1.1.0),
-    S7 (>= 0.2.0)
+    S7 (>= 0.2.1)
 Suggests:
     arrow,
     bit64,
