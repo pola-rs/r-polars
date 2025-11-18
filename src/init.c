@@ -819,6 +819,11 @@ SEXP savvy_PlRExpr_arg_unique__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_arr_agg__impl(SEXP self__, SEXP c_arg__expr) {
+    SEXP res = savvy_PlRExpr_arr_agg__ffi(self__, c_arg__expr);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_arr_all__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_arr_all__ffi(self__);
     return handle_result(res);
@@ -1591,6 +1596,11 @@ SEXP savvy_PlRExpr_last__impl(SEXP self__) {
 
 SEXP savvy_PlRExpr_len__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_len__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_list_agg__impl(SEXP self__, SEXP c_arg__expr) {
+    SEXP res = savvy_PlRExpr_list_agg__ffi(self__, c_arg__expr);
     return handle_result(res);
 }
 
@@ -3543,6 +3553,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_arg_min__impl", (DL_FUNC) &savvy_PlRExpr_arg_min__impl, 1},
     {"savvy_PlRExpr_arg_sort__impl", (DL_FUNC) &savvy_PlRExpr_arg_sort__impl, 3},
     {"savvy_PlRExpr_arg_unique__impl", (DL_FUNC) &savvy_PlRExpr_arg_unique__impl, 1},
+    {"savvy_PlRExpr_arr_agg__impl", (DL_FUNC) &savvy_PlRExpr_arr_agg__impl, 2},
     {"savvy_PlRExpr_arr_all__impl", (DL_FUNC) &savvy_PlRExpr_arr_all__impl, 1},
     {"savvy_PlRExpr_arr_any__impl", (DL_FUNC) &savvy_PlRExpr_arr_any__impl, 1},
     {"savvy_PlRExpr_arr_arg_max__impl", (DL_FUNC) &savvy_PlRExpr_arr_arg_max__impl, 1},
@@ -3698,6 +3709,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_kurtosis__impl", (DL_FUNC) &savvy_PlRExpr_kurtosis__impl, 3},
     {"savvy_PlRExpr_last__impl", (DL_FUNC) &savvy_PlRExpr_last__impl, 1},
     {"savvy_PlRExpr_len__impl", (DL_FUNC) &savvy_PlRExpr_len__impl, 1},
+    {"savvy_PlRExpr_list_agg__impl", (DL_FUNC) &savvy_PlRExpr_list_agg__impl, 2},
     {"savvy_PlRExpr_list_all__impl", (DL_FUNC) &savvy_PlRExpr_list_all__impl, 1},
     {"savvy_PlRExpr_list_any__impl", (DL_FUNC) &savvy_PlRExpr_list_any__impl, 1},
     {"savvy_PlRExpr_list_arg_max__impl", (DL_FUNC) &savvy_PlRExpr_list_arg_max__impl, 1},

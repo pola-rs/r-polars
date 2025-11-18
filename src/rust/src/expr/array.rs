@@ -141,4 +141,8 @@ impl PlRExpr {
     fn arr_len(&self) -> Result<Self> {
         Ok(self.inner.clone().arr().len().into())
     }
+
+    fn arr_agg(&self, expr: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().arr().agg(expr.inner.clone()).into())
+    }
 }

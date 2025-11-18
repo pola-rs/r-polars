@@ -431,3 +431,34 @@ expr_arr_len <- function() {
   self$`_rexpr`$arr_len() |>
     wrap()
 }
+
+#' Run any polars aggregation expression against the array's elements
+#'
+#' This looks similar to [`$cat$eval()`][expr_cat_eval], but the key
+#' difference is that `$cat$agg()` automatically explodes the cat if the
+#' expression inside returns a scalar (while `$cat$eval()` always returns a
+#' cat).
+#'
+#' @inheritParams expr_list_eval
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(a = list(c(1, NA), c(42, 13), c(NA, NA)))$
+#'   cast(pl$Array(pl$Int64, 2))
+#'
+#' # The column "null_count" has dtype u32 because `$null_count()` returns a
+#' # scalar for each sub-array. Using `$arr$eval()` instead would return a
+#' # column with dtype arr(u32).
+#' df$with_columns(
+#'   null_count = pl$col("a")$arr$agg(pl$element()$null_count())
+#' )
+#'
+#' # The column "no_nulls" has dtype arr(u32) because the expression doesn't
+#' # guarantee to return a scalar.
+#' df$with_columns(
+#'   no_nulls = pl$col("a")$arr$agg(pl$element()$drop_nulls())
+#' )
+expr_arr_agg <- function(expr) {
+  self$`_rexpr`$arr_agg(as_polars_expr(expr, as_lit = TRUE)$`_rexpr`) |>
+    wrap()
+}

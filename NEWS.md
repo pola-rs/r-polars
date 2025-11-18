@@ -2,6 +2,11 @@
 
 ## polars (development version)
 
+### New features
+
+- `<expr>$arr$agg()` and `<expr>$list$agg()`, similar to their `$eval()` counterparts
+  but automatically explode the column if all elements return a scalar (#1655).
+
 ## polars 1.6.0
 
 This is an update that corresponds to Python Polars 1.35.2.

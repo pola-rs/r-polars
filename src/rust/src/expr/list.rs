@@ -235,4 +235,8 @@ impl PlRExpr {
             .count_matches(expr.inner.clone())
             .into())
     }
+
+    fn list_agg(&self, expr: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().list().agg(expr.inner.clone()).into())
+    }
 }
