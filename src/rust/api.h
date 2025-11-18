@@ -382,6 +382,7 @@ SEXP savvy_PlRExpr_n_unique__ffi(SEXP self__);
 SEXP savvy_PlRExpr_name_keep__ffi(SEXP self__);
 SEXP savvy_PlRExpr_name_prefix__ffi(SEXP self__, SEXP c_arg__prefix);
 SEXP savvy_PlRExpr_name_prefix_fields__ffi(SEXP self__, SEXP c_arg__prefix);
+SEXP savvy_PlRExpr_name_replace__ffi(SEXP self__, SEXP c_arg__pattern, SEXP c_arg__value, SEXP c_arg__literal);
 SEXP savvy_PlRExpr_name_suffix__ffi(SEXP self__, SEXP c_arg__suffix);
 SEXP savvy_PlRExpr_name_suffix_fields__ffi(SEXP self__, SEXP c_arg__suffix);
 SEXP savvy_PlRExpr_name_to_lowercase__ffi(SEXP self__);

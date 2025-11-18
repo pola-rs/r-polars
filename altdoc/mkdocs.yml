@@ -563,6 +563,7 @@ nav:
             - name_keep: man/expr_name_keep.md
             - name_prefix_fields: man/expr_name_prefix_fields.md
             - name_prefix: man/expr_name_prefix.md
+            - name_replace: man/expr_name_replace.md
             - name_suffix_fields: man/expr_name_suffix_fields.md
             - name_suffix: man/expr_name_suffix.md
             - name_to_lowercase: man/expr_name_to_lowercase.md

@@ -2,6 +2,11 @@
 
 ## polars (development version)
 
+### New features
+
+- `<expr>$name$replace()` to replace expression names using regular expressions
+  (#1654).
+
 ## polars 1.6.0
 
 This is an update that corresponds to Python Polars 1.35.2.
