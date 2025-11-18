@@ -2,6 +2,11 @@
 
 ## polars (development version)
 
+### New features
+
+- `<expr>$arr$eval()` to run any Polars expressions inside all subarrays of an
+  Array column (#1653).
+
 ## polars 1.6.0
 
 This is an update that corresponds to Python Polars 1.35.2.
