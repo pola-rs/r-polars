@@ -1579,6 +1579,11 @@ SEXP savvy_PlRExpr_is_unique__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_item__impl(SEXP self__, SEXP c_arg__allow_empty) {
+    SEXP res = savvy_PlRExpr_item__ffi(self__, c_arg__allow_empty);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_kurtosis__impl(SEXP self__, SEXP c_arg__fisher, SEXP c_arg__bias) {
     SEXP res = savvy_PlRExpr_kurtosis__ffi(self__, c_arg__fisher, c_arg__bias);
     return handle_result(res);
@@ -3695,6 +3700,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_is_not_null__impl", (DL_FUNC) &savvy_PlRExpr_is_not_null__impl, 1},
     {"savvy_PlRExpr_is_null__impl", (DL_FUNC) &savvy_PlRExpr_is_null__impl, 1},
     {"savvy_PlRExpr_is_unique__impl", (DL_FUNC) &savvy_PlRExpr_is_unique__impl, 1},
+    {"savvy_PlRExpr_item__impl", (DL_FUNC) &savvy_PlRExpr_item__impl, 2},
     {"savvy_PlRExpr_kurtosis__impl", (DL_FUNC) &savvy_PlRExpr_kurtosis__impl, 3},
     {"savvy_PlRExpr_last__impl", (DL_FUNC) &savvy_PlRExpr_last__impl, 1},
     {"savvy_PlRExpr_len__impl", (DL_FUNC) &savvy_PlRExpr_len__impl, 1},

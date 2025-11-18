@@ -2136,6 +2136,12 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRExpr_item` <- function(self) {
+  function(`allow_empty`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_item__impl, `self`, `allow_empty`))
+  }
+}
+
 `PlRExpr_kurtosis` <- function(self) {
   function(`fisher`, `bias`) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_kurtosis__impl, `self`, `fisher`, `bias`))
@@ -3586,6 +3592,7 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   e$`is_not_null` <- `PlRExpr_is_not_null`(ptr)
   e$`is_null` <- `PlRExpr_is_null`(ptr)
   e$`is_unique` <- `PlRExpr_is_unique`(ptr)
+  e$`item` <- `PlRExpr_item`(ptr)
   e$`kurtosis` <- `PlRExpr_kurtosis`(ptr)
   e$`last` <- `PlRExpr_last`(ptr)
   e$`len` <- `PlRExpr_len`(ptr)
