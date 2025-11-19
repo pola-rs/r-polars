@@ -2114,6 +2114,16 @@ SEXP savvy_PlRExpr_rolling_quantile_by__impl(SEXP self__, SEXP c_arg__by, SEXP c
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_rolling_rank__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__method, SEXP c_arg__center, SEXP c_arg__seed, SEXP c_arg__min_samples) {
+    SEXP res = savvy_PlRExpr_rolling_rank__ffi(self__, c_arg__window_size, c_arg__method, c_arg__center, c_arg__seed, c_arg__min_samples);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_rolling_rank_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__window_size, SEXP c_arg__method, SEXP c_arg__min_samples, SEXP c_arg__closed, SEXP c_arg__seed) {
+    SEXP res = savvy_PlRExpr_rolling_rank_by__ffi(self__, c_arg__by, c_arg__window_size, c_arg__method, c_arg__min_samples, c_arg__closed, c_arg__seed);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_rolling_skew__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__bias, SEXP c_arg__center, SEXP c_arg__min_samples) {
     SEXP res = savvy_PlRExpr_rolling_skew__ffi(self__, c_arg__window_size, c_arg__bias, c_arg__center, c_arg__min_samples);
     return handle_result(res);
@@ -3807,6 +3817,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_rolling_min_by__impl", (DL_FUNC) &savvy_PlRExpr_rolling_min_by__impl, 5},
     {"savvy_PlRExpr_rolling_quantile__impl", (DL_FUNC) &savvy_PlRExpr_rolling_quantile__impl, 7},
     {"savvy_PlRExpr_rolling_quantile_by__impl", (DL_FUNC) &savvy_PlRExpr_rolling_quantile_by__impl, 7},
+    {"savvy_PlRExpr_rolling_rank__impl", (DL_FUNC) &savvy_PlRExpr_rolling_rank__impl, 6},
+    {"savvy_PlRExpr_rolling_rank_by__impl", (DL_FUNC) &savvy_PlRExpr_rolling_rank_by__impl, 7},
     {"savvy_PlRExpr_rolling_skew__impl", (DL_FUNC) &savvy_PlRExpr_rolling_skew__impl, 5},
     {"savvy_PlRExpr_rolling_std__impl", (DL_FUNC) &savvy_PlRExpr_rolling_std__impl, 6},
     {"savvy_PlRExpr_rolling_std_by__impl", (DL_FUNC) &savvy_PlRExpr_rolling_std_by__impl, 6},

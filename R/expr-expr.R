@@ -2798,6 +2798,52 @@ expr__rolling_var <- function(
   })
 }
 
+
+#' Apply a rolling rank over values
+#'
+#' @inherit expr__rolling_max description params details
+#' @param method The method used to assign ranks to tied elements. Must be one
+#' of the following:
+#' - `"average"` (default): The average of the ranks that would have been
+#'   assigned to all the tied values is assigned to each value.
+#' - `"min"`: The minimum of the ranks that would have been assigned to all
+#'   the tied values is assigned to each value. (This is also referred to
+#'   as "competition" ranking.)
+#' - `"max"`: The maximum of the ranks that would have been assigned to all
+#'   the tied values is assigned to each value.
+#' - `"dense"`: Like `"min"`, but the rank of the next highest element is
+#'   assigned the rank immediately after those assigned to the tied
+#'   elements.
+#' - `"random"`: Choose a random rank for each value in a tie.
+#' @param seed Random seed used when `method = "random"`. If `NULL` (default), a
+#' random seed is generated for each rolling rank operation.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(a = c(1, 4, 4, 1, 9))
+#'
+#' df$select(pl$col("a")$rolling_rank(3, method = "average"))
+expr__rolling_rank <- function(
+  window_size,
+  method = c("average", "min", "max", "dense", "random"),
+  ...,
+  seed = NULL,
+  min_samples = NULL,
+  center = FALSE
+) {
+  wrap({
+    check_dots_empty0(...)
+    method <- arg_match0(method, values = c("average", "min", "max", "dense", "random"))
+    self$`_rexpr`$rolling_rank(
+      window_size = window_size,
+      method = method,
+      seed = seed,
+      min_samples = min_samples,
+      center = center
+    )
+  })
+}
+
 #' Create rolling groups based on a temporal or integer column
 #'
 #' @description
@@ -3317,6 +3363,63 @@ expr__rolling_var_by <- function(
       min_samples = min_samples,
       closed = closed,
       ddof = ddof
+    )
+  })
+}
+
+#' Apply a rolling rank based on another column
+#'
+#' @inherit expr__rolling_max_by description params details
+#' @inheritParams expr__rolling_rank
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df_temporal <- pl$select(
+#'   index = 0:24,
+#'   date = pl$datetime_range(
+#'     as.POSIXct("2001-01-01"),
+#'     as.POSIXct("2001-01-02"),
+#'     "1h"
+#'   )
+#' )
+#'
+#' # Compute the rolling rank with the temporal windows closed on the right
+#' # (default)
+#' df_temporal$with_columns(
+#'   rolling_row_rank = pl$col("index")$rolling_rank_by(
+#'     "date",
+#'     window_size = "2h"
+#'   )
+#' )
+#'
+#' # Compute the rolling rank with the closure of windows on both sides
+#' df_temporal$with_columns(
+#'   rolling_row_rank = pl$col("index")$rolling_rank_by(
+#'     "date",
+#'     window_size = "2h",
+#'     closed = "both"
+#'   )
+#' )
+expr__rolling_rank_by <- function(
+  by,
+  window_size,
+  method = c("average", "min", "max", "dense", "random"),
+  ...,
+  seed = NULL,
+  min_samples = 1,
+  closed = c("right", "both", "left", "none")
+) {
+  wrap({
+    check_dots_empty0(...)
+    method <- arg_match0(method, values = c("average", "min", "max", "dense", "random"))
+    closed <- arg_match0(closed, values = c("both", "left", "right", "none"))
+    self$`_rexpr`$rolling_rank_by(
+      by = as_polars_expr(by)$`_rexpr`,
+      window_size = window_size,
+      method = method,
+      seed = seed,
+      min_samples = min_samples,
+      closed = closed
     )
   })
 }

@@ -5,6 +5,7 @@
 ### New features
 
 - `<expr>$item()` to strictly extract a single value from an expression (#1652).
+- `<expr>$rolling_rank()` and `<expr>$rolling_rank_by()` (#1656).
 
 ## polars 1.6.0
 

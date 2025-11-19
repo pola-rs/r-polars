@@ -387,6 +387,8 @@ nav:
             - rolling_min: man/expr__rolling_min.md
             - rolling_quantile_by: man/expr__rolling_quantile_by.md
             - rolling_quantile: man/expr__rolling_quantile.md
+            - rolling_rank_by: man/expr__rolling_rank_by.md
+            - rolling_rank: man/expr__rolling_rank.md
             - rolling_skew: man/expr__rolling_skew.md
             - rolling_std_by: man/expr__rolling_std_by.md
             - rolling_std: man/expr__rolling_std.md
