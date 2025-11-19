@@ -2801,7 +2801,15 @@ expr__rolling_var <- function(
 
 #' Apply a rolling rank over values
 #'
-#' @inherit expr__rolling_max description params details
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
+#' A window of length `window_size` will traverse the array. The values that
+#' fill this window will be ranked according to the `method` parameter. The
+#' resulting values will be the rank of the value that is at the end of the
+#' sliding window.
+#'
+#' @inherit expr__rolling_max params details
 #' @param method The method used to assign ranks to tied elements. Must be one
 #' of the following:
 #' - `"average"` (default): The average of the ranks that would have been

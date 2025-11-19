@@ -50,11 +50,9 @@ A polars \link{expression}
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 A window of length \code{window_size} will traverse the array. The values that
-fill this window will (optionally) be multiplied with the weights given by
-the \code{weights} vector. The resulting values will be aggregated.
-
-The window at a given row will include the row itself, and the
-\code{window_size - 1} elements before it.
+fill this window will be ranked according to the \code{method} parameter. The
+resulting values will be the rank of the value that is at the end of the
+sliding window.
 }
 \details{
 If you want to compute multiple aggregation statistics over the same dynamic
