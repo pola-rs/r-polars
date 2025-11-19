@@ -322,6 +322,7 @@ SEXP savvy_PlRExpr_is_not_nan__ffi(SEXP self__);
 SEXP savvy_PlRExpr_is_not_null__ffi(SEXP self__);
 SEXP savvy_PlRExpr_is_null__ffi(SEXP self__);
 SEXP savvy_PlRExpr_is_unique__ffi(SEXP self__);
+SEXP savvy_PlRExpr_item__ffi(SEXP self__, SEXP c_arg__allow_empty);
 SEXP savvy_PlRExpr_kurtosis__ffi(SEXP self__, SEXP c_arg__fisher, SEXP c_arg__bias);
 SEXP savvy_PlRExpr_last__ffi(SEXP self__);
 SEXP savvy_PlRExpr_len__ffi(SEXP self__);

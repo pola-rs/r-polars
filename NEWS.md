@@ -4,8 +4,8 @@
 
 ### New features
 
-- `<expr>$arr$eval()` to run any Polars expressions inside all subarrays of an
-  Array column (#1653).
+- `<expr>$item()` to strictly extract a single value from an expression (#1652).
+- `<expr>$arr$eval()` to run any Polars expression on all subarrays of an Array column (#1653).
 
 ## polars 1.6.0
 

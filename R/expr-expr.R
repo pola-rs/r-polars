@@ -4787,3 +4787,38 @@ expr__is_close <- function(other, ..., abs_tol = 0, rel_tol = 1e-09, nans_equal 
     self$`_rexpr`$is_close(as_polars_expr(other)$`_rexpr`, abs_tol, rel_tol, nans_equal)
   })
 }
+
+#' Get the single value
+#'
+#' This raises an error if there is not exactly one value.
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @param allow_empty Allow having no values to return `null`.
+#'
+#' @seealso [$get()][expr__get] to get a single value by index.
+#' @inherit as_polars_expr return
+#' @examples
+#' # This function may be useful to force ourselves to handle cases where we
+#' # expect a single value but there are several. For example, we might expect
+#' # `$mode()` to return a single value...
+#' df <- pl$DataFrame(x = c("a", "a", "c"))
+#' df$select(
+#'   mode = pl$col("x")$mode()$item()
+#' )
+#'
+#' # ... but this is not always the case:
+#' df <- pl$DataFrame(x = c("a", "b", "c"))
+#' tryCatch(
+#'   {
+#'     df$select(
+#'       mode = pl$col("x")$mode()$item()
+#'     )
+#'   },
+#'   error = function(e) print(e)
+#' )
+expr__item <- function(..., allow_empty = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$item(allow_empty)
+  })
+}
