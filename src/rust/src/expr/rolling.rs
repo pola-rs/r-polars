@@ -435,10 +435,7 @@ impl PlRExpr {
             min_periods: min_samples,
             weights: None,
             center,
-            fn_params: Some(RollingFnParams::Rank {
-                method: method,
-                seed,
-            }),
+            fn_params: Some(RollingFnParams::Rank { method, seed }),
         };
 
         Ok(self.inner.clone().rolling_rank(options).into())
@@ -464,10 +461,7 @@ impl PlRExpr {
             window_size: Duration::parse(window_size),
             min_periods: min_samples,
             closed_window: closed,
-            fn_params: Some(RollingFnParams::Rank {
-                method: method,
-                seed,
-            }),
+            fn_params: Some(RollingFnParams::Rank { method, seed }),
         };
 
         Ok(self
