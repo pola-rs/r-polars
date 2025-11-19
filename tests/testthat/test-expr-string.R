@@ -1041,7 +1041,7 @@ test_that("$str$tail works", {
 
 test_that("$str$extract_many works", {
   df <- pl$DataFrame(values = c("discontent", "dollar $"))
-  patterns <- c("winter", "disco", "ONTE", "discontent", "$")
+  patterns <- list(c("winter", "disco", "ONTE", "discontent", "$"))
 
   expect_equal(
     df$select(
