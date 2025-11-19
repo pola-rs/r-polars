@@ -669,3 +669,41 @@
       Caused by error:
       ! Argument `rel_tol` must be be length 1 of non-missing value
 
+# item() works
+
+    Code
+      pl$DataFrame(x = 1:2)$select(pl$col("x")$item())
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! aggregation 'item' expected a single value, got 2 values
+
+---
+
+    Code
+      pl$DataFrame(x = integer(0))$select(pl$col("x")$item())
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! aggregation 'item' expected a single value, got none
+
+---
+
+    Code
+      pl$DataFrame(x = integer(0))$select(pl$col("x")$item(allow_empty = 1))
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$item()`.
+      Caused by error:
+      ! Argument `allow_empty` must be logical, not double
+

@@ -331,6 +331,7 @@ nav:
             - is_not_null: man/expr__is_not_null.md
             - is_null: man/expr__is_null.md
             - is_unique: man/expr__is_unique.md
+            - item: man/expr__item.md
             - kurtosis: man/expr__kurtosis.md
             - last: man/expr__last.md
             - le: man/expr__le.md

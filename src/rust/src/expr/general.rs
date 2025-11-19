@@ -1049,4 +1049,8 @@ impl PlRExpr {
             .is_close(other.inner.clone(), abs_tol, rel_tol, nans_equal)
             .into())
     }
+
+    fn item(&self, allow_empty: bool) -> Result<Self> {
+        Ok(self.inner.clone().item(allow_empty).into())
+    }
 }

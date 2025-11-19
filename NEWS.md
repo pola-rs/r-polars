@@ -2,6 +2,10 @@
 
 ## polars (development version)
 
+### New features
+
+- `<expr>$item()` to strictly extract a single value from an expression (#1652).
+
 ## polars 1.6.0
 
 This is an update that corresponds to Python Polars 1.35.2.
