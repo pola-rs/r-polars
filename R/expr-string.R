@@ -1115,8 +1115,10 @@ expr_str_reverse <- function() {
 #'
 #' This function determines if any of the patterns find a match.
 #' @inherit expr_str_contains params return
-#' @param patterns Character vector or something can be coerced to strings [Expr]
-#' of a valid regex pattern, compatible with the [regex crate](https://docs.rs/regex/latest/regex/).
+#' @param patterns String patterns to search. Accepts expression input. Strings
+#' are parsed as column names, and other non-expression inputs are parsed as
+#' literals. To use the same character vector for all rows, use
+#' `list(c(...))` instead of `c(...)` (see Examples).
 #' @param ascii_case_insensitive Enable ASCII-aware case insensitive matching.
 #' When this option is enabled, searching will be performed without respect to
 #' case for ASCII letters (a-z and A-Z) only.
@@ -1132,13 +1134,13 @@ expr_str_reverse <- function() {
 #' )
 #'
 #' df$with_columns(
-#'   contains_any = pl$col("lyrics")$str$contains_any(c("you", "me"))
+#'   contains_any = pl$col("lyrics")$str$contains_any(list(c("you", "me")))
 #' )
 expr_str_contains_any <- function(patterns, ..., ascii_case_insensitive = FALSE) {
   wrap({
     check_dots_empty0(...)
     self$`_rexpr`$str_contains_any(
-      as_polars_expr(patterns, as_lit = TRUE)$`_rexpr`,
+      as_polars_expr(patterns, as_lit = FALSE)$`_rexpr`,
       ascii_case_insensitive
     )
   })
@@ -1150,7 +1152,7 @@ expr_str_contains_any <- function(patterns, ..., ascii_case_insensitive = FALSE)
 #'
 #' @inherit as_polars_expr return
 #' @inheritParams rlang::args_dots_empty
-#' @param patterns String patterns to search. Can be an Expr.
+#' @inheritParams expr_str_contains_any
 #' @param replace_with A vector of strings used as replacements. If this is of
 #' length 1, then it is applied to all matches. Otherwise, it must be of same
 #' length as the `patterns` argument.
@@ -1168,20 +1170,20 @@ expr_str_contains_any <- function(patterns, ..., ascii_case_insensitive = FALSE)
 #'
 #' # a replacement of length 1 is applied to all matches
 #' df$with_columns(
-#'   remove_pronouns = pl$col("lyrics")$str$replace_many(c("you", "me"), "")
+#'   remove_pronouns = pl$col("lyrics")$str$replace_many(list(c("you", "me")), "")
 #' )
 #'
 #' # if there are more than one replacement, the patterns and replacements are
 #' # matched
 #' df$with_columns(
-#'   fake_pronouns = pl$col("lyrics")$str$replace_many(c("you", "me"), c("foo", "bar"))
+#'   fake_pronouns = pl$col("lyrics")$str$replace_many(list(c("you", "me")), c("foo", "bar"))
 #' )
 expr_str_replace_many <- function(patterns, replace_with, ..., ascii_case_insensitive = FALSE) {
   wrap({
     check_dots_empty0(...)
 
     self$`_rexpr`$str_replace_many(
-      as_polars_expr(patterns, as_lit = TRUE)$`_rexpr`,
+      as_polars_expr(patterns, as_lit = FALSE)$`_rexpr`,
       as_polars_expr(replace_with, as_lit = TRUE)$`_rexpr`,
       ascii_case_insensitive
     )
@@ -1266,7 +1268,7 @@ expr_str_find <- function(pattern, ..., literal = FALSE, strict = TRUE) {
 #'
 #' @examples
 #' df <- pl$DataFrame(values = "discontent")
-#' patterns <- pl$lit(list(c("winter", "disco", "onte", "discontent")))
+#' patterns <- list(c("winter", "disco", "onte", "discontent"))
 #'
 #' df$with_columns(
 #'   matches = pl$col("values")$str$find_many(patterns, overlapping = FALSE),
@@ -1374,8 +1376,6 @@ expr_str_tail <- function(n) {
 #' `r lifecycle::badge("experimental")`
 #' This method supports matching on string literals only,
 #' and does not support regular expression matching.
-#' @param patterns String patterns to search. This can be an Expr or something
-#' coercible to an Expr. Strings are parsed as column names.
 #' @inheritParams expr_str_contains_any
 #' @inheritParams rlang::args_dots_empty
 #' @param overlapping Whether matches can overlap.
@@ -1384,7 +1384,7 @@ expr_str_tail <- function(n) {
 #'
 #' @examples
 #' df <- pl$DataFrame(values = "discontent")
-#' patterns <- pl$lit(c("winter", "disco", "onte", "discontent"))
+#' patterns <- list(c("winter", "disco", "onte", "discontent"))
 #'
 #' df$with_columns(
 #'   matches = pl$col("values")$str$extract_many(patterns),

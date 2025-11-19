@@ -7,8 +7,10 @@
 expr_str_contains_any(patterns, ..., ascii_case_insensitive = FALSE)
 }
 \arguments{
-\item{patterns}{Character vector or something can be coerced to strings \link{Expr}
-of a valid regex pattern, compatible with the \href{https://docs.rs/regex/latest/regex/}{regex crate}.}
+\item{patterns}{String patterns to search. Accepts expression input. Strings
+are parsed as column names, and other non-expression inputs are parsed as
+literals. To use the same character vector for all rows, use
+\code{list(c(...))} instead of \code{c(...)} (see Examples).}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
@@ -32,7 +34,7 @@ df <- pl$DataFrame(
 )
 
 df$with_columns(
-  contains_any = pl$col("lyrics")$str$contains_any(c("you", "me"))
+  contains_any = pl$col("lyrics")$str$contains_any(list(c("you", "me")))
 )
 }
 \seealso{

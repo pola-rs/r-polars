@@ -828,14 +828,14 @@ test_that("str$reverse", {
 test_that("str$contains_any", {
   dat <- pl$DataFrame(x = c("HELLO there", "hi there", "good bye", NA))
   expect_equal(
-    dat$with_columns(pl$col("x")$str$contains_any(c("hi", "hello"))),
+    dat$with_columns(pl$col("x")$str$contains_any(list(c("hi", "hello")))),
     pl$DataFrame(x = c(FALSE, TRUE, FALSE, NA))
   )
 
   # case insensitive
   expect_equal(
     dat$with_columns(
-      pl$col("x")$str$contains_any(c("hi", "hello"), ascii_case_insensitive = TRUE)
+      pl$col("x")$str$contains_any(list(c("hi", "hello")), ascii_case_insensitive = TRUE)
     ),
     pl$DataFrame(x = c(TRUE, TRUE, FALSE, NA))
   )
@@ -846,7 +846,7 @@ test_that("str$replace_many", {
 
   expect_equal(
     dat$with_columns(
-      pl$col("x")$str$replace_many(c("hi", "hello"), "foo")
+      pl$col("x")$str$replace_many(list(c("hi", "hello")), list("foo"))
     ),
     pl$DataFrame(x = c("HELLO there", "foo there", "good bye", NA))
   )
@@ -854,7 +854,11 @@ test_that("str$replace_many", {
   # case insensitive
   expect_equal(
     dat$with_columns(
-      pl$col("x")$str$replace_many(c("hi", "hello"), "foo", ascii_case_insensitive = TRUE)
+      pl$col("x")$str$replace_many(
+        list(c("hi", "hello")),
+        list("foo"),
+        ascii_case_insensitive = TRUE
+      )
     ),
     pl$DataFrame(x = c("foo there", "foo there", "good bye", NA))
   )
@@ -862,7 +866,7 @@ test_that("str$replace_many", {
   # identical lengths of patterns and replacements
   expect_equal(
     dat$with_columns(
-      pl$col("x")$str$replace_many(c("hi", "hello"), c("foo", "bar"))
+      pl$col("x")$str$replace_many(list(c("hi", "hello")), list(c("foo", "bar")))
     ),
     pl$DataFrame(x = c("HELLO there", "foo there", "good bye", NA))
   )
@@ -870,14 +874,14 @@ test_that("str$replace_many", {
   # error if different lengths
   expect_snapshot(
     dat$with_columns(
-      pl$col("x")$str$replace_many(c("hi", "hello"), c("foo", "bar", "foo2"))
+      pl$col("x")$str$replace_many(list(c("hi", "hello")), list(c("foo", "bar", "foo2")))
     ),
     error = TRUE
   )
 
   expect_snapshot(
     dat$with_columns(
-      pl$col("x")$str$replace_many(c("hi", "hello", "good morning"), c("foo", "bar"))
+      pl$col("x")$str$replace_many(list(c("hi", "hello", "good morning")), list(c("foo", "bar")))
     ),
     error = TRUE
   )
@@ -1037,7 +1041,7 @@ test_that("$str$tail works", {
 
 test_that("$str$extract_many works", {
   df <- pl$DataFrame(values = c("discontent", "dollar $"))
-  patterns <- pl$lit(c("winter", "disco", "ONTE", "discontent", "$"))
+  patterns <- c("winter", "disco", "ONTE", "discontent", "$")
 
   expect_equal(
     df$select(
