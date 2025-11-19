@@ -253,4 +253,8 @@ impl PlRExpr {
             )
             .into())
     }
+
+    fn dt_days_in_month(&self) -> Result<Self> {
+        Ok(self.inner.clone().dt().days_in_month().into())
+    }
 }

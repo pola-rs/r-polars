@@ -5,6 +5,7 @@
 ### New features
 
 - `<expr>$item()` to strictly extract a single value from an expression (#1652).
+- `<expr>$dt$days_in_month()` (#1659).
 
 ## polars 1.6.0
 

@@ -244,6 +244,7 @@ SEXP savvy_PlRExpr_dt_combine__ffi(SEXP self__, SEXP c_arg__time, SEXP c_arg__ti
 SEXP savvy_PlRExpr_dt_convert_time_zone__ffi(SEXP self__, SEXP c_arg__time_zone);
 SEXP savvy_PlRExpr_dt_date__ffi(SEXP self__);
 SEXP savvy_PlRExpr_dt_day__ffi(SEXP self__);
+SEXP savvy_PlRExpr_dt_days_in_month__ffi(SEXP self__);
 SEXP savvy_PlRExpr_dt_dst_offset__ffi(SEXP self__);
 SEXP savvy_PlRExpr_dt_epoch_seconds__ffi(SEXP self__);
 SEXP savvy_PlRExpr_dt_hour__ffi(SEXP self__);
