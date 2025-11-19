@@ -1,11 +1,29 @@
 use super::try_extract_attribute;
 use crate::lazyframe::PlROptFlags;
-use savvy::Sexp;
+use savvy::{Sexp, savvy_err};
+
+fn assert_s7_class(obj: &Sexp, class_name: &str) -> Result<(), savvy::Error> {
+    try_extract_attribute(obj, "S7_class")
+        .and_then(|s7| try_extract_attribute(&s7, "name"))
+        .map_err(|_| savvy_err!("Not a valid S7 '{class_name}' object."))
+        .and_then(|name_sexp| {
+            let name: &str = name_sexp.try_into()?;
+            if name == class_name {
+                Ok(())
+            } else {
+                Err(savvy_err!(
+                    "Expected S7 class '{class_name}' object, got: '{name}'."
+                ))
+            }
+        })
+}
 
 impl TryFrom<Sexp> for PlROptFlags {
     type Error = savvy::Error;
 
     fn try_from(obj: Sexp) -> Result<Self, savvy::Error> {
+        assert_s7_class(&obj, "QueryOptFlags")?;
+
         let opts = PlROptFlags::empty();
 
         const ATTR_NAMES: &[&str] = &[
