@@ -436,8 +436,9 @@ expr_arr_len <- function() {
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams expr_list_eval
-#' @param as_list Collect the resulting data as a list. This allows for
-#' expressions which output a variable amount of data.
+#' @param as_list Collect the resulting data into a list datatype (instead of
+#' array datatype). This allows for expressions which output a variable amount
+#' of data.
 #'
 #' @inherit as_polars_expr return
 #' @examples

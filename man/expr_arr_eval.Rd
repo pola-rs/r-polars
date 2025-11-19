@@ -12,8 +12,9 @@ expr_arr_eval(expr, ..., as_list = FALSE)
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{as_list}{Collect the resulting data as a list. This allows for
-expressions which output a variable amount of data.}
+\item{as_list}{Collect the resulting data into a list datatype (instead of
+array datatype). This allows for expressions which output a variable amount
+of data.}
 }
 \value{
 A polars \link{expression}
