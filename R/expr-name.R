@@ -132,3 +132,30 @@ expr_name_suffix_fields <- function(suffix) {
   self$`_rexpr`$name_suffix_fields(suffix) |>
     wrap()
 }
+
+#' Replace matching regex/literal substring in the name with a new value
+#'
+#' @description
+#' This will undo any previous renaming operations on the expression.
+#'
+#' Due to implementation constraints, this method can only be called as the last
+#' expression in a chain. Only one name operation per expression will work.
+#'
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @inheritParams cs__matches
+#' @param value String that will replace the matched substring.
+#' @param literal Treat `pattern` as a literal string, not a regex.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(n_foo = 1, n_bar = 2)
+#' df$select(pl$all()$name$replace("^n_", "col_"))
+#'
+#' df$select(pl$all()$name$replace("(a|e|i|o|u)", "@"))$schema
+expr_name_replace <- function(pattern, value, ..., literal = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$name_replace(pattern, value, literal)
+  })
+}
