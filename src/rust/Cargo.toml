@@ -175,10 +175,10 @@ mimalloc = { version = "0.1", default-features = false }
 # tikv-jemallocator 0.6.1 cannot be built on some situations
 # https://github.com/tikv/jemallocator/issues/92
 # TODO: remove version pinning after the issue is resolved
-tikv-jemallocator = { version = "=0.6.0", features = [
+tikv-jemallocator = { version = "=0.6.1", features = [
     "disable_initial_exec_tls",
     "background_threads",
 ] }
 
 [target.'cfg(all(target_family = "unix", target_os = "macos", not(allocator = "mimalloc")))'.dependencies]
-tikv-jemallocator = { version = "=0.6.0", features = ["disable_initial_exec_tls"] }
+tikv-jemallocator = { version = "=0.6.1", features = ["disable_initial_exec_tls"] }
