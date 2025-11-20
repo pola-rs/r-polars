@@ -1649,6 +1649,12 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRExpr_dt_days_in_month` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_days_in_month__impl, `self`))
+  }
+}
+
 `PlRExpr_dt_dst_offset` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_dst_offset__impl, `self`))
@@ -3529,6 +3535,7 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   e$`dt_convert_time_zone` <- `PlRExpr_dt_convert_time_zone`(ptr)
   e$`dt_date` <- `PlRExpr_dt_date`(ptr)
   e$`dt_day` <- `PlRExpr_dt_day`(ptr)
+  e$`dt_days_in_month` <- `PlRExpr_dt_days_in_month`(ptr)
   e$`dt_dst_offset` <- `PlRExpr_dt_dst_offset`(ptr)
   e$`dt_epoch_seconds` <- `PlRExpr_dt_epoch_seconds`(ptr)
   e$`dt_hour` <- `PlRExpr_dt_hour`(ptr)
