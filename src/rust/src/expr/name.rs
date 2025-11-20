@@ -30,4 +30,13 @@ impl PlRExpr {
     fn name_suffix_fields(&self, suffix: &str) -> Result<Self> {
         Ok(self.inner.clone().name().suffix_fields(suffix).into())
     }
+
+    fn name_replace(&self, pattern: &str, value: &str, literal: bool) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .name()
+            .replace(pattern, value, literal)
+            .into())
+    }
 }

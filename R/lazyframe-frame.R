@@ -1370,7 +1370,7 @@ lazyframe__unique <- function(
 #' @param maintain_order Which frame row order to preserve, if any. Do not rely
 #' on any observed ordering without explicitly setting this parameter, as your
 #' code may break in a future release. Not specifying any ordering can improve
-#' performance. Supported for inner, left, right and full joins.
+#' performance.
 #'
 #' * `"none"`: No specific ordering is desired. The ordering might differ
 #'   across Polars versions or even between different runs.

@@ -69,3 +69,21 @@ test_that("suffix_fields() works", {
     "not supported for dtype `f64`"
   )
 })
+
+test_that("replace() works", {
+  df <- pl$DataFrame(n_foo = 1, n_bar = 2)
+  expect_equal(
+    df$select(pl$all()$name$replace("^n_", "col_")),
+    pl$DataFrame(col_foo = 1, col_bar = 2)
+  )
+  expect_equal(
+    df$select(pl$all()$name$replace("(a|e|i|o|u)", "@")),
+    pl$DataFrame(`n_f@@` = 1, `n_b@r` = 2)
+  )
+
+  df <- pl$DataFrame(`a|b` = 1)
+  expect_equal(
+    df$select(pl$all()$name$replace("a|", "a", literal = TRUE)),
+    pl$DataFrame(ab = 1)
+  )
+})
