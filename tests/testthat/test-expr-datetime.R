@@ -1012,3 +1012,11 @@ patrick::with_parameters_test_that(
     }
   }
 )
+
+test_that("dt$days_in_month", {
+  df <- pl$DataFrame(date = as.Date(c("2020-01-01", "2020-02-01", "2020-03-01")))
+  expect_equal(
+    df$select(pl$col("date")$dt$days_in_month()),
+    pl$DataFrame(date = c(31, 29, 31))$cast(pl$Int8)
+  )
+})

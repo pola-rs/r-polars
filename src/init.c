@@ -1199,6 +1199,11 @@ SEXP savvy_PlRExpr_dt_day__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_dt_days_in_month__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_dt_days_in_month__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_dt_dst_offset__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_dt_dst_offset__ffi(self__);
     return handle_result(res);
@@ -3644,6 +3649,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_dt_convert_time_zone__impl", (DL_FUNC) &savvy_PlRExpr_dt_convert_time_zone__impl, 2},
     {"savvy_PlRExpr_dt_date__impl", (DL_FUNC) &savvy_PlRExpr_dt_date__impl, 1},
     {"savvy_PlRExpr_dt_day__impl", (DL_FUNC) &savvy_PlRExpr_dt_day__impl, 1},
+    {"savvy_PlRExpr_dt_days_in_month__impl", (DL_FUNC) &savvy_PlRExpr_dt_days_in_month__impl, 1},
     {"savvy_PlRExpr_dt_dst_offset__impl", (DL_FUNC) &savvy_PlRExpr_dt_dst_offset__impl, 1},
     {"savvy_PlRExpr_dt_epoch_seconds__impl", (DL_FUNC) &savvy_PlRExpr_dt_epoch_seconds__impl, 1},
     {"savvy_PlRExpr_dt_hour__impl", (DL_FUNC) &savvy_PlRExpr_dt_hour__impl, 1},
