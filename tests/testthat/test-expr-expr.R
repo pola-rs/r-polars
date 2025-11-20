@@ -1576,7 +1576,8 @@ test_that("Expr_rolling_", {
     std = c(NA, rep(0.7071067811865476, 5)),
     var = c(NA, rep(0.5, 5)),
     median = c(NA, 1.5, 2.5, 3.5, 4.5, 5.5),
-    quantile_linear = c(NA, 1.33, 2.33, 3.33, 4.33, 5.33)
+    quantile_linear = c(NA, 1.33, 2.33, 3.33, 4.33, 5.33),
+    rank = c(NA, rep(2, 5))
   )
 
   expect_equal(
@@ -1592,7 +1593,8 @@ test_that("Expr_rolling_", {
         quantile = 0.33,
         window_size = 2,
         interpolation = "linear"
-      )
+      ),
+      rank = pl$col("a")$rolling_rank(window_size = 2)
     ),
     expected
   )
@@ -1633,7 +1635,8 @@ patrick::with_parameters_test_that(
       std = c(NA, rep(0.7071067811865476, 5)),
       var = c(NA, rep(0.5, 5)),
       median = c(1, 1.5, 2.5, 3.5, 4.5, 5.5),
-      quantile_linear = c(1, 1.33, 2.33, 3.33, 4.33, 5.33)
+      quantile_linear = c(1, 1.33, 2.33, 3.33, 4.33, 5.33),
+      rank = c(1, rep(2, 5))
     )
 
     expect_equal(
@@ -1650,7 +1653,8 @@ patrick::with_parameters_test_that(
           "date",
           window_size = "2d",
           interpolation = "linear"
-        )
+        ),
+        rank = pl$col("a")$rolling_rank_by("date", window_size = "2d")
       ),
       expected
     )
@@ -1674,7 +1678,8 @@ patrick::with_parameters_test_that(
       std = c(NA, rep(0.7071067811865476, 5)),
       var = c(NA, rep(0.5, 5)),
       median = c(1, 1.5, 2.5, 3.5, 4.5, 5.5),
-      quantile_linear = c(1, 1.33, 2.33, 3.33, 4.33, 5.33)
+      quantile_linear = c(1, 1.33, 2.33, 3.33, 4.33, 5.33),
+      rank = c(1, rep(2, 5))
     )
 
     expect_equal(
@@ -1691,7 +1696,8 @@ patrick::with_parameters_test_that(
           "id",
           window_size = "2i",
           interpolation = "linear"
-        )
+        ),
+        rank = pl$col("a")$rolling_rank_by("id", window_size = "2i")
       ),
       expected
     )
@@ -1721,7 +1727,8 @@ test_that("rolling_*_by: arg 'min_samples'", {
     std = c(NA, rep(0.7071067811865476, 5)),
     var = c(NA, rep(0.5, 5)),
     median = c(NA, 1.5, 2.5, 3.5, 4.5, 5.5),
-    quantile_linear = c(NA, 1.33, 2.33, 3.33, 4.33, 5.33)
+    quantile_linear = c(NA, 1.33, 2.33, 3.33, 4.33, 5.33),
+    rank = c(NA, rep(2, 5))
   )
 
   expect_equal(
@@ -1739,7 +1746,8 @@ test_that("rolling_*_by: arg 'min_samples'", {
         window_size = "2d",
         min_samples = 2,
         interpolation = "linear"
-      )
+      ),
+      rank = pl$col("a")$rolling_rank_by("date", window_size = "2d", min_samples = 2),
     ),
     expected
   )
@@ -1764,7 +1772,8 @@ test_that("rolling_*_by: arg 'closed'", {
     std = c(NA, NA, rep(0.7071067811865476, 4)),
     var = c(NA, NA, rep(0.5, 4)),
     median = c(NA, 1, 1.5, 2.5, 3.5, 4.5),
-    quantile_linear = c(NA, 1.00, 1.33, 2.33, 3.33, 4.33)
+    quantile_linear = c(NA, 1.00, 1.33, 2.33, 3.33, 4.33),
+    rank = c(NA, 1, rep(2, 4))
   )
 
   expect_equal(
@@ -1782,7 +1791,8 @@ test_that("rolling_*_by: arg 'closed'", {
         window_size = "2d",
         closed = "left",
         interpolation = "linear"
-      )
+      ),
+      rank = pl$col("a")$rolling_rank_by("date", window_size = "2d", closed = "left"),
     ),
     expected
   )

@@ -8,6 +8,7 @@
 - `<expr>$arr$eval()` to run any Polars expression on all subarrays of an Array column (#1653).
 - `<expr>$name$replace()` to replace expression names using regular expressions (#1654).
 - `<expr>$dt$days_in_month()` (#1659).
+- `<expr>$rolling_rank()` and `<expr>$rolling_rank_by()` (#1656).
 
 ## polars 1.6.0
 

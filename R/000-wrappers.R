@@ -2830,6 +2830,19 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRExpr_rolling_rank` <- function(self) {
+  function(`window_size`, `method`, `center`, `seed` = NULL, `min_samples` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_rank__impl, `self`, `window_size`, `method`, `center`, `seed`, `min_samples`))
+  }
+}
+
+`PlRExpr_rolling_rank_by` <- function(self) {
+  function(`by`, `window_size`, `method`, `min_samples`, `closed`, `seed` = NULL) {
+    `by` <- .savvy_extract_ptr(`by`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_rank_by__impl, `self`, `by`, `window_size`, `method`, `min_samples`, `closed`, `seed`))
+  }
+}
+
 `PlRExpr_rolling_skew` <- function(self) {
   function(`window_size`, `bias`, `center`, `min_samples` = NULL) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_skew__impl, `self`, `window_size`, `bias`, `center`, `min_samples`))
@@ -3720,6 +3733,8 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   e$`rolling_min_by` <- `PlRExpr_rolling_min_by`(ptr)
   e$`rolling_quantile` <- `PlRExpr_rolling_quantile`(ptr)
   e$`rolling_quantile_by` <- `PlRExpr_rolling_quantile_by`(ptr)
+  e$`rolling_rank` <- `PlRExpr_rolling_rank`(ptr)
+  e$`rolling_rank_by` <- `PlRExpr_rolling_rank_by`(ptr)
   e$`rolling_skew` <- `PlRExpr_rolling_skew`(ptr)
   e$`rolling_std` <- `PlRExpr_rolling_std`(ptr)
   e$`rolling_std_by` <- `PlRExpr_rolling_std_by`(ptr)
