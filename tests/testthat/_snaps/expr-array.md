@@ -179,3 +179,27 @@
       │ 2       ┆ 2       │
       └─────────┴─────────┘
 
+# arr$eval()
+
+    Code
+      df$select(pl$col("a")$arr$eval(pl$element()$unique()))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: `array.eval` is not allowed with non-length preserving expressions. Enable `as_list` if you want to output a variable amount of items per row.
+
+---
+
+    Code
+      df$select(pl$col("a")$arr$eval(pl$element()$unique()))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: `array.eval` is not allowed with non-length preserving expressions. Enable `as_list` if you want to output a variable amount of items per row.
+

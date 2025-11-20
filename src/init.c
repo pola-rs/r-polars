@@ -849,6 +849,11 @@ SEXP savvy_PlRExpr_arr_count_matches__impl(SEXP self__, SEXP c_arg__expr) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_arr_eval__impl(SEXP self__, SEXP c_arg__expr, SEXP c_arg__as_list) {
+    SEXP res = savvy_PlRExpr_arr_eval__ffi(self__, c_arg__expr, c_arg__as_list);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_arr_get__impl(SEXP self__, SEXP c_arg__index, SEXP c_arg__null_on_oob) {
     SEXP res = savvy_PlRExpr_arr_get__ffi(self__, c_arg__index, c_arg__null_on_oob);
     return handle_result(res);
@@ -1576,6 +1581,11 @@ SEXP savvy_PlRExpr_is_null__impl(SEXP self__) {
 
 SEXP savvy_PlRExpr_is_unique__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_is_unique__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_item__impl(SEXP self__, SEXP c_arg__allow_empty) {
+    SEXP res = savvy_PlRExpr_item__ffi(self__, c_arg__allow_empty);
     return handle_result(res);
 }
 
@@ -3554,6 +3564,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_arr_arg_min__impl", (DL_FUNC) &savvy_PlRExpr_arr_arg_min__impl, 1},
     {"savvy_PlRExpr_arr_contains__impl", (DL_FUNC) &savvy_PlRExpr_arr_contains__impl, 3},
     {"savvy_PlRExpr_arr_count_matches__impl", (DL_FUNC) &savvy_PlRExpr_arr_count_matches__impl, 2},
+    {"savvy_PlRExpr_arr_eval__impl", (DL_FUNC) &savvy_PlRExpr_arr_eval__impl, 3},
     {"savvy_PlRExpr_arr_get__impl", (DL_FUNC) &savvy_PlRExpr_arr_get__impl, 3},
     {"savvy_PlRExpr_arr_join__impl", (DL_FUNC) &savvy_PlRExpr_arr_join__impl, 3},
     {"savvy_PlRExpr_arr_len__impl", (DL_FUNC) &savvy_PlRExpr_arr_len__impl, 1},
@@ -3700,6 +3711,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_is_not_null__impl", (DL_FUNC) &savvy_PlRExpr_is_not_null__impl, 1},
     {"savvy_PlRExpr_is_null__impl", (DL_FUNC) &savvy_PlRExpr_is_null__impl, 1},
     {"savvy_PlRExpr_is_unique__impl", (DL_FUNC) &savvy_PlRExpr_is_unique__impl, 1},
+    {"savvy_PlRExpr_item__impl", (DL_FUNC) &savvy_PlRExpr_item__impl, 2},
     {"savvy_PlRExpr_kurtosis__impl", (DL_FUNC) &savvy_PlRExpr_kurtosis__impl, 3},
     {"savvy_PlRExpr_last__impl", (DL_FUNC) &savvy_PlRExpr_last__impl, 1},
     {"savvy_PlRExpr_len__impl", (DL_FUNC) &savvy_PlRExpr_len__impl, 1},

@@ -331,6 +331,7 @@ nav:
             - is_not_null: man/expr__is_not_null.md
             - is_null: man/expr__is_null.md
             - is_unique: man/expr__is_unique.md
+            - item: man/expr__item.md
             - kurtosis: man/expr__kurtosis.md
             - last: man/expr__last.md
             - le: man/expr__le.md
@@ -432,6 +433,7 @@ nav:
             - arr_arg_min: man/expr_arr_arg_min.md
             - arr_contains: man/expr_arr_contains.md
             - arr_count_matches: man/expr_arr_count_matches.md
+            - arr_eval: man/expr_arr_eval.md
             - arr_explode: man/expr_arr_explode.md
             - arr_first: man/expr_arr_first.md
             - arr_get: man/expr_arr_get.md
