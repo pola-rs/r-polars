@@ -432,6 +432,36 @@ expr_arr_len <- function() {
     wrap()
 }
 
+#' Run any polars expression on the sub-array's values
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @inheritParams expr_list_eval
+#' @param as_list Collect the resulting data into a list datatype (instead of
+#' array datatype). This allows for expressions which output a variable amount
+#' of data.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(
+#'   a = list(c(1, 1), c(8, 5), c(3, 2))
+#' )$cast(pl$Array(pl$Float64, 2))
+#'
+#' df$with_columns(
+#'   cum_sum = pl$col("a")$arr$eval(pl$element()$cum_sum())
+#' )
+#'
+#' # This would error without `as_list = TRUE` since `$unique()` doesn't return
+#' # the same number of values in each row.
+#' df$with_columns(
+#'   cum_sum = pl$col("a")$arr$eval(pl$element()$unique(), as_list = TRUE)
+#' )
+expr_arr_eval <- function(expr, ..., as_list = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$arr_eval(as_polars_expr(expr)$`_rexpr`, as_list)
+  })
+}
+
 #' Run any polars aggregation expression against the array's elements
 #'
 #' This looks similar to [`$cat$eval()`][expr_cat_eval], but the key

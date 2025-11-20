@@ -3003,3 +3003,28 @@ test_that("is_close works", {
     error = TRUE
   )
 })
+
+test_that("item() works", {
+  expect_identical(
+    pl$DataFrame(x = 1)$select(pl$col("x")$item()),
+    pl$DataFrame(x = 1)
+  )
+  expect_snapshot(
+    pl$DataFrame(x = 1:2)$select(pl$col("x")$item()),
+    error = TRUE
+  )
+
+  # argument allow_empty
+  expect_identical(
+    pl$DataFrame(x = integer(0))$select(pl$col("x")$item(allow_empty = TRUE)),
+    pl$DataFrame(x = NA_integer_)
+  )
+  expect_snapshot(
+    pl$DataFrame(x = integer(0))$select(pl$col("x")$item()),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$DataFrame(x = integer(0))$select(pl$col("x")$item(allow_empty = 1)),
+    error = TRUE
+  )
+})

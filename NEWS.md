@@ -4,6 +4,9 @@
 
 ### New features
 
+- `<expr>$item()` to strictly extract a single value from an expression (#1652).
+- `<expr>$arr$eval()` to run any Polars expression on all subarrays of an Array column (#1653).
+- `<expr>$name$replace()` to replace expression names using regular expressions (#1654).
 - `<expr>$arr$agg()` and `<expr>$list$agg()`, similar to their `$eval()` counterparts
   but automatically explode the column if all elements return a scalar (#1655).
 

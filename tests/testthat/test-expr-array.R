@@ -394,6 +394,35 @@ patrick::with_parameters_test_that(
   }
 )
 
+test_that("arr$eval()", {
+  df <- pl$DataFrame(
+    a = list(c(1, 1), c(8, 5), c(3, 2))
+  )$cast(pl$Array(pl$Float64, 2))
+
+  expect_identical(
+    df$select(pl$col("a")$arr$eval(pl$element()$cum_sum())),
+    pl$DataFrame(a = list(c(1, 2), c(8, 13), c(3, 5)))$cast(pl$Array(pl$Float64, 2))
+  )
+  expect_snapshot(
+    df$select(pl$col("a")$arr$eval(pl$element()$unique())),
+    error = TRUE
+  )
+  expect_identical(
+    df$select(pl$col("a")$arr$eval(pl$element()$unique(), as_list = TRUE)),
+    pl$DataFrame(a = list(c(1), c(8, 5), c(3, 2)))
+  )
+
+  # Also errors if all sub-arrays return the same number of values but this is
+  # not the initial number of values in the sub-arrays.
+  df <- pl$DataFrame(
+    a = list(c(1, 1), c(8, 8), c(3, 3))
+  )$cast(pl$Array(pl$Float64, 2))
+  expect_snapshot(
+    df$select(pl$col("a")$arr$eval(pl$element()$unique())),
+    error = TRUE
+  )
+})
+
 test_that("arr$agg() works", {
   df <- pl$DataFrame(a = list(c(1, NA), c(42, 13), c(NA, NA)))$cast(pl$Array(pl$Int64, 2))
 
