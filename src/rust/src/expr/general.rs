@@ -696,8 +696,15 @@ impl PlRExpr {
             .into())
     }
 
-    fn explode(&self) -> Result<Self> {
-        Ok(self.inner.clone().explode().into())
+    fn explode(&self, empty_as_null: bool, keep_nulls: bool) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .explode(ExplodeOptions {
+                empty_as_null,
+                keep_nulls,
+            })
+            .into())
     }
 
     fn gather(&self, idx: &PlRExpr) -> Result<Self> {
