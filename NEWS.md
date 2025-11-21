@@ -6,12 +6,6 @@
 
 - `<expr>$item()` to strictly extract a single value from an expression (#1652).
 
-### Other changes
-
-- In `<expr>$str$contains_any()` and `<expr>$str$replace_many()`, strings that
-  are passed to the `patterns` argument are now parsed as column names (as in
-  `<expr>$str$extract_many()`) (#1660).
-
 ## polars 1.6.0
 
 This is an update that corresponds to Python Polars 1.35.2.

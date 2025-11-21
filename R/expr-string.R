@@ -1115,9 +1115,8 @@ expr_str_reverse <- function() {
 #'
 #' This function determines if any of the patterns find a match.
 #' @inherit expr_str_contains params return
-#' @param patterns String patterns to search. Accepts expression input. Strings
-#' are parsed as column names, and other non-expression inputs are parsed as
-#' literals. To use the same character vector for all rows, use
+#' @param patterns String patterns to search. Accepts expression input. To use
+#' the same character vector for all rows, use
 #' `list(c(...))` instead of `c(...)` (see Examples).
 #' @param ascii_case_insensitive Enable ASCII-aware case insensitive matching.
 #' When this option is enabled, searching will be performed without respect to
@@ -1140,7 +1139,8 @@ expr_str_contains_any <- function(patterns, ..., ascii_case_insensitive = FALSE)
   wrap({
     check_dots_empty0(...)
     self$`_rexpr`$str_contains_any(
-      as_polars_expr(patterns, as_lit = FALSE)$`_rexpr`,
+      # TODO: set this to FALSE in 2.0.0
+      as_polars_expr(patterns, as_lit = TRUE)$`_rexpr`,
       ascii_case_insensitive
     )
   })
@@ -1183,7 +1183,8 @@ expr_str_replace_many <- function(patterns, replace_with, ..., ascii_case_insens
     check_dots_empty0(...)
 
     self$`_rexpr`$str_replace_many(
-      as_polars_expr(patterns, as_lit = FALSE)$`_rexpr`,
+      # TODO: set this to FALSE in 2.0.0 (just for arg `patterns`)
+      as_polars_expr(patterns, as_lit = TRUE)$`_rexpr`,
       as_polars_expr(replace_with, as_lit = TRUE)$`_rexpr`,
       ascii_case_insensitive
     )
@@ -1374,8 +1375,13 @@ expr_str_tail <- function(n) {
 #' Use the Aho-Corasick algorithm to extract matches
 #'
 #' `r lifecycle::badge("experimental")`
-#' This method supports matching on string literals only,
-#' and does not support regular expression matching.
+#' This method supports matching on string literals only, and does not support
+#' regular expression matching.
+#'
+#' @param patterns String patterns to search. Accepts expression input. Strings
+#' are parsed as column names, and other non-expression inputs are parsed as
+#' literals. To use the same character vector for all rows, use
+#' `list(c(...))` instead of `c(...)` (see Examples).
 #' @inheritParams expr_str_contains_any
 #' @inheritParams rlang::args_dots_empty
 #' @param overlapping Whether matches can overlap.

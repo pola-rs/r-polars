@@ -7,9 +7,8 @@
 expr_str_contains_any(patterns, ..., ascii_case_insensitive = FALSE)
 }
 \arguments{
-\item{patterns}{String patterns to search. Accepts expression input. Strings
-are parsed as column names, and other non-expression inputs are parsed as
-literals. To use the same character vector for all rows, use
+\item{patterns}{String patterns to search. Accepts expression input. To use
+the same character vector for all rows, use
 \code{list(c(...))} instead of \code{c(...)} (see Examples).}
 
 \item{...}{These dots are for future extensions and must be empty.}

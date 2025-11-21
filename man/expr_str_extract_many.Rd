@@ -30,8 +30,8 @@ A polars \link{expression}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-This method supports matching on string literals only,
-and does not support regular expression matching.
+This method supports matching on string literals only, and does not support
+regular expression matching.
 }
 \examples{
 df <- pl$DataFrame(values = "discontent")
