@@ -14,10 +14,10 @@ expr_arr_agg(expr)
 A polars \link{expression}
 }
 \description{
-This looks similar to \code{\link[=expr_cat_eval]{$cat$eval()}}, but the key
-difference is that \verb{$cat$agg()} automatically explodes the cat if the
-expression inside returns a scalar (while \verb{$cat$eval()} always returns a
-cat).
+This looks similar to \code{\link[=expr_arr_eval]{$arr$eval()}}, but the key
+difference is that \verb{$arr$agg()} automatically explodes the array if the
+expression inside returns a scalar (while \verb{$arr$eval()} always returns an
+array).
 }
 \examples{
 df <- pl$DataFrame(a = list(c(1, NA), c(42, 13), c(NA, NA)))$

@@ -464,10 +464,10 @@ expr_arr_eval <- function(expr, ..., as_list = FALSE) {
 
 #' Run any polars aggregation expression against the array's elements
 #'
-#' This looks similar to [`$cat$eval()`][expr_cat_eval], but the key
-#' difference is that `$cat$agg()` automatically explodes the cat if the
-#' expression inside returns a scalar (while `$cat$eval()` always returns a
-#' cat).
+#' This looks similar to [`$arr$eval()`][expr_arr_eval], but the key
+#' difference is that `$arr$agg()` automatically explodes the array if the
+#' expression inside returns a scalar (while `$arr$eval()` always returns an
+#' array).
 #'
 #' @inheritParams expr_list_eval
 #'
