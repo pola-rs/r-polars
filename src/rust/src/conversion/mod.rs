@@ -1073,3 +1073,19 @@ impl TryFrom<StringSexp> for Wrap<ScanSources> {
         Ok(Wrap(ScanSources::Paths(plpaths.into())))
     }
 }
+
+impl TryFrom<&str> for Wrap<RollingRankMethod> {
+    type Error = savvy::Error;
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        let compat_level = match value {
+            "min" => RollingRankMethod::Min,
+            "max" => RollingRankMethod::Max,
+            "average" => RollingRankMethod::Average,
+            "dense" => RollingRankMethod::Dense,
+            "random" => RollingRankMethod::Random,
+            _ => return Err("unreachable".to_string().into()),
+        };
+        Ok(Wrap(compat_level))
+    }
+}

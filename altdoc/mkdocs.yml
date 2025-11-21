@@ -387,6 +387,8 @@ nav:
             - rolling_min: man/expr__rolling_min.md
             - rolling_quantile_by: man/expr__rolling_quantile_by.md
             - rolling_quantile: man/expr__rolling_quantile.md
+            - rolling_rank_by: man/expr__rolling_rank_by.md
+            - rolling_rank: man/expr__rolling_rank.md
             - rolling_skew: man/expr__rolling_skew.md
             - rolling_std_by: man/expr__rolling_std_by.md
             - rolling_std: man/expr__rolling_std.md
@@ -635,6 +637,7 @@ nav:
             - dt_convert_time_zone: man/expr_dt_convert_time_zone.md
             - dt_date: man/expr_dt_date.md
             - dt_day: man/expr_dt_day.md
+            - dt_days_in_month: man/expr_dt_days_in_month.md
             - dt_dst_offset: man/expr_dt_dst_offset.md
             - dt_epoch: man/expr_dt_epoch.md
             - dt_hour: man/expr_dt_hour.md

@@ -1656,6 +1656,12 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRExpr_dt_days_in_month` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_days_in_month__impl, `self`))
+  }
+}
+
 `PlRExpr_dt_dst_offset` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_dst_offset__impl, `self`))
@@ -2838,6 +2844,19 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRExpr_rolling_rank` <- function(self) {
+  function(`window_size`, `method`, `center`, `seed` = NULL, `min_samples` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_rank__impl, `self`, `window_size`, `method`, `center`, `seed`, `min_samples`))
+  }
+}
+
+`PlRExpr_rolling_rank_by` <- function(self) {
+  function(`by`, `window_size`, `method`, `min_samples`, `closed`, `seed` = NULL) {
+    `by` <- .savvy_extract_ptr(`by`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_rank_by__impl, `self`, `by`, `window_size`, `method`, `min_samples`, `closed`, `seed`))
+  }
+}
+
 `PlRExpr_rolling_skew` <- function(self) {
   function(`window_size`, `bias`, `center`, `min_samples` = NULL) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_skew__impl, `self`, `window_size`, `bias`, `center`, `min_samples`))
@@ -3544,6 +3563,7 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   e$`dt_convert_time_zone` <- `PlRExpr_dt_convert_time_zone`(ptr)
   e$`dt_date` <- `PlRExpr_dt_date`(ptr)
   e$`dt_day` <- `PlRExpr_dt_day`(ptr)
+  e$`dt_days_in_month` <- `PlRExpr_dt_days_in_month`(ptr)
   e$`dt_dst_offset` <- `PlRExpr_dt_dst_offset`(ptr)
   e$`dt_epoch_seconds` <- `PlRExpr_dt_epoch_seconds`(ptr)
   e$`dt_hour` <- `PlRExpr_dt_hour`(ptr)
@@ -3729,6 +3749,8 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   e$`rolling_min_by` <- `PlRExpr_rolling_min_by`(ptr)
   e$`rolling_quantile` <- `PlRExpr_rolling_quantile`(ptr)
   e$`rolling_quantile_by` <- `PlRExpr_rolling_quantile_by`(ptr)
+  e$`rolling_rank` <- `PlRExpr_rolling_rank`(ptr)
+  e$`rolling_rank_by` <- `PlRExpr_rolling_rank_by`(ptr)
   e$`rolling_skew` <- `PlRExpr_rolling_skew`(ptr)
   e$`rolling_std` <- `PlRExpr_rolling_std`(ptr)
   e$`rolling_std_by` <- `PlRExpr_rolling_std_by`(ptr)

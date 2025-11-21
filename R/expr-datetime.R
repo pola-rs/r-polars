@@ -1240,3 +1240,17 @@ expr_dt_replace <- function(
     )
   })
 }
+
+#' Extract the number of days in the month from the underlying Date representation.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(date = as.Date(c("2020-01-01", "2020-02-01", "2020-03-01")))
+#'
+#' df$with_columns(
+#'   days_in_month = pl$col("date")$dt$days_in_month()
+#' )
+expr_dt_days_in_month <- function() {
+  self$`_rexpr`$dt_days_in_month() |>
+    wrap()
+}
