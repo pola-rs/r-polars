@@ -607,8 +607,18 @@ impl PlRLazyFrame {
         Ok(out.into())
     }
 
-    fn explode(&self, subset: &PlRSelector) -> Result<Self> {
-        Ok(self.ldf.clone().explode(subset.inner.clone()).into())
+    fn explode(&self, subset: &PlRSelector, empty_as_null: bool, keep_nulls: bool) -> Result<Self> {
+        Ok(self
+            .ldf
+            .clone()
+            .explode(
+                subset.inner.clone(),
+                ExplodeOptions {
+                    empty_as_null,
+                    keep_nulls,
+                },
+            )
+            .into())
     }
 
     fn null_count(&self) -> Result<Self> {
