@@ -1419,8 +1419,8 @@ SEXP savvy_PlRExpr_exp__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_explode__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_explode__ffi(self__);
+SEXP savvy_PlRExpr_explode__impl(SEXP self__, SEXP c_arg__empty_as_null, SEXP c_arg__keep_nulls) {
+    SEXP res = savvy_PlRExpr_explode__ffi(self__, c_arg__empty_as_null, c_arg__keep_nulls);
     return handle_result(res);
 }
 
@@ -1869,8 +1869,8 @@ SEXP savvy_PlRExpr_min__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_mode__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_mode__ffi(self__);
+SEXP savvy_PlRExpr_mode__impl(SEXP self__, SEXP c_arg__maintain_order) {
+    SEXP res = savvy_PlRExpr_mode__ffi(self__, c_arg__maintain_order);
     return handle_result(res);
 }
 
@@ -2684,8 +2684,8 @@ SEXP savvy_PlRLazyFrame_drop_nulls__impl(SEXP self__, SEXP c_arg__subset) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_explode__impl(SEXP self__, SEXP c_arg__subset) {
-    SEXP res = savvy_PlRLazyFrame_explode__ffi(self__, c_arg__subset);
+SEXP savvy_PlRLazyFrame_explode__impl(SEXP self__, SEXP c_arg__subset, SEXP c_arg__empty_as_null, SEXP c_arg__keep_nulls) {
+    SEXP res = savvy_PlRLazyFrame_explode__ffi(self__, c_arg__subset, c_arg__empty_as_null, c_arg__keep_nulls);
     return handle_result(res);
 }
 
@@ -3693,7 +3693,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_ewm_std__impl", (DL_FUNC) &savvy_PlRExpr_ewm_std__impl, 6},
     {"savvy_PlRExpr_ewm_var__impl", (DL_FUNC) &savvy_PlRExpr_ewm_var__impl, 6},
     {"savvy_PlRExpr_exp__impl", (DL_FUNC) &savvy_PlRExpr_exp__impl, 1},
-    {"savvy_PlRExpr_explode__impl", (DL_FUNC) &savvy_PlRExpr_explode__impl, 1},
+    {"savvy_PlRExpr_explode__impl", (DL_FUNC) &savvy_PlRExpr_explode__impl, 3},
     {"savvy_PlRExpr_extend_constant__impl", (DL_FUNC) &savvy_PlRExpr_extend_constant__impl, 3},
     {"savvy_PlRExpr_fill_nan__impl", (DL_FUNC) &savvy_PlRExpr_fill_nan__impl, 2},
     {"savvy_PlRExpr_fill_null__impl", (DL_FUNC) &savvy_PlRExpr_fill_null__impl, 2},
@@ -3783,7 +3783,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_meta_root_names__impl", (DL_FUNC) &savvy_PlRExpr_meta_root_names__impl, 1},
     {"savvy_PlRExpr_meta_undo_aliases__impl", (DL_FUNC) &savvy_PlRExpr_meta_undo_aliases__impl, 1},
     {"savvy_PlRExpr_min__impl", (DL_FUNC) &savvy_PlRExpr_min__impl, 1},
-    {"savvy_PlRExpr_mode__impl", (DL_FUNC) &savvy_PlRExpr_mode__impl, 1},
+    {"savvy_PlRExpr_mode__impl", (DL_FUNC) &savvy_PlRExpr_mode__impl, 2},
     {"savvy_PlRExpr_mul__impl", (DL_FUNC) &savvy_PlRExpr_mul__impl, 2},
     {"savvy_PlRExpr_n_unique__impl", (DL_FUNC) &savvy_PlRExpr_n_unique__impl, 1},
     {"savvy_PlRExpr_name_keep__impl", (DL_FUNC) &savvy_PlRExpr_name_keep__impl, 1},
@@ -3946,7 +3946,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_drop__impl", (DL_FUNC) &savvy_PlRLazyFrame_drop__impl, 2},
     {"savvy_PlRLazyFrame_drop_nans__impl", (DL_FUNC) &savvy_PlRLazyFrame_drop_nans__impl, 2},
     {"savvy_PlRLazyFrame_drop_nulls__impl", (DL_FUNC) &savvy_PlRLazyFrame_drop_nulls__impl, 2},
-    {"savvy_PlRLazyFrame_explode__impl", (DL_FUNC) &savvy_PlRLazyFrame_explode__impl, 2},
+    {"savvy_PlRLazyFrame_explode__impl", (DL_FUNC) &savvy_PlRLazyFrame_explode__impl, 4},
     {"savvy_PlRLazyFrame_fill_nan__impl", (DL_FUNC) &savvy_PlRLazyFrame_fill_nan__impl, 2},
     {"savvy_PlRLazyFrame_filter__impl", (DL_FUNC) &savvy_PlRLazyFrame_filter__impl, 2},
     {"savvy_PlRLazyFrame_group_by__impl", (DL_FUNC) &savvy_PlRLazyFrame_group_by__impl, 3},
