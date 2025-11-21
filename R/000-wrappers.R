@@ -1223,6 +1223,13 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRExpr_arr_eval` <- function(self) {
+  function(`expr`, `as_list`) {
+    `expr` <- .savvy_extract_ptr(`expr`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arr_eval__impl, `self`, `expr`, `as_list`))
+  }
+}
+
 `PlRExpr_arr_get` <- function(self) {
   function(`index`, `null_on_oob`) {
     `index` <- .savvy_extract_ptr(`index`, "PlRExpr")
@@ -1639,6 +1646,12 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
 `PlRExpr_dt_day` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_day__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_days_in_month` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_days_in_month__impl, `self`))
   }
 }
 
@@ -2528,6 +2541,12 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRExpr_name_replace` <- function(self) {
+  function(`pattern`, `value`, `literal`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_name_replace__impl, `self`, `pattern`, `value`, `literal`))
+  }
+}
+
 `PlRExpr_name_suffix` <- function(self) {
   function(`suffix`) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_name_suffix__impl, `self`, `suffix`))
@@ -2808,6 +2827,19 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   function(`by`, `quantile`, `interpolation`, `window_size`, `min_samples`, `closed`) {
     `by` <- .savvy_extract_ptr(`by`, "PlRExpr")
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_quantile_by__impl, `self`, `by`, `quantile`, `interpolation`, `window_size`, `min_samples`, `closed`))
+  }
+}
+
+`PlRExpr_rolling_rank` <- function(self) {
+  function(`window_size`, `method`, `center`, `seed` = NULL, `min_samples` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_rank__impl, `self`, `window_size`, `method`, `center`, `seed`, `min_samples`))
+  }
+}
+
+`PlRExpr_rolling_rank_by` <- function(self) {
+  function(`by`, `window_size`, `method`, `min_samples`, `closed`, `seed` = NULL) {
+    `by` <- .savvy_extract_ptr(`by`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_rank_by__impl, `self`, `by`, `window_size`, `method`, `min_samples`, `closed`, `seed`))
   }
 }
 
@@ -3448,6 +3480,7 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   e$`arr_arg_min` <- `PlRExpr_arr_arg_min`(ptr)
   e$`arr_contains` <- `PlRExpr_arr_contains`(ptr)
   e$`arr_count_matches` <- `PlRExpr_arr_count_matches`(ptr)
+  e$`arr_eval` <- `PlRExpr_arr_eval`(ptr)
   e$`arr_get` <- `PlRExpr_arr_get`(ptr)
   e$`arr_join` <- `PlRExpr_arr_join`(ptr)
   e$`arr_len` <- `PlRExpr_arr_len`(ptr)
@@ -3515,6 +3548,7 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   e$`dt_convert_time_zone` <- `PlRExpr_dt_convert_time_zone`(ptr)
   e$`dt_date` <- `PlRExpr_dt_date`(ptr)
   e$`dt_day` <- `PlRExpr_dt_day`(ptr)
+  e$`dt_days_in_month` <- `PlRExpr_dt_days_in_month`(ptr)
   e$`dt_dst_offset` <- `PlRExpr_dt_dst_offset`(ptr)
   e$`dt_epoch_seconds` <- `PlRExpr_dt_epoch_seconds`(ptr)
   e$`dt_hour` <- `PlRExpr_dt_hour`(ptr)
@@ -3654,6 +3688,7 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   e$`name_keep` <- `PlRExpr_name_keep`(ptr)
   e$`name_prefix` <- `PlRExpr_name_prefix`(ptr)
   e$`name_prefix_fields` <- `PlRExpr_name_prefix_fields`(ptr)
+  e$`name_replace` <- `PlRExpr_name_replace`(ptr)
   e$`name_suffix` <- `PlRExpr_name_suffix`(ptr)
   e$`name_suffix_fields` <- `PlRExpr_name_suffix_fields`(ptr)
   e$`name_to_lowercase` <- `PlRExpr_name_to_lowercase`(ptr)
@@ -3698,6 +3733,8 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   e$`rolling_min_by` <- `PlRExpr_rolling_min_by`(ptr)
   e$`rolling_quantile` <- `PlRExpr_rolling_quantile`(ptr)
   e$`rolling_quantile_by` <- `PlRExpr_rolling_quantile_by`(ptr)
+  e$`rolling_rank` <- `PlRExpr_rolling_rank`(ptr)
+  e$`rolling_rank_by` <- `PlRExpr_rolling_rank_by`(ptr)
   e$`rolling_skew` <- `PlRExpr_rolling_skew`(ptr)
   e$`rolling_std` <- `PlRExpr_rolling_std`(ptr)
   e$`rolling_std_by` <- `PlRExpr_rolling_std_by`(ptr)

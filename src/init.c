@@ -849,6 +849,11 @@ SEXP savvy_PlRExpr_arr_count_matches__impl(SEXP self__, SEXP c_arg__expr) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_arr_eval__impl(SEXP self__, SEXP c_arg__expr, SEXP c_arg__as_list) {
+    SEXP res = savvy_PlRExpr_arr_eval__ffi(self__, c_arg__expr, c_arg__as_list);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_arr_get__impl(SEXP self__, SEXP c_arg__index, SEXP c_arg__null_on_oob) {
     SEXP res = savvy_PlRExpr_arr_get__ffi(self__, c_arg__index, c_arg__null_on_oob);
     return handle_result(res);
@@ -1191,6 +1196,11 @@ SEXP savvy_PlRExpr_dt_date__impl(SEXP self__) {
 
 SEXP savvy_PlRExpr_dt_day__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_dt_day__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_dt_days_in_month__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_dt_days_in_month__ffi(self__);
     return handle_result(res);
 }
 
@@ -1889,6 +1899,11 @@ SEXP savvy_PlRExpr_name_prefix_fields__impl(SEXP self__, SEXP c_arg__prefix) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_name_replace__impl(SEXP self__, SEXP c_arg__pattern, SEXP c_arg__value, SEXP c_arg__literal) {
+    SEXP res = savvy_PlRExpr_name_replace__ffi(self__, c_arg__pattern, c_arg__value, c_arg__literal);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_name_suffix__impl(SEXP self__, SEXP c_arg__suffix) {
     SEXP res = savvy_PlRExpr_name_suffix__ffi(self__, c_arg__suffix);
     return handle_result(res);
@@ -2111,6 +2126,16 @@ SEXP savvy_PlRExpr_rolling_quantile__impl(SEXP self__, SEXP c_arg__quantile, SEX
 
 SEXP savvy_PlRExpr_rolling_quantile_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__quantile, SEXP c_arg__interpolation, SEXP c_arg__window_size, SEXP c_arg__min_samples, SEXP c_arg__closed) {
     SEXP res = savvy_PlRExpr_rolling_quantile_by__ffi(self__, c_arg__by, c_arg__quantile, c_arg__interpolation, c_arg__window_size, c_arg__min_samples, c_arg__closed);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_rolling_rank__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__method, SEXP c_arg__center, SEXP c_arg__seed, SEXP c_arg__min_samples) {
+    SEXP res = savvy_PlRExpr_rolling_rank__ffi(self__, c_arg__window_size, c_arg__method, c_arg__center, c_arg__seed, c_arg__min_samples);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_rolling_rank_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__window_size, SEXP c_arg__method, SEXP c_arg__min_samples, SEXP c_arg__closed, SEXP c_arg__seed) {
+    SEXP res = savvy_PlRExpr_rolling_rank_by__ffi(self__, c_arg__by, c_arg__window_size, c_arg__method, c_arg__min_samples, c_arg__closed, c_arg__seed);
     return handle_result(res);
 }
 
@@ -3554,6 +3579,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_arr_arg_min__impl", (DL_FUNC) &savvy_PlRExpr_arr_arg_min__impl, 1},
     {"savvy_PlRExpr_arr_contains__impl", (DL_FUNC) &savvy_PlRExpr_arr_contains__impl, 3},
     {"savvy_PlRExpr_arr_count_matches__impl", (DL_FUNC) &savvy_PlRExpr_arr_count_matches__impl, 2},
+    {"savvy_PlRExpr_arr_eval__impl", (DL_FUNC) &savvy_PlRExpr_arr_eval__impl, 3},
     {"savvy_PlRExpr_arr_get__impl", (DL_FUNC) &savvy_PlRExpr_arr_get__impl, 3},
     {"savvy_PlRExpr_arr_join__impl", (DL_FUNC) &savvy_PlRExpr_arr_join__impl, 3},
     {"savvy_PlRExpr_arr_len__impl", (DL_FUNC) &savvy_PlRExpr_arr_len__impl, 1},
@@ -3623,6 +3649,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_dt_convert_time_zone__impl", (DL_FUNC) &savvy_PlRExpr_dt_convert_time_zone__impl, 2},
     {"savvy_PlRExpr_dt_date__impl", (DL_FUNC) &savvy_PlRExpr_dt_date__impl, 1},
     {"savvy_PlRExpr_dt_day__impl", (DL_FUNC) &savvy_PlRExpr_dt_day__impl, 1},
+    {"savvy_PlRExpr_dt_days_in_month__impl", (DL_FUNC) &savvy_PlRExpr_dt_days_in_month__impl, 1},
     {"savvy_PlRExpr_dt_dst_offset__impl", (DL_FUNC) &savvy_PlRExpr_dt_dst_offset__impl, 1},
     {"savvy_PlRExpr_dt_epoch_seconds__impl", (DL_FUNC) &savvy_PlRExpr_dt_epoch_seconds__impl, 1},
     {"savvy_PlRExpr_dt_hour__impl", (DL_FUNC) &savvy_PlRExpr_dt_hour__impl, 1},
@@ -3762,6 +3789,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_name_keep__impl", (DL_FUNC) &savvy_PlRExpr_name_keep__impl, 1},
     {"savvy_PlRExpr_name_prefix__impl", (DL_FUNC) &savvy_PlRExpr_name_prefix__impl, 2},
     {"savvy_PlRExpr_name_prefix_fields__impl", (DL_FUNC) &savvy_PlRExpr_name_prefix_fields__impl, 2},
+    {"savvy_PlRExpr_name_replace__impl", (DL_FUNC) &savvy_PlRExpr_name_replace__impl, 4},
     {"savvy_PlRExpr_name_suffix__impl", (DL_FUNC) &savvy_PlRExpr_name_suffix__impl, 2},
     {"savvy_PlRExpr_name_suffix_fields__impl", (DL_FUNC) &savvy_PlRExpr_name_suffix_fields__impl, 2},
     {"savvy_PlRExpr_name_to_lowercase__impl", (DL_FUNC) &savvy_PlRExpr_name_to_lowercase__impl, 1},
@@ -3807,6 +3835,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_rolling_min_by__impl", (DL_FUNC) &savvy_PlRExpr_rolling_min_by__impl, 5},
     {"savvy_PlRExpr_rolling_quantile__impl", (DL_FUNC) &savvy_PlRExpr_rolling_quantile__impl, 7},
     {"savvy_PlRExpr_rolling_quantile_by__impl", (DL_FUNC) &savvy_PlRExpr_rolling_quantile_by__impl, 7},
+    {"savvy_PlRExpr_rolling_rank__impl", (DL_FUNC) &savvy_PlRExpr_rolling_rank__impl, 6},
+    {"savvy_PlRExpr_rolling_rank_by__impl", (DL_FUNC) &savvy_PlRExpr_rolling_rank_by__impl, 7},
     {"savvy_PlRExpr_rolling_skew__impl", (DL_FUNC) &savvy_PlRExpr_rolling_skew__impl, 5},
     {"savvy_PlRExpr_rolling_std__impl", (DL_FUNC) &savvy_PlRExpr_rolling_std__impl, 6},
     {"savvy_PlRExpr_rolling_std_by__impl", (DL_FUNC) &savvy_PlRExpr_rolling_std_by__impl, 6},

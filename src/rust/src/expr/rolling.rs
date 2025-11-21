@@ -411,4 +411,63 @@ impl PlRExpr {
         };
         Ok(self.inner.clone().rolling_skew(options).into())
     }
+
+    fn rolling_rank(
+        &self,
+        window_size: NumericScalar,
+        method: &str,
+        center: bool,
+        seed: Option<NumericScalar>,
+        min_samples: Option<NumericScalar>,
+    ) -> Result<Self> {
+        let window_size = <Wrap<usize>>::try_from(window_size)?.0;
+        let min_samples: usize = match min_samples {
+            Some(x) => <Wrap<usize>>::try_from(x)?.0,
+            None => window_size,
+        };
+        let method = <Wrap<RollingRankMethod>>::try_from(method)?.0;
+        let seed: Option<u64> = match seed {
+            Some(x) => Some(<Wrap<u64>>::try_from(x)?.0),
+            None => None,
+        };
+        let options = RollingOptionsFixedWindow {
+            window_size,
+            min_periods: min_samples,
+            weights: None,
+            center,
+            fn_params: Some(RollingFnParams::Rank { method, seed }),
+        };
+
+        Ok(self.inner.clone().rolling_rank(options).into())
+    }
+
+    fn rolling_rank_by(
+        &self,
+        by: &PlRExpr,
+        window_size: &str,
+        method: &str,
+        min_samples: NumericScalar,
+        closed: &str,
+        seed: Option<NumericScalar>,
+    ) -> Result<Self> {
+        let closed = <Wrap<ClosedWindow>>::try_from(closed)?.0;
+        let min_samples = <Wrap<usize>>::try_from(min_samples)?.0;
+        let method = <Wrap<RollingRankMethod>>::try_from(method)?.0;
+        let seed: Option<u64> = match seed {
+            Some(x) => Some(<Wrap<u64>>::try_from(x)?.0),
+            None => None,
+        };
+        let options = RollingOptionsDynamicWindow {
+            window_size: Duration::parse(window_size),
+            min_periods: min_samples,
+            closed_window: closed,
+            fn_params: Some(RollingFnParams::Rank { method, seed }),
+        };
+
+        Ok(self
+            .inner
+            .clone()
+            .rolling_rank_by(by.inner.clone(), options)
+            .into())
+    }
 }
