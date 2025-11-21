@@ -544,8 +544,8 @@ impl PlRExpr {
         Ok(self.inner.clone().exp().into())
     }
 
-    fn mode(&self) -> Result<Self> {
-        Ok(self.inner.clone().mode().into())
+    fn mode(&self, maintain_order: bool) -> Result<Self> {
+        Ok(self.inner.clone().mode(maintain_order).into())
     }
 
     fn entropy(&self, base: f64, normalize: bool) -> Result<Self> {
