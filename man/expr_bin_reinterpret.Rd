@@ -23,14 +23,14 @@ Supported types are numerical or temporal dtypes, or an \code{\link[=pl__Array]{
 of these dtypes.
 }
 \examples{
-df <- pl$DataFrame(
-  x = as_polars_series(c("\\\\x05\\\\x00\\\\x00\\\\x00", "\\\\x10\\\\x00\\\\x01\\\\x00"))$cast(pl$Binary)
-)
+\dontshow{if (requireNamespace("blob", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+df <- pl$DataFrame(x = blob::as_blob(c(5L, 35L)))
 
 df$with_columns(
   bin2int = pl$col("x")$bin$reinterpret(
-    dtype = pl$Int32,
+    dtype = pl$UInt8,
     endianness = "little"
   )
 )
+\dontshow{\}) # examplesIf}
 }
