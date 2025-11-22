@@ -33,19 +33,19 @@ QueryOptFlags <- new_class(
   properties = list(
     # TODO: switch to scalar properties when supported
     # https://github.com/RConsortium/S7/pull/433
-    type_coercion = class_logical,
-    type_check = class_logical,
-    predicate_pushdown = class_logical,
-    projection_pushdown = class_logical,
-    simplify_expression = class_logical,
-    slice_pushdown = class_logical,
-    comm_subplan_elim = class_logical,
-    comm_subexpr_elim = class_logical,
-    cluster_with_columns = class_logical,
-    check_order_observe = class_logical,
-    fast_projection = class_logical,
-    eager = class_logical,
-    streaming = class_logical
+    type_coercion = prop_bool(),
+    type_check = prop_bool(),
+    predicate_pushdown = prop_bool(),
+    projection_pushdown = prop_bool(),
+    simplify_expression = prop_bool(),
+    slice_pushdown = prop_bool(),
+    comm_subplan_elim = prop_bool(),
+    comm_subexpr_elim = prop_bool(),
+    cluster_with_columns = prop_bool(),
+    check_order_observe = prop_bool(),
+    fast_projection = prop_bool(),
+    eager = prop_bool(),
+    streaming = prop_bool()
   ),
   constructor = function(
     ...,
@@ -79,25 +79,6 @@ QueryOptFlags <- new_class(
       eager = FALSE,
       streaming = FALSE
     )
-  },
-  validator = function(self) {
-    call <- caller_env(4L)
-
-    check_bool(self@type_coercion, arg = "type_coercion", call = call)
-    check_bool(self@type_check, arg = "type_check", call = call)
-
-    check_bool(self@predicate_pushdown, arg = "predicate_pushdown", call = call)
-    check_bool(self@projection_pushdown, arg = "projection_pushdown", call = call)
-    check_bool(self@simplify_expression, arg = "simplify_expression", call = call)
-    check_bool(self@slice_pushdown, arg = "slice_pushdown", call = call)
-    check_bool(self@comm_subplan_elim, arg = "comm_subplan_elim", call = call)
-    check_bool(self@comm_subexpr_elim, arg = "comm_subexpr_elim", call = call)
-    check_bool(self@cluster_with_columns, arg = "cluster_with_columns", call = call)
-    check_bool(self@check_order_observe, arg = "check_order_observe", call = call)
-    check_bool(self@fast_projection, arg = "fast_projection", call = call)
-
-    check_bool(self@eager, arg = "eager", call = call)
-    check_bool(self@streaming, arg = "streaming", call = call)
   }
 )
 
