@@ -24,6 +24,7 @@ SEXP savvy_datetime__ffi(SEXP c_arg__year, SEXP c_arg__month, SEXP c_arg__day, S
 SEXP savvy_datetime_range__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__every, SEXP c_arg__closed, SEXP c_arg__time_unit, SEXP c_arg__time_zone);
 SEXP savvy_datetime_ranges__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__every, SEXP c_arg__closed, SEXP c_arg__time_unit, SEXP c_arg__time_zone);
 SEXP savvy_duration__ffi(SEXP c_arg__time_unit, SEXP c_arg__weeks, SEXP c_arg__days, SEXP c_arg__hours, SEXP c_arg__minutes, SEXP c_arg__seconds, SEXP c_arg__milliseconds, SEXP c_arg__microseconds, SEXP c_arg__nanoseconds);
+SEXP savvy_explain_all__ffi(SEXP c_arg__lfs, SEXP c_arg__optimizations);
 SEXP savvy_feature_nightly_enabled__ffi(void);
 SEXP savvy_field__ffi(SEXP c_arg__names);
 SEXP savvy_int_range__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__step, SEXP c_arg__dtype);
@@ -424,6 +425,7 @@ SEXP savvy_PlRExpr_reverse__ffi(SEXP self__);
 SEXP savvy_PlRExpr_rle__ffi(SEXP self__);
 SEXP savvy_PlRExpr_rle_id__ffi(SEXP self__);
 SEXP savvy_PlRExpr_rolling__ffi(SEXP self__, SEXP c_arg__index_column, SEXP c_arg__period, SEXP c_arg__offset, SEXP c_arg__closed);
+SEXP savvy_PlRExpr_rolling_kurtosis__ffi(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__fisher, SEXP c_arg__bias, SEXP c_arg__center, SEXP c_arg__min_periods);
 SEXP savvy_PlRExpr_rolling_max__ffi(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__weights, SEXP c_arg__min_samples);
 SEXP savvy_PlRExpr_rolling_max_by__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__window_size, SEXP c_arg__min_samples, SEXP c_arg__closed);
 SEXP savvy_PlRExpr_rolling_mean__ffi(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__weights, SEXP c_arg__min_samples);

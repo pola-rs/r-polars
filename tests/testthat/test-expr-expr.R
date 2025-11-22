@@ -1622,6 +1622,20 @@ test_that("Expr_rolling_", {
   )
 })
 
+test_that("rolling_kurtosis", {
+  df <- pl$DataFrame(a = c(1, 4, 2, 9))
+
+  expect_equal(
+    df$select(pl$col("a")$rolling_kurtosis(window_size = 3)),
+    pl$DataFrame(a = c(NA, NA, -1.5, -1.5))
+  )
+
+  expect_equal(
+    df$select(pl$col("a")$rolling_kurtosis(window_size = 3, center = TRUE)),
+    pl$DataFrame(a = c(NA, -1.5, -1.5, NA))
+  )
+})
+
 patrick::with_parameters_test_that(
   "rolling_*_by with date / datetime window",
   {

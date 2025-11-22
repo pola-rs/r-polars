@@ -163,3 +163,40 @@ pl__collect_all <- function(
       lapply(\(ptr) .savvy_wrap_PlRDataFrame(ptr) |> wrap())
   })
 }
+
+#' Explain multiple LazyFrames as if passed to `pl$collect_all()`
+#'
+#' Common Subplan Elimination is applied on the combined plan, meaning that
+#' diverging queries will run only once.
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @inheritParams pl__collect_all
+#' @inheritParams lazyframe__collect
+#'
+#' @inherit lazyframe__explain return
+#' @examples
+#' lf <- as_polars_lf(mtcars)$with_columns(sqrt_mpg = pl$col("mpg")$sqrt())
+#'
+#' cyl_4 <- lf$filter(pl$col("cyl") == 4)
+#' cyl_6 <- lf$filter(pl$col("cyl") == 6)
+#'
+#' # Note that `sqrt_mpg` is present in the plans for `cyl_4` and `cyl_6` but
+#' # only once in the plan produced by `pl$explain_all()`. This is because
+#' # `pl$explain_all()` eliminates parts of the queries that are shared across
+#' # multiple plans.
+#' pl$explain_all(list(cyl_4, cyl_6)) |>
+#'   writeLines()
+pl__explain_all <- function(
+  lazy_frames,
+  ...,
+  optimizations = pl$QueryOptFlags()
+) {
+  wrap({
+    check_dots_empty0(...)
+    check_list_of_polars_lf(lazy_frames)
+    check_is_S7(optimizations, QueryOptFlags)
+    lfs <- lapply(lazy_frames, \(x) x$`_ldf`)
+
+    explain_all(lfs, optimizations)
+  })
+}

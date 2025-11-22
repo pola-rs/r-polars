@@ -6,7 +6,7 @@
       <polars::QueryOptFlags> class
       @ parent     : <S7_object>
       @ constructor: function(..., predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, cluster_with_columns, check_order_observe, fast_projection) {...}
-      @ validator  : function(self) {...}
+      @ validator  : <NULL>
       @ properties :
        $ type_coercion       : <logical>
        $ type_check          : <logical>
@@ -107,7 +107,7 @@
       opt_flags@type_coercion <- NA
     Condition <rlang_error>
       Error:
-      ! `type_coercion` must be `TRUE` or `FALSE`, not `NA`.
+      ! <polars::QueryOptFlags>@type_coercion must be a single `TRUE` or `FALSE`, not `NA`.
 
 ---
 
@@ -115,7 +115,7 @@
       opt_flags@type_coercion <- c(TRUE, TRUE)
     Condition <rlang_error>
       Error:
-      ! `type_coercion` must be `TRUE` or `FALSE`, not a logical vector.
+      ! <polars::QueryOptFlags>@type_coercion must be a single `TRUE`, `FALSE` or `NA`, not a logical vector.
 
 ---
 

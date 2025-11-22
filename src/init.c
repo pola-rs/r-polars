@@ -164,6 +164,11 @@ SEXP savvy_duration__impl(SEXP c_arg__time_unit, SEXP c_arg__weeks, SEXP c_arg__
     return handle_result(res);
 }
 
+SEXP savvy_explain_all__impl(SEXP c_arg__lfs, SEXP c_arg__optimizations) {
+    SEXP res = savvy_explain_all__ffi(c_arg__lfs, c_arg__optimizations);
+    return handle_result(res);
+}
+
 SEXP savvy_feature_nightly_enabled__impl(void) {
     SEXP res = savvy_feature_nightly_enabled__ffi();
     return handle_result(res);
@@ -2094,6 +2099,11 @@ SEXP savvy_PlRExpr_rolling__impl(SEXP self__, SEXP c_arg__index_column, SEXP c_a
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_rolling_kurtosis__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__fisher, SEXP c_arg__bias, SEXP c_arg__center, SEXP c_arg__min_periods) {
+    SEXP res = savvy_PlRExpr_rolling_kurtosis__ffi(self__, c_arg__window_size, c_arg__fisher, c_arg__bias, c_arg__center, c_arg__min_periods);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_rolling_max__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__weights, SEXP c_arg__min_samples) {
     SEXP res = savvy_PlRExpr_rolling_max__ffi(self__, c_arg__window_size, c_arg__center, c_arg__weights, c_arg__min_samples);
     return handle_result(res);
@@ -3457,6 +3467,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_datetime_range__impl", (DL_FUNC) &savvy_datetime_range__impl, 6},
     {"savvy_datetime_ranges__impl", (DL_FUNC) &savvy_datetime_ranges__impl, 6},
     {"savvy_duration__impl", (DL_FUNC) &savvy_duration__impl, 9},
+    {"savvy_explain_all__impl", (DL_FUNC) &savvy_explain_all__impl, 2},
     {"savvy_feature_nightly_enabled__impl", (DL_FUNC) &savvy_feature_nightly_enabled__impl, 0},
     {"savvy_field__impl", (DL_FUNC) &savvy_field__impl, 1},
     {"savvy_int_range__impl", (DL_FUNC) &savvy_int_range__impl, 4},
@@ -3843,6 +3854,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_rle__impl", (DL_FUNC) &savvy_PlRExpr_rle__impl, 1},
     {"savvy_PlRExpr_rle_id__impl", (DL_FUNC) &savvy_PlRExpr_rle_id__impl, 1},
     {"savvy_PlRExpr_rolling__impl", (DL_FUNC) &savvy_PlRExpr_rolling__impl, 5},
+    {"savvy_PlRExpr_rolling_kurtosis__impl", (DL_FUNC) &savvy_PlRExpr_rolling_kurtosis__impl, 6},
     {"savvy_PlRExpr_rolling_max__impl", (DL_FUNC) &savvy_PlRExpr_rolling_max__impl, 5},
     {"savvy_PlRExpr_rolling_max_by__impl", (DL_FUNC) &savvy_PlRExpr_rolling_max_by__impl, 5},
     {"savvy_PlRExpr_rolling_mean__impl", (DL_FUNC) &savvy_PlRExpr_rolling_mean__impl, 5},

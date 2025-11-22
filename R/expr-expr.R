@@ -2852,6 +2852,49 @@ expr__rolling_rank <- function(
   })
 }
 
+#' Compute a rolling kurtosis
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
+#' The window at a given row will include the row itself, and the
+#' `window_size - 1` elements before it.
+#'
+#' @inheritParams expr__rolling_max
+#' @inheritParams expr__kurtosis
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(a = c(1, 4, 2, 9))
+#'
+#' df$with_columns(
+#'   rolling_kurtosis = pl$col("a")$rolling_kurtosis(window_size = 3)
+#' )
+#'
+#' # Center the values in the window
+#' df$with_columns(
+#'   rolling_kurtosis = pl$col("a")$rolling_kurtosis(window_size = 3, center = TRUE)
+#' )
+expr__rolling_kurtosis <- function(
+  window_size,
+  ...,
+  fisher = TRUE,
+  bias = TRUE,
+  min_samples = NULL,
+  center = FALSE
+) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$rolling_kurtosis(
+      window_size = window_size,
+      fisher = fisher,
+      bias = bias,
+      min_periods = min_samples,
+      center = center
+    )
+  })
+}
+
 #' Create rolling groups based on a temporal or integer column
 #'
 #' @description

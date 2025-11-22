@@ -377,6 +377,7 @@ nav:
             - reverse: man/expr__reverse.md
             - rle_id: man/expr__rle_id.md
             - rle: man/expr__rle.md
+            - rolling_kurtosis: man/expr__rolling_kurtosis.md
             - rolling_max_by: man/expr__rolling_max_by.md
             - rolling_max: man/expr__rolling_max.md
             - rolling_mean_by: man/expr__rolling_mean_by.md
@@ -722,6 +723,7 @@ nav:
       Functions:
         - collect_all: man/pl__collect_all.md
         - concat: man/pl__concat.md
+        - explain_all: man/pl__explain_all.md
         - Expr: man/polars_expr.md
         - DataFrame: man/pl__DataFrame.md
         - LazyFrame: man/pl__LazyFrame.md
