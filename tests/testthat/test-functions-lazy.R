@@ -85,8 +85,6 @@ test_that("pl$collect_all() works", {
 })
 
 test_that("pl$explain_all() works", {
-  lazy_query <- as_polars_lf(iris)$sort("Species")$filter(pl$col("Species") != "setosa")
-
   lf <- as_polars_lf(mtcars)$with_columns(sqrt_mpg = pl$col("mpg")$sqrt())
   cyl_4 <- lf$filter(pl$col("cyl") == 4)
   cyl_6 <- lf$filter(pl$col("cyl") == 6)
