@@ -35,22 +35,6 @@
 # gather
 
     Code
-      dat$with_columns(pl$col("x")$list$gather(1L, null_on_oob = TRUE))
-    Output
-      shape: (3, 1)
-      ┌───────────┐
-      │ x         │
-      │ ---       │
-      │ list[i32] │
-      ╞═══════════╡
-      │ [2]       │
-      │ [5]       │
-      │ [null]    │
-      └───────────┘
-
----
-
-    Code
       dat$with_columns(pl$col("x")$list$gather(list(1), null_on_oob = TRUE))
     Condition
       Error in `dat$with_columns()`:
@@ -59,6 +43,18 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid operation: list.gather operation not supported for dtypes `list[i32]` and `list[f64]`
+
+---
+
+    Code
+      dat$with_columns(pl$col("x")$list$gather(list(0L, 0L), null_on_oob = TRUE))
+    Condition
+      Error in `dat$with_columns()`:
+      ! Evaluation failed in `$with_columns()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: arguments for `list.gather` have different lengths (3 != 2)
 
 ---
 
