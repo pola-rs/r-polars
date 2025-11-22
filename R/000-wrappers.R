@@ -193,8 +193,8 @@ NULL
 }
 
 
-`explain_all` <- function(`lfs`, `optflags`) {
-  .Call(savvy_explain_all__impl, `lfs`, `optflags`)
+`explain_all` <- function(`lfs`, `optimizations`) {
+  .Call(savvy_explain_all__impl, `lfs`, `optimizations`)
 }
 
 

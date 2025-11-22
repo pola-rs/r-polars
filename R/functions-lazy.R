@@ -197,6 +197,6 @@ pl__explain_all <- function(
     check_is_S7(optimizations, QueryOptFlags)
     lfs <- lapply(lazy_frames, \(x) x$`_ldf`)
 
-    explain_all(lfs, optflags = optimizations)
+    explain_all(lfs, optimizations)
   })
 }

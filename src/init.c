@@ -164,8 +164,8 @@ SEXP savvy_duration__impl(SEXP c_arg__time_unit, SEXP c_arg__weeks, SEXP c_arg__
     return handle_result(res);
 }
 
-SEXP savvy_explain_all__impl(SEXP c_arg__lfs, SEXP c_arg__optflags) {
-    SEXP res = savvy_explain_all__ffi(c_arg__lfs, c_arg__optflags);
+SEXP savvy_explain_all__impl(SEXP c_arg__lfs, SEXP c_arg__optimizations) {
+    SEXP res = savvy_explain_all__ffi(c_arg__lfs, c_arg__optimizations);
     return handle_result(res);
 }
 
