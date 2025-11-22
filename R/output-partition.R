@@ -151,3 +151,82 @@ pl__PartitionParted <- function(
     )
   })
 }
+
+SinkDirectory <- new_class(
+  "SinkDirectory",
+  properties = list(
+    base_path = class_character,
+    partition_by = class_list | NULL,
+    partition_keys_sorted = prop_bool(allow_null = TRUE),
+    include_keys = prop_bool(allow_null = TRUE),
+    per_partition_sort_by = class_list | NULL,
+    per_file_sort_by = class_list | NULL,
+    max_rows_per_file = class_integer | NULL
+  ),
+  constructor = function(
+    base_path,
+    ...,
+    partition_by = NULL,
+    partition_keys_sorted = NULL,
+    include_keys = NULL,
+    per_partition_sort_by = NULL,
+    per_file_sort_by = NULL,
+    max_rows_per_file = NULL
+  ) {},
+  validator = function(self) {}
+)
+
+# class _SinkDirectory:
+#     def __init__(
+#         self,
+#         base_path: str | Path,
+#         *,
+#         file_path_provider: Callable[
+#             [KeyedPartitionContext], Path | str | IO[bytes] | IO[str]
+#         ]
+#         | None = None,
+#         partition_by: str
+#         | Expr
+#         | Sequence[str | Expr]
+#         | Mapping[str, Expr]
+#         | None = None,
+#         partition_keys_sorted: bool | None = None,
+#         include_keys: bool | None = None,
+#         per_partition_sort_by: str | Expr | Sequence[str | Expr] | None = None,
+#         per_file_sort_by: str | Expr | Sequence[str | Expr] | None = None,
+#         max_rows_per_file: int | None = None,
+#         finish_callback: Callable[[DataFrame], None] | None = None,
+#     ) -> None:
+#         base_path = str(base_path)
+
+#         self._pl_sink_directory = _SinkDirectoryInner(
+#             base_path=base_path,
+#             file_path_provider=file_path_provider,
+#             partition_by=(
+#                 _parse_to_pyexpr_list(partition_by)
+#                 if partition_by is not None
+#                 else None
+#             ),
+#             partition_keys_sorted=partition_keys_sorted,
+#             include_keys=include_keys,
+#             per_partition_sort_by=(
+#                 _parse_to_pyexpr_list(per_partition_sort_by)
+#                 if per_partition_sort_by is not None
+#                 else None
+#             ),
+#             per_file_sort_by=(
+#                 _parse_to_pyexpr_list(per_file_sort_by)
+#                 if per_file_sort_by is not None
+#                 else None
+#             ),
+#             max_rows_per_file=max_rows_per_file,
+#             finish_callback=(
+#                 _prepare_finish_callback(finish_callback)
+#                 if finish_callback is not None
+#                 else None
+#             ),
+#         )
+
+#     @property
+#     def _base_path(self) -> str | None:
+#         return self._pl_sink_directory.base_path
