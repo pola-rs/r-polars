@@ -144,6 +144,20 @@
       * ..1 = TRUE
       i Did you forget to name an argument?
 
+# eval
+
+    Code
+      df$with_columns(pl$concat_list("a", "b")$list$eval(1))
+    Condition
+      Error in `df$with_columns()`:
+      ! Evaluation failed in `$with_columns()`.
+      Caused by error:
+      ! Evaluation failed in `$with_columns()`.
+      Caused by error in `pl$concat_list("a", "b")$list$eval()`:
+      ! Evaluation failed in `$eval()`.
+      Caused by error in `pl$concat_list("a", "b")$list$eval()`:
+      ! `expr` must be a polars expression, not the number 1.
+
 # $list$explode() works
 
     Code

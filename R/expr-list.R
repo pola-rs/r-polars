@@ -514,8 +514,10 @@ expr_list_tail <- function(n = 5L) {
 #'   pl$col("b")$list$eval(pl$element()$str$join(" "))$list$first()
 #' )
 expr_list_eval <- function(expr) {
-  self$`_rexpr`$list_eval(as_polars_expr(expr)$`_rexpr`) |>
-    wrap()
+  wrap({
+    check_polars_expr(expr)
+    self$`_rexpr`$list_eval(expr$`_rexpr`)
+  })
 }
 
 #' Evaluate whether all boolean values in a sub-list are true
