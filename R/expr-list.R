@@ -193,11 +193,11 @@ expr_list_get <- function(index, ..., null_on_oob = TRUE) {
 #' index, use [`$list$get()`][expr_list_get]. The indices may be defined in a
 #' single column, or by sub-lists in another column of dtype List.
 #'
-#' @param indices An Expr or something coercible to an Expr, that can return
-#'   several indices. Values are 0-indexed (so index 0 would return the
-#'   first item of every sub-list) and negative values start from the end (index
-#'   `-1` returns the last item). If the index is out of bounds, it will return
-#'   a `null`. Strings are parsed as column names.
+#' @param indices An Expr or something coercible to an Expr of datatype List,
+#' that can return (see examples). Values are 0-indexed (so index 0 would return
+#' the first item of every sub-list) and negative values start from the end
+#' (index `-1` returns the last item). If the index is out of bounds, it will
+#' return a `null`. Strings are parsed as column names.
 #' @inheritParams expr_list_get
 #' @inheritParams rlang::args_dots_empty
 #' @inherit as_polars_expr return
@@ -213,6 +213,11 @@ expr_list_get <- function(index, ..., null_on_oob = TRUE) {
 #'
 #' df$with_columns(
 #'   gathered = pl$col("a")$list$gather(list(2L), null_on_oob = TRUE)
+#' )
+#'
+#' # To select different indices per row:
+#' df$with_columns(
+#'   gathered = pl$col("a")$list$gather(list(2L, c(0L, 3L), 1L), null_on_oob = TRUE)
 #' )
 #'
 #' # Indices must be an List(Int/Uint) type to work.
