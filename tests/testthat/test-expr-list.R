@@ -159,11 +159,16 @@ test_that("gather", {
     )),
     pl$DataFrame(x = list(c(1:3, NA), 4L, 6L))
   )
-  expect_snapshot(
-    dat$with_columns(pl$col("x")$list$gather(1L, null_on_oob = TRUE))
+  expect_equal(
+    dat$with_columns(pl$col("x")$list$gather(list(1L), null_on_oob = TRUE)),
+    pl$DataFrame(x = list(2L, 5L, NA))
   )
   expect_snapshot(
     dat$with_columns(pl$col("x")$list$gather(list(1), null_on_oob = TRUE)),
+    error = TRUE
+  )
+  expect_snapshot(
+    dat$with_columns(pl$col("x")$list$gather(list(0L, 0L), null_on_oob = TRUE)),
     error = TRUE
   )
   expect_snapshot(
