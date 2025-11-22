@@ -423,6 +423,7 @@ SEXP savvy_PlRExpr_reverse__ffi(SEXP self__);
 SEXP savvy_PlRExpr_rle__ffi(SEXP self__);
 SEXP savvy_PlRExpr_rle_id__ffi(SEXP self__);
 SEXP savvy_PlRExpr_rolling__ffi(SEXP self__, SEXP c_arg__index_column, SEXP c_arg__period, SEXP c_arg__offset, SEXP c_arg__closed);
+SEXP savvy_PlRExpr_rolling_kurtosis__ffi(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__fisher, SEXP c_arg__bias, SEXP c_arg__center, SEXP c_arg__min_periods);
 SEXP savvy_PlRExpr_rolling_max__ffi(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__weights, SEXP c_arg__min_samples);
 SEXP savvy_PlRExpr_rolling_max_by__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__window_size, SEXP c_arg__min_samples, SEXP c_arg__closed);
 SEXP savvy_PlRExpr_rolling_mean__ffi(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__weights, SEXP c_arg__min_samples);
