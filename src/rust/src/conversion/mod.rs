@@ -46,6 +46,13 @@ pub(crate) fn try_extract_attribute(obj: &Sexp, attr_name: &str) -> savvy::Resul
         .ok_or(savvy_err!("Attribute '{attr_name}' does not exist."))
 }
 
+pub(crate) fn strings_to_pl_smallstr(container: StringSexp) -> Vec<PlSmallStr> {
+    container
+        .iter()
+        .map(|s| PlSmallStr::from_str(s.as_ref()))
+        .collect()
+}
+
 impl TryFrom<&str> for PlRDataType {
     type Error = String;
 

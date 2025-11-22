@@ -599,13 +599,6 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_polars__sealed")
   }
 }
 
-`PlRDataFrame_pivot_expr` <- function(self) {
-  function(`on`, `maintain_order`, `sort_columns`, `aggregate_expr` = NULL, `separator` = NULL, `index` = NULL, `values` = NULL) {
-    `aggregate_expr` <- .savvy_extract_ptr(`aggregate_expr`, "PlRExpr")
-    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_pivot_expr__impl, `self`, `on`, `maintain_order`, `sort_columns`, `aggregate_expr`, `separator`, `index`, `values`))
-  }
-}
-
 `PlRDataFrame_rechunk` <- function(self) {
   function() {
     .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_rechunk__impl, `self`))
@@ -732,7 +725,6 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_polars__sealed")
   e$`lazy` <- `PlRDataFrame_lazy`(ptr)
   e$`n_chunks` <- `PlRDataFrame_n_chunks`(ptr)
   e$`partition_by` <- `PlRDataFrame_partition_by`(ptr)
-  e$`pivot_expr` <- `PlRDataFrame_pivot_expr`(ptr)
   e$`rechunk` <- `PlRDataFrame_rechunk`(ptr)
   e$`sample_frac` <- `PlRDataFrame_sample_frac`(ptr)
   e$`sample_n` <- `PlRDataFrame_sample_n`(ptr)
@@ -4052,6 +4044,17 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRLazyFrame_pivot` <- function(self) {
+  function(`on`, `on_columns`, `index`, `values`, `agg`, `maintain_order`, `separator`) {
+    `on` <- .savvy_extract_ptr(`on`, "PlRSelector")
+    `on_columns` <- .savvy_extract_ptr(`on_columns`, "PlRDataFrame")
+    `index` <- .savvy_extract_ptr(`index`, "PlRSelector")
+    `values` <- .savvy_extract_ptr(`values`, "PlRSelector")
+    `agg` <- .savvy_extract_ptr(`agg`, "PlRExpr")
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_pivot__impl, `self`, `on`, `on_columns`, `index`, `values`, `agg`, `maintain_order`, `separator`))
+  }
+}
+
 `PlRLazyFrame_profile` <- function(self) {
   function() {
     .Call(savvy_PlRLazyFrame_profile__impl, `self`)
@@ -4285,6 +4288,7 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_polars__sealed")
   e$`merge_sorted` <- `PlRLazyFrame_merge_sorted`(ptr)
   e$`min` <- `PlRLazyFrame_min`(ptr)
   e$`null_count` <- `PlRLazyFrame_null_count`(ptr)
+  e$`pivot` <- `PlRLazyFrame_pivot`(ptr)
   e$`profile` <- `PlRLazyFrame_profile`(ptr)
   e$`quantile` <- `PlRLazyFrame_quantile`(ptr)
   e$`remove` <- `PlRLazyFrame_remove`(ptr)

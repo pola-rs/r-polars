@@ -432,8 +432,8 @@ impl PlRLazyFrame {
         let other = other.ldf.clone();
         let left_on = left_on.inner.clone();
         let right_on = right_on.inner.clone();
-        let left_by = left_by.map(|x| x.to_vec().into_iter().map(|y| y.into()).collect());
-        let right_by = right_by.map(|x| x.to_vec().into_iter().map(|y| y.into()).collect());
+        let left_by = left_by.map(strings_to_pl_smallstr);
+        let right_by = right_by.map(strings_to_pl_smallstr);
         let tolerance = match tolerance {
             Some(s) => {
                 let av = s
@@ -652,6 +652,30 @@ impl PlRLazyFrame {
         let ldf = self.ldf.clone();
         let subset = subset.map(|e| e.inner.clone());
         Ok(ldf.drop_nans(subset).into())
+    }
+
+    fn pivot(
+        &self,
+        on: &PlRSelector,
+        on_columns: &PlRDataFrame,
+        index: &PlRSelector,
+        values: &PlRSelector,
+        agg: &PlRExpr,
+        maintain_order: bool,
+        separator: &str,
+    ) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        Ok(ldf
+            .pivot(
+                on.inner.clone(),
+                Arc::new(on_columns.df.clone()),
+                index.inner.clone(),
+                values.inner.clone(),
+                agg.inner.clone(),
+                maintain_order,
+                separator.into(),
+            )
+            .into())
     }
 
     fn unpivot(

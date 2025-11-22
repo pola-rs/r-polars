@@ -439,11 +439,6 @@ SEXP savvy_PlRDataFrame_partition_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_a
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataFrame_pivot_expr__impl(SEXP self__, SEXP c_arg__on, SEXP c_arg__maintain_order, SEXP c_arg__sort_columns, SEXP c_arg__aggregate_expr, SEXP c_arg__separator, SEXP c_arg__index, SEXP c_arg__values) {
-    SEXP res = savvy_PlRDataFrame_pivot_expr__ffi(self__, c_arg__on, c_arg__maintain_order, c_arg__sort_columns, c_arg__aggregate_expr, c_arg__separator, c_arg__index, c_arg__values);
-    return handle_result(res);
-}
-
 SEXP savvy_PlRDataFrame_read_ipc_stream__impl(SEXP c_arg__source, SEXP c_arg__row_index_offset, SEXP c_arg__rechunk, SEXP c_arg__columns, SEXP c_arg__projection, SEXP c_arg__n_rows, SEXP c_arg__row_index_name) {
     SEXP res = savvy_PlRDataFrame_read_ipc_stream__ffi(c_arg__source, c_arg__row_index_offset, c_arg__rechunk, c_arg__columns, c_arg__projection, c_arg__n_rows, c_arg__row_index_name);
     return handle_result(res);
@@ -2774,6 +2769,11 @@ SEXP savvy_PlRLazyFrame_null_count__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRLazyFrame_pivot__impl(SEXP self__, SEXP c_arg__on, SEXP c_arg__on_columns, SEXP c_arg__index, SEXP c_arg__values, SEXP c_arg__agg, SEXP c_arg__maintain_order, SEXP c_arg__separator) {
+    SEXP res = savvy_PlRLazyFrame_pivot__ffi(self__, c_arg__on, c_arg__on_columns, c_arg__index, c_arg__values, c_arg__agg, c_arg__maintain_order, c_arg__separator);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRLazyFrame_profile__impl(SEXP self__) {
     SEXP res = savvy_PlRLazyFrame_profile__ffi(self__);
     return handle_result(res);
@@ -3497,7 +3497,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_lazy__impl", (DL_FUNC) &savvy_PlRDataFrame_lazy__impl, 1},
     {"savvy_PlRDataFrame_n_chunks__impl", (DL_FUNC) &savvy_PlRDataFrame_n_chunks__impl, 1},
     {"savvy_PlRDataFrame_partition_by__impl", (DL_FUNC) &savvy_PlRDataFrame_partition_by__impl, 4},
-    {"savvy_PlRDataFrame_pivot_expr__impl", (DL_FUNC) &savvy_PlRDataFrame_pivot_expr__impl, 8},
     {"savvy_PlRDataFrame_read_ipc_stream__impl", (DL_FUNC) &savvy_PlRDataFrame_read_ipc_stream__impl, 7},
     {"savvy_PlRDataFrame_rechunk__impl", (DL_FUNC) &savvy_PlRDataFrame_rechunk__impl, 1},
     {"savvy_PlRDataFrame_sample_frac__impl", (DL_FUNC) &savvy_PlRDataFrame_sample_frac__impl, 5},
@@ -3964,6 +3963,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_new_from_ndjson__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_ndjson__impl, 15},
     {"savvy_PlRLazyFrame_new_from_parquet__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_parquet__impl, 18},
     {"savvy_PlRLazyFrame_null_count__impl", (DL_FUNC) &savvy_PlRLazyFrame_null_count__impl, 1},
+    {"savvy_PlRLazyFrame_pivot__impl", (DL_FUNC) &savvy_PlRLazyFrame_pivot__impl, 8},
     {"savvy_PlRLazyFrame_profile__impl", (DL_FUNC) &savvy_PlRLazyFrame_profile__impl, 1},
     {"savvy_PlRLazyFrame_quantile__impl", (DL_FUNC) &savvy_PlRLazyFrame_quantile__impl, 3},
     {"savvy_PlRLazyFrame_remove__impl", (DL_FUNC) &savvy_PlRLazyFrame_remove__impl, 2},
