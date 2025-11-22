@@ -11,7 +11,7 @@
 - `<expr>$rolling_rank()` and `<expr>$rolling_rank_by()` (#1656).
 - `<expr>$arr$agg()` and `<expr>$list$agg()`, similar to their `$eval()` counterparts
   but automatically explode the column if all elements return a scalar (#1655).
-- `pl$explain_all()` to create a single optimized query plan from several input LazyFrames (#1666).
+- `pl$explain_all()` to show a single optimized query plan from several input LazyFrames (#1666).
 
 ### Other changes
 

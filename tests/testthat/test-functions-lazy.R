@@ -83,3 +83,18 @@ test_that("pl$collect_all() works", {
   expect_snapshot(pl$collect_all(list(cyl_4), "foo"), error = TRUE)
   expect_snapshot(pl$collect_all(list(cyl_4), engine = "foo"), error = TRUE)
 })
+
+test_that("pl$explain_all() works", {
+  lazy_query <- as_polars_lf(iris)$sort("Species")$filter(pl$col("Species") != "setosa")
+
+  lf <- as_polars_lf(mtcars)$with_columns(sqrt_mpg = pl$col("mpg")$sqrt())
+  cyl_4 <- lf$filter(pl$col("cyl") == 4)
+  cyl_6 <- lf$filter(pl$col("cyl") == 6)
+
+  expect_snapshot(cat(pl$explain_all(list(cyl_4, cyl_6))))
+  expect_snapshot(pl$explain_all(1), error = TRUE)
+  expect_snapshot(
+    pl$explain_all(list(cyl_4, cyl_6), optimizations = 1),
+    error = TRUE
+  )
+})
