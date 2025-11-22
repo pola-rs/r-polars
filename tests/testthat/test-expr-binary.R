@@ -67,3 +67,16 @@ test_that("bin$size()", {
     error = TRUE
   )
 })
+
+test_that("bin$reinterpret()", {
+  df <- pl$DataFrame(
+    x = as_polars_series(c("\\x05\\x00\\x00\\x00", "\\x10\\x00\\x01\\x00"))$cast(pl$Binary)
+  )
+
+  expect_equal(
+    df$select(
+      pl$col("x")$bin$reinterpret(dtype = pl$Int32, endianness = "little")
+    ),
+    pl$DataFrame(x = c(5L, 65552L))
+  )
+})

@@ -182,3 +182,35 @@ expr_bin_size <- function(unit = c("b", "kb", "mb", "gb", "tb")) {
     )
   })
 }
+
+#' Interpret bytes as another type
+#'
+#' Supported types are numerical or temporal dtypes, or an [`Array`][pl__Array]
+#' of these dtypes.
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @param dtype A Polars DataType or DataTypeExpr indicating which type to
+#' interpret binary column into.
+#' @param endianness Which endianness to use when interpreting bytes. Must be
+#' one of `"little"` (default) or `"big"`.
+#'
+#' @inherit as_polars_expr return
+#'
+#' @examples
+#' df <- pl$DataFrame(x = as_polars_series(c("\\x05\\x00\\x00\\x00", "\\x10\\x00\\x01\\x00"))$cast(pl$Binary))
+#'
+#' df$with_columns(
+#'   bin2int = pl$col("x")$bin$reinterpret(
+#'     dtype = pl$Int32,
+#'     endianness = "little"
+#'   )
+#' )
+expr_bin_reinterpret <- function(..., dtype, endianness = c("little", "big")) {
+  wrap({
+    check_dots_empty0(...)
+    check_polars_dtype(dtype)
+    dtype <- as_polars_dtype_expr(dtype)
+    endianness <- arg_match0(endianness, values = c("little", "big"))
+    self$`_rexpr`$bin_reinterpret(dtype = dtype$`_datatype_expr`, kind = endianness)
+  })
+}

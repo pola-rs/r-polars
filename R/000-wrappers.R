@@ -1380,6 +1380,13 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRExpr_bin_reinterpret` <- function(self) {
+  function(`dtype`, `kind`) {
+    `dtype` <- .savvy_extract_ptr(`dtype`, "PlRDataTypeExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_reinterpret__impl, `self`, `dtype`, `kind`))
+  }
+}
+
 `PlRExpr_bin_size_bytes` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_size_bytes__impl, `self`))
@@ -3519,6 +3526,7 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   e$`bin_ends_with` <- `PlRExpr_bin_ends_with`(ptr)
   e$`bin_hex_decode` <- `PlRExpr_bin_hex_decode`(ptr)
   e$`bin_hex_encode` <- `PlRExpr_bin_hex_encode`(ptr)
+  e$`bin_reinterpret` <- `PlRExpr_bin_reinterpret`(ptr)
   e$`bin_size_bytes` <- `PlRExpr_bin_size_bytes`(ptr)
   e$`bin_starts_with` <- `PlRExpr_bin_starts_with`(ptr)
   e$`bitwise_and` <- `PlRExpr_bitwise_and`(ptr)
