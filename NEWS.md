@@ -14,7 +14,7 @@
 
 ### Other changes
 
-- `<expr>$list$eval()` now properly errors (as documented) if the input is not a Polars expression (1655).
+- `<expr>$list$eval()` now properly errors (as documented) if the input is not a Polars expression (#1655).
 
 ## polars 1.6.0
 
