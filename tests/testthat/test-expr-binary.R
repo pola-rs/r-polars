@@ -69,14 +69,22 @@ test_that("bin$size()", {
 })
 
 test_that("bin$reinterpret()", {
-  df <- pl$DataFrame(
-    x = as_polars_series(c("\\x05\\x00\\x00\\x00", "\\x10\\x00\\x01\\x00"))$cast(pl$Binary)
-  )
+  df <- pl$DataFrame(x = blob::as_blob(c(5L, 35L)))
 
   expect_equal(
     df$select(
-      pl$col("x")$bin$reinterpret(dtype = pl$Int32, endianness = "little")
+      pl$col("x")$bin$reinterpret(dtype = pl$UInt8, endianness = "little")
     ),
-    pl$DataFrame(x = c(5L, 65552L))
+    pl$DataFrame(x = c(5L, 35L))$cast(pl$UInt8)
+  )
+  expect_snapshot(
+    df$select(
+      pl$col("x")$bin$reinterpret(dtype = pl$UInt8, endianness = "foo")
+    ),
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(pl$col("x")$bin$reinterpret(dtype = 1)),
+    error = TRUE
   )
 })
