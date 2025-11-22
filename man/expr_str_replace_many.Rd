@@ -12,7 +12,9 @@ expr_str_replace_many(
 )
 }
 \arguments{
-\item{patterns}{String patterns to search. Can be an Expr.}
+\item{patterns}{String patterns to search. Accepts expression input. To use
+the same character vector for all rows, use
+\code{list(c(...))} instead of \code{c(...)} (see Examples).}
 
 \item{replace_with}{A vector of strings used as replacements. If this is of
 length 1, then it is applied to all matches. Otherwise, it must be of same
@@ -41,12 +43,12 @@ df <- pl$DataFrame(
 
 # a replacement of length 1 is applied to all matches
 df$with_columns(
-  remove_pronouns = pl$col("lyrics")$str$replace_many(c("you", "me"), "")
+  remove_pronouns = pl$col("lyrics")$str$replace_many(list(c("you", "me")), "")
 )
 
 # if there are more than one replacement, the patterns and replacements are
 # matched
 df$with_columns(
-  fake_pronouns = pl$col("lyrics")$str$replace_many(c("you", "me"), c("foo", "bar"))
+  fake_pronouns = pl$col("lyrics")$str$replace_many(list(c("you", "me")), c("foo", "bar"))
 )
 }
