@@ -377,6 +377,7 @@ nav:
             - reverse: man/expr__reverse.md
             - rle_id: man/expr__rle_id.md
             - rle: man/expr__rle.md
+            - rolling_kurtosis: man/expr__rolling_kurtosis.md
             - rolling_max_by: man/expr__rolling_max_by.md
             - rolling_max: man/expr__rolling_max.md
             - rolling_mean_by: man/expr__rolling_mean_by.md

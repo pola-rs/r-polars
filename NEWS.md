@@ -11,6 +11,7 @@
 - `<expr>$rolling_rank()` and `<expr>$rolling_rank_by()` (#1656).
 - `<expr>$arr$agg()` and `<expr>$list$agg()`, similar to their `$eval()` counterparts
   but automatically explode the column if all elements return a scalar (#1655).
+- `<expr>$rolling_kurtosis()` (#1665).
 
 ### Other changes
 

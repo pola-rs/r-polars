@@ -470,4 +470,28 @@ impl PlRExpr {
             .rolling_rank_by(by.inner.clone(), options)
             .into())
     }
+
+    fn rolling_kurtosis(
+        &self,
+        window_size: NumericScalar,
+        fisher: bool,
+        bias: bool,
+        center: bool,
+        min_periods: Option<NumericScalar>,
+    ) -> Result<Self> {
+        let window_size = <Wrap<usize>>::try_from(window_size)?.0;
+        let min_periods: usize = match min_periods {
+            Some(x) => <Wrap<usize>>::try_from(x)?.0,
+            None => window_size,
+        };
+        let options = RollingOptionsFixedWindow {
+            window_size,
+            weights: None,
+            min_periods,
+            center,
+            fn_params: Some(RollingFnParams::Kurtosis { fisher, bias }),
+        };
+
+        Ok(self.inner.clone().rolling_kurtosis(options).into())
+    }
 }
