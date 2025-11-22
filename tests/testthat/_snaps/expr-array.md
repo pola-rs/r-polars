@@ -194,6 +194,20 @@
 ---
 
     Code
+      df$select(pl$col("a")$arr$eval(1))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error in `pl$col("a")$arr$eval()`:
+      ! Evaluation failed in `$eval()`.
+      Caused by error in `pl$col("a")$arr$eval()`:
+      ! `expr` must be a polars expression, not the number 1.
+
+---
+
+    Code
       df$select(pl$col("a")$arr$eval(pl$element()$unique()))
     Condition
       Error in `df$select()`:
@@ -202,4 +216,18 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid operation: `array.eval` is not allowed with non-length preserving expressions. Enable `as_list` if you want to output a variable amount of items per row.
+
+# arr$agg() works
+
+    Code
+      df$select(pl$col("a")$arr$agg(1))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error in `pl$col("a")$arr$agg()`:
+      ! Evaluation failed in `$agg()`.
+      Caused by error in `pl$col("a")$arr$agg()`:
+      ! `expr` must be a polars expression, not the number 1.
 

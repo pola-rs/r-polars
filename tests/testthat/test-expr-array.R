@@ -407,6 +407,10 @@ test_that("arr$eval()", {
     df$select(pl$col("a")$arr$eval(pl$element()$unique())),
     error = TRUE
   )
+  expect_snapshot(
+    df$select(pl$col("a")$arr$eval(1)),
+    error = TRUE
+  )
   expect_identical(
     df$select(pl$col("a")$arr$eval(pl$element()$unique(), as_list = TRUE)),
     pl$DataFrame(a = list(c(1), c(8, 5), c(3, 2)))
@@ -419,6 +423,23 @@ test_that("arr$eval()", {
   )$cast(pl$Array(pl$Float64, 2))
   expect_snapshot(
     df$select(pl$col("a")$arr$eval(pl$element()$unique())),
+    error = TRUE
+  )
+})
+
+test_that("arr$agg() works", {
+  df <- pl$DataFrame(a = list(c(1, NA), c(42, 13), c(NA, NA)))$cast(pl$Array(pl$Int64, 2))
+
+  expect_equal(
+    df$select(pl$col("a")$arr$agg(pl$element()$null_count())),
+    pl$DataFrame(a = c(1, 0, 2))$cast(pl$UInt32)
+  )
+  expect_equal(
+    df$select(pl$col("a")$arr$agg(pl$element()$drop_nulls())),
+    pl$DataFrame(a = list(1, c(42, 13), numeric(0)))$cast(pl$List(pl$Int64))
+  )
+  expect_snapshot(
+    df$select(pl$col("a")$arr$agg(1)),
     error = TRUE
   )
 })

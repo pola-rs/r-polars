@@ -491,6 +491,10 @@ test_that("eval", {
       rank = list(c(1, 2), c(2, 1), c(2, 1))
     )
   )
+  expect_snapshot(
+    df$with_columns(pl$concat_list("a", "b")$list$eval(1)),
+    error = TRUE
+  )
 })
 
 test_that("$list$all() works", {
@@ -742,3 +746,20 @@ patrick::with_parameters_test_that(
     )
   }
 )
+
+test_that("list$agg() works", {
+  df <- pl$DataFrame(a = list(c(1, NA), c(42, 13), c(NA, NA)))
+
+  expect_equal(
+    df$select(pl$col("a")$list$agg(pl$element()$null_count())),
+    pl$DataFrame(a = c(1, 0, 2))$cast(pl$UInt32)
+  )
+  expect_equal(
+    df$select(pl$col("a")$list$agg(pl$element()$drop_nulls())),
+    pl$DataFrame(a = list(1, c(42, 13), numeric(0)))
+  )
+  expect_snapshot(
+    df$select(pl$col("a")$list$agg(1)),
+    error = TRUE
+  )
+})

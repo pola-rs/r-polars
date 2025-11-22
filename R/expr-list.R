@@ -514,8 +514,10 @@ expr_list_tail <- function(n = 5L) {
 #'   pl$col("b")$list$eval(pl$element()$str$join(" "))$list$first()
 #' )
 expr_list_eval <- function(expr) {
-  self$`_rexpr`$list_eval(as_polars_expr(expr)$`_rexpr`) |>
-    wrap()
+  wrap({
+    check_polars_expr(expr)
+    self$`_rexpr`$list_eval(expr$`_rexpr`)
+  })
 }
 
 #' Evaluate whether all boolean values in a sub-list are true
@@ -875,4 +877,36 @@ expr_list_drop_nulls <- function() {
 expr_list_count_matches <- function(element) {
   self$`_rexpr`$list_count_matches(as_polars_expr(element, as_lit = TRUE)$`_rexpr`) |>
     wrap()
+}
+
+#' Run any polars aggregation expression against the lists' elements
+#'
+#' This looks similar to [`$list$eval()`][expr_list_eval], but the key
+#' difference is that `$list$agg()` automatically explodes the list if the
+#' expression inside returns a scalar (while `$list$eval()` always returns a
+#' list).
+#'
+#' @inheritParams expr_list_eval
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(a = list(c(1, NA), c(42, 13), c(NA, NA)))
+#'
+#' # The column "null_count" has dtype u32 because `$null_count()` returns a
+#' # scalar for each sub-list. Using `$list$eval()` instead would return a
+#' # column with dtype list(u32).
+#' df$with_columns(
+#'   null_count = pl$col("a")$list$agg(pl$element()$null_count())
+#' )
+#'
+#' # The column "no_nulls" has dtype list(u32) because the expression doesn't
+#' # guarantee to return a scalar.
+#' df$with_columns(
+#'   no_nulls = pl$col("a")$list$agg(pl$element()$drop_nulls())
+#' )
+expr_list_agg <- function(expr) {
+  wrap({
+    check_polars_expr(expr)
+    self$`_rexpr`$list_agg(expr$`_rexpr`)
+  })
 }
