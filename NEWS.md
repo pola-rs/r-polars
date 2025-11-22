@@ -12,6 +12,7 @@
 - `<expr>$arr$agg()` and `<expr>$list$agg()`, similar to their `$eval()` counterparts
   but automatically explode the column if all elements return a scalar (#1655).
 - `<expr>$rolling_kurtosis()` (#1665).
+- `pl$explain_all()` to show a single optimized query plan from several input LazyFrames (#1666).
 
 ### Other changes
 

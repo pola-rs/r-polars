@@ -723,6 +723,7 @@ nav:
       Functions:
         - collect_all: man/pl__collect_all.md
         - concat: man/pl__concat.md
+        - explain_all: man/pl__explain_all.md
         - Expr: man/polars_expr.md
         - DataFrame: man/pl__DataFrame.md
         - LazyFrame: man/pl__LazyFrame.md
