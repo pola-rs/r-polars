@@ -194,10 +194,10 @@ expr_list_get <- function(index, ..., null_on_oob = TRUE) {
 #' single column, or by sub-lists in another column of dtype List.
 #'
 #' @param indices An Expr or something coercible to an Expr of datatype List,
-#' that can return (see examples). Values are 0-indexed (so index 0 would return
-#' the first item of every sub-list) and negative values start from the end
-#' (index `-1` returns the last item). If the index is out of bounds, it will
-#' return a `null`. Strings are parsed as column names.
+#' (see examples). Values are 0-indexed (so index 0 would return the first item
+#' of every sub-list) and negative values start from the end (index `-1` returns
+#' the last item). If the index is out of bounds, it will return a `null`.
+#' Strings are parsed as column names.
 #' @inheritParams expr_list_get
 #' @inheritParams rlang::args_dots_empty
 #' @inherit as_polars_expr return

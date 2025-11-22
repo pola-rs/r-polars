@@ -8,10 +8,10 @@ expr_list_gather(indices, ..., null_on_oob = FALSE)
 }
 \arguments{
 \item{indices}{An Expr or something coercible to an Expr of datatype List,
-that can return (see examples). Values are 0-indexed (so index 0 would return
-the first item of every sub-list) and negative values start from the end
-(index \code{-1} returns the last item). If the index is out of bounds, it will
-return a \code{null}. Strings are parsed as column names.}
+(see examples). Values are 0-indexed (so index 0 would return the first item
+of every sub-list) and negative values start from the end (index \code{-1} returns
+the last item). If the index is out of bounds, it will return a \code{null}.
+Strings are parsed as column names.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
