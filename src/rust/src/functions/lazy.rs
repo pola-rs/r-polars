@@ -300,3 +300,13 @@ pub fn collect_all(lfs: ListSexp, engine: &str, optimizations: Sexp) -> Result<S
     }
     Ok(out.into())
 }
+
+#[savvy]
+pub fn explain_all(lfs: ListSexp, optflags: Sexp) -> Result<Sexp> {
+    let lfs = <Wrap<Vec<LazyFrame>>>::try_from(lfs)?.0;
+    let optflags = <PlROptFlags>::try_from(optflags)?;
+    let plans = lfs_to_plans(lfs)?;
+    let explained =
+        LazyFrame::explain_all(plans, optflags.inner.into_inner()).map_err(RPolarsErr::from)?;
+    explained.try_into()
+}
