@@ -197,7 +197,9 @@ expr_bin_size <- function(unit = c("b", "kb", "mb", "gb", "tb")) {
 #' @inherit as_polars_expr return
 #'
 #' @examples
-#' df <- pl$DataFrame(x = as_polars_series(c("\\x05\\x00\\x00\\x00", "\\x10\\x00\\x01\\x00"))$cast(pl$Binary))
+#' df <- pl$DataFrame(
+#'   x = as_polars_series(c("\\x05\\x00\\x00\\x00", "\\x10\\x00\\x01\\x00"))$cast(pl$Binary)
+#' )
 #'
 #' df$with_columns(
 #'   bin2int = pl$col("x")$bin$reinterpret(
@@ -208,7 +210,6 @@ expr_bin_size <- function(unit = c("b", "kb", "mb", "gb", "tb")) {
 expr_bin_reinterpret <- function(..., dtype, endianness = c("little", "big")) {
   wrap({
     check_dots_empty0(...)
-    check_polars_dtype(dtype)
     dtype <- as_polars_dtype_expr(dtype)
     endianness <- arg_match0(endianness, values = c("little", "big"))
     self$`_rexpr`$bin_reinterpret(dtype = dtype$`_datatype_expr`, kind = endianness)

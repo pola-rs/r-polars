@@ -23,7 +23,9 @@ Supported types are numerical or temporal dtypes, or an \code{\link[=pl__Array]{
 of these dtypes.
 }
 \examples{
-df <- pl$DataFrame(x = c("\x05\x00\x00\x00", "\x10\x00\x01\x00"))
+df <- pl$DataFrame(
+  x = as_polars_series(c("\\\\x05\\\\x00\\\\x00\\\\x00", "\\\\x10\\\\x00\\\\x01\\\\x00"))$cast(pl$Binary)
+)
 
 df$with_columns(
   bin2int = pl$col("x")$bin$reinterpret(
