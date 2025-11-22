@@ -1,4 +1,4 @@
-use crate::PlRExpr;
+use crate::{PlRExpr, expr::datatype::PlRDataTypeExpr};
 use savvy::{Result, savvy};
 
 #[savvy]
@@ -48,5 +48,19 @@ impl PlRExpr {
 
     fn bin_size_bytes(&self) -> Result<Self> {
         Ok(self.inner.clone().binary().size_bytes().into())
+    }
+
+    fn bin_reinterpret(&self, dtype: &PlRDataTypeExpr, kind: &str) -> Result<Self> {
+        let is_little_endian = match kind {
+            "little" => true,
+            "big" => false,
+            _ => unreachable!(),
+        };
+        Ok(self
+            .inner
+            .clone()
+            .binary()
+            .reinterpret(dtype.inner.clone(), is_little_endian)
+            .into())
     }
 }

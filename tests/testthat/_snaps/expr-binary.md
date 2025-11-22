@@ -40,3 +40,31 @@
       Caused by error in `pl$col("x")$bin$size()`:
       ! `unit` must be one of "b", "kb", "mb", "gb", or "tb", not "foo".
 
+# bin$reinterpret()
+
+    Code
+      df$select(pl$col("x")$bin$reinterpret(dtype = pl$UInt8, endianness = "foo"))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error in `pl$col("x")$bin$reinterpret()`:
+      ! Evaluation failed in `$reinterpret()`.
+      Caused by error in `pl$col("x")$bin$reinterpret()`:
+      ! `endianness` must be one of "little" or "big", not "foo".
+
+---
+
+    Code
+      df$select(pl$col("x")$bin$reinterpret(dtype = 1))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error in `pl$col("x")$bin$reinterpret()`:
+      ! Evaluation failed in `$reinterpret()`.
+      Caused by error in `as_polars_dtype_expr()`:
+      ! the number 1 can't be converted to a polars datatype expression.
+
