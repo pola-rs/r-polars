@@ -369,3 +369,17 @@
     Output
       col("foo").list.to_struct()
 
+# list$agg() works
+
+    Code
+      df$select(pl$col("a")$list$agg(1))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error in `pl$col("a")$list$agg()`:
+      ! Evaluation failed in `$agg()`.
+      Caused by error in `pl$col("a")$list$agg()`:
+      ! `expr` must be a polars expression, not the number 1.
+

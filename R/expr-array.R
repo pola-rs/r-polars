@@ -458,7 +458,8 @@ expr_arr_len <- function() {
 expr_arr_eval <- function(expr, ..., as_list = FALSE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$arr_eval(as_polars_expr(expr)$`_rexpr`, as_list)
+    check_polars_expr(expr)
+    self$`_rexpr`$arr_eval(expr$`_rexpr`, as_list)
   })
 }
 
@@ -489,6 +490,8 @@ expr_arr_eval <- function(expr, ..., as_list = FALSE) {
 #'   no_nulls = pl$col("a")$arr$agg(pl$element()$drop_nulls())
 #' )
 expr_arr_agg <- function(expr) {
-  self$`_rexpr`$arr_agg(as_polars_expr(expr, as_lit = TRUE)$`_rexpr`) |>
-    wrap()
+  wrap({
+    check_polars_expr(expr)
+    self$`_rexpr`$arr_agg(expr$`_rexpr`)
+  })
 }

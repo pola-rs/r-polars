@@ -754,4 +754,8 @@ test_that("list$agg() works", {
     df$select(pl$col("a")$list$agg(pl$element()$drop_nulls())),
     pl$DataFrame(a = list(1, c(42, 13), numeric(0)))
   )
+  expect_snapshot(
+    df$select(pl$col("a")$list$agg(1)),
+    error = TRUE
+  )
 })

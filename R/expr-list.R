@@ -903,6 +903,8 @@ expr_list_count_matches <- function(element) {
 #'   no_nulls = pl$col("a")$list$agg(pl$element()$drop_nulls())
 #' )
 expr_list_agg <- function(expr) {
-  self$`_rexpr`$list_agg(as_polars_expr(expr, as_lit = TRUE)$`_rexpr`) |>
-    wrap()
+  wrap({
+    check_polars_expr(expr)
+    self$`_rexpr`$list_agg(expr$`_rexpr`)
+  })
 }
