@@ -377,6 +377,7 @@ nav:
             - reverse: man/expr__reverse.md
             - rle_id: man/expr__rle_id.md
             - rle: man/expr__rle.md
+            - rolling_kurtosis: man/expr__rolling_kurtosis.md
             - rolling_max_by: man/expr__rolling_max_by.md
             - rolling_max: man/expr__rolling_max.md
             - rolling_mean_by: man/expr__rolling_mean_by.md
@@ -429,6 +430,7 @@ nav:
             - var: man/expr__var.md
             - xor: man/expr__xor.md
         - Array:
+            - arr_agg: man/expr_arr_agg.md
             - arr_all: man/expr_arr_all.md
             - arr_any: man/expr_arr_any.md
             - arr_arg_max: man/expr_arr_arg_max.md
@@ -509,6 +511,7 @@ nav:
             - time_ranges: man/pl__time_ranges.md
             - when: man/pl__when.md
         - List:
+            - list_agg: man/expr_list_agg.md
             - list_all: man/expr_list_all.md
             - list_any: man/expr_list_any.md
             - list_arg_max: man/expr_list_arg_max.md
@@ -720,6 +723,7 @@ nav:
       Functions:
         - collect_all: man/pl__collect_all.md
         - concat: man/pl__concat.md
+        - explain_all: man/pl__explain_all.md
         - Expr: man/polars_expr.md
         - DataFrame: man/pl__DataFrame.md
         - LazyFrame: man/pl__LazyFrame.md

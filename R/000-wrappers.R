@@ -193,6 +193,11 @@ NULL
 }
 
 
+`explain_all` <- function(`lfs`, `optimizations`) {
+  .Call(savvy_explain_all__impl, `lfs`, `optimizations`)
+}
+
+
 `feature_nightly_enabled` <- function() {
   .Call(savvy_feature_nightly_enabled__impl)
 }
@@ -1174,6 +1179,13 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
 `PlRExpr_arg_unique` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arg_unique__impl, `self`))
+  }
+}
+
+`PlRExpr_arr_agg` <- function(self) {
+  function(`expr`) {
+    `expr` <- .savvy_extract_ptr(`expr`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arr_agg__impl, `self`, `expr`))
   }
 }
 
@@ -2165,6 +2177,13 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRExpr_list_agg` <- function(self) {
+  function(`expr`) {
+    `expr` <- .savvy_extract_ptr(`expr`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_agg__impl, `self`, `expr`))
+  }
+}
+
 `PlRExpr_list_all` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_all__impl, `self`))
@@ -2755,6 +2774,12 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   function(`index_column`, `period`, `offset`, `closed`) {
     `index_column` <- .savvy_extract_ptr(`index_column`, "PlRExpr")
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling__impl, `self`, `index_column`, `period`, `offset`, `closed`))
+  }
+}
+
+`PlRExpr_rolling_kurtosis` <- function(self) {
+  function(`window_size`, `fisher`, `bias`, `center`, `min_periods` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_kurtosis__impl, `self`, `window_size`, `fisher`, `bias`, `center`, `min_periods`))
   }
 }
 
@@ -3467,6 +3492,7 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   e$`arg_min` <- `PlRExpr_arg_min`(ptr)
   e$`arg_sort` <- `PlRExpr_arg_sort`(ptr)
   e$`arg_unique` <- `PlRExpr_arg_unique`(ptr)
+  e$`arr_agg` <- `PlRExpr_arr_agg`(ptr)
   e$`arr_all` <- `PlRExpr_arr_all`(ptr)
   e$`arr_any` <- `PlRExpr_arr_any`(ptr)
   e$`arr_arg_max` <- `PlRExpr_arr_arg_max`(ptr)
@@ -3623,6 +3649,7 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   e$`kurtosis` <- `PlRExpr_kurtosis`(ptr)
   e$`last` <- `PlRExpr_last`(ptr)
   e$`len` <- `PlRExpr_len`(ptr)
+  e$`list_agg` <- `PlRExpr_list_agg`(ptr)
   e$`list_all` <- `PlRExpr_list_all`(ptr)
   e$`list_any` <- `PlRExpr_list_any`(ptr)
   e$`list_arg_max` <- `PlRExpr_list_arg_max`(ptr)
@@ -3716,6 +3743,7 @@ class(`PlRDataTypeExpr`) <- c("PlRDataTypeExpr__bundle", "savvy_polars__sealed")
   e$`rle` <- `PlRExpr_rle`(ptr)
   e$`rle_id` <- `PlRExpr_rle_id`(ptr)
   e$`rolling` <- `PlRExpr_rolling`(ptr)
+  e$`rolling_kurtosis` <- `PlRExpr_rolling_kurtosis`(ptr)
   e$`rolling_max` <- `PlRExpr_rolling_max`(ptr)
   e$`rolling_max_by` <- `PlRExpr_rolling_max_by`(ptr)
   e$`rolling_mean` <- `PlRExpr_rolling_mean`(ptr)

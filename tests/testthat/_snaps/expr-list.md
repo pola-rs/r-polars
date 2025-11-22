@@ -35,22 +35,6 @@
 # gather
 
     Code
-      dat$with_columns(pl$col("x")$list$gather(1L, null_on_oob = TRUE))
-    Output
-      shape: (3, 1)
-      ┌───────────┐
-      │ x         │
-      │ ---       │
-      │ list[i32] │
-      ╞═══════════╡
-      │ [2]       │
-      │ [5]       │
-      │ [null]    │
-      └───────────┘
-
----
-
-    Code
       dat$with_columns(pl$col("x")$list$gather(list(1), null_on_oob = TRUE))
     Condition
       Error in `dat$with_columns()`:
@@ -59,6 +43,18 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid operation: list.gather operation not supported for dtypes `list[i32]` and `list[f64]`
+
+---
+
+    Code
+      dat$with_columns(pl$col("x")$list$gather(list(0L, 0L), null_on_oob = TRUE))
+    Condition
+      Error in `dat$with_columns()`:
+      ! Evaluation failed in `$with_columns()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: arguments for `list.gather` have different lengths (3 != 2)
 
 ---
 
@@ -143,6 +139,20 @@
       x Problematic argument:
       * ..1 = TRUE
       i Did you forget to name an argument?
+
+# eval
+
+    Code
+      df$with_columns(pl$concat_list("a", "b")$list$eval(1))
+    Condition
+      Error in `df$with_columns()`:
+      ! Evaluation failed in `$with_columns()`.
+      Caused by error:
+      ! Evaluation failed in `$with_columns()`.
+      Caused by error in `pl$concat_list("a", "b")$list$eval()`:
+      ! Evaluation failed in `$eval()`.
+      Caused by error in `pl$concat_list("a", "b")$list$eval()`:
+      ! `expr` must be a polars expression, not the number 1.
 
 # $list$explode() works
 
@@ -368,4 +378,18 @@
       i Either modify `fields` to be a vector or specify `upper_bound` to suppress this warning.
     Output
       col("foo").list.to_struct()
+
+# list$agg() works
+
+    Code
+      df$select(pl$col("a")$list$agg(1))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error in `pl$col("a")$list$agg()`:
+      ! Evaluation failed in `$agg()`.
+      Caused by error in `pl$col("a")$list$agg()`:
+      ! `expr` must be a polars expression, not the number 1.
 

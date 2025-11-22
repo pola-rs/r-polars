@@ -9,6 +9,14 @@
 - `<expr>$name$replace()` to replace expression names using regular expressions (#1654).
 - `<expr>$dt$days_in_month()` (#1659).
 - `<expr>$rolling_rank()` and `<expr>$rolling_rank_by()` (#1656).
+- `<expr>$arr$agg()` and `<expr>$list$agg()`, similar to their `$eval()` counterparts
+  but automatically explode the column if all elements return a scalar (#1655).
+- `<expr>$rolling_kurtosis()` (#1665).
+- `pl$explain_all()` to show a single optimized query plan from several input LazyFrames (#1666).
+
+### Other changes
+
+- `<expr>$list$eval()` now properly errors (as documented) if the input is not a Polars expression (#1655).
 
 ## polars 1.6.0
 
