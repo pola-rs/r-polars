@@ -431,8 +431,8 @@
 # str$replace_many
 
     Code
-      dat$with_columns(pl$col("x")$str$replace_many(c("hi", "hello"), c("foo", "bar",
-        "foo2")))
+      dat$with_columns(pl$col("x")$str$replace_many(list(c("hi", "hello")), list(c(
+        "foo", "bar", "foo2"))))
     Condition
       Error in `dat$with_columns()`:
       ! Evaluation failed in `$with_columns()`.
@@ -444,8 +444,8 @@
 ---
 
     Code
-      dat$with_columns(pl$col("x")$str$replace_many(c("hi", "hello", "good morning"),
-      c("foo", "bar")))
+      dat$with_columns(pl$col("x")$str$replace_many(list(c("hi", "hello",
+        "good morning")), list(c("foo", "bar"))))
     Condition
       Error in `dat$with_columns()`:
       ! Evaluation failed in `$with_columns()`.

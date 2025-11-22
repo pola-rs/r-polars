@@ -12,8 +12,10 @@ expr_str_extract_many(
 )
 }
 \arguments{
-\item{patterns}{String patterns to search. This can be an Expr or something
-coercible to an Expr. Strings are parsed as column names.}
+\item{patterns}{String patterns to search. Accepts expression input. Strings
+are parsed as column names, and other non-expression inputs are parsed as
+literals. To use the same character vector for all rows, use
+\code{list(c(...))} instead of \code{c(...)} (see Examples).}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
@@ -28,12 +30,12 @@ A polars \link{expression}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-This method supports matching on string literals only,
-and does not support regular expression matching.
+This method supports matching on string literals only, and does not support
+regular expression matching.
 }
 \examples{
 df <- pl$DataFrame(values = "discontent")
-patterns <- pl$lit(c("winter", "disco", "onte", "discontent"))
+patterns <- list(c("winter", "disco", "onte", "discontent"))
 
 df$with_columns(
   matches = pl$col("values")$str$extract_many(patterns),
