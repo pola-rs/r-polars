@@ -40,7 +40,10 @@ pub fn date_range(start: &PlRExpr, end: &PlRExpr, interval: &str, closed: &str) 
     let end = end.inner.clone();
     let interval = Duration::parse(interval);
     let closed = <Wrap<ClosedWindow>>::try_from(closed)?.0;
-    Ok(dsl::date_range(start, end, interval, closed).into())
+    dsl::date_range(Some(start), Some(end), Some(interval), None, closed)
+        .map_err(RPolarsErr::from)
+        .map_err(Into::into)
+        .map(PlRExpr::from)
 }
 
 #[savvy]
@@ -54,7 +57,10 @@ pub fn date_ranges(
     let end = end.inner.clone();
     let interval = Duration::parse(interval);
     let closed = <Wrap<ClosedWindow>>::try_from(closed)?.0;
-    Ok(dsl::date_ranges(start, end, interval, closed).into())
+    dsl::date_ranges(Some(start), Some(end), Some(interval), None, closed)
+        .map_err(RPolarsErr::from)
+        .map_err(Into::into)
+        .map(PlRExpr::from)
 }
 
 #[savvy]
@@ -75,7 +81,18 @@ pub fn datetime_range(
         None => None,
     };
     let time_zone = <Wrap<Option<TimeZone>>>::try_from(time_zone)?.0;
-    Ok(dsl::datetime_range(start, end, every, closed, time_unit, time_zone).into())
+    dsl::datetime_range(
+        Some(start),
+        Some(end),
+        Some(every),
+        None,
+        closed,
+        time_unit,
+        time_zone,
+    )
+    .map_err(RPolarsErr::from)
+    .map_err(Into::into)
+    .map(PlRExpr::from)
 }
 
 #[savvy]
@@ -96,7 +113,18 @@ pub fn datetime_ranges(
         None => None,
     };
     let time_zone = <Wrap<Option<TimeZone>>>::try_from(time_zone)?.0;
-    Ok(dsl::datetime_ranges(start, end, every, closed, time_unit, time_zone).into())
+    dsl::datetime_ranges(
+        Some(start),
+        Some(end),
+        Some(every),
+        None,
+        closed,
+        time_unit,
+        time_zone,
+    )
+    .map_err(RPolarsErr::from)
+    .map_err(Into::into)
+    .map(PlRExpr::from)
 }
 
 #[savvy]

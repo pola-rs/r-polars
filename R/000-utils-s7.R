@@ -42,3 +42,67 @@ prop_bool <- function(default = NULL, allow_null = FALSE, allow_na = FALSE) {
     }
   )
 }
+
+prop_number_whole <- function(
+  default = NULL,
+  min = NULL,
+  max = NULL,
+  allow_null = FALSE,
+  allow_na = FALSE
+) {
+  force(allow_null)
+  force(allow_na)
+
+  new_property(
+    class = if (allow_null) NULL | class_double else class_double,
+    default = default,
+    validator = function(value) {
+      if (allow_null && is.null(value)) {
+        return()
+      }
+
+      if (length(value) != 1) {
+        paste0("must be a whole number, not ", obj_type_friendly(value), ".")
+      } else if (!allow_na && is.na(value)) {
+        "must not be missing."
+      } else if (value != trunc(value)) {
+        paste0("must be a whole number, not ", obj_type_friendly(value), ".")
+      } else if (!is.null(min) && value < min) {
+        paste0("must be at least ", min, ", not ", value, ".")
+      } else if (!is.null(max) && value > max) {
+        paste0("must be at most ", max, ", not ", value, ".")
+      }
+    }
+  )
+}
+
+prop_list_of <- function(class, names = c("any", "all", "none")) {
+  force(class)
+  names <- arg_match(names)
+
+  new_property(
+    class = class_list,
+    validator = function(value) {
+      for (i in seq_along(value)) {
+        val <- value[[i]]
+        if (!S7_inherits(val, class)) {
+          return(paste0(
+            "must be a list of <",
+            class@name,
+            ">s. ",
+            "Element ",
+            i,
+            " is ",
+            obj_type_friendly(val),
+            "."
+          ))
+        }
+      }
+      if (names == "all" && any(names2(value) == "")) {
+        "must be a named list."
+      } else if (names == "none" && any(names2(value) != "")) {
+        "must be an unnamed list."
+      }
+    }
+  )
+}

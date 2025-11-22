@@ -544,8 +544,8 @@ impl PlRExpr {
         Ok(self.inner.clone().exp().into())
     }
 
-    fn mode(&self) -> Result<Self> {
-        Ok(self.inner.clone().mode().into())
+    fn mode(&self, maintain_order: bool) -> Result<Self> {
+        Ok(self.inner.clone().mode(maintain_order).into())
     }
 
     fn entropy(&self, base: f64, normalize: bool) -> Result<Self> {
@@ -696,8 +696,15 @@ impl PlRExpr {
             .into())
     }
 
-    fn explode(&self) -> Result<Self> {
-        Ok(self.inner.clone().explode().into())
+    fn explode(&self, empty_as_null: bool, keep_nulls: bool) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .explode(ExplodeOptions {
+                empty_as_null,
+                keep_nulls,
+            })
+            .into())
     }
 
     fn gather(&self, idx: &PlRExpr) -> Result<Self> {
@@ -999,20 +1006,20 @@ impl PlRExpr {
 
     fn rolling(
         &self,
-        index_column: &str,
+        index_column: &PlRExpr,
         period: &str,
         offset: &str,
         closed: &str,
     ) -> Result<Self> {
+        let period = Duration::try_parse(period).map_err(RPolarsErr::from)?;
+        let offset = Duration::try_parse(offset).map_err(RPolarsErr::from)?;
         let closed = <Wrap<ClosedWindow>>::try_from(closed)?.0;
-        let options = RollingGroupOptions {
-            index_column: index_column.into(),
-            period: Duration::parse(period),
-            offset: Duration::parse(offset),
-            closed_window: closed,
-        };
 
-        Ok(self.inner.clone().rolling(options).into())
+        Ok(self
+            .inner
+            .clone()
+            .rolling(index_column.inner.clone(), period, offset, closed)
+            .into())
     }
 
     #[allow(clippy::wrong_self_convention)]
