@@ -3965,7 +3965,7 @@ expr__drop_nulls <- function() {
 #' )
 #'
 #' df$select(pl$col("values")$explode())
-expr__explode <- function(..., , empty_as_null = TRUE, keep_nulls = TRUE) {
+expr__explode <- function(..., empty_as_null = TRUE, keep_nulls = TRUE) {
   wrap({
     check_dots_empty0(...)
     self$`_rexpr`$explode(empty_as_null = empty_as_null, keep_nulls = keep_nulls)
