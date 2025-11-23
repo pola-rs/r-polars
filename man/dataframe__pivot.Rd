@@ -6,6 +6,7 @@
 \usage{
 dataframe__pivot(
   on,
+  on_columns = NULL,
   ...,
   index = NULL,
   values = NULL,

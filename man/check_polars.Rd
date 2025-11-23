@@ -12,6 +12,7 @@
 \alias{is_polars_series}
 \alias{is_polars_partitioning_scheme}
 \alias{is_list_of_polars_dtype}
+\alias{is_list_of_polars_expr}
 \alias{is_list_of_polars_lf}
 \alias{check_polars_df}
 \alias{check_polars_dtype}
@@ -42,6 +43,8 @@ is_polars_series(x)
 is_polars_partitioning_scheme(x)
 
 is_list_of_polars_dtype(x, n = NULL)
+
+is_list_of_polars_expr(x, n = NULL)
 
 is_list_of_polars_lf(x, n = NULL)
 

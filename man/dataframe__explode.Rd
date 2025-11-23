@@ -4,12 +4,16 @@
 \alias{dataframe__explode}
 \title{Explode the frame to long format by exploding the given columns}
 \usage{
-dataframe__explode(...)
+dataframe__explode(..., empty_as_null = TRUE, keep_nulls = TRUE)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column names or \link[=polars_selector]{selectors}
 defining them. The underlying columns being exploded must be of
 the \code{List} or \code{Array} data type.}
+
+\item{empty_as_null}{Indicates to explode an empty list/array into a \code{null}.}
+
+\item{keep_nulls}{Indicates to explode a \code{null} list/array into a \code{null}.}
 }
 \value{
 A polars \link{DataFrame}

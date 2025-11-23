@@ -4,7 +4,13 @@
 \alias{expr__mode}
 \title{Compute the most occurring value(s)}
 \usage{
-expr__mode()
+expr__mode(..., maintain_order = FALSE)
+}
+\arguments{
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{maintain_order}{If \code{TRUE}, maintain order of data.
+This requires more work.}
 }
 \value{
 A polars \link{expression}
