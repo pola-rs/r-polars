@@ -34,7 +34,8 @@ pl__select <- function(...) {
 #'   a_b_doubled = pl$concat_list(c("a", "b"))$list$eval(pl$element() * 2)
 #' )
 pl__element <- function() {
-  pl$col("")
+  element() |>
+    wrap()
 }
 
 #' Folds the columns from left to right, keeping the first non-null value

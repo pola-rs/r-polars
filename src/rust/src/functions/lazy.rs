@@ -112,6 +112,11 @@ pub fn col(name: &str) -> Result<PlRExpr> {
 }
 
 #[savvy]
+pub fn element() -> Result<PlRExpr> {
+    Ok(dsl::element().into())
+}
+
+#[savvy]
 pub fn cols(names: StringSexp) -> Result<PlRExpr> {
     let names = names.iter().collect::<Vec<_>>();
     Ok(dsl::cols(names).as_expr().into())

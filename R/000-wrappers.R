@@ -193,6 +193,11 @@ NULL
 }
 
 
+`element` <- function() {
+  .savvy_wrap_PlRExpr(.Call(savvy_element__impl))
+}
+
+
 `explain_all` <- function(`lfs`, `optimizations`) {
   .Call(savvy_explain_all__impl, `lfs`, `optimizations`)
 }

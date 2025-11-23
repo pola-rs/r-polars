@@ -1542,6 +1542,85 @@ lazyframe__join_where <- function(
   })
 }
 
+lazyframe__pivot <- function(
+  on,
+  on_columns,
+  ...,
+  index = NULL,
+  values = NULL,
+  aggregate_function = NULL,
+  maintain_order = FALSE,
+  separator = "_"
+) {
+  wrap({
+    check_dots_empty0(...)
+    if (is.null(index) && is.null(values)) {
+      abort(sprintf(
+        "Either %s or %s needs to be specified.",
+        format_arg("index"),
+        format_arg("values")
+      ))
+    }
+
+    on_selector <- parse_into_selector(!!!on, .arg_name = "on")
+
+    if (!is.null(values)) {
+      values_selector <- parse_into_selector(!!!values, .arg_name = "values")
+    }
+    if (!is.null(index)) {
+      index_selector <- parse_into_selector(!!!index, .arg_name = "index")
+    }
+
+    if (is.null(values)) {
+      values_selector <- cs$all() - on_selector - index_selector
+    }
+    if (is.null(index)) {
+      index_selector <- cs$all() - on_selector - values_selector
+    }
+
+    agg <- if (is_character(aggregate_function)) {
+      switch(
+        arg_match0(
+          aggregate_function,
+          values = c("min", "max", "first", "last", "sum", "mean", "median", "len", "item")
+        ),
+        first = pl$element()$first(),
+        item = pl$element()$item(),
+        sum = pl$element()$sum(),
+        max = pl$element()$max(),
+        min = pl$element()$min(),
+        mean = pl$element()$mean(),
+        median = pl$element()$median(),
+        last = pl$element()$last(),
+        len = pl$element()$count(),
+        abort("unreachable")
+      )$`_rexpr`
+    } else if (is_polars_expr(aggregate_function)) {
+      aggregate_function
+    } else if (is.null(aggregate_function)) {
+      pl$element()$item(allow_empty = TRUE)
+    } else {
+      abort("`aggregate_function` must be `NULL`, a character, or a Polars expression.")
+    }
+
+    on_columns <- if (is_polars_df(on_columns)) {
+      on_columns
+    } else {
+      as_polars_series(on_columns)$to_frame()
+    }
+
+    self$`_ldf`$pivot(
+      on = on_selector$`_rselector`,
+      on_columns = on_columns$`_df`,
+      index = index_selector$`_rselector`,
+      values = values_selector$`_rselector`,
+      agg = agg$`_rexpr`,
+      maintain_order = maintain_order,
+      separator = separator
+    )
+  })
+}
+
 #' Unpivot a frame from wide to long format
 #'
 #' This function is useful to massage a frame into a format where one or
@@ -1623,6 +1702,7 @@ lazyframe__rename <- function(..., .strict = TRUE) {
 
 #' Explode the frame to long format by exploding the given columns
 #'
+#' @inheritParams expr__explode
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column names or [selectors][polars_selector]
 #'   defining them. The underlying columns being exploded must be of
 #'   the `List` or `Array` data type.
@@ -1635,9 +1715,9 @@ lazyframe__rename <- function(..., .strict = TRUE) {
 #' )
 #'
 #' lf$explode("numbers")$collect()
-lazyframe__explode <- function(...) {
+lazyframe__explode <- function(..., empty_as_null = TRUE, keep_nulls = TRUE) {
   parse_into_selector(...)$`_rselector` |>
-    self$`_ldf`$explode() |>
+    self$`_ldf`$explode(empty_as_null = empty_as_null, keep_nulls = keep_nulls) |>
     wrap()
 }
 

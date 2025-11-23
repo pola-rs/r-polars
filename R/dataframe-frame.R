@@ -1096,8 +1096,10 @@ dataframe__fill_null <- function(
 #' )
 #'
 #' df$explode("numbers")
-dataframe__explode <- function(...) {
-  self$lazy()$explode(...)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
+dataframe__explode <- function(..., empty_as_null = TRUE, keep_nulls = TRUE) {
+  self$lazy()$explode(..., empty_as_null = TRUE, keep_nulls = TRUE)$collect(
+    optimizations = DEFAULT_EAGER_OPT_FLAGS
+  ) |>
     wrap()
 }
 
@@ -1577,6 +1579,7 @@ dataframe__partition_by <- function(..., maintain_order = TRUE, include_key = TR
 #' df$lazy()$group_by(index)$agg(!!!funs)$collect()
 dataframe__pivot <- function(
   on,
+  on_columns = NULL,
   ...,
   index = NULL,
   values = NULL,
@@ -1586,59 +1589,28 @@ dataframe__pivot <- function(
   separator = "_"
 ) {
   wrap({
-    check_dots_empty0(...)
-
-    aggregate_expr <- if (is_character(aggregate_function)) {
-      switch(
-        arg_match0(
-          aggregate_function,
-          values = c("min", "max", "first", "last", "sum", "mean", "median", "len")
-        ),
-        "min" = pl$element()$min(),
-        "max" = pl$element()$max(),
-        "first" = pl$element()$first(),
-        "last" = pl$element()$last(),
-        "sum" = pl$element()$sum(),
-        "mean" = pl$element()$mean(),
-        "median" = pl$element()$median(),
-        "len" = pl$len()$`_rexpr`,
-        abort("unreachable")
-      )$`_rexpr`
-    } else if (is_polars_expr(aggregate_function)) {
-      aggregate_function$`_rexpr`
-    } else if (is.null(aggregate_function)) {
-      NULL
+    on_columns <- if (is.null(on_columns)) {
+      cols <- self$select(on)$unique(maintain_order = TRUE)
+      if (sort_columns) {
+        cols$sort()
+      } else {
+        cols
+      }
     } else {
-      abort("`aggregate_function` must be `NULL`, a character, or a Polars expression.")
+      on_columns
     }
 
-    # Like `_expand_selectors` in Python Polars
-    cleared_self <- self$clear()
-    on_selector <- parse_into_selector(!!!c(on), .arg_name = "on")
-    on <- cleared_self$select(on_selector)$columns
-
-    index <- if (is.null(index)) {
-      NULL
-    } else {
-      index_selector <- parse_into_selector(!!!c(index), .arg_name = "index")
-      cleared_self$select(index_selector)$columns
-    }
-    values <- if (is.null(values)) {
-      NULL
-    } else {
-      values_selector <- parse_into_selector(!!!c(values), .arg_name = "values")
-      cleared_self$select(values_selector)$columns
-    }
-
-    self$`_df`$pivot_expr(
+    self$lazy()$pivot(
       on = on,
+      on_columns = on_columns,
+      ...,
       index = index,
       values = values,
+      aggregate_function = aggregate_function,
       maintain_order = maintain_order,
       sort_columns = sort_columns,
-      aggregate_expr = aggregate_expr,
       separator = separator
-    )
+    )$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS)
   })
 }
 

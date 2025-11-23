@@ -2053,13 +2053,18 @@ expr__hash <- function(seed = 0, seed_1 = NULL, seed_2 = NULL, seed_3 = NULL) {
 #' Compute the most occurring value(s)
 #'
 #' @inherit as_polars_expr return
+#' @inheritParams rlang::args_dots_empty
+#' @param maintain_order If `TRUE`, maintain order of data.
+#'   This requires more work.
 #' @examples
 #' df <- pl$DataFrame(a = c(1, 1, 2, 3), b = c(1, 1, 2, 2))
 #' df$select(pl$col("a")$mode())
 #' df$select(pl$col("b")$mode())
-expr__mode <- function() {
-  self$`_rexpr`$mode() |>
-    wrap()
+expr__mode <- function(..., maintain_order = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$mode(maintain_order = maintain_order)
+  })
 }
 
 #' Count null values
@@ -2915,11 +2920,12 @@ expr__rolling_kurtosis <- function(
 #' @inherit expr__rolling_max params details
 #' @inheritParams pl__date_range
 #' @inheritParams rlang::args_dots_empty
-#' @param index_column Character. Name of the column used to group based on the
-#' time window. Often of type Date/Datetime. This column must be sorted in
-#' ascending order. In case of a rolling group by on indices, dtype needs to be
-#' one of UInt32, UInt64, Int32, Int64. Note that the first three get cast to
-#' Int64, so if performance matters use an Int64 column.
+#' @param index_column Something coercible to an Expr. Strings are not parsed as columns.
+#'   Often of type Date/Datetime. This column must be sorted in ascending order.
+#'   In case of a rolling group by on indices, dtype needs to be one of
+#'   (UInt32, UInt64, Int32, Int64).
+#'   Note that the first three get temporarily cast to Int64,
+#'   so if performance matters use an Int64 column.
 #' @param period Length of the window - must be non-negative.
 #' @param offset Offset of the window. Default is `-period`.
 #'
@@ -2947,6 +2953,7 @@ expr__rolling <- function(
 ) {
   wrap({
     check_dots_empty0(...)
+    index_column <- as_polars_expr(index_column)$`_rexpr`
     closed <- arg_match0(closed, values = c("both", "left", "right", "none"))
     if (is.null(offset)) {
       offset <- negate_duration_string(parse_as_duration_string(period))
@@ -3948,6 +3955,9 @@ expr__drop_nulls <- function() {
 #' This means that every item is expanded to a new row.
 #'
 #' @inherit as_polars_expr return
+#' @inheritParams rlang::args_dots_empty
+#' @param empty_as_null Indicates to explode an empty list/array into a `null`.
+#' @param keep_nulls Indicates to explode a `null` list/array into a `null`.
 #' @examples
 #' df <- pl$DataFrame(
 #'   groups = c("a", "b"),
@@ -3955,9 +3965,10 @@ expr__drop_nulls <- function() {
 #' )
 #'
 #' df$select(pl$col("values")$explode())
-expr__explode <- function() {
+expr__explode <- function(..., , empty_as_null = TRUE, keep_nulls = TRUE) {
   wrap({
-    self$`_rexpr`$explode()
+    check_dots_empty0(...)
+    self$`_rexpr`$explode(empty_as_null = empty_as_null, keep_nulls = keep_nulls)
   })
 }
 
