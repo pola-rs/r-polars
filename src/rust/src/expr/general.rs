@@ -181,7 +181,7 @@ impl PlRExpr {
         multithreaded: bool,
         maintain_order: bool,
     ) -> Result<Self> {
-        let by = <Wrap<Vec<Expr>>>::from(by).0;
+        let by = <Wrap<Vec<Expr>>>::try_from(by).unwrap().0;
         Ok(self
             .inner
             .clone()
@@ -230,10 +230,10 @@ impl PlRExpr {
         partition_by: Option<ListSexp>,
         order_by: Option<ListSexp>,
     ) -> Result<Self> {
-        let partition_by = partition_by.map(|v| <Wrap<Vec<Expr>>>::from(v).0);
+        let partition_by = partition_by.map(|v| <Wrap<Vec<Expr>>>::try_from(v).unwrap().0);
         let order_by = order_by.map(|order_by| {
             (
-                <Wrap<Vec<Expr>>>::from(order_by).0,
+                <Wrap<Vec<Expr>>>::try_from(order_by).unwrap().0,
                 SortOptions {
                     descending: order_by_descending,
                     nulls_last: order_by_nulls_last,
@@ -810,7 +810,7 @@ impl PlRExpr {
     }
 
     fn top_k_by(&self, by: ListSexp, k: &PlRExpr, reverse: LogicalSexp) -> Result<Self> {
-        let by = <Wrap<Vec<Expr>>>::from(by).0;
+        let by = <Wrap<Vec<Expr>>>::try_from(by).unwrap().0;
         Ok(self
             .inner
             .clone()
@@ -823,7 +823,7 @@ impl PlRExpr {
     }
 
     fn bottom_k_by(&self, by: ListSexp, k: &PlRExpr, reverse: LogicalSexp) -> Result<Self> {
-        let by = <Wrap<Vec<Expr>>>::from(by).0;
+        let by = <Wrap<Vec<Expr>>>::try_from(by).unwrap().0;
         Ok(self
             .inner
             .clone()

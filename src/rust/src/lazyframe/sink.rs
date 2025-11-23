@@ -55,7 +55,7 @@ impl TryFrom<&str> for Wrap<SyncOnCloseType> {
 impl From<Option<ListSexp>> for Wrap<Option<Vec<SortColumn>>> {
     fn from(opt_value: Option<ListSexp>) -> Self {
         Wrap(parse_per_partition_sort_by(
-            opt_value.map(|value| <Wrap<Vec<Expr>>>::from(value).0),
+            opt_value.map(|value| <Wrap<Vec<Expr>>>::try_from(value).unwrap().0),
         ))
     }
 }
