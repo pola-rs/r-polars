@@ -29,3 +29,8 @@ as_polars_dtype_expr.polars_expr <- function(x, ...) {
   PlRDataTypeExpr$of_expr(x$`_rexpr`) |>
     wrap()
 }
+
+#' @export
+as_polars_dtype_expr.polars_dtype <- function(x, ...) {
+  x$to_dtype_expr()
+}
