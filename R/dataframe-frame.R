@@ -1589,8 +1589,10 @@ dataframe__pivot <- function(
   separator = "_"
 ) {
   wrap({
+    check_bool(sort_columns)
+
     on_columns <- if (is.null(on_columns)) {
-      cols <- self$select(on)$unique(maintain_order = TRUE)
+      cols <- self$select(!!!c(on))$unique(maintain_order = TRUE)
       if (sort_columns) {
         cols$sort()
       } else {
@@ -1608,7 +1610,6 @@ dataframe__pivot <- function(
       values = values,
       aggregate_function = aggregate_function,
       maintain_order = maintain_order,
-      sort_columns = sort_columns,
       separator = separator
     )$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS)
   })

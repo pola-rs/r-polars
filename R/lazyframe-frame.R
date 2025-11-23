@@ -1562,13 +1562,13 @@ lazyframe__pivot <- function(
       ))
     }
 
-    on_selector <- parse_into_selector(!!!on, .arg_name = "on")
+    on_selector <- parse_into_selector(!!!c(on), .arg_name = "on")
 
     if (!is.null(values)) {
-      values_selector <- parse_into_selector(!!!values, .arg_name = "values")
+      values_selector <- parse_into_selector(!!!c(values), .arg_name = "values")
     }
     if (!is.null(index)) {
-      index_selector <- parse_into_selector(!!!index, .arg_name = "index")
+      index_selector <- parse_into_selector(!!!c(index), .arg_name = "index")
     }
 
     if (is.null(values)) {
@@ -1594,7 +1594,7 @@ lazyframe__pivot <- function(
         last = pl$element()$last(),
         len = pl$element()$count(),
         abort("unreachable")
-      )$`_rexpr`
+      )
     } else if (is_polars_expr(aggregate_function)) {
       aggregate_function
     } else if (is.null(aggregate_function)) {
