@@ -4234,7 +4234,6 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_polars__sealed")
 
 `PlRLazyFrame_unique` <- function(self) {
   function(`maintain_order`, `keep`, `subset` = NULL) {
-    `subset` <- .savvy_extract_ptr(`subset`, "PlRSelector")
     .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_unique__impl, `self`, `maintain_order`, `keep`, `subset`))
   }
 }
@@ -4376,8 +4375,8 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_polars__sealed")
   .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_ndjson__impl, `source`, `low_memory`, `rechunk`, `ignore_errors`, `retries`, `row_index_offset`, `row_index_name`, `infer_schema_length`, `schema`, `schema_overrides`, `batch_size`, `n_rows`, `include_file_paths`, `storage_options`, `file_cache_ttl`))
 }
 
-`PlRLazyFrame`$`new_from_parquet` <- function(`source`, `cache`, `parallel`, `rechunk`, `low_memory`, `use_statistics`, `try_parse_hive_dates`, `retries`, `glob`, `allow_missing_columns`, `row_index_offset`, `storage_options` = NULL, `n_rows` = NULL, `row_index_name` = NULL, `hive_partitioning` = NULL, `schema` = NULL, `hive_schema` = NULL, `include_file_paths` = NULL) {
-  .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_parquet__impl, `source`, `cache`, `parallel`, `rechunk`, `low_memory`, `use_statistics`, `try_parse_hive_dates`, `retries`, `glob`, `allow_missing_columns`, `row_index_offset`, `storage_options`, `n_rows`, `row_index_name`, `hive_partitioning`, `schema`, `hive_schema`, `include_file_paths`))
+`PlRLazyFrame`$`new_from_parquet` <- function(`source`, `cache`, `parallel`, `rechunk`, `low_memory`, `use_statistics`, `try_parse_hive_dates`, `retries`, `glob`, `missing_columns`, `row_index_offset`, `storage_options` = NULL, `n_rows` = NULL, `row_index_name` = NULL, `hive_partitioning` = NULL, `schema` = NULL, `hive_schema` = NULL, `include_file_paths` = NULL) {
+  .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_parquet__impl, `source`, `cache`, `parallel`, `rechunk`, `low_memory`, `use_statistics`, `try_parse_hive_dates`, `retries`, `glob`, `missing_columns`, `row_index_offset`, `storage_options`, `n_rows`, `row_index_name`, `hive_partitioning`, `schema`, `hive_schema`, `include_file_paths`))
 }
 
 

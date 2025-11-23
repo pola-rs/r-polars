@@ -104,9 +104,10 @@ where
     type Error = savvy::Error;
 
     fn try_from(value: Sexp) -> Result<Self, Self::Error> {
-        match &value.into_typed() {
-            &TypedSexp::Null(_) => Ok(Wrap(None)),
-            _ => Ok(Wrap(Some(T::try_from(value)?))),
+        if value.is_null() {
+            Ok(Wrap(None))
+        } else {
+            Ok(Wrap(Some(T::try_from(value)?)))
         }
     }
 }
@@ -859,10 +860,10 @@ impl TryFrom<ListSexp> for Wrap<Schema> {
 }
 
 pub(crate) fn parse_cloud_options(
-    uri: &str,
-    kv: Vec<(String, String)>,
-) -> savvy::Result<CloudOptions> {
-    let out = CloudOptions::from_untyped_config(CloudScheme::from_uri(uri).as_ref(), kv)
+    cloud_scheme: Option<CloudScheme>,
+    keys_and_values: Vec<(String, String)>,
+) -> Result<CloudOptions, RPolarsErr> {
+    let out = CloudOptions::from_untyped_config(cloud_scheme, keys_and_values)
         .map_err(RPolarsErr::from)?;
     Ok(out)
 }
@@ -944,6 +945,19 @@ impl TryFrom<Sexp> for Wrap<CompatLevel> {
         } else {
             Err("Invalid compat level".to_string().into())
         }
+    }
+}
+
+impl TryFrom<&str> for Wrap<MissingColumnsPolicy> {
+    type Error = savvy::Error;
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        let parsed = match value {
+            "raise" => MissingColumnsPolicy::Raise,
+            "insert" => MissingColumnsPolicy::Insert,
+            _ => return Err(savvy_err!("unreachable")),
+        };
+        Ok(Wrap(parsed))
     }
 }
 

@@ -2779,8 +2779,8 @@ SEXP savvy_PlRLazyFrame_new_from_ndjson__impl(SEXP c_arg__source, SEXP c_arg__lo
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_new_from_parquet__impl(SEXP c_arg__source, SEXP c_arg__cache, SEXP c_arg__parallel, SEXP c_arg__rechunk, SEXP c_arg__low_memory, SEXP c_arg__use_statistics, SEXP c_arg__try_parse_hive_dates, SEXP c_arg__retries, SEXP c_arg__glob, SEXP c_arg__allow_missing_columns, SEXP c_arg__row_index_offset, SEXP c_arg__storage_options, SEXP c_arg__n_rows, SEXP c_arg__row_index_name, SEXP c_arg__hive_partitioning, SEXP c_arg__schema, SEXP c_arg__hive_schema, SEXP c_arg__include_file_paths) {
-    SEXP res = savvy_PlRLazyFrame_new_from_parquet__ffi(c_arg__source, c_arg__cache, c_arg__parallel, c_arg__rechunk, c_arg__low_memory, c_arg__use_statistics, c_arg__try_parse_hive_dates, c_arg__retries, c_arg__glob, c_arg__allow_missing_columns, c_arg__row_index_offset, c_arg__storage_options, c_arg__n_rows, c_arg__row_index_name, c_arg__hive_partitioning, c_arg__schema, c_arg__hive_schema, c_arg__include_file_paths);
+SEXP savvy_PlRLazyFrame_new_from_parquet__impl(SEXP c_arg__source, SEXP c_arg__cache, SEXP c_arg__parallel, SEXP c_arg__rechunk, SEXP c_arg__low_memory, SEXP c_arg__use_statistics, SEXP c_arg__try_parse_hive_dates, SEXP c_arg__retries, SEXP c_arg__glob, SEXP c_arg__missing_columns, SEXP c_arg__row_index_offset, SEXP c_arg__storage_options, SEXP c_arg__n_rows, SEXP c_arg__row_index_name, SEXP c_arg__hive_partitioning, SEXP c_arg__schema, SEXP c_arg__hive_schema, SEXP c_arg__include_file_paths) {
+    SEXP res = savvy_PlRLazyFrame_new_from_parquet__ffi(c_arg__source, c_arg__cache, c_arg__parallel, c_arg__rechunk, c_arg__low_memory, c_arg__use_statistics, c_arg__try_parse_hive_dates, c_arg__retries, c_arg__glob, c_arg__missing_columns, c_arg__row_index_offset, c_arg__storage_options, c_arg__n_rows, c_arg__row_index_name, c_arg__hive_partitioning, c_arg__schema, c_arg__hive_schema, c_arg__include_file_paths);
     return handle_result(res);
 }
 
