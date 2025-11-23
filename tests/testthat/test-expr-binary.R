@@ -69,6 +69,7 @@ test_that("bin$size()", {
 })
 
 test_that("bin$reinterpret()", {
+  skip_if_not_installed("blob")
   df <- pl$DataFrame(x = blob::as_blob(c(5L, 35L)))
 
   expect_equal(
