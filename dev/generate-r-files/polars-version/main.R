@@ -11,14 +11,14 @@ py_version <- glue::glue(
   RcppTOML::parseTOML(fromFile = FALSE) |>
   _$project$version
 
+# nolint start: line_length_linter
 py_semver <- glue::glue(
-  "https://raw.githubusercontent.com/pola-rs/polars/{git_rev}/py-polars/runtime/Cargo.toml"
+  "https://raw.githubusercontent.com/pola-rs/polars/{git_rev}/py-polars/runtime/template/Cargo.template.toml"
 ) |>
   readr::read_file() |>
   RcppTOML::parseTOML(fromFile = FALSE) |>
   _$package$version
 
-# nolint start: line_length_linter
 dsl_schema_hash_current <- glue::glue(
   "https://raw.githubusercontent.com/pola-rs/polars/{git_rev}/crates/polars-plan/dsl-schema-hashes.json"
 ) |>
