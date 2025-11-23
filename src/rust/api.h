@@ -604,12 +604,6 @@ SEXP savvy_PlRLazyGroupBy_agg__ffi(SEXP self__, SEXP c_arg__aggs);
 SEXP savvy_PlRLazyGroupBy_head__ffi(SEXP self__, SEXP c_arg__n);
 SEXP savvy_PlRLazyGroupBy_tail__ffi(SEXP self__, SEXP c_arg__n);
 
-// methods and associated functions for PlRPartitioning
-SEXP savvy_PlRPartitioning_base_path__ffi(SEXP self__);
-SEXP savvy_PlRPartitioning_new_by_key__ffi(SEXP c_arg__base_path, SEXP c_arg__by, SEXP c_arg__include_key, SEXP c_arg__per_partition_sort_by);
-SEXP savvy_PlRPartitioning_new_max_size__ffi(SEXP c_arg__base_path, SEXP c_arg__max_size, SEXP c_arg__per_partition_sort_by);
-SEXP savvy_PlRPartitioning_new_parted__ffi(SEXP c_arg__base_path, SEXP c_arg__by, SEXP c_arg__include_key, SEXP c_arg__per_partition_sort_by);
-
 // methods and associated functions for PlRSQLContext
 SEXP savvy_PlRSQLContext_execute__ffi(SEXP self__, SEXP c_arg__query);
 SEXP savvy_PlRSQLContext_get_tables__ffi(SEXP self__);

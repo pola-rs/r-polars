@@ -4434,49 +4434,6 @@ class(`PlRLazyGroupBy`) <- c("PlRLazyGroupBy__bundle", "savvy_polars__sealed")
   cat('PlRLazyGroupBy\n')
 }
 
-### wrapper functions for PlRPartitioning
-
-`PlRPartitioning_base_path` <- function(self) {
-  function() {
-    .Call(savvy_PlRPartitioning_base_path__impl, `self`)
-  }
-}
-
-`.savvy_wrap_PlRPartitioning` <- function(ptr) {
-  e <- new.env(parent = emptyenv())
-  e$.ptr <- ptr
-  e$`base_path` <- `PlRPartitioning_base_path`(ptr)
-
-  class(e) <- c("PlRPartitioning", "savvy_polars__sealed")
-  e
-}
-
-
-
-`PlRPartitioning` <- new.env(parent = emptyenv())
-
-### associated functions for PlRPartitioning
-
-`PlRPartitioning`$`new_by_key` <- function(`base_path`, `by`, `include_key`, `per_partition_sort_by` = NULL) {
-  .savvy_wrap_PlRPartitioning(.Call(savvy_PlRPartitioning_new_by_key__impl, `base_path`, `by`, `include_key`, `per_partition_sort_by`))
-}
-
-`PlRPartitioning`$`new_max_size` <- function(`base_path`, `max_size`, `per_partition_sort_by` = NULL) {
-  .savvy_wrap_PlRPartitioning(.Call(savvy_PlRPartitioning_new_max_size__impl, `base_path`, `max_size`, `per_partition_sort_by`))
-}
-
-`PlRPartitioning`$`new_parted` <- function(`base_path`, `by`, `include_key`, `per_partition_sort_by` = NULL) {
-  .savvy_wrap_PlRPartitioning(.Call(savvy_PlRPartitioning_new_parted__impl, `base_path`, `by`, `include_key`, `per_partition_sort_by`))
-}
-
-
-class(`PlRPartitioning`) <- c("PlRPartitioning__bundle", "savvy_polars__sealed")
-
-#' @export
-`print.PlRPartitioning__bundle` <- function(x, ...) {
-  cat('PlRPartitioning\n')
-}
-
 ### wrapper functions for PlRSQLContext
 
 `PlRSQLContext_execute` <- function(self) {

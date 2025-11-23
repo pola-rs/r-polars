@@ -7,6 +7,7 @@ mod error;
 mod expr;
 mod functions;
 mod info;
+mod io;
 mod lazyframe;
 mod lazygroupby;
 mod map;

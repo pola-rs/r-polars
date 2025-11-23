@@ -151,3 +151,39 @@ pl__PartitionParted <- function(
     )
   })
 }
+
+SinkDirectory <- new_class(
+  "SinkDirectory",
+  properties = list(
+    base_path = prop_string(),
+    partition_by = prop_list_of_rexpr(allow_null = TRUE, names = "none"),
+    partition_keys_sorted = prop_bool(allow_null = TRUE),
+    include_keys = prop_bool(allow_null = TRUE),
+    per_partition_sort_by = prop_list_of_rexpr(allow_null = TRUE, names = "none"),
+    per_file_sort_by = prop_list_of_rexpr(allow_null = TRUE, names = "none"),
+    max_rows_per_file = prop_number_whole(allow_null = TRUE)
+  ),
+  constructor = function(
+    base_path,
+    ...,
+    partition_by = NULL,
+    partition_keys_sorted = NULL,
+    include_keys = NULL,
+    per_partition_sort_by = NULL,
+    per_file_sort_by = NULL,
+    max_rows_per_file = NULL
+  ) {
+    check_dots_empty0(...)
+
+    new_object(
+      S7_object(),
+      base_path = base_path,
+      partition_by = parse_to_rexpr_list(partition_by),
+      partition_keys_sorted = partition_keys_sorted,
+      include_keys = include_keys,
+      per_partition_sort_by = parse_to_rexpr_list(per_partition_sort_by),
+      per_file_sort_by = parse_to_rexpr_list(per_file_sort_by),
+      max_rows_per_file = max_rows_per_file
+    )
+  }
+)

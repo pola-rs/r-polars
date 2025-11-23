@@ -97,6 +97,36 @@ impl TryFrom<&str> for PlRDataType {
     }
 }
 
+impl<T> TryFrom<Sexp> for Wrap<Option<T>>
+where
+    T: TryFrom<Sexp, Error = savvy::Error>,
+{
+    type Error = savvy::Error;
+
+    fn try_from(value: Sexp) -> Result<Self, Self::Error> {
+        match &value.into_typed() {
+            &TypedSexp::Null(_) => Ok(Wrap(None)),
+            _ => Ok(Wrap(Some(T::try_from(value)?))),
+        }
+    }
+}
+
+impl TryFrom<Sexp> for Wrap<u32> {
+    type Error = savvy::Error;
+
+    fn try_from(value: Sexp) -> Result<Self, Self::Error> {
+        <NumericScalar>::try_from(value).and_then(<Wrap<u32>>::try_from)
+    }
+}
+
+impl TryFrom<Sexp> for Wrap<Vec<Expr>> {
+    type Error = savvy::Error;
+
+    fn try_from(value: Sexp) -> Result<Self, Self::Error> {
+        <ListSexp>::try_from(value).and_then(<Wrap<Vec<Expr>>>::try_from)
+    }
+}
+
 impl From<ListSexp> for Wrap<Vec<Option<Vec<u8>>>> {
     fn from(list: ListSexp) -> Self {
         let raw_list = list
@@ -170,23 +200,25 @@ impl TryFrom<ListSexp> for Wrap<Vec<Series>> {
     }
 }
 
-impl From<ListSexp> for Wrap<Vec<Expr>> {
-    fn from(list: ListSexp) -> Self {
+impl TryFrom<ListSexp> for Wrap<Vec<Expr>> {
+    type Error = savvy::Error;
+
+    fn try_from(list: ListSexp) -> Result<Self, savvy::Error> {
         let expr_list = list
             .iter()
-            .map(|(name, value)| {
-                let rexpr = match value.into_typed() {
-                    TypedSexp::Environment(e) => <&PlRExpr>::from(e).clone(),
-                    _ => unreachable!("Only accept a list of Expr"),
-                };
-                if name.is_empty() {
-                    rexpr.inner
-                } else {
-                    rexpr.inner.alias(name)
+            .map(|(name, value)| match value.into_typed() {
+                TypedSexp::Environment(e) => {
+                    let expr = <&PlRExpr>::try_from(e)?.inner.clone();
+                    if name.is_empty() {
+                        Ok(expr)
+                    } else {
+                        Ok(expr.alias(name))
+                    }
                 }
+                _ => Err(savvy_err!("Only accept a list of Expr")),
             })
-            .collect();
-        Wrap(expr_list)
+            .collect::<Result<Vec<_>, _>>()?;
+        Ok(Wrap(expr_list))
     }
 }
 

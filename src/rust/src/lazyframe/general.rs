@@ -1,4 +1,3 @@
-use super::sink::RSinkTarget;
 use crate::{
     PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRLazyGroupBy, PlRSeries, RPolarsErr,
     expr::selector::PlRSelector,

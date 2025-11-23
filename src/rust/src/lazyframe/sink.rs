@@ -1,20 +1,6 @@
 use crate::prelude::{sync_on_close::SyncOnCloseType, *};
 use savvy::{EnvironmentSexp, ListSexp, NumericScalar, Result, Sexp, StringSexp, TypedSexp, savvy};
 
-#[derive(Clone)]
-pub enum RSinkTarget {
-    File(SinkTarget),
-    Partition(PlRPartitioning),
-}
-
-#[savvy]
-#[derive(Clone)]
-pub struct PlRPartitioning {
-    pub base_path: PlPath,
-    pub variant: PartitionVariant,
-    pub per_partition_sort_by: Option<Vec<SortColumn>>,
-}
-
 fn parse_per_partition_sort_by(sort_by: Option<Vec<Expr>>) -> Option<Vec<SortColumn>> {
     sort_by.map(|exprs| {
         exprs
@@ -40,69 +26,6 @@ impl RSinkTarget {
     }
 }
 
-#[savvy]
-impl PlRPartitioning {
-    fn base_path(&self) -> Result<Sexp> {
-        self.base_path.to_str().try_into()
-    }
-
-    pub fn new_max_size(
-        base_path: &str,
-        max_size: NumericScalar,
-        per_partition_sort_by: Option<ListSexp>,
-    ) -> Result<Self> {
-        let base_path = PlPath::new(base_path);
-        let max_size = <Wrap<IdxSize>>::try_from(max_size)?.0;
-        let per_partition_sort_by = <Wrap<Option<Vec<SortColumn>>>>::from(per_partition_sort_by).0;
-
-        Ok(PlRPartitioning {
-            base_path,
-            variant: PartitionVariant::MaxSize(max_size),
-            per_partition_sort_by,
-        })
-    }
-
-    pub fn new_by_key(
-        base_path: &str,
-        by: ListSexp,
-        include_key: bool,
-        per_partition_sort_by: Option<ListSexp>,
-    ) -> Result<Self> {
-        let base_path = PlPath::new(base_path);
-        let by = <Wrap<Vec<Expr>>>::from(by).0;
-        let per_partition_sort_by = <Wrap<Option<Vec<SortColumn>>>>::from(per_partition_sort_by).0;
-
-        Ok(PlRPartitioning {
-            base_path,
-            variant: PartitionVariant::ByKey {
-                key_exprs: by.into_iter().collect(),
-                include_key,
-            },
-            per_partition_sort_by,
-        })
-    }
-
-    pub fn new_parted(
-        base_path: &str,
-        by: ListSexp,
-        include_key: bool,
-        per_partition_sort_by: Option<ListSexp>,
-    ) -> Result<Self> {
-        let base_path = PlPath::new(base_path);
-        let by = <Wrap<Vec<Expr>>>::from(by).0;
-        let per_partition_sort_by = <Wrap<Option<Vec<SortColumn>>>>::from(per_partition_sort_by).0;
-
-        Ok(PlRPartitioning {
-            base_path,
-            variant: PartitionVariant::Parted {
-                key_exprs: by.into_iter().collect(),
-                include_key,
-            },
-            per_partition_sort_by,
-        })
-    }
-}
-
 impl TryFrom<Sexp> for RSinkTarget {
     type Error = savvy::Error;
 
@@ -112,38 +35,6 @@ impl TryFrom<Sexp> for RSinkTarget {
             TypedSexp::Environment(e) => e.try_into(),
             _ => Err("Invalid sink target".to_string().into()),
         }
-    }
-}
-
-impl TryFrom<StringSexp> for RSinkTarget {
-    type Error = savvy::Error;
-
-    fn try_from(value: StringSexp) -> Result<Self> {
-        let string_value: &str = <Sexp>::from(value).try_into()?;
-        Ok(RSinkTarget::File(SinkTarget::Path(PlPath::new(
-            string_value,
-        ))))
-    }
-}
-
-impl TryFrom<EnvironmentSexp> for RSinkTarget {
-    type Error = savvy::Error;
-
-    fn try_from(env: EnvironmentSexp) -> Result<Self> {
-        let partitioning = <&PlRPartitioning>::try_from(env)?;
-        Ok(Self::Partition(partitioning.clone()))
-    }
-}
-
-impl TryFrom<EnvironmentSexp> for &PlRPartitioning {
-    type Error = savvy::Error;
-
-    fn try_from(env: EnvironmentSexp) -> Result<Self> {
-        let ptr = env
-            .get(".ptr")
-            .expect("Failed to get `.ptr` from the object")
-            .ok_or("The object is not a valid PlRPartitioning")?;
-        <&PlRPartitioning>::try_from(ptr)
     }
 }
 

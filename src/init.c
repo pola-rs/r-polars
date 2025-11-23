@@ -2969,26 +2969,6 @@ SEXP savvy_PlRLazyGroupBy_tail__impl(SEXP self__, SEXP c_arg__n) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRPartitioning_base_path__impl(SEXP self__) {
-    SEXP res = savvy_PlRPartitioning_base_path__ffi(self__);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRPartitioning_new_by_key__impl(SEXP c_arg__base_path, SEXP c_arg__by, SEXP c_arg__include_key, SEXP c_arg__per_partition_sort_by) {
-    SEXP res = savvy_PlRPartitioning_new_by_key__ffi(c_arg__base_path, c_arg__by, c_arg__include_key, c_arg__per_partition_sort_by);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRPartitioning_new_max_size__impl(SEXP c_arg__base_path, SEXP c_arg__max_size, SEXP c_arg__per_partition_sort_by) {
-    SEXP res = savvy_PlRPartitioning_new_max_size__ffi(c_arg__base_path, c_arg__max_size, c_arg__per_partition_sort_by);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRPartitioning_new_parted__impl(SEXP c_arg__base_path, SEXP c_arg__by, SEXP c_arg__include_key, SEXP c_arg__per_partition_sort_by) {
-    SEXP res = savvy_PlRPartitioning_new_parted__ffi(c_arg__base_path, c_arg__by, c_arg__include_key, c_arg__per_partition_sort_by);
-    return handle_result(res);
-}
-
 SEXP savvy_PlRSQLContext_execute__impl(SEXP self__, SEXP c_arg__query) {
     SEXP res = savvy_PlRSQLContext_execute__ffi(self__, c_arg__query);
     return handle_result(res);
@@ -4023,10 +4003,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyGroupBy_agg__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_agg__impl, 2},
     {"savvy_PlRLazyGroupBy_head__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_head__impl, 2},
     {"savvy_PlRLazyGroupBy_tail__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_tail__impl, 2},
-    {"savvy_PlRPartitioning_base_path__impl", (DL_FUNC) &savvy_PlRPartitioning_base_path__impl, 1},
-    {"savvy_PlRPartitioning_new_by_key__impl", (DL_FUNC) &savvy_PlRPartitioning_new_by_key__impl, 4},
-    {"savvy_PlRPartitioning_new_max_size__impl", (DL_FUNC) &savvy_PlRPartitioning_new_max_size__impl, 3},
-    {"savvy_PlRPartitioning_new_parted__impl", (DL_FUNC) &savvy_PlRPartitioning_new_parted__impl, 4},
     {"savvy_PlRSQLContext_execute__impl", (DL_FUNC) &savvy_PlRSQLContext_execute__impl, 2},
     {"savvy_PlRSQLContext_get_tables__impl", (DL_FUNC) &savvy_PlRSQLContext_get_tables__impl, 1},
     {"savvy_PlRSQLContext_new__impl", (DL_FUNC) &savvy_PlRSQLContext_new__impl, 0},

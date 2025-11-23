@@ -1,3 +1,16 @@
+is_list_of_rexpr <- function(x, n = NULL) {
+  is_list_of_rexpr_impl <- function(x) {
+    for (i in seq_along(x)) {
+      if (!inherits(x[[i]], "PlRExpr")) {
+        return(FALSE)
+      }
+    }
+    TRUE
+  }
+
+  is_list(x, n = n) && is_list_of_rexpr_impl(x)
+}
+
 is_list_of_string <- function(
   x,
   ...,
