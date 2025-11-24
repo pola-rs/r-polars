@@ -3972,6 +3972,29 @@ expr__explode <- function(..., empty_as_null = TRUE, keep_nulls = TRUE) {
   })
 }
 
+#' Explode array in separate rows
+#'
+#' Returns a column with a separate row for every array element.
+#'
+#' @inherit as_polars_expr return
+#' @inheritParams expr__explode
+#' @examples
+#' df <- pl$DataFrame(
+#'   a = list(c(1, 2, 3), c(4, 5, 6))
+#' )$cast(pl$Array(pl$Int64, 3))
+#' df$select(pl$col("a")$arr$explode())
+expr_arr_explode <- expr__explode
+
+#' Returns a column with a separate row for every list element
+#'
+#' @inherit as_polars_expr return
+#' @inheritParams expr__explode
+#'
+#' @examples
+#' df <- pl$DataFrame(a = list(c(1, 2, 3), c(4, 5, 6)))
+#' df$select(pl$col("a")$list$explode())
+expr_list_explode <- expr__explode
+
 #' Flatten a list or string column
 #'
 #' This is an alias for [$explode()][expr__explode].

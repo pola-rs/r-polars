@@ -365,21 +365,6 @@ expr_arr_count_matches <- function(element) {
     wrap()
 }
 
-#' Explode array in separate rows
-#'
-#' Returns a column with a separate row for every array element.
-#'
-#' @inherit as_polars_expr return
-#' @examples
-#' df <- pl$DataFrame(
-#'   a = list(c(1, 2, 3), c(4, 5, 6))
-#' )$cast(pl$Array(pl$Int64, 3))
-#' df$select(pl$col("a")$arr$explode())
-expr_arr_explode <- function() {
-  self$`_rexpr`$explode() |>
-    wrap()
-}
-
 #' Get the first value of the sub-arrays
 #'
 #' @inherit as_polars_expr return
