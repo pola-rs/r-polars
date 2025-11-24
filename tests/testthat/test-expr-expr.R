@@ -2946,7 +2946,7 @@ test_that("index_of works", {
   expect_equal(
     df$select(
       seventeen = pl$col("a")$index_of(17),
-      null = pl$col("a")$index_of(NA),
+      null = pl$col("a")$index_of(NULL),
       fiftyfive = pl$col("a")$index_of(55),
       x_char = pl$col("b")$index_of("x")
     ),

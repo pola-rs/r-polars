@@ -19,7 +19,7 @@ Get the index of the first occurrence of a value, or \code{NA} if it's not found
 df <- pl$DataFrame(a = c(1, NA, 17))
 df$select(
   seventeen = pl$col("a")$index_of(17),
-  null = pl$col("a")$index_of(NA),
+  null = pl$col("a")$index_of(NULL),
   fiftyfive = pl$col("a")$index_of(55),
 )
 }
