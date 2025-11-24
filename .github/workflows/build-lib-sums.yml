@@ -22,7 +22,7 @@ jobs:
       pull-requests: write
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Generate lib-sums.tsv
         run: node .github/scripts/generate-lib-sums.mjs

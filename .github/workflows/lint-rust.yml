@@ -27,7 +27,7 @@ jobs:
   cargo-fmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Run cargo fmt
         working-directory: src/rust
@@ -38,7 +38,7 @@ jobs:
   cargo-clippy:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - uses: rui314/setup-mold@v1
 

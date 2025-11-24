@@ -32,7 +32,7 @@ jobs:
   air-format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Set up Air
         uses: posit-dev/setup-air@v1
@@ -43,7 +43,7 @@ jobs:
   lintr-lint-package:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Check for pre-built binary
         run: |
