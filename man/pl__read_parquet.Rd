@@ -23,7 +23,8 @@ pl__read_parquet(
   storage_options = NULL,
   retries = 2,
   include_file_paths = NULL,
-  allow_missing_columns = FALSE
+  missing_columns = c("insert", "raise"),
+  allow_missing_columns = deprecated()
 )
 }
 \arguments{

@@ -41,7 +41,7 @@ Used to partition by.}
 \item{include_key}{A bool indicating whether to include the key columns in the output files.}
 
 \item{per_partition_sort_by}{Something can be coerced to a list of \link[=polars_expr]{expressions},
-or \code{NULL} (default). Used  to sort over within each partition.
+or \code{NULL} (default). Used to sort over within each partition.
 Note that this might increase the memory consumption needed for each partition.}
 
 \item{max_size}{An integer-ish value indicating the maximum size in rows of
