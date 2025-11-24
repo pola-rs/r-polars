@@ -1382,12 +1382,31 @@ test_that("filter", {
 
 test_that("explode/flatten", {
   expect_equal(
-    pl$DataFrame(a = letters)$select(pl$col("a")$explode()$gather(0:5)),
-    pl$DataFrame(a = letters[1:6])
+    pl$DataFrame(a = list(letters))$select(pl$col("a")$explode()),
+    pl$DataFrame(a = letters)
   )
   expect_equal(
-    pl$DataFrame(a = letters)$select(pl$col("a")$flatten()$gather(0:5)),
-    pl$DataFrame(a = letters[1:6])
+    pl$DataFrame(a = list(letters))$select(pl$col("a")$flatten()),
+    pl$DataFrame(a = letters)
+  )
+
+  # empty and null handling
+  df <- pl$DataFrame(a = list(NULL, list(NA), list()))
+  expect_equal(
+    df$select(pl$col("a")$explode()),
+    pl$DataFrame(a = list(NULL, NA, NULL))
+  )
+  expect_equal(
+    df$select(pl$col("a")$explode(empty_as_null = FALSE)),
+    pl$DataFrame(a = list(NULL, NA))
+  )
+  expect_equal(
+    df$select(pl$col("a")$explode(keep_nulls = FALSE)),
+    pl$DataFrame(a = list(NA, NULL))
+  )
+  expect_equal(
+    df$select(pl$col("a")$explode(empty_as_null = FALSE, keep_nulls = FALSE)),
+    pl$DataFrame(a = list(NA))
   )
 })
 

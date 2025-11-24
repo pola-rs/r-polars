@@ -1036,17 +1036,33 @@ test_that("explode() works", {
     expected_df
   )
 
-  # empty values -> NA
+  # empty and null handlings
   df <- pl$DataFrame(
     letters = c("a", "a", "b", "c"),
-    numbers = list(1, NULL, c(4, 5), c(6, 7, 8))
+    numbers = list(1, NULL, list(), c(6, 7, 8))
   )
   expect_query_equal(
     .input$explode("numbers"),
     df,
     pl$DataFrame(
-      letters = c(rep("a", 2), "b", "b", rep("c", 3)),
-      numbers = c(1, NA, 4:8)
+      letters = c(rep("a", 2), "b", rep("c", 3)),
+      numbers = c(1, NA, NA, 6:8)
+    )
+  )
+  expect_query_equal(
+    .input$explode("numbers", empty_as_null = FALSE),
+    df,
+    pl$DataFrame(
+      letters = c(rep("a", 2), rep("c", 3)),
+      numbers = c(1, NA, 6:8)
+    )
+  )
+  expect_query_equal(
+    .input$explode("numbers", keep_nulls = FALSE),
+    df,
+    pl$DataFrame(
+      letters = c("a", "b", rep("c", 3)),
+      numbers = c(1, NA, 6:8)
     )
   )
 
