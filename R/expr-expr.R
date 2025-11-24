@@ -4949,20 +4949,16 @@ expr__index_of <- function(element) {
     if (identical(element, NA)) {
       deprecate_warn(
         c(
-          `!` = format_warning(
-            sprintf(
-              "As of %s 1.7.0, %s checks dtype strictly.",
-              format_pkg("polars"),
-              format_code("<expr>$index_of()")
-            )
+          `!` = sprintf(
+            "As of %s 1.7.0, %s checks dtype strictly.",
+            format_pkg("polars"),
+            format_code("<expr>$index_of()")
           ),
-          i = format_warning(
-            sprintf(
-              "Please use %s or %s instead of %s.",
-              format_code("NULL"),
-              format_code("vctrs::unspecified(1)"),
-              format_code("NA")
-            )
+          i = sprintf(
+            "Please use %s or %s instead of %s.",
+            format_code("NULL"),
+            format_code("vctrs::unspecified(1)"),
+            format_code("NA")
           )
         )
       )
