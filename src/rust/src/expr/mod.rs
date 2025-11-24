@@ -34,7 +34,7 @@ impl TryFrom<EnvironmentSexp> for &PlRExpr {
 
     fn try_from(env: EnvironmentSexp) -> Result<Self, Self::Error> {
         env.get(".ptr")?
-            .map(|sexp| <&PlRExpr>::try_from(sexp))
+            .map(<&PlRExpr>::try_from)
             .transpose()?
             .ok_or(savvy_err!("Invalid PlRExpr object."))
     }

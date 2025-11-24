@@ -38,7 +38,7 @@ impl PlRExpr {
     }
 
     fn struct_with_fields(&self, fields: ListSexp) -> Result<Self> {
-        let fields = <Wrap<Vec<Expr>>>::try_from(fields).unwrap().0;
+        let fields = <Wrap<Vec<Expr>>>::try_from(fields)?.0;
         let e = self.inner.clone().struct_().with_fields(fields);
         Ok(e.into())
     }

@@ -181,7 +181,7 @@ impl PlRExpr {
         multithreaded: bool,
         maintain_order: bool,
     ) -> Result<Self> {
-        let by = <Wrap<Vec<Expr>>>::try_from(by).unwrap().0;
+        let by = <Wrap<Vec<Expr>>>::try_from(by)?.0;
         Ok(self
             .inner
             .clone()
@@ -810,7 +810,7 @@ impl PlRExpr {
     }
 
     fn top_k_by(&self, by: ListSexp, k: &PlRExpr, reverse: LogicalSexp) -> Result<Self> {
-        let by = <Wrap<Vec<Expr>>>::try_from(by).unwrap().0;
+        let by = <Wrap<Vec<Expr>>>::try_from(by)?.0;
         Ok(self
             .inner
             .clone()
@@ -823,7 +823,7 @@ impl PlRExpr {
     }
 
     fn bottom_k_by(&self, by: ListSexp, k: &PlRExpr, reverse: LogicalSexp) -> Result<Self> {
-        let by = <Wrap<Vec<Expr>>>::try_from(by).unwrap().0;
+        let by = <Wrap<Vec<Expr>>>::try_from(by)?.0;
         Ok(self
             .inner
             .clone()

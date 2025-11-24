@@ -90,13 +90,13 @@ impl PlRLazyFrame {
 
     fn select(&mut self, exprs: ListSexp) -> Result<Self> {
         let ldf = self.ldf.clone();
-        let exprs = <Wrap<Vec<Expr>>>::try_from(exprs).unwrap().0;
+        let exprs = <Wrap<Vec<Expr>>>::try_from(exprs)?.0;
         Ok(ldf.select(exprs).into())
     }
 
     fn group_by(&mut self, by: ListSexp, maintain_order: bool) -> Result<PlRLazyGroupBy> {
         let ldf = self.ldf.clone();
-        let by = <Wrap<Vec<Expr>>>::try_from(by).unwrap().0;
+        let by = <Wrap<Vec<Expr>>>::try_from(by)?.0;
         let lazy_gb = if maintain_order {
             ldf.group_by_stable(by)
         } else {
@@ -199,7 +199,7 @@ impl PlRLazyFrame {
         multithreaded: bool,
     ) -> Result<Self> {
         let ldf = self.ldf.clone();
-        let by = <Wrap<Vec<Expr>>>::try_from(by).unwrap().0;
+        let by = <Wrap<Vec<Expr>>>::try_from(by)?.0;
         Ok(ldf
             .sort_by_exprs(
                 by,
@@ -216,7 +216,7 @@ impl PlRLazyFrame {
 
     fn with_columns(&mut self, exprs: ListSexp) -> Result<Self> {
         let ldf = self.ldf.clone();
-        let exprs = <Wrap<Vec<Expr>>>::try_from(exprs).unwrap().0;
+        let exprs = <Wrap<Vec<Expr>>>::try_from(exprs)?.0;
         Ok(ldf.with_columns(exprs).into())
     }
 
@@ -344,7 +344,7 @@ impl PlRLazyFrame {
 
     fn select_seq(&mut self, exprs: ListSexp) -> Result<Self> {
         let ldf = self.ldf.clone();
-        let exprs = <Wrap<Vec<Expr>>>::try_from(exprs).unwrap().0;
+        let exprs = <Wrap<Vec<Expr>>>::try_from(exprs)?.0;
         Ok(ldf.select_seq(exprs).into())
     }
 
@@ -358,7 +358,7 @@ impl PlRLazyFrame {
     ) -> Result<PlRLazyGroupBy> {
         let closed_window = <Wrap<ClosedWindow>>::try_from(closed)?.0;
         let ldf = self.ldf.clone();
-        let by = <Wrap<Vec<Expr>>>::try_from(by).unwrap().0;
+        let by = <Wrap<Vec<Expr>>>::try_from(by)?.0;
         let lazy_gb = ldf.rolling(
             index_column.inner.clone(),
             by,
@@ -531,7 +531,7 @@ impl PlRLazyFrame {
 
     fn with_columns_seq(&mut self, exprs: ListSexp) -> Result<Self> {
         let ldf = self.ldf.clone();
-        let exprs = <Wrap<Vec<Expr>>>::try_from(exprs).unwrap().0;
+        let exprs = <Wrap<Vec<Expr>>>::try_from(exprs)?.0;
         Ok(ldf.with_columns_seq(exprs).into())
     }
 
@@ -632,10 +632,10 @@ impl PlRLazyFrame {
     fn unique(&self, maintain_order: bool, keep: &str, subset: Option<ListSexp>) -> Result<Self> {
         let ldf = self.ldf.clone();
         let keep = <Wrap<UniqueKeepStrategy>>::try_from(keep)?.0;
-        let subset = match subset {
-            Some(s) => Some(<Wrap<Vec<Expr>>>::try_from(s).unwrap().0),
-            None => None,
-        };
+        let subset = subset
+            .map(<Wrap<Vec<Expr>>>::try_from)
+            .transpose()?
+            .map(|w| w.0);
         let out = match maintain_order {
             true => ldf.unique_stable_generic(subset, keep),
             false => ldf.unique_generic(subset, keep),
@@ -1161,7 +1161,6 @@ impl PlRLazyFrame {
                 .with_include_file_paths(include_file_paths.map(|x| x.into()))
                 .finish()
                 .map_err(RPolarsErr::from)
-                .map_err(RPolarsErr::from)
                 .map(PlRLazyFrame::from)
                 .map_err(Into::into)
         }
@@ -1246,7 +1245,6 @@ impl PlRLazyFrame {
                 maintain_order,
                 sync_on_close: <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0,
                 cloud_options,
-                ..Default::default()
             };
 
             self.ldf
@@ -1347,7 +1345,6 @@ impl PlRLazyFrame {
                 maintain_order,
                 sync_on_close: <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0,
                 cloud_options,
-                ..Default::default()
             };
 
             self.ldf
@@ -1399,7 +1396,6 @@ impl PlRLazyFrame {
                 maintain_order,
                 sync_on_close: <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0,
                 cloud_options,
-                ..Default::default()
             };
 
             self.ldf
@@ -1461,7 +1457,6 @@ impl PlRLazyFrame {
                 maintain_order,
                 sync_on_close: <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0,
                 cloud_options,
-                ..Default::default()
             };
 
             self.ldf

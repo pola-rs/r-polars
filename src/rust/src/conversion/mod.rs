@@ -47,10 +47,7 @@ pub(crate) fn try_extract_attribute(obj: &Sexp, attr_name: &str) -> savvy::Resul
 }
 
 pub(crate) fn strings_to_pl_smallstr(container: StringSexp) -> Vec<PlSmallStr> {
-    container
-        .iter()
-        .map(|s| PlSmallStr::from_str(s.as_ref()))
-        .collect()
+    container.iter().map(PlSmallStr::from_str).collect()
 }
 
 impl TryFrom<&str> for PlRDataType {

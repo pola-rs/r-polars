@@ -17,7 +17,7 @@ impl From<LazyGroupBy> for PlRLazyGroupBy {
 impl PlRLazyGroupBy {
     fn agg(&mut self, aggs: ListSexp) -> Result<PlRLazyFrame> {
         let lgb = self.lgb.clone().unwrap();
-        let aggs = <Wrap<Vec<Expr>>>::try_from(aggs).unwrap().0;
+        let aggs = <Wrap<Vec<Expr>>>::try_from(aggs)?.0;
         Ok(lgb.agg(aggs).into())
     }
 
