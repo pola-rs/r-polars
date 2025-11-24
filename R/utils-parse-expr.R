@@ -1,7 +1,28 @@
 # Parse dynamic dots into a list of expressions (PlRExpr, not polars_expr)
-parse_into_list_of_expressions <- function(..., `__structify` = deprecated()) {
+parse_into_list_of_expressions <- function(
+  ...,
+  `__require_selectors` = FALSE,
+  `__structify` = deprecated()
+) {
   dots <- list2(...)
   call <- caller_env()
+
+  if (`__require_selectors`) {
+    is_valid_selectors <- vapply(
+      dots,
+      function(x) {
+        is_polars_expr(1) || is_character(x) && !anyNA(x)
+      },
+      logical(1)
+    )
+
+    if (!is_valid_selectors) {
+      abort(
+        c("`...` only accepts Polars expressions or non-NA characters.")
+      )
+    }
+  }
+
   try_fetch(
     lapply(dots, \(x) as_polars_expr(x, structify = `__structify`)$`_rexpr`),
     error = function(cnd) {

@@ -1277,9 +1277,9 @@ lazyframe__unique <- function(
       check_dots_empty0(...)
 
       if (is.null(subset)) {
-        cs$all()
+        list(cs$all()$`_rexpr`)
       } else {
-        parse_into_selector(!!!c(subset))
+        parse_into_list_of_expressions(!!!c(subset), `__require_selectors` = TRUE)
       }
     } else if (...length() == 1L && (is.null(dots[[1]]) || is.list(dots[[1]]))) {
       check_dots_unnamed()
@@ -1300,18 +1300,18 @@ lazyframe__unique <- function(
       )
 
       if (is.null(dots[[1]])) {
-        cs$all()
+        list(cs$all()$`_rexpr`)
       } else {
-        parse_into_selector(!!!dots[[1]])
+        parse_into_list_of_expressions(!!!dots[[1]])
       }
     } else if (...length() == 0L) {
       NULL
     } else {
-      parse_into_selector(...)
+      parse_into_list_of_expressions(..., `__require_selectors` = TRUE)
     }
 
     self$`_ldf`$unique(
-      subset = subset$`_rselector`,
+      subset = subset,
       keep = keep,
       maintain_order = maintain_order
     )
