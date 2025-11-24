@@ -8,18 +8,16 @@ parse_into_list_of_expressions <- function(
   call <- caller_env()
 
   if (`__require_selectors`) {
-    is_valid_selectors <- vapply(
-      dots,
-      function(x) {
-        is_polars_expr(1) || is_character(x) && !anyNA(x)
-      },
-      logical(1)
-    )
-
-    if (!is_valid_selectors) {
-      abort(
-        c("`...` only accepts Polars expressions or non-NA characters.")
-      )
+    for (i in seq_along(dots)) {
+      if (
+        !is_polars_expr(dots[[i]]) &&
+          !(is_character(dots[[i]]) && !anyNA(dots[[i]]))
+      ) {
+        abort(
+          c("`...` only accepts Polars expressions or non-NA characters."),
+          call = call
+        )
+      }
     }
   }
 
