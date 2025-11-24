@@ -16,8 +16,8 @@ This is an update that corresponds to Python Polars 1.36.0, which includes signi
 
 - New method `<lazyframe>$pivot()` and `<dataframe>$pivot()`'s new argument `on_columns`
   (#1662, [pola-rs/polars#25016](https://github.com/pola-rs/polars/pull/25016)).
-- `<lazyframe>$unique()` and `<dataframe>$unique()`'s `...` (dynamic dots) polars expressions
-  (#1662, [pola-rs/polars#25099](https://github.com/pola-rs/polars/pull/25099))
+- `<lazyframe>$unique()` and `<dataframe>$unique()`' now allow polars expressions in `...`
+  (#1662, [pola-rs/polars#25099](https://github.com/pola-rs/polars/pull/25099)).
 - `<expr>$item()` to strictly extract a single value from an expression (#1652).
 - `<expr>$arr$eval()` to run any Polars expression on all subarrays of an Array column (#1653).
 - `<expr>$name$replace()` to replace expression names using regular expressions (#1654).
@@ -29,8 +29,6 @@ This is an update that corresponds to Python Polars 1.36.0, which includes signi
 - `pl$explain_all()` to show a single optimized query plan from several input LazyFrames (#1666).
 - `<expr>$bin$reinterpret()` (#1664).
 - `<expr>$mode()` gains the `maintain_order` argument (#1662).
-- `pl$scan_parquet()` and `pl$read_parquet()` gain the `missing_columns` argument
-  to specify how to handle missing columns in the scanned files (#1662).
 - The following methods gain two arguments, `empty_as_null` and `keep_nulls` (#1662).
   - `<expr>$explode()`
   - `<expr>$arr$explode()`
@@ -46,8 +44,8 @@ This is an update that corresponds to Python Polars 1.36.0, which includes signi
 
 - The experimental partitioning scheme class
   (constructed with `pl$PartitionByKey()`, `pl$PartitionMaxSize()`, or `pl$PartitionParted()`)
-  is rewriten as S7 class (#1662).
-- `pl$element()` is rewriten in Rust (#1662, [pola-rs/polars#24885](https://github.com/pola-rs/polars/pull/24885)).
+  is rewritten as S7 class (#1662).
+- `pl$element()` is rewritten in Rust (#1662, [pola-rs/polars#24885](https://github.com/pola-rs/polars/pull/24885)).
 
 ## polars 1.6.0
 
