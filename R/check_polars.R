@@ -90,7 +90,7 @@ is_polars_series <- function(x) {
 #' @rdname check_polars
 #' @export
 is_polars_partitioning_scheme <- function(x) {
-  inherits(x, "polars_partitioning_scheme")
+  S7_inherits(x, SinkDirectory)
 }
 
 #' @rdname check_polars

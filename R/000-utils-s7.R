@@ -140,6 +140,6 @@ parse_to_rexpr_list <- function(obj) {
   if (is.null(obj)) {
     NULL
   } else {
-    parse_into_list_of_expressions(!!!obj)
+    parse_into_list_of_expressions(!!!c(obj))
   }
 }

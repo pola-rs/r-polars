@@ -60,98 +60,6 @@
 #' @name polars_partitioning_scheme
 NULL
 
-# The env for storing the partitioning scheme methods
-polars_partitioning_scheme__methods <- new.env(parent = emptyenv()) # nolint: object_name_linter
-
-#' @export
-wrap.PlRPartitioning <- function(x, ...) {
-  self <- new.env(parent = emptyenv())
-  self$`_r_partitioning` <- x
-
-  makeActiveBinding("_base_path", function() self$`_r_partitioning`$base_path(), self)
-
-  class(self) <- c("polars_partitioning_scheme", "polars_object")
-  self
-}
-
-#' @rdname polars_partitioning_scheme
-#' @aliases PartitionMaxSize
-#' @order 2
-pl__PartitionMaxSize <- function(
-  base_path,
-  ...,
-  max_size,
-  per_partition_sort_by = NULL
-) {
-  wrap({
-    check_dots_empty0(...)
-
-    if (!is.null(per_partition_sort_by)) {
-      per_partition_sort_by <- parse_into_list_of_expressions(!!!per_partition_sort_by)
-    }
-
-    PlRPartitioning$new_max_size(
-      base_path = base_path,
-      max_size = max_size,
-      per_partition_sort_by = per_partition_sort_by
-    )
-  })
-}
-
-#' @rdname polars_partitioning_scheme
-#' @aliases PartitionByKey
-#' @order 1
-pl__PartitionByKey <- function(
-  base_path,
-  ...,
-  by,
-  include_key = TRUE,
-  per_partition_sort_by = NULL
-) {
-  wrap({
-    check_dots_empty0(...)
-
-    by <- parse_into_list_of_expressions(!!!by)
-    if (!is.null(per_partition_sort_by)) {
-      per_partition_sort_by <- parse_into_list_of_expressions(!!!per_partition_sort_by)
-    }
-
-    PlRPartitioning$new_by_key(
-      base_path = base_path,
-      by = by,
-      include_key = include_key,
-      per_partition_sort_by = per_partition_sort_by
-    )
-  })
-}
-
-#' @rdname polars_partitioning_scheme
-#' @aliases PartitionParted
-#' @order 3
-pl__PartitionParted <- function(
-  base_path,
-  ...,
-  by,
-  include_key = TRUE,
-  per_partition_sort_by = NULL
-) {
-  wrap({
-    check_dots_empty0(...)
-
-    by <- parse_into_list_of_expressions(!!!by)
-    if (!is.null(per_partition_sort_by)) {
-      per_partition_sort_by <- parse_into_list_of_expressions(!!!per_partition_sort_by)
-    }
-
-    PlRPartitioning$new_parted(
-      base_path = base_path,
-      by = by,
-      include_key = include_key,
-      per_partition_sort_by = per_partition_sort_by
-    )
-  })
-}
-
 SinkDirectory <- new_class(
   "SinkDirectory",
   properties = list(
@@ -187,3 +95,86 @@ SinkDirectory <- new_class(
     )
   }
 )
+
+PartitionMaxSize <- new_class(
+  "PartitionMaxSize",
+  parent = SinkDirectory,
+  constructor = function(
+    base_path,
+    ...,
+    max_size,
+    per_partition_sort_by = NULL
+  ) {
+    check_dots_empty0(...)
+
+    new_object(
+      SinkDirectory(
+        base_path = base_path,
+        max_rows_per_file = max_size,
+        per_partition_sort_by = per_partition_sort_by
+      )
+    )
+  }
+)
+
+#' @rdname polars_partitioning_scheme
+#' @aliases PartitionMaxSize
+#' @order 2
+pl__PartitionMaxSize <- PartitionMaxSize
+
+PartitionByKey <- new_class(
+  "PartitionByKey",
+  parent = SinkDirectory,
+  constructor = function(
+    base_path,
+    ...,
+    by,
+    include_key = TRUE,
+    per_partition_sort_by = NULL
+  ) {
+    check_dots_empty0(...)
+
+    new_object(
+      SinkDirectory(
+        base_path = base_path,
+        partition_by = by,
+        include_keys = include_key,
+        per_partition_sort_by = per_partition_sort_by
+      )
+    )
+  }
+)
+
+#' @rdname polars_partitioning_scheme
+#' @aliases PartitionByKey
+#' @order 1
+pl__PartitionByKey <- PartitionByKey
+
+PartitionParted <- new_class(
+  "PartitionParted",
+  parent = SinkDirectory,
+  constructor = function(
+    base_path,
+    ...,
+    by,
+    include_key = TRUE,
+    per_partition_sort_by = NULL
+  ) {
+    check_dots_empty0(...)
+
+    new_object(
+      SinkDirectory(
+        base_path = base_path,
+        partition_by = by,
+        partition_keys_sorted = TRUE,
+        include_keys = include_key,
+        per_partition_sort_by = per_partition_sort_by
+      )
+    )
+  }
+)
+
+#' @rdname polars_partitioning_scheme
+#' @aliases PartitionParted
+#' @order 3
+pl__PartitionParted <- PartitionParted

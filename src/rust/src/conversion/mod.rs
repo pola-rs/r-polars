@@ -41,9 +41,21 @@ impl<T> From<T> for Wrap<T> {
 }
 
 // TODO: Move this to upstream?
-pub(crate) fn try_extract_attribute(obj: &Sexp, attr_name: &str) -> savvy::Result<Sexp> {
+pub(crate) fn try_extract_attribute<T>(obj: &Sexp, attr_name: &str) -> savvy::Result<T>
+where
+    T: TryFrom<Sexp, Error = savvy::Error>,
+{
     obj.get_attrib(attr_name)?
         .ok_or(savvy_err!("Attribute '{attr_name}' does not exist."))
+        .and_then(|v| T::try_from(v))
+}
+
+pub(crate) fn try_extract_opt_attribute<T>(obj: &Sexp, attr_name: &str) -> savvy::Result<Option<T>>
+where
+    T: TryFrom<Sexp, Error = savvy::Error>,
+{
+    obj.get_attrib(attr_name)?
+        .map_or(Ok(None), |v| Ok(Some(T::try_from(v)?)))
 }
 
 pub(crate) fn strings_to_pl_smallstr(container: StringSexp) -> Vec<PlSmallStr> {
@@ -1137,5 +1149,15 @@ impl TryFrom<&str> for Wrap<RollingRankMethod> {
             _ => return Err("unreachable".to_string().into()),
         };
         Ok(Wrap(compat_level))
+    }
+}
+
+impl TryFrom<&str> for Wrap<SinkDestination> {
+    type Error = savvy::Error;
+
+    fn try_from(path: &str) -> Result<Self, Self::Error> {
+        Ok(Wrap(SinkDestination::File {
+            target: SinkTarget::Path(PlPath::new(path)),
+        }))
     }
 }
