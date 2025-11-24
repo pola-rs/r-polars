@@ -188,6 +188,7 @@ nav:
             - join: man/lazyframe__join.md
             - last: man/lazyframe__last.md
             - merge_sorted: man/lazyframe__merge_sorted.md
+            - pivot: man/lazyframe__pivot.md
             - remove: man/lazyframe__remove.md
             - rename: man/lazyframe__rename.md
             - reverse: man/lazyframe__reverse.md

@@ -1491,37 +1491,14 @@ dataframe__partition_by <- function(..., maintain_order = TRUE, include_key = TR
 
 #' Pivot a frame from long to wide format
 #'
-#' Only available in eager mode. See "Examples" section below for how to do a
-#' "lazy pivot" if you know the unique column values in advance.
+#' Reshape data from long to wide format, known as "pivot wider".
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param on The column(s) whose values will be used as the new columns of the
-#' output DataFrame.
+#' @inheritParams lazyframe__pivot
 #' @param on_columns What value combinations will be considered for the output table.
 #'   If `NULL` (default), all unique values found in the `on` column(s) will be used.
-#' @param index The column(s) that remain from the input to the output. The
-#' output DataFrame will have one row for each unique combination of the
-#' `index`'s values. If `NULL`, all remaining columns not specified in `on` and
-#' `values` will be used. At least one of `index` and `values` must be
-#' specified.
-#' @param values The existing column(s) of values which will be moved under the
-#' new columns from `index`. If an aggregation is specified, these are the
-#' values on which the aggregation will be computed. If `NULL`, all remaining
-#' columns not specified in `on` and `index` will be used. At least one of
-#' `index` and `values` must be specified.
-#' @param aggregate_function Choose from:
-#' * `NULL`: no aggregation takes place, will raise error if multiple values
-#'   are in group;
-#' * A predefined aggregate function string, one of `"min"`, `"max"`,
-#'   `"first"`, `"last"`, `"sum"`, `"mean"`, `"median"`, `"len"`;
-#' * An expression to do the aggregation.
-#' @param maintain_order Ensure the values of `index` are sorted by discovery
-#' order.
 #' @param sort_columns Sort the transposed columns by name. Default is by order
 #' of discovery.
-#' @param separator Used as separator/delimiter in generated column names in
-#' case of multiple values columns.
-#'
 #' @inherit as_polars_df return
 #' @examples
 #' # Suppose we have a dataframe of test scores achieved by some students,
@@ -1566,19 +1543,6 @@ dataframe__partition_by <- function(..., maintain_order = TRUE, include_key = TR
 #'   values = "col3",
 #'   aggregate_function = pl$element()$tanh()$mean(),
 #' )
-#'
-#' # Note that pivot is only available in eager mode. If you know the unique
-#' # column values in advance, you can use `$group_by()` on a LazyFrame to get
-#' # the same result as above in lazy mode:
-#' index <- pl$col("col1")
-#' on <- pl$col("col2")
-#' values <- pl$col("col3")
-#' unique_column_values <- c("x", "y")
-#' aggregate_function <- \(col) col$tanh()$mean()
-#' funs <- lapply(unique_column_values, \(value) {
-#'   aggregate_function(values$filter(on == value))$alias(value)
-#' })
-#' df$lazy()$group_by(index)$agg(!!!funs)$collect()
 dataframe__pivot <- function(
   on,
   on_columns = NULL,
@@ -1591,6 +1555,7 @@ dataframe__pivot <- function(
   separator = "_"
 ) {
   wrap({
+    check_dots_empty0(...)
     check_bool(sort_columns)
 
     on_columns <- if (is.null(on_columns)) {
@@ -1607,7 +1572,6 @@ dataframe__pivot <- function(
     self$lazy()$pivot(
       on = on,
       on_columns = on_columns,
-      ...,
       index = index,
       values = values,
       aggregate_function = aggregate_function,

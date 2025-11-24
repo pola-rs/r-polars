@@ -1542,6 +1542,103 @@ lazyframe__join_where <- function(
   })
 }
 
+#' Pivot a frame from long to wide format
+#'
+#' @description
+#' Reshape data from long to wide format, known as "pivot wider".
+#'
+#' Unlike for [DataFrame], the values contained in the columns must be
+#' specified beforehand using `on_columns`.
+#' @inherit as_polars_lf return
+#' @inheritParams rlang::args_dots_empty
+#' @param on The column(s) whose values will be used as the new columns of the output.
+#' @param on_columns What value combinations will be considered for the output table.
+#'   Something can be converted to a [DataFrame] by `as_polars_series(on_columns) |> as_polars_df()`.
+#'   See examples for details.
+#' @param index The column(s) that remain from the input to the output. The
+#'   output will have one row for each unique combination of the `index`'s values.
+#'   If `NULL`, all remaining columns not specified in `on` and `values` will be used.
+#'   At least one of `index` and `values` must be specified.
+#' @param values The existing column(s) of values which will be moved under the
+#'   new columns from `index`. If an aggregation is specified, these are the
+#'   values on which the aggregation will be computed. If `NULL`, all remaining
+#'   columns not specified in `on` and `index` will be used. At least one of
+#'   `index` and `values` must be specified.
+#' @param aggregate_function Choose from:
+#'   - `NULL` (default): no aggregation takes place, will raise error if multiple values
+#'     are in group. Same as `pl$element()$item(allow_empty = TRUE)`.
+#'   - A predefined aggregate function string, one of `"min"`, `"max"`,
+#'     `"first"`, `"last"`, `"sum"`, `"mean"`, `"median"`, `"len"`, `"item"`.
+#'     Same as `pl$element()$<function>()`.
+#'   - An [expression][Expr] to do the aggregation.
+#' @param maintain_order Ensure the values of `index` are sorted by discovery
+#' order.
+#' @param separator Used as separator/delimiter in generated column names in
+#'   case of multiple values columns.
+#' @examplesIf exists("penguins", where = asNamespace("datasets"))
+#' df <- pl.DataFrame(
+#'   name = c("Cady", "Cady", "Karen", "Karen"),
+#'   subject = c("maths", "physics", "maths", "physics"),
+#'   test_1 = c(98, 99, 61, 58),
+#'   test_2 = c(100, 100, 60, 60),
+#' )
+#' df
+#'
+#' # Using `pivot`, we can reshape so we have one row per student, with different
+#' # subjects as columns, and their `test_1` scores as values:
+#' df.lazy()$pivot(
+#'   "subject",
+#'   on_columns = c("maths", "physics"),
+#'   index = "name",
+#'   values = "test_1",
+#' )$collect()
+#'
+#' # You can use selectors too - here we include all test scores in the pivoted table:
+#' df.lazy().pivot(
+#'   "subject",
+#'   on_columns = c("maths", "physics"),
+#'   values = cs$starts_with("test"),
+#' )$collect()
+#'
+#' # If you end up with multiple values per cell, you can specify how to aggregate
+#' # them with `aggregate_function`:
+#' lf <- pl$LazyFrame(
+#'   ix = c(1, 1, 2, 2, 1, 2),
+#'   col = c("a", "a", "a", "a", "b", "b"),
+#'   foo = c(0, 1, 2, 2, 7, 1),
+#'   bar = c(0, 2, 0, 0, 9, 4),
+#' )
+#' lf$pivot(
+#'   "col", on_columns = c("a", "b"), index = "ix", aggregate_function = "sum"
+#' )$collect()
+#'
+#' # You can also pass a custom aggregation function using `pl$element()` expressions:
+#' lf <- pl$LazyFrame(
+#'   col1 = c("a", "a", "a", "b", "b", "b"),
+#'   col2 = c("x", "x", "x", "x", "y", "y"),
+#'   col3 = c(6, 7, 3, 2, 5, 7),
+#' )
+#' lf$pivot(
+#'   "col2",
+#'   on_columns = c("x", "y"),
+#'   index = "col1",
+#'   values = "col3",
+#'   aggregate_function = pl$element()$tanh()$mean(),
+#' )$collect()
+#'
+#' # Note that `on_columns` must contain all combinations of the values in `on`.
+#' # For example, you can use the `expand.grid()` function to create all combinations
+#' # of multiple columns as follows:
+#' as_polars_lf(datasets::penguins)$pivot(
+#'   on = c("species", "sex"),
+#'   on_columns = expand.grid(
+#'     species = c("Adelie", "Gentoo", "Chinstrap"),
+#'     sex = c("male", "female")
+#'   ),
+#'   index = "island",
+#'   values = "body_mass",
+#'   aggregate_function = "mean",
+#' )$collect()
 lazyframe__pivot <- function(
   on,
   on_columns,
@@ -1606,7 +1703,8 @@ lazyframe__pivot <- function(
     on_columns <- if (is_polars_df(on_columns)) {
       on_columns
     } else {
-      as_polars_series(on_columns)$to_frame()
+      as_polars_series(on_columns) |>
+        as_polars_df()
     }
 
     self$`_ldf`$pivot(
