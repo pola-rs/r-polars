@@ -96,7 +96,7 @@ impl TryFrom<Sexp> for Wrap<SinkDestination> {
             PartitionStrategy::Keyed {
                 keys: partition_by.0.clone(),
                 include_keys: include_keys.unwrap_or(true),
-                keys_pre_grouped: false,
+                keys_pre_grouped: partition_keys_sorted.unwrap_or(false),
                 per_partition_sort_by: per_partition_sort_by
                     .map(|wrap| wrap.0)
                     .unwrap_or_default()

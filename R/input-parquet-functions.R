@@ -167,7 +167,8 @@ pl__read_parquet <- function(
   storage_options = NULL,
   retries = 2,
   include_file_paths = NULL,
-  allow_missing_columns = FALSE
+  missing_columns = c("insert", "raise"),
+  allow_missing_columns = deprecated()
 ) {
   check_dots_empty0(...)
   .args <- as.list(environment())

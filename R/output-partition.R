@@ -27,7 +27,7 @@
 #'   Used to partition by.
 #' @param include_key A bool indicating whether to include the key columns in the output files.
 #' @param per_partition_sort_by Something can be coerced to a list of [expressions][polars_expr],
-#'   or `NULL` (default). Used  to sort over within each partition.
+#'   or `NULL` (default). Used to sort over within each partition.
 #'   Note that this might increase the memory consumption needed for each partition.
 #' @param max_size An integer-ish value indicating the maximum size in rows of
 #'   each of the generated files.
