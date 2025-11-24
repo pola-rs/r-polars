@@ -422,6 +422,14 @@ test_that("unique works", {
       ham = rep("b", 3)
     )
   )
+
+  # Expr input
+  expect_query_equal(
+    .input$unique(pl$col("a")$str$to_lowercase(), maintain_order = TRUE),
+    .input = pl$DataFrame(a = c("A", "a", "A", "a")),
+    pl$DataFrame(a = "A")
+  )
+
   expect_query_error(
     .input$unique("foobar", maintain_order = TRUE),
     df,
@@ -1036,17 +1044,33 @@ test_that("explode() works", {
     expected_df
   )
 
-  # empty values -> NA
+  # empty and null handlings
   df <- pl$DataFrame(
     letters = c("a", "a", "b", "c"),
-    numbers = list(1, NULL, c(4, 5), c(6, 7, 8))
+    numbers = list(1, NULL, list(), c(6, 7, 8))
   )
   expect_query_equal(
     .input$explode("numbers"),
     df,
     pl$DataFrame(
-      letters = c(rep("a", 2), "b", "b", rep("c", 3)),
-      numbers = c(1, NA, 4:8)
+      letters = c(rep("a", 2), "b", rep("c", 3)),
+      numbers = c(1, NA, NA, 6:8)
+    )
+  )
+  expect_query_equal(
+    .input$explode("numbers", empty_as_null = FALSE),
+    df,
+    pl$DataFrame(
+      letters = c(rep("a", 2), rep("c", 3)),
+      numbers = c(1, NA, 6:8)
+    )
+  )
+  expect_query_equal(
+    .input$explode("numbers", keep_nulls = FALSE),
+    df,
+    pl$DataFrame(
+      letters = c("a", "b", rep("c", 3)),
+      numbers = c(1, NA, 6:8)
     )
   )
 
@@ -1810,6 +1834,83 @@ test_that("inequality joins require suffix when identical column names", {
       rev_right = c(13, 15, 16, 15, 16),
       cores_right = c(2, 1, 4, 1, 4)
     )
+  )
+})
+
+test_that("pivot() works", {
+  df <- pl$DataFrame(
+    index = c("x", "y", "z", "x", "y", "z"),
+    variable = c("b", "b", "b", "c", "c", "c"),
+    value = c(1, 3, 5, 2, 4, 6)
+  )
+
+  # TODO: remove sort after add the sort option to expect function
+  expect_query_equal(
+    .input$pivot(
+      on = "variable",
+      on_columns = c("b", "c"),
+      values = "value",
+      index = "index"
+    )$sort(cs$all()),
+    .input = df,
+    pl$DataFrame(
+      index = c("x", "y", "z"),
+      b = c(1, 3, 5),
+      c = c(2, 4, 6)
+    )$sort(cs$all())
+  )
+  expect_query_equal(
+    .input$pivot(
+      on = "variable",
+      on_columns = c("b"),
+      values = "value",
+      index = "index"
+    )$sort(cs$all()),
+    .input = df,
+    pl$DataFrame(
+      index = c("x", "y", "z"),
+      b = c(1, 3, 5)
+    )$sort(cs$all())
+  )
+
+  expect_query_equal(
+    .input$pivot(
+      on = c("index", "variable"),
+      on_columns = data.frame(
+        index = "x",
+        variable = "b"
+      ),
+      values = "value",
+      index = "index"
+    )$sort(cs$all()),
+    .input = df,
+    pl$DataFrame(
+      index = c("x", "y", "z"),
+      `{"x","b"}` = c(1, NA, NA)
+    )$sort(cs$all())
+  )
+
+  # The order of on and on_columns is important
+  expect_snapshot(
+    df$lazy()$pivot(
+      on = c("variable", "index"),
+      on_columns = data.frame(
+        index = "x",
+        variable = "b"
+      ),
+      values = "value",
+      index = "index"
+    )$collect(),
+    error = TRUE
+  )
+
+  expect_snapshot(
+    df$lazy()$pivot(
+      on = "variable",
+      values = "value",
+      index = "index"
+    )$collect(),
+    error = TRUE
   )
 })
 

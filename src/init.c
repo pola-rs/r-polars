@@ -164,6 +164,11 @@ SEXP savvy_duration__impl(SEXP c_arg__time_unit, SEXP c_arg__weeks, SEXP c_arg__
     return handle_result(res);
 }
 
+SEXP savvy_element__impl(void) {
+    SEXP res = savvy_element__ffi();
+    return handle_result(res);
+}
+
 SEXP savvy_explain_all__impl(SEXP c_arg__lfs, SEXP c_arg__optimizations) {
     SEXP res = savvy_explain_all__ffi(c_arg__lfs, c_arg__optimizations);
     return handle_result(res);
@@ -441,11 +446,6 @@ SEXP savvy_PlRDataFrame_n_chunks__impl(SEXP self__) {
 
 SEXP savvy_PlRDataFrame_partition_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__maintain_order, SEXP c_arg__include_key) {
     SEXP res = savvy_PlRDataFrame_partition_by__ffi(self__, c_arg__by, c_arg__maintain_order, c_arg__include_key);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRDataFrame_pivot_expr__impl(SEXP self__, SEXP c_arg__on, SEXP c_arg__maintain_order, SEXP c_arg__sort_columns, SEXP c_arg__aggregate_expr, SEXP c_arg__separator, SEXP c_arg__index, SEXP c_arg__values) {
-    SEXP res = savvy_PlRDataFrame_pivot_expr__ffi(self__, c_arg__on, c_arg__maintain_order, c_arg__sort_columns, c_arg__aggregate_expr, c_arg__separator, c_arg__index, c_arg__values);
     return handle_result(res);
 }
 
@@ -1434,8 +1434,8 @@ SEXP savvy_PlRExpr_exp__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_explode__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_explode__ffi(self__);
+SEXP savvy_PlRExpr_explode__impl(SEXP self__, SEXP c_arg__empty_as_null, SEXP c_arg__keep_nulls) {
+    SEXP res = savvy_PlRExpr_explode__ffi(self__, c_arg__empty_as_null, c_arg__keep_nulls);
     return handle_result(res);
 }
 
@@ -1889,8 +1889,8 @@ SEXP savvy_PlRExpr_min__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_mode__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_mode__ffi(self__);
+SEXP savvy_PlRExpr_mode__impl(SEXP self__, SEXP c_arg__maintain_order) {
+    SEXP res = savvy_PlRExpr_mode__ffi(self__, c_arg__maintain_order);
     return handle_result(res);
 }
 
@@ -2709,8 +2709,8 @@ SEXP savvy_PlRLazyFrame_drop_nulls__impl(SEXP self__, SEXP c_arg__subset) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_explode__impl(SEXP self__, SEXP c_arg__subset) {
-    SEXP res = savvy_PlRLazyFrame_explode__ffi(self__, c_arg__subset);
+SEXP savvy_PlRLazyFrame_explode__impl(SEXP self__, SEXP c_arg__subset, SEXP c_arg__empty_as_null, SEXP c_arg__keep_nulls) {
+    SEXP res = savvy_PlRLazyFrame_explode__ffi(self__, c_arg__subset, c_arg__empty_as_null, c_arg__keep_nulls);
     return handle_result(res);
 }
 
@@ -2789,13 +2789,18 @@ SEXP savvy_PlRLazyFrame_new_from_ndjson__impl(SEXP c_arg__source, SEXP c_arg__lo
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_new_from_parquet__impl(SEXP c_arg__source, SEXP c_arg__cache, SEXP c_arg__parallel, SEXP c_arg__rechunk, SEXP c_arg__low_memory, SEXP c_arg__use_statistics, SEXP c_arg__try_parse_hive_dates, SEXP c_arg__retries, SEXP c_arg__glob, SEXP c_arg__allow_missing_columns, SEXP c_arg__row_index_offset, SEXP c_arg__storage_options, SEXP c_arg__n_rows, SEXP c_arg__row_index_name, SEXP c_arg__hive_partitioning, SEXP c_arg__schema, SEXP c_arg__hive_schema, SEXP c_arg__include_file_paths) {
-    SEXP res = savvy_PlRLazyFrame_new_from_parquet__ffi(c_arg__source, c_arg__cache, c_arg__parallel, c_arg__rechunk, c_arg__low_memory, c_arg__use_statistics, c_arg__try_parse_hive_dates, c_arg__retries, c_arg__glob, c_arg__allow_missing_columns, c_arg__row_index_offset, c_arg__storage_options, c_arg__n_rows, c_arg__row_index_name, c_arg__hive_partitioning, c_arg__schema, c_arg__hive_schema, c_arg__include_file_paths);
+SEXP savvy_PlRLazyFrame_new_from_parquet__impl(SEXP c_arg__source, SEXP c_arg__cache, SEXP c_arg__parallel, SEXP c_arg__rechunk, SEXP c_arg__low_memory, SEXP c_arg__use_statistics, SEXP c_arg__try_parse_hive_dates, SEXP c_arg__retries, SEXP c_arg__glob, SEXP c_arg__missing_columns, SEXP c_arg__row_index_offset, SEXP c_arg__storage_options, SEXP c_arg__n_rows, SEXP c_arg__row_index_name, SEXP c_arg__hive_partitioning, SEXP c_arg__schema, SEXP c_arg__hive_schema, SEXP c_arg__include_file_paths) {
+    SEXP res = savvy_PlRLazyFrame_new_from_parquet__ffi(c_arg__source, c_arg__cache, c_arg__parallel, c_arg__rechunk, c_arg__low_memory, c_arg__use_statistics, c_arg__try_parse_hive_dates, c_arg__retries, c_arg__glob, c_arg__missing_columns, c_arg__row_index_offset, c_arg__storage_options, c_arg__n_rows, c_arg__row_index_name, c_arg__hive_partitioning, c_arg__schema, c_arg__hive_schema, c_arg__include_file_paths);
     return handle_result(res);
 }
 
 SEXP savvy_PlRLazyFrame_null_count__impl(SEXP self__) {
     SEXP res = savvy_PlRLazyFrame_null_count__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRLazyFrame_pivot__impl(SEXP self__, SEXP c_arg__on, SEXP c_arg__on_columns, SEXP c_arg__index, SEXP c_arg__values, SEXP c_arg__agg, SEXP c_arg__maintain_order, SEXP c_arg__separator) {
+    SEXP res = savvy_PlRLazyFrame_pivot__ffi(self__, c_arg__on, c_arg__on_columns, c_arg__index, c_arg__values, c_arg__agg, c_arg__maintain_order, c_arg__separator);
     return handle_result(res);
 }
 
@@ -2971,26 +2976,6 @@ SEXP savvy_PlRLazyGroupBy_head__impl(SEXP self__, SEXP c_arg__n) {
 
 SEXP savvy_PlRLazyGroupBy_tail__impl(SEXP self__, SEXP c_arg__n) {
     SEXP res = savvy_PlRLazyGroupBy_tail__ffi(self__, c_arg__n);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRPartitioning_base_path__impl(SEXP self__) {
-    SEXP res = savvy_PlRPartitioning_base_path__ffi(self__);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRPartitioning_new_by_key__impl(SEXP c_arg__base_path, SEXP c_arg__by, SEXP c_arg__include_key, SEXP c_arg__per_partition_sort_by) {
-    SEXP res = savvy_PlRPartitioning_new_by_key__ffi(c_arg__base_path, c_arg__by, c_arg__include_key, c_arg__per_partition_sort_by);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRPartitioning_new_max_size__impl(SEXP c_arg__base_path, SEXP c_arg__max_size, SEXP c_arg__per_partition_sort_by) {
-    SEXP res = savvy_PlRPartitioning_new_max_size__ffi(c_arg__base_path, c_arg__max_size, c_arg__per_partition_sort_by);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRPartitioning_new_parted__impl(SEXP c_arg__base_path, SEXP c_arg__by, SEXP c_arg__include_key, SEXP c_arg__per_partition_sort_by) {
-    SEXP res = savvy_PlRPartitioning_new_parted__ffi(c_arg__base_path, c_arg__by, c_arg__include_key, c_arg__per_partition_sort_by);
     return handle_result(res);
 }
 
@@ -3467,6 +3452,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_datetime_range__impl", (DL_FUNC) &savvy_datetime_range__impl, 6},
     {"savvy_datetime_ranges__impl", (DL_FUNC) &savvy_datetime_ranges__impl, 6},
     {"savvy_duration__impl", (DL_FUNC) &savvy_duration__impl, 9},
+    {"savvy_element__impl", (DL_FUNC) &savvy_element__impl, 0},
     {"savvy_explain_all__impl", (DL_FUNC) &savvy_explain_all__impl, 2},
     {"savvy_feature_nightly_enabled__impl", (DL_FUNC) &savvy_feature_nightly_enabled__impl, 0},
     {"savvy_field__impl", (DL_FUNC) &savvy_field__impl, 1},
@@ -3523,7 +3509,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_lazy__impl", (DL_FUNC) &savvy_PlRDataFrame_lazy__impl, 1},
     {"savvy_PlRDataFrame_n_chunks__impl", (DL_FUNC) &savvy_PlRDataFrame_n_chunks__impl, 1},
     {"savvy_PlRDataFrame_partition_by__impl", (DL_FUNC) &savvy_PlRDataFrame_partition_by__impl, 4},
-    {"savvy_PlRDataFrame_pivot_expr__impl", (DL_FUNC) &savvy_PlRDataFrame_pivot_expr__impl, 8},
     {"savvy_PlRDataFrame_read_ipc_stream__impl", (DL_FUNC) &savvy_PlRDataFrame_read_ipc_stream__impl, 7},
     {"savvy_PlRDataFrame_rechunk__impl", (DL_FUNC) &savvy_PlRDataFrame_rechunk__impl, 1},
     {"savvy_PlRDataFrame_sample_frac__impl", (DL_FUNC) &savvy_PlRDataFrame_sample_frac__impl, 5},
@@ -3721,7 +3706,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_ewm_std__impl", (DL_FUNC) &savvy_PlRExpr_ewm_std__impl, 6},
     {"savvy_PlRExpr_ewm_var__impl", (DL_FUNC) &savvy_PlRExpr_ewm_var__impl, 6},
     {"savvy_PlRExpr_exp__impl", (DL_FUNC) &savvy_PlRExpr_exp__impl, 1},
-    {"savvy_PlRExpr_explode__impl", (DL_FUNC) &savvy_PlRExpr_explode__impl, 1},
+    {"savvy_PlRExpr_explode__impl", (DL_FUNC) &savvy_PlRExpr_explode__impl, 3},
     {"savvy_PlRExpr_extend_constant__impl", (DL_FUNC) &savvy_PlRExpr_extend_constant__impl, 3},
     {"savvy_PlRExpr_fill_nan__impl", (DL_FUNC) &savvy_PlRExpr_fill_nan__impl, 2},
     {"savvy_PlRExpr_fill_null__impl", (DL_FUNC) &savvy_PlRExpr_fill_null__impl, 2},
@@ -3812,7 +3797,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_meta_root_names__impl", (DL_FUNC) &savvy_PlRExpr_meta_root_names__impl, 1},
     {"savvy_PlRExpr_meta_undo_aliases__impl", (DL_FUNC) &savvy_PlRExpr_meta_undo_aliases__impl, 1},
     {"savvy_PlRExpr_min__impl", (DL_FUNC) &savvy_PlRExpr_min__impl, 1},
-    {"savvy_PlRExpr_mode__impl", (DL_FUNC) &savvy_PlRExpr_mode__impl, 1},
+    {"savvy_PlRExpr_mode__impl", (DL_FUNC) &savvy_PlRExpr_mode__impl, 2},
     {"savvy_PlRExpr_mul__impl", (DL_FUNC) &savvy_PlRExpr_mul__impl, 2},
     {"savvy_PlRExpr_n_unique__impl", (DL_FUNC) &savvy_PlRExpr_n_unique__impl, 1},
     {"savvy_PlRExpr_name_keep__impl", (DL_FUNC) &savvy_PlRExpr_name_keep__impl, 1},
@@ -3976,7 +3961,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_drop__impl", (DL_FUNC) &savvy_PlRLazyFrame_drop__impl, 2},
     {"savvy_PlRLazyFrame_drop_nans__impl", (DL_FUNC) &savvy_PlRLazyFrame_drop_nans__impl, 2},
     {"savvy_PlRLazyFrame_drop_nulls__impl", (DL_FUNC) &savvy_PlRLazyFrame_drop_nulls__impl, 2},
-    {"savvy_PlRLazyFrame_explode__impl", (DL_FUNC) &savvy_PlRLazyFrame_explode__impl, 2},
+    {"savvy_PlRLazyFrame_explode__impl", (DL_FUNC) &savvy_PlRLazyFrame_explode__impl, 4},
     {"savvy_PlRLazyFrame_fill_nan__impl", (DL_FUNC) &savvy_PlRLazyFrame_fill_nan__impl, 2},
     {"savvy_PlRLazyFrame_filter__impl", (DL_FUNC) &savvy_PlRLazyFrame_filter__impl, 2},
     {"savvy_PlRLazyFrame_group_by__impl", (DL_FUNC) &savvy_PlRLazyFrame_group_by__impl, 3},
@@ -3994,6 +3979,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_new_from_ndjson__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_ndjson__impl, 15},
     {"savvy_PlRLazyFrame_new_from_parquet__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_parquet__impl, 18},
     {"savvy_PlRLazyFrame_null_count__impl", (DL_FUNC) &savvy_PlRLazyFrame_null_count__impl, 1},
+    {"savvy_PlRLazyFrame_pivot__impl", (DL_FUNC) &savvy_PlRLazyFrame_pivot__impl, 8},
     {"savvy_PlRLazyFrame_profile__impl", (DL_FUNC) &savvy_PlRLazyFrame_profile__impl, 1},
     {"savvy_PlRLazyFrame_quantile__impl", (DL_FUNC) &savvy_PlRLazyFrame_quantile__impl, 3},
     {"savvy_PlRLazyFrame_remove__impl", (DL_FUNC) &savvy_PlRLazyFrame_remove__impl, 2},
@@ -4029,10 +4015,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyGroupBy_agg__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_agg__impl, 2},
     {"savvy_PlRLazyGroupBy_head__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_head__impl, 2},
     {"savvy_PlRLazyGroupBy_tail__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_tail__impl, 2},
-    {"savvy_PlRPartitioning_base_path__impl", (DL_FUNC) &savvy_PlRPartitioning_base_path__impl, 1},
-    {"savvy_PlRPartitioning_new_by_key__impl", (DL_FUNC) &savvy_PlRPartitioning_new_by_key__impl, 4},
-    {"savvy_PlRPartitioning_new_max_size__impl", (DL_FUNC) &savvy_PlRPartitioning_new_max_size__impl, 3},
-    {"savvy_PlRPartitioning_new_parted__impl", (DL_FUNC) &savvy_PlRPartitioning_new_parted__impl, 4},
     {"savvy_PlRSQLContext_execute__impl", (DL_FUNC) &savvy_PlRSQLContext_execute__impl, 2},
     {"savvy_PlRSQLContext_get_tables__impl", (DL_FUNC) &savvy_PlRSQLContext_get_tables__impl, 1},
     {"savvy_PlRSQLContext_new__impl", (DL_FUNC) &savvy_PlRSQLContext_new__impl, 0},

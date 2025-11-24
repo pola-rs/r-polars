@@ -1,7 +1,6 @@
 use super::*;
-use crate::{PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr};
+use crate::{PlRDataType, PlRLazyFrame, PlRSeries, RPolarsErr};
 use either::Either;
-use polars::prelude::pivot::{pivot, pivot_stable};
 use savvy::{
     ListSexp, NumericScalar, OwnedIntegerSexp, OwnedListSexp, Result, Sexp, StringSexp, TypedSexp,
     savvy,
@@ -220,16 +219,8 @@ impl PlRDataFrame {
         variable_name: Option<&str>,
     ) -> Result<Self> {
         let args = UnpivotArgsIR {
-            on: on
-                .to_vec()
-                .iter()
-                .map(|x| PlSmallStr::from_str(x))
-                .collect(),
-            index: index
-                .to_vec()
-                .iter()
-                .map(|x| PlSmallStr::from_str(x))
-                .collect(),
+            on: strings_to_pl_smallstr(on),
+            index: strings_to_pl_smallstr(index),
             value_name: value_name.map(|s| s.into()),
             variable_name: variable_name.map(|s| s.into()),
         };
@@ -254,34 +245,6 @@ impl PlRDataFrame {
             ),
             None => self.df.to_dummies(separator, drop_first, drop_nulls),
         }
-        .map_err(RPolarsErr::from)?;
-        Ok(out.into())
-    }
-
-    pub fn pivot_expr(
-        &self,
-        on: StringSexp,
-        maintain_order: bool,
-        sort_columns: bool,
-        aggregate_expr: Option<&PlRExpr>,
-        separator: Option<&str>,
-        index: Option<StringSexp>,
-        values: Option<StringSexp>,
-    ) -> Result<Self> {
-        let fun = if maintain_order { pivot_stable } else { pivot };
-        let agg_expr = aggregate_expr.map(|expr| expr.inner.clone());
-        let on = on.to_vec();
-        let index = index.map(|x| x.to_vec());
-        let values = values.map(|x| x.to_vec());
-        let out = fun(
-            &self.df,
-            on,
-            index,
-            values,
-            sort_columns,
-            agg_expr,
-            separator,
-        )
         .map_err(RPolarsErr::from)?;
         Ok(out.into())
     }

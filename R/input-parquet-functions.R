@@ -26,11 +26,17 @@
 #'   the datatypes in the file(s). If there are extra columns that are not in the
 #'   file(s), consider also enabling `allow_missing_columns`.
 #' @param low_memory Reduce memory pressure at the expense of performance
-#' @param allow_missing_columns When reading a list of parquet files, if a
-#' column existing in the first file cannot be found in subsequent files, the
-#' default behavior is to raise an error. However, if `allow_missing_columns`
-#' is set to `TRUE`, a full-NULL column is returned instead of erroring for the
-#' files that do not contain the column.
+#' @param missing_columns Configuration for behavior when columns defined in the schema
+#'   are missing from the data:
+#'   - `"raise"` (default): Raises an error.
+#'   - `"insert"`:  Inserts the missing columns using NULLs as the row values.
+#' @param allow_missing_columns `r lifecycle::badge("deprecated")`
+#'   Deprecated in favor of `missing_columns`.
+#'   When reading a list of parquet files, if a
+#'   column existing in the first file cannot be found in subsequent files, the
+#'   default behavior is to raise an error. However, if `allow_missing_columns`
+#'   is set to `TRUE`, a full-NULL column is returned instead of erroring for the
+#'   files that do not contain the column.
 #' @examplesIf requireNamespace("withr", quietly = TRUE)
 #' # Write a Parquet file than we can then import as DataFrame
 #' temp_file <- withr::local_tempfile(fileext = ".parquet")
@@ -64,7 +70,8 @@ pl__scan_parquet <- function(
   storage_options = NULL,
   retries = 2,
   include_file_paths = NULL,
-  allow_missing_columns = FALSE
+  missing_columns = c("insert", "raise"),
+  allow_missing_columns = deprecated()
 ) {
   check_dots_empty0(...)
   check_character(source, allow_na = FALSE)
@@ -77,6 +84,29 @@ pl__scan_parquet <- function(
   )
   check_list_of_polars_dtype(schema, allow_null = TRUE)
   check_list_of_polars_dtype(hive_schema, allow_null = TRUE)
+  missing_columns <- arg_match0(
+    missing_columns,
+    values = c("insert", "raise")
+  )
+
+  if (is_present(allow_missing_columns)) {
+    deprecate_warn(
+      c(
+        `!` = sprintf(
+          "The argument %s of %s is deprecated.",
+          format_fn("scan_parquet"),
+          format_arg("allow_missing_columns")
+        ),
+        i = sprintf(
+          "Use the argument %s instead and pass one of %s.",
+          format_arg("missing_columns"),
+          format_code("('insert', 'raise')")
+        )
+      )
+    )
+
+    missing_columns <- if (allow_missing_columns) "insert" else "raise"
+  }
 
   if (!is.null(hive_schema)) {
     hive_schema <- parse_into_list_of_datatypes(!!!hive_schema)
@@ -100,7 +130,7 @@ pl__scan_parquet <- function(
     storage_options = storage_options,
     retries = retries,
     include_file_paths = include_file_paths,
-    allow_missing_columns = allow_missing_columns
+    missing_columns = missing_columns
   ) |>
     wrap()
 }
@@ -143,7 +173,8 @@ pl__read_parquet <- function(
   storage_options = NULL,
   retries = 2,
   include_file_paths = NULL,
-  allow_missing_columns = FALSE
+  missing_columns = c("insert", "raise"),
+  allow_missing_columns = deprecated()
 ) {
   check_dots_empty0(...)
   .args <- as.list(environment())

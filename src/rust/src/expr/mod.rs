@@ -14,7 +14,7 @@ mod serde;
 mod string;
 mod r#struct;
 use polars::lazy::dsl::Expr;
-use savvy::{EnvironmentSexp, savvy};
+use savvy::{EnvironmentSexp, savvy, savvy_err};
 
 #[savvy]
 #[repr(transparent)]
@@ -29,9 +29,13 @@ impl From<Expr> for PlRExpr {
     }
 }
 
-impl From<EnvironmentSexp> for &PlRExpr {
-    fn from(env: EnvironmentSexp) -> Self {
-        let ptr = env.get(".ptr").unwrap().unwrap();
-        <&PlRExpr>::try_from(ptr).unwrap()
+impl TryFrom<EnvironmentSexp> for &PlRExpr {
+    type Error = savvy::Error;
+
+    fn try_from(env: EnvironmentSexp) -> Result<Self, Self::Error> {
+        env.get(".ptr")?
+            .map(<&PlRExpr>::try_from)
+            .transpose()?
+            .ok_or(savvy_err!("Invalid PlRExpr object."))
     }
 }

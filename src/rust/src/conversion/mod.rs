@@ -41,9 +41,25 @@ impl<T> From<T> for Wrap<T> {
 }
 
 // TODO: Move this to upstream?
-pub(crate) fn try_extract_attribute(obj: &Sexp, attr_name: &str) -> savvy::Result<Sexp> {
+pub(crate) fn try_extract_attribute<T>(obj: &Sexp, attr_name: &str) -> savvy::Result<T>
+where
+    T: TryFrom<Sexp, Error = savvy::Error>,
+{
     obj.get_attrib(attr_name)?
         .ok_or(savvy_err!("Attribute '{attr_name}' does not exist."))
+        .and_then(|v| T::try_from(v))
+}
+
+pub(crate) fn try_extract_opt_attribute<T>(obj: &Sexp, attr_name: &str) -> savvy::Result<Option<T>>
+where
+    T: TryFrom<Sexp, Error = savvy::Error>,
+{
+    obj.get_attrib(attr_name)?
+        .map_or(Ok(None), |v| Ok(Some(T::try_from(v)?)))
+}
+
+pub(crate) fn strings_to_pl_smallstr(container: StringSexp) -> Vec<PlSmallStr> {
+    container.iter().map(PlSmallStr::from_str).collect()
 }
 
 impl TryFrom<&str> for PlRDataType {
@@ -87,6 +103,37 @@ impl TryFrom<&str> for PlRDataType {
             }
         };
         Ok(Self { dt })
+    }
+}
+
+impl<T> TryFrom<Sexp> for Wrap<Option<T>>
+where
+    T: TryFrom<Sexp, Error = savvy::Error>,
+{
+    type Error = savvy::Error;
+
+    fn try_from(value: Sexp) -> Result<Self, Self::Error> {
+        if value.is_null() {
+            Ok(Wrap(None))
+        } else {
+            Ok(Wrap(Some(T::try_from(value)?)))
+        }
+    }
+}
+
+impl TryFrom<Sexp> for Wrap<u32> {
+    type Error = savvy::Error;
+
+    fn try_from(value: Sexp) -> Result<Self, Self::Error> {
+        <NumericScalar>::try_from(value).and_then(<Wrap<u32>>::try_from)
+    }
+}
+
+impl TryFrom<Sexp> for Wrap<Vec<Expr>> {
+    type Error = savvy::Error;
+
+    fn try_from(value: Sexp) -> Result<Self, Self::Error> {
+        <ListSexp>::try_from(value).and_then(<Wrap<Vec<Expr>>>::try_from)
     }
 }
 
@@ -163,23 +210,25 @@ impl TryFrom<ListSexp> for Wrap<Vec<Series>> {
     }
 }
 
-impl From<ListSexp> for Wrap<Vec<Expr>> {
-    fn from(list: ListSexp) -> Self {
+impl TryFrom<ListSexp> for Wrap<Vec<Expr>> {
+    type Error = savvy::Error;
+
+    fn try_from(list: ListSexp) -> Result<Self, savvy::Error> {
         let expr_list = list
             .iter()
-            .map(|(name, value)| {
-                let rexpr = match value.into_typed() {
-                    TypedSexp::Environment(e) => <&PlRExpr>::from(e).clone(),
-                    _ => unreachable!("Only accept a list of Expr"),
-                };
-                if name.is_empty() {
-                    rexpr.inner
-                } else {
-                    rexpr.inner.alias(name)
+            .map(|(name, value)| match value.into_typed() {
+                TypedSexp::Environment(e) => {
+                    let expr = <&PlRExpr>::try_from(e)?.inner.clone();
+                    if name.is_empty() {
+                        Ok(expr)
+                    } else {
+                        Ok(expr.alias(name))
+                    }
                 }
+                _ => Err(savvy_err!("Only accept a list of Expr")),
             })
-            .collect();
-        Wrap(expr_list)
+            .collect::<Result<Vec<_>, _>>()?;
+        Ok(Wrap(expr_list))
     }
 }
 
@@ -820,10 +869,10 @@ impl TryFrom<ListSexp> for Wrap<Schema> {
 }
 
 pub(crate) fn parse_cloud_options(
-    uri: &str,
-    kv: Vec<(String, String)>,
-) -> savvy::Result<CloudOptions> {
-    let out = CloudOptions::from_untyped_config(CloudScheme::from_uri(uri).as_ref(), kv)
+    cloud_scheme: Option<CloudScheme>,
+    keys_and_values: Vec<(String, String)>,
+) -> Result<CloudOptions, RPolarsErr> {
+    let out = CloudOptions::from_untyped_config(cloud_scheme, keys_and_values)
         .map_err(RPolarsErr::from)?;
     Ok(out)
 }
@@ -905,6 +954,19 @@ impl TryFrom<Sexp> for Wrap<CompatLevel> {
         } else {
             Err("Invalid compat level".to_string().into())
         }
+    }
+}
+
+impl TryFrom<&str> for Wrap<MissingColumnsPolicy> {
+    type Error = savvy::Error;
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        let parsed = match value {
+            "raise" => MissingColumnsPolicy::Raise,
+            "insert" => MissingColumnsPolicy::Insert,
+            _ => return Err(savvy_err!("unreachable")),
+        };
+        Ok(Wrap(parsed))
     }
 }
 
@@ -1087,5 +1149,15 @@ impl TryFrom<&str> for Wrap<RollingRankMethod> {
             _ => return Err("unreachable".to_string().into()),
         };
         Ok(Wrap(compat_level))
+    }
+}
+
+impl TryFrom<&str> for Wrap<SinkDestination> {
+    type Error = savvy::Error;
+
+    fn try_from(path: &str) -> Result<Self, Self::Error> {
+        Ok(Wrap(SinkDestination::File {
+            target: SinkTarget::Path(PlPath::new(path)),
+        }))
     }
 }

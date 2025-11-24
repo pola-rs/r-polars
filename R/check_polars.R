@@ -90,7 +90,7 @@ is_polars_series <- function(x) {
 #' @rdname check_polars
 #' @export
 is_polars_partitioning_scheme <- function(x) {
-  inherits(x, "polars_partitioning_scheme")
+  S7_inherits(x, SinkDirectory)
 }
 
 #' @rdname check_polars
@@ -106,6 +106,21 @@ is_list_of_polars_dtype <- function(x, n = NULL) {
   }
 
   is_list(x, n = n) && is_list_of_polars_dtype_impl(x)
+}
+
+#' @rdname check_polars
+#' @export
+is_list_of_polars_expr <- function(x, n = NULL) {
+  is_list_of_polars_expr_impl <- function(x) {
+    for (i in seq_along(x)) {
+      if (!is_polars_expr(x[[i]])) {
+        return(FALSE)
+      }
+    }
+    TRUE
+  }
+
+  is_list(x, n = n) && is_list_of_polars_expr_impl(x)
 }
 
 #' @rdname check_polars

@@ -27,7 +27,7 @@
 #'   Used to partition by.
 #' @param include_key A bool indicating whether to include the key columns in the output files.
 #' @param per_partition_sort_by Something can be coerced to a list of [expressions][polars_expr],
-#'   or `NULL` (default). Used  to sort over within each partition.
+#'   or `NULL` (default). Used to sort over within each partition.
 #'   Note that this might increase the memory consumption needed for each partition.
 #' @param max_size An integer-ish value indicating the maximum size in rows of
 #'   each of the generated files.
@@ -60,94 +60,121 @@
 #' @name polars_partitioning_scheme
 NULL
 
-# The env for storing the partitioning scheme methods
-polars_partitioning_scheme__methods <- new.env(parent = emptyenv()) # nolint: object_name_linter
+SinkDirectory <- new_class(
+  "SinkDirectory",
+  properties = list(
+    base_path = prop_string(),
+    partition_by = prop_list_of_rexpr(allow_null = TRUE, names = "none"),
+    partition_keys_sorted = prop_bool(allow_null = TRUE),
+    include_keys = prop_bool(allow_null = TRUE),
+    per_partition_sort_by = prop_list_of_rexpr(allow_null = TRUE, names = "none"),
+    per_file_sort_by = prop_list_of_rexpr(allow_null = TRUE, names = "none"),
+    max_rows_per_file = prop_number_whole(allow_null = TRUE)
+  ),
+  constructor = function(
+    base_path,
+    ...,
+    partition_by = NULL,
+    partition_keys_sorted = NULL,
+    include_keys = NULL,
+    per_partition_sort_by = NULL,
+    per_file_sort_by = NULL,
+    max_rows_per_file = NULL
+  ) {
+    check_dots_empty0(...)
 
-#' @export
-wrap.PlRPartitioning <- function(x, ...) {
-  self <- new.env(parent = emptyenv())
-  self$`_r_partitioning` <- x
+    new_object(
+      S7_object(),
+      base_path = base_path,
+      partition_by = parse_to_rexpr_list(partition_by),
+      partition_keys_sorted = partition_keys_sorted,
+      include_keys = include_keys,
+      per_partition_sort_by = parse_to_rexpr_list(per_partition_sort_by),
+      per_file_sort_by = parse_to_rexpr_list(per_file_sort_by),
+      max_rows_per_file = max_rows_per_file
+    )
+  }
+)
 
-  makeActiveBinding("_base_path", function() self$`_r_partitioning`$base_path(), self)
+PartitionMaxSize <- new_class(
+  "PartitionMaxSize",
+  parent = SinkDirectory,
+  constructor = function(
+    base_path,
+    ...,
+    max_size,
+    per_partition_sort_by = NULL
+  ) {
+    check_dots_empty0(...)
 
-  class(self) <- c("polars_partitioning_scheme", "polars_object")
-  self
-}
+    new_object(
+      SinkDirectory(
+        base_path = base_path,
+        max_rows_per_file = max_size,
+        per_partition_sort_by = per_partition_sort_by
+      )
+    )
+  }
+)
 
 #' @rdname polars_partitioning_scheme
 #' @aliases PartitionMaxSize
 #' @order 2
-pl__PartitionMaxSize <- function(
-  base_path,
-  ...,
-  max_size,
-  per_partition_sort_by = NULL
-) {
-  wrap({
+pl__PartitionMaxSize <- PartitionMaxSize
+
+PartitionByKey <- new_class(
+  "PartitionByKey",
+  parent = SinkDirectory,
+  constructor = function(
+    base_path,
+    ...,
+    by,
+    include_key = TRUE,
+    per_partition_sort_by = NULL
+  ) {
     check_dots_empty0(...)
 
-    if (!is.null(per_partition_sort_by)) {
-      per_partition_sort_by <- parse_into_list_of_expressions(!!!per_partition_sort_by)
-    }
-
-    PlRPartitioning$new_max_size(
-      base_path = base_path,
-      max_size = max_size,
-      per_partition_sort_by = per_partition_sort_by
+    new_object(
+      SinkDirectory(
+        base_path = base_path,
+        partition_by = by,
+        include_keys = include_key,
+        per_partition_sort_by = per_partition_sort_by
+      )
     )
-  })
-}
+  }
+)
 
 #' @rdname polars_partitioning_scheme
 #' @aliases PartitionByKey
 #' @order 1
-pl__PartitionByKey <- function(
-  base_path,
-  ...,
-  by,
-  include_key = TRUE,
-  per_partition_sort_by = NULL
-) {
-  wrap({
+pl__PartitionByKey <- PartitionByKey
+
+PartitionParted <- new_class(
+  "PartitionParted",
+  parent = SinkDirectory,
+  constructor = function(
+    base_path,
+    ...,
+    by,
+    include_key = TRUE,
+    per_partition_sort_by = NULL
+  ) {
     check_dots_empty0(...)
 
-    by <- parse_into_list_of_expressions(!!!by)
-    if (!is.null(per_partition_sort_by)) {
-      per_partition_sort_by <- parse_into_list_of_expressions(!!!per_partition_sort_by)
-    }
-
-    PlRPartitioning$new_by_key(
-      base_path = base_path,
-      by = by,
-      include_key = include_key,
-      per_partition_sort_by = per_partition_sort_by
+    new_object(
+      SinkDirectory(
+        base_path = base_path,
+        partition_by = by,
+        partition_keys_sorted = TRUE,
+        include_keys = include_key,
+        per_partition_sort_by = per_partition_sort_by
+      )
     )
-  })
-}
+  }
+)
 
 #' @rdname polars_partitioning_scheme
 #' @aliases PartitionParted
 #' @order 3
-pl__PartitionParted <- function(
-  base_path,
-  ...,
-  by,
-  include_key = TRUE,
-  per_partition_sort_by = NULL
-) {
-  wrap({
-    check_dots_empty0(...)
-
-    by <- parse_into_list_of_expressions(!!!by)
-    if (!is.null(per_partition_sort_by)) {
-      per_partition_sort_by <- parse_into_list_of_expressions(!!!per_partition_sort_by)
-    }
-
-    PlRPartitioning$new_parted(
-      base_path = base_path,
-      by = by,
-      include_key = include_key,
-      per_partition_sort_by = per_partition_sort_by
-    )
-  })
-}
+pl__PartitionParted <- PartitionParted

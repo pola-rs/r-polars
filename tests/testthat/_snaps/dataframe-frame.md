@@ -87,7 +87,9 @@
     Condition
       Error in `df_2$pivot()`:
       ! Evaluation failed in `$pivot()`.
-      Caused by error in `df_2$pivot()`:
+      Caused by error:
+      ! Evaluation failed in `$pivot()`.
+      Caused by error:
       ! `aggregate_function` must be `NULL`, a character, or a Polars expression.
 
 ---
@@ -97,8 +99,10 @@
     Condition
       Error in `df_2$pivot()`:
       ! Evaluation failed in `$pivot()`.
-      Caused by error in `df_2$pivot()`:
-      ! `aggregate_function` must be one of "min", "max", "first", "last", "sum", "mean", "median", or "len", not "dummy".
+      Caused by error:
+      ! Evaluation failed in `$pivot()`.
+      Caused by error:
+      ! `aggregate_function` must be one of "min", "max", "first", "last", "sum", "mean", "median", "len", or "item", not "dummy".
 
 ---
 
@@ -107,6 +111,8 @@
         maintain_order = 42)
     Condition
       Error in `df_2$pivot()`:
+      ! Evaluation failed in `$pivot()`.
+      Caused by error:
       ! Evaluation failed in `$pivot()`.
       Caused by error:
       ! Argument `maintain_order` must be logical, not double
@@ -119,8 +125,8 @@
     Condition
       Error in `df_2$pivot()`:
       ! Evaluation failed in `$pivot()`.
-      Caused by error:
-      ! Argument `sort_columns` must be logical, not double
+      Caused by error in `df_2$pivot()`:
+      ! `sort_columns` must be `TRUE` or `FALSE`, not the number 42.
 
 # sample() works
 

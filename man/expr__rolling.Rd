@@ -7,11 +7,12 @@
 expr__rolling(index_column, ..., period, offset = NULL, closed = "right")
 }
 \arguments{
-\item{index_column}{Character. Name of the column used to group based on the
-time window. Often of type Date/Datetime. This column must be sorted in
-ascending order. In case of a rolling group by on indices, dtype needs to be
-one of UInt32, UInt64, Int32, Int64. Note that the first three get cast to
-Int64, so if performance matters use an Int64 column.}
+\item{index_column}{Something coercible to an Expr. Strings are not parsed as columns.
+Often of type Date/Datetime. This column must be sorted in ascending order.
+In case of a rolling group by on indices, dtype needs to be one of
+(UInt32, UInt64, Int32, Int64).
+Note that the first three get temporarily cast to Int64,
+so if performance matters use an Int64 column.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 

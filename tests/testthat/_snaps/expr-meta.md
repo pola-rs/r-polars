@@ -95,7 +95,7 @@
       jsonlite::prettify(expr$meta$serialize(format = "json"))
     Output
       {
-          "Window": {
+          "Over": {
               "function": {
                   "Agg": {
                       "Sum": {
@@ -109,9 +109,7 @@
                   }
               ],
               "order_by": null,
-              "options": {
-                  "Over": "GroupsToRows"
-              }
+              "mapping": "GroupsToRows"
           }
       }
        

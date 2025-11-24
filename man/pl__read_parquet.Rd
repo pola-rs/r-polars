@@ -23,7 +23,8 @@ pl__read_parquet(
   storage_options = NULL,
   retries = 2,
   include_file_paths = NULL,
-  allow_missing_columns = FALSE
+  missing_columns = c("insert", "raise"),
+  allow_missing_columns = deprecated()
 )
 }
 \arguments{
@@ -104,7 +105,16 @@ information from environment variables.}
 \item{include_file_paths}{Include the path of the source file(s) as a column
 with this name.}
 
-\item{allow_missing_columns}{When reading a list of parquet files, if a
+\item{missing_columns}{Configuration for behavior when columns defined in the schema
+are missing from the data:
+\itemize{
+\item \code{"raise"} (default): Raises an error.
+\item \code{"insert"}:  Inserts the missing columns using NULLs as the row values.
+}}
+
+\item{allow_missing_columns}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Deprecated in favor of \code{missing_columns}.
+When reading a list of parquet files, if a
 column existing in the first file cannot be found in subsequent files, the
 default behavior is to raise an error. However, if \code{allow_missing_columns}
 is set to \code{TRUE}, a full-NULL column is returned instead of erroring for the

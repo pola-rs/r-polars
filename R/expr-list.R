@@ -638,15 +638,13 @@ expr_list_set_symmetric_difference <- function(other) {
 
 #' Returns a column with a separate row for every list element
 #'
-#' @inherit expr_list_set_union return
+#' @inherit as_polars_expr return
+#' @inheritParams expr__explode
 #'
 #' @examples
 #' df <- pl$DataFrame(a = list(c(1, 2, 3), c(4, 5, 6)))
 #' df$select(pl$col("a")$list$explode())
-expr_list_explode <- function() {
-  self$`_rexpr`$explode() |>
-    wrap()
-}
+expr_list_explode <- expr__explode
 
 #' Sample values from every sub-list
 #'

@@ -24,6 +24,7 @@ SEXP savvy_datetime__ffi(SEXP c_arg__year, SEXP c_arg__month, SEXP c_arg__day, S
 SEXP savvy_datetime_range__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__every, SEXP c_arg__closed, SEXP c_arg__time_unit, SEXP c_arg__time_zone);
 SEXP savvy_datetime_ranges__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__every, SEXP c_arg__closed, SEXP c_arg__time_unit, SEXP c_arg__time_zone);
 SEXP savvy_duration__ffi(SEXP c_arg__time_unit, SEXP c_arg__weeks, SEXP c_arg__days, SEXP c_arg__hours, SEXP c_arg__minutes, SEXP c_arg__seconds, SEXP c_arg__milliseconds, SEXP c_arg__microseconds, SEXP c_arg__nanoseconds);
+SEXP savvy_element__ffi(void);
 SEXP savvy_explain_all__ffi(SEXP c_arg__lfs, SEXP c_arg__optimizations);
 SEXP savvy_feature_nightly_enabled__ffi(void);
 SEXP savvy_field__ffi(SEXP c_arg__names);
@@ -88,7 +89,6 @@ SEXP savvy_PlRDataFrame_is_unique__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_lazy__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_n_chunks__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_partition_by__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__maintain_order, SEXP c_arg__include_key);
-SEXP savvy_PlRDataFrame_pivot_expr__ffi(SEXP self__, SEXP c_arg__on, SEXP c_arg__maintain_order, SEXP c_arg__sort_columns, SEXP c_arg__aggregate_expr, SEXP c_arg__separator, SEXP c_arg__index, SEXP c_arg__values);
 SEXP savvy_PlRDataFrame_read_ipc_stream__ffi(SEXP c_arg__source, SEXP c_arg__row_index_offset, SEXP c_arg__rechunk, SEXP c_arg__columns, SEXP c_arg__projection, SEXP c_arg__n_rows, SEXP c_arg__row_index_name);
 SEXP savvy_PlRDataFrame_rechunk__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_sample_frac__ffi(SEXP self__, SEXP c_arg__frac, SEXP c_arg__with_replacement, SEXP c_arg__shuffle, SEXP c_arg__seed);
@@ -292,7 +292,7 @@ SEXP savvy_PlRExpr_ewm_mean_by__ffi(SEXP self__, SEXP c_arg__times, SEXP c_arg__
 SEXP savvy_PlRExpr_ewm_std__ffi(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__adjust, SEXP c_arg__bias, SEXP c_arg__min_samples, SEXP c_arg__ignore_nulls);
 SEXP savvy_PlRExpr_ewm_var__ffi(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__adjust, SEXP c_arg__bias, SEXP c_arg__min_samples, SEXP c_arg__ignore_nulls);
 SEXP savvy_PlRExpr_exp__ffi(SEXP self__);
-SEXP savvy_PlRExpr_explode__ffi(SEXP self__);
+SEXP savvy_PlRExpr_explode__ffi(SEXP self__, SEXP c_arg__empty_as_null, SEXP c_arg__keep_nulls);
 SEXP savvy_PlRExpr_extend_constant__ffi(SEXP self__, SEXP c_arg__value, SEXP c_arg__n);
 SEXP savvy_PlRExpr_fill_nan__ffi(SEXP self__, SEXP c_arg__expr);
 SEXP savvy_PlRExpr_fill_null__ffi(SEXP self__, SEXP c_arg__expr);
@@ -383,7 +383,7 @@ SEXP savvy_PlRExpr_meta_pop__ffi(SEXP self__, SEXP c_arg__schema);
 SEXP savvy_PlRExpr_meta_root_names__ffi(SEXP self__);
 SEXP savvy_PlRExpr_meta_undo_aliases__ffi(SEXP self__);
 SEXP savvy_PlRExpr_min__ffi(SEXP self__);
-SEXP savvy_PlRExpr_mode__ffi(SEXP self__);
+SEXP savvy_PlRExpr_mode__ffi(SEXP self__, SEXP c_arg__maintain_order);
 SEXP savvy_PlRExpr_mul__ffi(SEXP self__, SEXP c_arg__rhs);
 SEXP savvy_PlRExpr_n_unique__ffi(SEXP self__);
 SEXP savvy_PlRExpr_name_keep__ffi(SEXP self__);
@@ -549,7 +549,7 @@ SEXP savvy_PlRLazyFrame_deserialize_binary__ffi(SEXP c_arg__data);
 SEXP savvy_PlRLazyFrame_drop__ffi(SEXP self__, SEXP c_arg__columns);
 SEXP savvy_PlRLazyFrame_drop_nans__ffi(SEXP self__, SEXP c_arg__subset);
 SEXP savvy_PlRLazyFrame_drop_nulls__ffi(SEXP self__, SEXP c_arg__subset);
-SEXP savvy_PlRLazyFrame_explode__ffi(SEXP self__, SEXP c_arg__subset);
+SEXP savvy_PlRLazyFrame_explode__ffi(SEXP self__, SEXP c_arg__subset, SEXP c_arg__empty_as_null, SEXP c_arg__keep_nulls);
 SEXP savvy_PlRLazyFrame_fill_nan__ffi(SEXP self__, SEXP c_arg__fill_value);
 SEXP savvy_PlRLazyFrame_filter__ffi(SEXP self__, SEXP c_arg__predicate);
 SEXP savvy_PlRLazyFrame_group_by__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__maintain_order);
@@ -565,8 +565,9 @@ SEXP savvy_PlRLazyFrame_min__ffi(SEXP self__);
 SEXP savvy_PlRLazyFrame_new_from_csv__ffi(SEXP c_arg__source, SEXP c_arg__separator, SEXP c_arg__has_header, SEXP c_arg__ignore_errors, SEXP c_arg__skip_rows, SEXP c_arg__cache, SEXP c_arg__missing_utf8_is_empty_string, SEXP c_arg__low_memory, SEXP c_arg__rechunk, SEXP c_arg__skip_rows_after_header, SEXP c_arg__encoding, SEXP c_arg__try_parse_dates, SEXP c_arg__eol_char, SEXP c_arg__raise_if_empty, SEXP c_arg__truncate_ragged_lines, SEXP c_arg__decimal_comma, SEXP c_arg__glob, SEXP c_arg__retries, SEXP c_arg__row_index_offset, SEXP c_arg__comment_prefix, SEXP c_arg__quote_char, SEXP c_arg__null_values, SEXP c_arg__infer_schema_length, SEXP c_arg__row_index_name, SEXP c_arg__n_rows, SEXP c_arg__overwrite_dtype, SEXP c_arg__schema, SEXP c_arg__storage_options, SEXP c_arg__file_cache_ttl, SEXP c_arg__include_file_paths);
 SEXP savvy_PlRLazyFrame_new_from_ipc__ffi(SEXP c_arg__source, SEXP c_arg__cache, SEXP c_arg__rechunk, SEXP c_arg__try_parse_hive_dates, SEXP c_arg__retries, SEXP c_arg__row_index_offset, SEXP c_arg__n_rows, SEXP c_arg__row_index_name, SEXP c_arg__storage_options, SEXP c_arg__hive_partitioning, SEXP c_arg__hive_schema, SEXP c_arg__file_cache_ttl, SEXP c_arg__include_file_paths);
 SEXP savvy_PlRLazyFrame_new_from_ndjson__ffi(SEXP c_arg__source, SEXP c_arg__low_memory, SEXP c_arg__rechunk, SEXP c_arg__ignore_errors, SEXP c_arg__retries, SEXP c_arg__row_index_offset, SEXP c_arg__row_index_name, SEXP c_arg__infer_schema_length, SEXP c_arg__schema, SEXP c_arg__schema_overrides, SEXP c_arg__batch_size, SEXP c_arg__n_rows, SEXP c_arg__include_file_paths, SEXP c_arg__storage_options, SEXP c_arg__file_cache_ttl);
-SEXP savvy_PlRLazyFrame_new_from_parquet__ffi(SEXP c_arg__source, SEXP c_arg__cache, SEXP c_arg__parallel, SEXP c_arg__rechunk, SEXP c_arg__low_memory, SEXP c_arg__use_statistics, SEXP c_arg__try_parse_hive_dates, SEXP c_arg__retries, SEXP c_arg__glob, SEXP c_arg__allow_missing_columns, SEXP c_arg__row_index_offset, SEXP c_arg__storage_options, SEXP c_arg__n_rows, SEXP c_arg__row_index_name, SEXP c_arg__hive_partitioning, SEXP c_arg__schema, SEXP c_arg__hive_schema, SEXP c_arg__include_file_paths);
+SEXP savvy_PlRLazyFrame_new_from_parquet__ffi(SEXP c_arg__source, SEXP c_arg__cache, SEXP c_arg__parallel, SEXP c_arg__rechunk, SEXP c_arg__low_memory, SEXP c_arg__use_statistics, SEXP c_arg__try_parse_hive_dates, SEXP c_arg__retries, SEXP c_arg__glob, SEXP c_arg__missing_columns, SEXP c_arg__row_index_offset, SEXP c_arg__storage_options, SEXP c_arg__n_rows, SEXP c_arg__row_index_name, SEXP c_arg__hive_partitioning, SEXP c_arg__schema, SEXP c_arg__hive_schema, SEXP c_arg__include_file_paths);
 SEXP savvy_PlRLazyFrame_null_count__ffi(SEXP self__);
+SEXP savvy_PlRLazyFrame_pivot__ffi(SEXP self__, SEXP c_arg__on, SEXP c_arg__on_columns, SEXP c_arg__index, SEXP c_arg__values, SEXP c_arg__agg, SEXP c_arg__maintain_order, SEXP c_arg__separator);
 SEXP savvy_PlRLazyFrame_profile__ffi(SEXP self__);
 SEXP savvy_PlRLazyFrame_quantile__ffi(SEXP self__, SEXP c_arg__quantile, SEXP c_arg__interpolation);
 SEXP savvy_PlRLazyFrame_remove__ffi(SEXP self__, SEXP c_arg__predicate);
@@ -604,12 +605,6 @@ SEXP savvy_PlRLazyFrame_with_row_index__ffi(SEXP self__, SEXP c_arg__name, SEXP 
 SEXP savvy_PlRLazyGroupBy_agg__ffi(SEXP self__, SEXP c_arg__aggs);
 SEXP savvy_PlRLazyGroupBy_head__ffi(SEXP self__, SEXP c_arg__n);
 SEXP savvy_PlRLazyGroupBy_tail__ffi(SEXP self__, SEXP c_arg__n);
-
-// methods and associated functions for PlRPartitioning
-SEXP savvy_PlRPartitioning_base_path__ffi(SEXP self__);
-SEXP savvy_PlRPartitioning_new_by_key__ffi(SEXP c_arg__base_path, SEXP c_arg__by, SEXP c_arg__include_key, SEXP c_arg__per_partition_sort_by);
-SEXP savvy_PlRPartitioning_new_max_size__ffi(SEXP c_arg__base_path, SEXP c_arg__max_size, SEXP c_arg__per_partition_sort_by);
-SEXP savvy_PlRPartitioning_new_parted__ffi(SEXP c_arg__base_path, SEXP c_arg__by, SEXP c_arg__include_key, SEXP c_arg__per_partition_sort_by);
 
 // methods and associated functions for PlRSQLContext
 SEXP savvy_PlRSQLContext_execute__ffi(SEXP self__, SEXP c_arg__query);

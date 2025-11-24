@@ -1277,9 +1277,9 @@ lazyframe__unique <- function(
       check_dots_empty0(...)
 
       if (is.null(subset)) {
-        cs$all()
+        list(cs$all()$`_rexpr`)
       } else {
-        parse_into_selector(!!!c(subset))
+        parse_into_list_of_expressions(!!!c(subset), `__require_selectors` = TRUE)
       }
     } else if (...length() == 1L && (is.null(dots[[1]]) || is.list(dots[[1]]))) {
       check_dots_unnamed()
@@ -1300,18 +1300,18 @@ lazyframe__unique <- function(
       )
 
       if (is.null(dots[[1]])) {
-        cs$all()
+        list(cs$all()$`_rexpr`)
       } else {
-        parse_into_selector(!!!dots[[1]])
+        parse_into_list_of_expressions(!!!dots[[1]])
       }
     } else if (...length() == 0L) {
       NULL
     } else {
-      parse_into_selector(...)
+      parse_into_list_of_expressions(..., `__require_selectors` = TRUE)
     }
 
     self$`_ldf`$unique(
-      subset = subset$`_rselector`,
+      subset = subset,
       keep = keep,
       maintain_order = maintain_order
     )
@@ -1542,6 +1542,186 @@ lazyframe__join_where <- function(
   })
 }
 
+#' Pivot a frame from long to wide format
+#'
+#' @description
+#' Reshape data from long to wide format, known as "pivot wider".
+#'
+#' Unlike for [DataFrame], the values contained in the columns must be
+#' specified beforehand using `on_columns`.
+#' @inherit as_polars_lf return
+#' @inheritParams rlang::args_dots_empty
+#' @param on The column(s) whose values will be used as the new columns of the output.
+#' @param on_columns What value combinations will be considered for the output table.
+#'   Something can be converted to a [DataFrame] by
+#'   `as_polars_series(on_columns) |> as_polars_df()`.
+#'   If `on` contains multiple columns, the DataFrame passed to `on_columns` must have
+#'   exactly the same columns in the same order as `on`.
+#'   See examples for details.
+#' @param index The column(s) that remain from the input to the output. The
+#'   output will have one row for each unique combination of the `index`'s values.
+#'   If `NULL`, all remaining columns not specified in `on` and `values` will be used.
+#'   At least one of `index` and `values` must be specified.
+#' @param values The existing column(s) of values which will be moved under the
+#'   new columns from `index`. If an aggregation is specified, these are the
+#'   values on which the aggregation will be computed. If `NULL`, all remaining
+#'   columns not specified in `on` and `index` will be used. At least one of
+#'   `index` and `values` must be specified.
+#' @param aggregate_function Choose from:
+#'   - `NULL` (default): no aggregation takes place, will raise error if multiple values
+#'     are in group. Same as `pl$element()$item(allow_empty = TRUE)`.
+#'   - A predefined aggregate function string, one of `"min"`, `"max"`,
+#'     `"first"`, `"last"`, `"sum"`, `"mean"`, `"median"`, `"len"`, `"item"`.
+#'     Same as `pl$element()$<function>()`.
+#'   - An [expression][Expr] to do the aggregation.
+#' @param maintain_order Ensure the values of `index` are sorted by discovery
+#' order.
+#' @param separator Used as separator/delimiter in generated column names in
+#'   case of multiple values columns.
+#' @examplesIf exists("penguins", where = asNamespace("datasets"))
+#' df <- pl$DataFrame(
+#'   name = c("Cady", "Cady", "Karen", "Karen"),
+#'   subject = c("maths", "physics", "maths", "physics"),
+#'   test_1 = c(98, 99, 61, 58),
+#'   test_2 = c(100, 100, 60, 60),
+#' )
+#' df
+#'
+#' # Using `pivot`, we can reshape so we have one row per student, with different
+#' # subjects as columns, and their `test_1` scores as values:
+#' df$lazy()$pivot(
+#'   "subject",
+#'   on_columns = c("maths", "physics"),
+#'   index = "name",
+#'   values = "test_1",
+#' )$collect()
+#'
+#' # You can use selectors too - here we include all test scores in the pivoted table:
+#' df$lazy()$pivot(
+#'   "subject",
+#'   on_columns = c("maths", "physics"),
+#'   values = cs$starts_with("test"),
+#' )$collect()
+#'
+#' # If you end up with multiple values per cell, you can specify how to aggregate
+#' # them with `aggregate_function`:
+#' lf <- pl$LazyFrame(
+#'   ix = c(1, 1, 2, 2, 1, 2),
+#'   col = c("a", "a", "a", "a", "b", "b"),
+#'   foo = c(0, 1, 2, 2, 7, 1),
+#'   bar = c(0, 2, 0, 0, 9, 4),
+#' )
+#' lf$pivot(
+#'   "col", on_columns = c("a", "b"), index = "ix", aggregate_function = "sum"
+#' )$collect()
+#'
+#' # You can also pass a custom aggregation function using `pl$element()` expressions:
+#' lf <- pl$LazyFrame(
+#'   col1 = c("a", "a", "a", "b", "b", "b"),
+#'   col2 = c("x", "x", "x", "x", "y", "y"),
+#'   col3 = c(6, 7, 3, 2, 5, 7),
+#' )
+#' lf$pivot(
+#'   "col2",
+#'   on_columns = c("x", "y"),
+#'   index = "col1",
+#'   values = "col3",
+#'   aggregate_function = pl$element()$tanh()$mean(),
+#' )$collect()
+#'
+#' # Note that `on_columns` must contain all combinations of the values in `on`.
+#' # For example, you can use the `expand.grid()` function to create all combinations
+#' # of multiple columns as follows:
+#' as_polars_lf(datasets::penguins)$pivot(
+#'   on = c("species", "sex"),
+#'   on_columns = expand.grid(
+#'     species = c("Adelie", "Gentoo", "Chinstrap"),
+#'     sex = c("male", "female")
+#'   ),
+#'   index = "island",
+#'   values = "body_mass",
+#'   aggregate_function = "mean",
+#' )$collect()
+lazyframe__pivot <- function(
+  on,
+  on_columns,
+  ...,
+  index = NULL,
+  values = NULL,
+  aggregate_function = NULL,
+  maintain_order = FALSE,
+  separator = "_"
+) {
+  wrap({
+    check_dots_empty0(...)
+    if (is.null(index) && is.null(values)) {
+      abort(sprintf(
+        "Either %s or %s needs to be specified.",
+        format_arg("index"),
+        format_arg("values")
+      ))
+    }
+
+    on_selector <- parse_into_selector(!!!c(on), .arg_name = "on")
+
+    if (!is.null(values)) {
+      values_selector <- parse_into_selector(!!!c(values), .arg_name = "values")
+    }
+    if (!is.null(index)) {
+      index_selector <- parse_into_selector(!!!c(index), .arg_name = "index")
+    }
+
+    if (is.null(values)) {
+      values_selector <- cs$all() - on_selector - index_selector
+    }
+    if (is.null(index)) {
+      index_selector <- cs$all() - on_selector - values_selector
+    }
+
+    agg <- if (is_character(aggregate_function)) {
+      switch(
+        arg_match0(
+          aggregate_function,
+          values = c("min", "max", "first", "last", "sum", "mean", "median", "len", "item")
+        ),
+        first = pl$element()$first(),
+        item = pl$element()$item(),
+        sum = pl$element()$sum(),
+        max = pl$element()$max(),
+        min = pl$element()$min(),
+        mean = pl$element()$mean(),
+        median = pl$element()$median(),
+        last = pl$element()$last(),
+        len = pl$element()$count(),
+        abort("unreachable")
+      )
+    } else if (is_polars_expr(aggregate_function)) {
+      aggregate_function
+    } else if (is.null(aggregate_function)) {
+      pl$element()$item(allow_empty = TRUE)
+    } else {
+      abort("`aggregate_function` must be `NULL`, a character, or a Polars expression.")
+    }
+
+    on_columns <- if (is_polars_df(on_columns)) {
+      on_columns
+    } else {
+      as_polars_series(on_columns) |>
+        as_polars_df()
+    }
+
+    self$`_ldf`$pivot(
+      on = on_selector$`_rselector`,
+      on_columns = on_columns$`_df`,
+      index = index_selector$`_rselector`,
+      values = values_selector$`_rselector`,
+      agg = agg$`_rexpr`,
+      maintain_order = maintain_order,
+      separator = separator
+    )
+  })
+}
+
 #' Unpivot a frame from wide to long format
 #'
 #' This function is useful to massage a frame into a format where one or
@@ -1623,6 +1803,7 @@ lazyframe__rename <- function(..., .strict = TRUE) {
 
 #' Explode the frame to long format by exploding the given columns
 #'
+#' @inheritParams expr__explode
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column names or [selectors][polars_selector]
 #'   defining them. The underlying columns being exploded must be of
 #'   the `List` or `Array` data type.
@@ -1635,9 +1816,9 @@ lazyframe__rename <- function(..., .strict = TRUE) {
 #' )
 #'
 #' lf$explode("numbers")$collect()
-lazyframe__explode <- function(...) {
+lazyframe__explode <- function(..., empty_as_null = TRUE, keep_nulls = TRUE) {
   parse_into_selector(...)$`_rselector` |>
-    self$`_ldf`$explode() |>
+    self$`_ldf`$explode(empty_as_null = empty_as_null, keep_nulls = keep_nulls) |>
     wrap()
 }
 

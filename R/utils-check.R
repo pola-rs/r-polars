@@ -1,3 +1,16 @@
+is_list_of_rexpr <- function(x, n = NULL) {
+  is_list_of_rexpr_impl <- function(x) {
+    for (i in seq_along(x)) {
+      if (!inherits(x[[i]], "PlRExpr")) {
+        return(FALSE)
+      }
+    }
+    TRUE
+  }
+
+  is_list(x, n = n) && is_list_of_rexpr_impl(x)
+}
+
 is_list_of_string <- function(
   x,
   ...,
@@ -176,10 +189,8 @@ arg_match_compat_level <- function(arg, arg_nm = caller_arg(arg), error_call = c
 
 # Same as Python Polars' `_to_sink_target`
 arg_to_sink_target <- function(arg, arg_nm = caller_arg(arg), error_call = caller_env()) {
-  if (is_string(arg)) {
+  if (is_string(arg) || is_polars_partitioning_scheme(arg)) {
     arg
-  } else if (is_polars_partitioning_scheme(arg)) {
-    arg$`_r_partitioning`
   } else {
     abort(
       sprintf(

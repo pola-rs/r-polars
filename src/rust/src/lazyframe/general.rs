@@ -1,11 +1,14 @@
-use super::sink::RSinkTarget;
 use crate::{
     PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRLazyGroupBy, PlRSeries, RPolarsErr,
     expr::selector::PlRSelector,
+    functions::parse_cloud_options,
     lazyframe::PlROptFlags,
     prelude::{sync_on_close::SyncOnCloseType, *},
 };
-use polars::io::{HiveOptions, RowIndex};
+use polars::{
+    io::{HiveOptions, RowIndex},
+    polars_utils::slice_enum::Slice,
+};
 use savvy::{
     ListSexp, LogicalSexp, NumericScalar, OwnedListSexp, OwnedStringSexp, Result, Sexp, StringSexp,
     savvy,
@@ -87,13 +90,13 @@ impl PlRLazyFrame {
 
     fn select(&mut self, exprs: ListSexp) -> Result<Self> {
         let ldf = self.ldf.clone();
-        let exprs = <Wrap<Vec<Expr>>>::from(exprs).0;
+        let exprs = <Wrap<Vec<Expr>>>::try_from(exprs)?.0;
         Ok(ldf.select(exprs).into())
     }
 
     fn group_by(&mut self, by: ListSexp, maintain_order: bool) -> Result<PlRLazyGroupBy> {
         let ldf = self.ldf.clone();
-        let by = <Wrap<Vec<Expr>>>::from(by).0;
+        let by = <Wrap<Vec<Expr>>>::try_from(by)?.0;
         let lazy_gb = if maintain_order {
             ldf.group_by_stable(by)
         } else {
@@ -196,7 +199,7 @@ impl PlRLazyFrame {
         multithreaded: bool,
     ) -> Result<Self> {
         let ldf = self.ldf.clone();
-        let by = <Wrap<Vec<Expr>>>::from(by).0;
+        let by = <Wrap<Vec<Expr>>>::try_from(by)?.0;
         Ok(ldf
             .sort_by_exprs(
                 by,
@@ -213,7 +216,7 @@ impl PlRLazyFrame {
 
     fn with_columns(&mut self, exprs: ListSexp) -> Result<Self> {
         let ldf = self.ldf.clone();
-        let exprs = <Wrap<Vec<Expr>>>::from(exprs).0;
+        let exprs = <Wrap<Vec<Expr>>>::try_from(exprs)?.0;
         Ok(ldf.with_columns(exprs).into())
     }
 
@@ -252,7 +255,7 @@ impl PlRLazyFrame {
     fn top_k(&self, k: NumericScalar, by: ListSexp, reverse: LogicalSexp) -> Result<Self> {
         let ldf = self.ldf.clone();
         let k = <Wrap<u32>>::try_from(k)?.0;
-        let exprs = <Wrap<Vec<Expr>>>::from(by).0;
+        let exprs = <Wrap<Vec<Expr>>>::try_from(by)?.0;
         let reverse = reverse.to_vec();
         Ok(ldf
             .top_k(
@@ -266,7 +269,7 @@ impl PlRLazyFrame {
     fn bottom_k(&self, k: NumericScalar, by: ListSexp, reverse: LogicalSexp) -> Result<Self> {
         let ldf = self.ldf.clone();
         let k = <Wrap<u32>>::try_from(k)?.0;
-        let exprs = <Wrap<Vec<Expr>>>::from(by).0;
+        let exprs = <Wrap<Vec<Expr>>>::try_from(by)?.0;
         let reverse = reverse.to_vec();
         Ok(ldf
             .bottom_k(
@@ -341,7 +344,7 @@ impl PlRLazyFrame {
 
     fn select_seq(&mut self, exprs: ListSexp) -> Result<Self> {
         let ldf = self.ldf.clone();
-        let exprs = <Wrap<Vec<Expr>>>::from(exprs).0;
+        let exprs = <Wrap<Vec<Expr>>>::try_from(exprs)?.0;
         Ok(ldf.select_seq(exprs).into())
     }
 
@@ -355,7 +358,7 @@ impl PlRLazyFrame {
     ) -> Result<PlRLazyGroupBy> {
         let closed_window = <Wrap<ClosedWindow>>::try_from(closed)?.0;
         let ldf = self.ldf.clone();
-        let by = <Wrap<Vec<Expr>>>::from(by).0;
+        let by = <Wrap<Vec<Expr>>>::try_from(by)?.0;
         let lazy_gb = ldf.rolling(
             index_column.inner.clone(),
             by,
@@ -383,7 +386,7 @@ impl PlRLazyFrame {
         start_by: &str,
     ) -> Result<PlRLazyGroupBy> {
         let closed_window = <Wrap<ClosedWindow>>::try_from(closed)?.0;
-        let group_by = <Wrap<Vec<Expr>>>::from(group_by).0;
+        let group_by = <Wrap<Vec<Expr>>>::try_from(group_by)?.0;
         let ldf = self.ldf.clone();
         let label = <Wrap<Label>>::try_from(label)?.0;
         let start_by = <Wrap<StartBy>>::try_from(start_by)?.0;
@@ -432,8 +435,8 @@ impl PlRLazyFrame {
         let other = other.ldf.clone();
         let left_on = left_on.inner.clone();
         let right_on = right_on.inner.clone();
-        let left_by = left_by.map(|x| x.to_vec().into_iter().map(|y| y.into()).collect());
-        let right_by = right_by.map(|x| x.to_vec().into_iter().map(|y| y.into()).collect());
+        let left_by = left_by.map(strings_to_pl_smallstr);
+        let right_by = right_by.map(strings_to_pl_smallstr);
         let tolerance = match tolerance {
             Some(s) => {
                 let av = s
@@ -489,8 +492,8 @@ impl PlRLazyFrame {
         };
         let ldf = self.ldf.clone();
         let other = other.ldf.clone();
-        let left_on = <Wrap<Vec<Expr>>>::from(left_on).0;
-        let right_on = <Wrap<Vec<Expr>>>::from(right_on).0;
+        let left_on = <Wrap<Vec<Expr>>>::try_from(left_on)?.0;
+        let right_on = <Wrap<Vec<Expr>>>::try_from(right_on)?.0;
 
         let how = <Wrap<JoinType>>::try_from(how)?.0;
         let maintain_order = <Wrap<MaintainOrderJoin>>::try_from(maintain_order)?.0;
@@ -515,8 +518,7 @@ impl PlRLazyFrame {
     fn join_where(&self, other: &PlRLazyFrame, predicates: ListSexp, suffix: &str) -> Result<Self> {
         let ldf = self.ldf.clone();
         let other = other.ldf.clone();
-
-        let predicates = <Wrap<Vec<Expr>>>::from(predicates).0;
+        let predicates = <Wrap<Vec<Expr>>>::try_from(predicates)?.0;
 
         Ok(ldf
             .join_builder()
@@ -528,7 +530,7 @@ impl PlRLazyFrame {
 
     fn with_columns_seq(&mut self, exprs: ListSexp) -> Result<Self> {
         let ldf = self.ldf.clone();
-        let exprs = <Wrap<Vec<Expr>>>::from(exprs).0;
+        let exprs = <Wrap<Vec<Expr>>>::try_from(exprs)?.0;
         Ok(ldf.with_columns_seq(exprs).into())
     }
 
@@ -607,8 +609,18 @@ impl PlRLazyFrame {
         Ok(out.into())
     }
 
-    fn explode(&self, subset: &PlRSelector) -> Result<Self> {
-        Ok(self.ldf.clone().explode(subset.inner.clone()).into())
+    fn explode(&self, subset: &PlRSelector, empty_as_null: bool, keep_nulls: bool) -> Result<Self> {
+        Ok(self
+            .ldf
+            .clone()
+            .explode(
+                subset.inner.clone(),
+                ExplodeOptions {
+                    empty_as_null,
+                    keep_nulls,
+                },
+            )
+            .into())
     }
 
     fn null_count(&self) -> Result<Self> {
@@ -616,15 +628,13 @@ impl PlRLazyFrame {
         Ok(ldf.null_count().into())
     }
 
-    fn unique(
-        &self,
-        maintain_order: bool,
-        keep: &str,
-        subset: Option<&PlRSelector>,
-    ) -> Result<Self> {
+    fn unique(&self, maintain_order: bool, keep: &str, subset: Option<ListSexp>) -> Result<Self> {
         let ldf = self.ldf.clone();
         let keep = <Wrap<UniqueKeepStrategy>>::try_from(keep)?.0;
-        let subset = subset.map(|e| e.inner.clone());
+        let subset = subset
+            .map(<Wrap<Vec<Expr>>>::try_from)
+            .transpose()?
+            .map(|w| w.0);
         let out = match maintain_order {
             true => ldf.unique_stable_generic(subset, keep),
             false => ldf.unique_generic(subset, keep),
@@ -642,6 +652,30 @@ impl PlRLazyFrame {
         let ldf = self.ldf.clone();
         let subset = subset.map(|e| e.inner.clone());
         Ok(ldf.drop_nans(subset).into())
+    }
+
+    fn pivot(
+        &self,
+        on: &PlRSelector,
+        on_columns: &PlRDataFrame,
+        index: &PlRSelector,
+        values: &PlRSelector,
+        agg: &PlRExpr,
+        maintain_order: bool,
+        separator: &str,
+    ) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        Ok(ldf
+            .pivot(
+                on.inner.clone(),
+                Arc::new(on_columns.df.clone()),
+                index.inner.clone(),
+                values.inner.clone(),
+                agg.inner.clone(),
+                maintain_order,
+                separator.into(),
+            )
+            .into())
     }
 
     fn unpivot(
@@ -714,7 +748,7 @@ impl PlRLazyFrame {
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            use polars::polars_utils::slice_enum::Slice;
+            let options = IpcScanOptions;
 
             let sources = <Wrap<ScanSources>>::try_from(source)?.0;
             let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
@@ -731,6 +765,19 @@ impl PlRLazyFrame {
                 name: x.into(),
                 offset: row_index_offset,
             });
+            let storage_options = match storage_options {
+                Some(x) => {
+                    let out = <Wrap<Vec<(String, String)>>>::try_from(x)
+                        .map_err(|_| {
+                            RPolarsErr::Other(
+                                "`storage_options` must be a named character vector".to_string(),
+                            )
+                        })?
+                        .0;
+                    Some(out)
+                }
+                None => None,
+            };
             let file_cache_ttl = match file_cache_ttl {
                 Some(x) => Some(<Wrap<u64>>::try_from(x)?.0),
                 None => None,
@@ -741,49 +788,31 @@ impl PlRLazyFrame {
                 schema: hive_schema.map(|x| Arc::new(x.0)),
                 try_parse_dates: try_parse_hive_dates,
             };
-            // TODO: better error message
-            // TODO: Refactor with adding `cloud` feature as like Python Polars
-            #[cfg(not(target_arch = "wasm32"))]
-            let cloud_options = match storage_options {
-                Some(x) => {
-                    let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
-                        RPolarsErr::Other(
-                            "`storage_options` must be a named character vector".to_string(),
-                        )
-                    })?;
-                    Some(out.0)
-                }
-                None => None,
-            };
 
-            #[cfg(target_arch = "wasm32")]
-            let cloud_options: Option<Vec<(String, String)>> = None;
+            let first_path = sources.first_path().map(|p| p.into_owned());
+            let cloud_schema = first_path.and_then(|p| CloudScheme::from_uri(p.to_str()));
+
+            let cloud_options = parse_cloud_options(cloud_schema, storage_options, retries)?;
 
             let mut unified_scan_args = UnifiedScanArgs {
+                cloud_options,
                 pre_slice: n_rows.map(|len| Slice::Positive { offset: 0, len }),
                 cache,
                 rechunk,
                 row_index,
-                cloud_options: None,
                 hive_options,
                 include_file_paths: include_file_paths.map(|x| x.into()),
                 ..Default::default()
             };
 
-            let first_path = sources.first_path().map(|p| p.into_owned());
-
-            // TODO: Refactor with adding `cloud` feature as like Python Polars
-            #[cfg(not(target_arch = "wasm32"))]
-            if let Some(first_path) = first_path {
-                let first_path_url = first_path.to_str();
-                let mut cloud_options =
-                    parse_cloud_options(first_path_url, cloud_options.unwrap_or_default())?;
-                if let Some(file_cache_ttl) = file_cache_ttl {
-                    cloud_options.file_cache_ttl = file_cache_ttl;
-                }
-                unified_scan_args.cloud_options = Some(cloud_options.with_max_retries(retries));
+            if let Some(file_cache_ttl) = file_cache_ttl {
+                unified_scan_args
+                    .cloud_options
+                    .get_or_insert_default()
+                    .file_cache_ttl = file_cache_ttl;
             }
-            let lf = LazyFrame::scan_ipc_sources(sources, Default::default(), unified_scan_args)
+
+            let lf = LazyFrame::scan_ipc_sources(sources, options, unified_scan_args)
                 .map_err(RPolarsErr::from)?;
             Ok(lf.into())
         }
@@ -827,11 +856,7 @@ impl PlRLazyFrame {
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            let source = source
-                .to_vec()
-                .iter()
-                .map(|s| PlPath::new(s))
-                .collect::<Vec<_>>();
+            let sources = <Wrap<ScanSources>>::try_from(source)?.0;
             let encoding = <Wrap<CsvEncoding>>::try_from(encoding)?.0;
             let skip_rows = <Wrap<usize>>::try_from(skip_rows)?.0;
             let skip_rows_after_header = <Wrap<usize>>::try_from(skip_rows_after_header)?.0;
@@ -853,7 +878,6 @@ impl PlRLazyFrame {
                 Some(x) => Some(<Wrap<u64>>::try_from(x)?.0),
                 None => None,
             };
-
             let quote_char = quote_char
                 .map(|s| {
                     s.as_bytes().first().ok_or_else(
@@ -875,57 +899,43 @@ impl PlRLazyFrame {
                 .ok_or_else(|| polars_err!(InvalidOperation: "`eol_char` cannot be empty"))
                 .copied()
                 .map_err(RPolarsErr::from)?;
-
             let row_index = row_index_name.map(|x| RowIndex {
                 name: x.into(),
                 offset: row_index_offset,
             });
-
             let overwrite_dtype = match overwrite_dtype {
                 Some(x) => Some(<Wrap<Schema>>::try_from(x)?.0),
                 None => None,
             };
-
             let schema = match schema {
                 Some(x) => Some(<Wrap<Schema>>::try_from(x)?.0),
                 None => None,
             };
-
-            // TODO: Refactor with adding `cloud` feature as like Python Polars
-            #[cfg(not(target_arch = "wasm32"))]
-            let cloud_options = match storage_options {
+            let storage_options = match storage_options {
                 Some(x) => {
-                    let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
-                        RPolarsErr::Other(
-                            "`storage_options` must be a named character vector".to_string(),
-                        )
-                    })?;
-                    Some(out.0)
+                    let out = <Wrap<Vec<(String, String)>>>::try_from(x)
+                        .map_err(|_| {
+                            RPolarsErr::Other(
+                                "`storage_options` must be a named character vector".to_string(),
+                            )
+                        })?
+                        .0;
+                    Some(out)
                 }
                 None => None,
             };
 
-            #[cfg(target_arch = "wasm32")]
-            let cloud_options: Option<Vec<(String, String)>> = None;
+            let first_path = sources.first_path().map(|p| p.into_owned());
+            let cloud_schema = first_path.and_then(|p| CloudScheme::from_uri(p.to_str()));
 
-            let mut r = LazyCsvReader::new_paths(source.clone().into());
-            let first_path = source.first().unwrap().clone().into();
+            let mut cloud_options = parse_cloud_options(cloud_schema, storage_options, retries)?;
 
-            // TODO: Refactor with adding `cloud` feature as like Python Polars
-            #[cfg(not(target_arch = "wasm32"))]
-            if let Some(first_path) = first_path {
-                let first_path_url = first_path.to_str();
-
-                let mut cloud_options =
-                    parse_cloud_options(first_path_url, cloud_options.unwrap_or_default())?;
-                if let Some(file_cache_ttl) = file_cache_ttl {
-                    cloud_options.file_cache_ttl = file_cache_ttl;
-                }
-                cloud_options = cloud_options.with_max_retries(retries);
-                r = r.with_cloud_options(Some(cloud_options));
+            if let Some(file_cache_ttl) = file_cache_ttl {
+                cloud_options.get_or_insert_default().file_cache_ttl = file_cache_ttl;
             }
 
-            let r = r
+            LazyCsvReader::new_with_sources(sources)
+                .with_cloud_options(cloud_options)
                 .with_infer_schema_length(infer_schema_length)
                 .with_separator(separator)
                 .with_has_header(has_header)
@@ -950,9 +960,11 @@ impl PlRLazyFrame {
                 .with_decimal_comma(decimal_comma)
                 .with_glob(glob)
                 .with_raise_if_empty(raise_if_empty)
-                .with_include_file_paths(include_file_paths.map(|x| x.into()));
-
-            Ok(r.finish().map_err(RPolarsErr::from)?.into())
+                .with_include_file_paths(include_file_paths.map(|x| x.into()))
+                .finish()
+                .map_err(RPolarsErr::from)
+                .map(PlRLazyFrame::from)
+                .map_err(Into::into)
         }
         #[cfg(target_arch = "wasm32")]
         {
@@ -970,7 +982,7 @@ impl PlRLazyFrame {
         try_parse_hive_dates: bool,
         retries: NumericScalar,
         glob: bool,
-        allow_missing_columns: bool,
+        missing_columns: &str,
         row_index_offset: NumericScalar,
         storage_options: Option<StringSexp>,
         n_rows: Option<NumericScalar>,
@@ -982,11 +994,7 @@ impl PlRLazyFrame {
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            let source = source
-                .to_vec()
-                .iter()
-                .map(|s| PlPath::new(s))
-                .collect::<Vec<_>>();
+            let sources = <Wrap<ScanSources>>::try_from(source)?.0;
             let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
             let n_rows = match n_rows {
                 Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
@@ -1002,12 +1010,24 @@ impl PlRLazyFrame {
                 Some(x) => Some(<Wrap<Schema>>::try_from(x)?.0),
                 None => None,
             };
-
+            let missing_columns_policy = <Wrap<MissingColumnsPolicy>>::try_from(missing_columns)?.0;
             let row_index = row_index_name.map(|x| RowIndex {
                 name: x.into(),
                 offset: row_index_offset,
             });
-
+            let storage_options = match storage_options {
+                Some(x) => {
+                    let out = <Wrap<Vec<(String, String)>>>::try_from(x)
+                        .map_err(|_| {
+                            RPolarsErr::Other(
+                                "`storage_options` must be a named character vector".to_string(),
+                            )
+                        })?
+                        .0;
+                    Some(out)
+                }
+                None => None,
+            };
             let hive_options = HiveOptions {
                 enabled: hive_partitioning,
                 hive_start_idx: 0,
@@ -1015,52 +1035,35 @@ impl PlRLazyFrame {
                 try_parse_dates: try_parse_hive_dates,
             };
 
-            let mut args = ScanArgsParquet {
-                n_rows,
-                cache,
+            let options = ParquetOptions {
+                schema: schema.map(Arc::new),
                 parallel,
+                low_memory,
+                use_statistics,
+            };
+
+            let first_path = sources.first_path().map(|p| p.into_owned());
+            let cloud_schema = first_path.and_then(|p| CloudScheme::from_uri(p.to_str()));
+
+            let cloud_options = parse_cloud_options(cloud_schema, storage_options, retries)?;
+
+            let unified_scan_args = UnifiedScanArgs {
+                cloud_options,
+                pre_slice: n_rows.map(|len| Slice::Positive { offset: 0, len }),
+                cache,
                 rechunk,
                 row_index,
-                low_memory,
-                cloud_options: None,
-                use_statistics,
-                schema: schema.map(Arc::new),
                 hive_options,
-                glob,
                 include_file_paths: include_file_paths.map(|x| x.into()),
-                allow_missing_columns,
+                glob,
+                missing_columns_policy,
+                ..Default::default()
             };
 
-            let first_path = source.first().unwrap().clone().into();
-
-            // TODO: Refactor with adding `cloud` feature as like Python Polars
-            #[cfg(not(target_arch = "wasm32"))]
-            let cloud_options = match storage_options {
-                Some(x) => {
-                    let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
-                        RPolarsErr::Other(
-                            "`storage_options` must be a named character vector".to_string(),
-                        )
-                    })?;
-                    Some(out.0)
-                }
-                None => None,
-            };
-
-            #[cfg(target_arch = "wasm32")]
-            let cloud_options: Option<Vec<(String, String)>> = None;
-
-            // TODO: Refactor with adding `cloud` feature as like Python Polars
-            #[cfg(not(target_arch = "wasm32"))]
-            if let Some(first_path) = first_path {
-                let first_path_url = first_path.to_str();
-                let cloud_options =
-                    parse_cloud_options(first_path_url, cloud_options.unwrap_or_default())?;
-                args.cloud_options = Some(cloud_options.with_max_retries(retries));
-            }
-
-            let lf =
-                LazyFrame::scan_parquet_files(source.into(), args).map_err(RPolarsErr::from)?;
+            let lf: LazyFrame = DslBuilder::scan_parquet(sources, options, unified_scan_args)
+                .map_err(RPolarsErr::from)?
+                .build()
+                .into();
 
             Ok(lf.into())
         }
@@ -1089,11 +1092,7 @@ impl PlRLazyFrame {
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            let source = source
-                .to_vec()
-                .iter()
-                .map(|s| PlPath::new(s))
-                .collect::<Vec<_>>();
+            let sources = <Wrap<ScanSources>>::try_from(source)?.0;
             let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
             let infer_schema_length = match infer_schema_length {
                 Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
@@ -1120,50 +1119,35 @@ impl PlRLazyFrame {
                 Some(x) => Some(<Wrap<Schema>>::try_from(x)?.0),
                 None => None,
             };
-
             let row_index = row_index_name.map(|x| RowIndex {
                 name: x.into(),
                 offset: row_index_offset,
             });
-
-            let first_path = source.first().unwrap().clone().into();
-
-            let mut r = LazyJsonLineReader::new_paths(source.into());
-
-            // TODO: Refactor with adding `cloud` feature as like Python Polars
-            #[cfg(not(target_arch = "wasm32"))]
-            let cloud_options = match storage_options {
+            let storage_options = match storage_options {
                 Some(x) => {
-                    let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
-                        RPolarsErr::Other(
-                            "`storage_options` must be a named character vector".to_string(),
-                        )
-                    })?;
-                    Some(out.0)
+                    let out = <Wrap<Vec<(String, String)>>>::try_from(x)
+                        .map_err(|_| {
+                            RPolarsErr::Other(
+                                "`storage_options` must be a named character vector".to_string(),
+                            )
+                        })?
+                        .0;
+                    Some(out)
                 }
                 None => None,
             };
 
-            #[cfg(target_arch = "wasm32")]
-            let cloud_options: Option<Vec<(String, String)>> = None;
+            let first_path = sources.first_path().map(|p| p.into_owned());
+            let cloud_schema = first_path.and_then(|p| CloudScheme::from_uri(p.to_str()));
 
-            // TODO: Refactor with adding `cloud` feature as like Python Polars
-            #[cfg(not(target_arch = "wasm32"))]
-            if let Some(first_path) = first_path {
-                let first_path_url = first_path.to_str();
+            let mut cloud_options = parse_cloud_options(cloud_schema, storage_options, retries)?;
 
-                let mut cloud_options =
-                    parse_cloud_options(first_path_url, cloud_options.unwrap_or_default())?;
-                cloud_options = cloud_options.with_max_retries(retries);
+            if let Some(file_cache_ttl) = file_cache_ttl {
+                cloud_options.get_or_insert_default().file_cache_ttl = file_cache_ttl;
+            }
 
-                if let Some(file_cache_ttl) = file_cache_ttl {
-                    cloud_options.file_cache_ttl = file_cache_ttl;
-                }
-
-                r = r.with_cloud_options(Some(cloud_options));
-            };
-
-            let lf = r
+            LazyJsonLineReader::new_with_sources(sources)
+                .with_cloud_options(cloud_options)
                 .with_infer_schema_length(infer_schema_length.and_then(NonZeroUsize::new))
                 .with_batch_size(batch_size)
                 .with_n_rows(n_rows)
@@ -1175,9 +1159,9 @@ impl PlRLazyFrame {
                 .with_ignore_errors(ignore_errors)
                 .with_include_file_paths(include_file_paths.map(|x| x.into()))
                 .finish()
-                .map_err(RPolarsErr::from)?;
-
-            Ok(lf.into())
+                .map_err(RPolarsErr::from)
+                .map(PlRLazyFrame::from)
+                .map_err(Into::into)
         }
         #[cfg(target_arch = "wasm32")]
         {
@@ -1207,7 +1191,7 @@ impl PlRLazyFrame {
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            let target: RSinkTarget = target.try_into()?;
+            let target = <Wrap<SinkDestination>>::try_from(target)?.0;
 
             let statistics = StatisticsOptions {
                 min_value: stat_min,
@@ -1229,6 +1213,19 @@ impl PlRLazyFrame {
                 None => None,
             };
             let retries = <Wrap<usize>>::try_from(retries)?.0;
+            let storage_options = match storage_options {
+                Some(x) => {
+                    let out = <Wrap<Vec<(String, String)>>>::try_from(x)
+                        .map_err(|_| {
+                            RPolarsErr::Other(
+                                "`storage_options` must be a named character vector".to_string(),
+                            )
+                        })?
+                        .0;
+                    Some(out)
+                }
+                None => None,
+            };
 
             let options = ParquetWriteOptions {
                 compression,
@@ -1238,53 +1235,23 @@ impl PlRLazyFrame {
                 key_value_metadata: None,
                 field_overwrites: vec![],
             };
-            let cloud_options = match storage_options {
-                Some(x) => {
-                    let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
-                        RPolarsErr::Other(
-                            "`storage_options` must be a named character vector".to_string(),
-                        )
-                    })?;
-                    Some(out.0)
-                }
-                None => None,
-            };
-            let cloud_options = match target.base_path() {
-                None => None,
-                Some(base_path) => {
-                    let cloud_options =
-                        parse_cloud_options(base_path.to_str(), cloud_options.unwrap_or_default())?;
-                    Some(cloud_options.with_max_retries(retries))
-                }
-            };
-            let sync_on_close = <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0;
-            let sink_options = SinkOptions {
-                sync_on_close,
-                maintain_order,
+
+            let cloud_options =
+                parse_cloud_options(target.cloud_scheme(), storage_options, retries)?;
+
+            let unified_sink_args = UnifiedSinkArgs {
                 mkdir,
+                maintain_order,
+                sync_on_close: <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0,
+                cloud_options,
             };
 
-            ({
-                let ldf = self.ldf.clone();
-                match target {
-                    RSinkTarget::File(target) => {
-                        ldf.sink_parquet(target, options, cloud_options, sink_options)
-                    }
-                    RSinkTarget::Partition(partition) => ldf.sink_parquet_partitioned(
-                        Arc::new(partition.base_path),
-                        None,
-                        partition.variant,
-                        options,
-                        cloud_options,
-                        sink_options,
-                        partition.per_partition_sort_by,
-                        None,
-                    ),
-                }
-            })
-            .map(Into::into)
-            .map_err(RPolarsErr::from)
-            .map_err(Into::into)
+            self.ldf
+                .clone()
+                .sink(target, FileType::Parquet(options), unified_sink_args)
+                .map(Into::into)
+                .map_err(RPolarsErr::from)
+                .map_err(Into::into)
         }
         #[cfg(target_arch = "wasm32")]
         {
@@ -1317,7 +1284,7 @@ impl PlRLazyFrame {
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            let target: RSinkTarget = target.try_into()?;
+            let target = <Wrap<SinkDestination>>::try_from(target)?.0;
 
             let quote_style = match quote_style {
                 Some(x) => <Wrap<QuoteStyle>>::try_from(x)?.0,
@@ -1334,6 +1301,19 @@ impl PlRLazyFrame {
             };
             let separator = <Wrap<u8>>::try_from(separator)?.0;
             let quote_char = <Wrap<u8>>::try_from(quote_char)?.0;
+            let storage_options = match storage_options {
+                Some(x) => {
+                    let out = <Wrap<Vec<(String, String)>>>::try_from(x)
+                        .map_err(|_| {
+                            RPolarsErr::Other(
+                                "`storage_options` must be a named character vector".to_string(),
+                            )
+                        })?
+                        .0;
+                    Some(out)
+                }
+                None => None,
+            };
 
             let serialize_options = SerializeOptions {
                 date_format: date_format.map(|x| x.to_string()),
@@ -1355,53 +1335,23 @@ impl PlRLazyFrame {
                 batch_size,
                 serialize_options,
             };
-            let cloud_options = match storage_options {
-                Some(x) => {
-                    let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
-                        RPolarsErr::Other(
-                            "`storage_options` must be a named character vector".to_string(),
-                        )
-                    })?;
-                    Some(out.0)
-                }
-                None => None,
-            };
-            let cloud_options = match target.base_path() {
-                None => None,
-                Some(base_path) => {
-                    let cloud_options =
-                        parse_cloud_options(base_path.to_str(), cloud_options.unwrap_or_default())?;
-                    Some(cloud_options.with_max_retries(retries))
-                }
-            };
-            let sync_on_close = <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0;
-            let sink_options = SinkOptions {
-                sync_on_close,
-                maintain_order,
+
+            let cloud_options =
+                parse_cloud_options(target.cloud_scheme(), storage_options, retries)?;
+
+            let unified_sink_args = UnifiedSinkArgs {
                 mkdir,
+                maintain_order,
+                sync_on_close: <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0,
+                cloud_options,
             };
 
-            ({
-                let ldf = self.ldf.clone();
-                match target {
-                    RSinkTarget::File(target) => {
-                        ldf.sink_csv(target, options, cloud_options, sink_options)
-                    }
-                    RSinkTarget::Partition(partition) => ldf.sink_csv_partitioned(
-                        Arc::new(partition.base_path),
-                        None,
-                        partition.variant,
-                        options,
-                        cloud_options,
-                        sink_options,
-                        partition.per_partition_sort_by,
-                        None,
-                    ),
-                }
-            })
-            .map(Into::into)
-            .map_err(RPolarsErr::from)
-            .map_err(Into::into)
+            self.ldf
+                .clone()
+                .sink(target, FileType::Csv(options), unified_sink_args)
+                .map(Into::into)
+                .map_err(RPolarsErr::from)
+                .map_err(Into::into)
         }
         #[cfg(target_arch = "wasm32")]
         {
@@ -1420,58 +1370,39 @@ impl PlRLazyFrame {
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            let target: RSinkTarget = target.try_into()?;
+            let target = <Wrap<SinkDestination>>::try_from(target)?.0;
+            let retries = <Wrap<usize>>::try_from(retries)?.0;
+            let storage_options = match storage_options {
+                Some(x) => {
+                    let out = <Wrap<Vec<(String, String)>>>::try_from(x)
+                        .map_err(|_| {
+                            RPolarsErr::Other(
+                                "`storage_options` must be a named character vector".to_string(),
+                            )
+                        })?
+                        .0;
+                    Some(out)
+                }
+                None => None,
+            };
 
             let options = JsonWriterOptions {};
-            let retries = <Wrap<usize>>::try_from(retries)?.0;
 
-            let cloud_options = match storage_options {
-                Some(x) => {
-                    let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
-                        RPolarsErr::Other(
-                            "`storage_options` must be a named character vector".to_string(),
-                        )
-                    })?;
-                    Some(out.0)
-                }
-                None => None,
-            };
-            let cloud_options = match target.base_path() {
-                None => None,
-                Some(base_path) => {
-                    let cloud_options =
-                        parse_cloud_options(base_path.to_str(), cloud_options.unwrap_or_default())?;
-                    Some(cloud_options.with_max_retries(retries))
-                }
-            };
-            let sync_on_close = <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0;
-            let sink_options = SinkOptions {
-                sync_on_close,
-                maintain_order,
+            let cloud_options =
+                parse_cloud_options(target.cloud_scheme(), storage_options, retries)?;
+            let unified_sink_args = UnifiedSinkArgs {
                 mkdir,
+                maintain_order,
+                sync_on_close: <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0,
+                cloud_options,
             };
 
-            ({
-                let ldf = self.ldf.clone();
-                match target {
-                    RSinkTarget::File(target) => {
-                        ldf.sink_json(target, options, cloud_options, sink_options)
-                    }
-                    RSinkTarget::Partition(partition) => ldf.sink_json_partitioned(
-                        Arc::new(partition.base_path),
-                        None,
-                        partition.variant,
-                        options,
-                        cloud_options,
-                        sink_options,
-                        partition.per_partition_sort_by,
-                        None,
-                    ),
-                }
-            })
-            .map(Into::into)
-            .map_err(RPolarsErr::from)
-            .map_err(Into::into)
+            self.ldf
+                .clone()
+                .sink(target, FileType::Json(options), unified_sink_args)
+                .map(Into::into)
+                .map_err(RPolarsErr::from)
+                .map_err(Into::into)
         }
         #[cfg(target_arch = "wasm32")]
         {
@@ -1492,65 +1423,47 @@ impl PlRLazyFrame {
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            let target: RSinkTarget = target.try_into()?;
-
+            let target = <Wrap<SinkDestination>>::try_from(target)?.0;
             let retries = <Wrap<usize>>::try_from(retries)?.0;
             let compression: Option<IpcCompression> =
                 <Wrap<Option<IpcCompression>>>::try_from(compression)?.0;
             let compat_level = <Wrap<CompatLevel>>::try_from(compat_level)?.0;
+            let storage_options = match storage_options {
+                Some(x) => {
+                    let out = <Wrap<Vec<(String, String)>>>::try_from(x)
+                        .map_err(|_| {
+                            RPolarsErr::Other(
+                                "`storage_options` must be a named character vector".to_string(),
+                            )
+                        })?
+                        .0;
+                    Some(out)
+                }
+                None => None,
+            };
+
             let options = IpcWriterOptions {
                 compression,
                 compat_level,
                 ..Default::default()
             };
 
-            let cloud_options = match storage_options {
-                Some(x) => {
-                    let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
-                        RPolarsErr::Other(
-                            "`storage_options` must be a named character vector".to_string(),
-                        )
-                    })?;
-                    Some(out.0)
-                }
-                None => None,
-            };
-            let cloud_options = match target.base_path() {
-                None => None,
-                Some(base_path) => {
-                    let cloud_options =
-                        parse_cloud_options(base_path.to_str(), cloud_options.unwrap_or_default())?;
-                    Some(cloud_options.with_max_retries(retries))
-                }
-            };
-            let sync_on_close = <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0;
-            let sink_options = SinkOptions {
-                sync_on_close,
-                maintain_order,
+            let cloud_options =
+                parse_cloud_options(target.cloud_scheme(), storage_options, retries)?;
+
+            let unified_sink_args = UnifiedSinkArgs {
                 mkdir,
+                maintain_order,
+                sync_on_close: <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0,
+                cloud_options,
             };
 
-            ({
-                let ldf = self.ldf.clone();
-                match target {
-                    RSinkTarget::File(target) => {
-                        ldf.sink_ipc(target, options, cloud_options, sink_options)
-                    }
-                    RSinkTarget::Partition(partition) => ldf.sink_ipc_partitioned(
-                        Arc::new(partition.base_path),
-                        None,
-                        partition.variant,
-                        options,
-                        cloud_options,
-                        sink_options,
-                        partition.per_partition_sort_by,
-                        None,
-                    ),
-                }
-            })
-            .map(Into::into)
-            .map_err(RPolarsErr::from)
-            .map_err(Into::into)
+            self.ldf
+                .clone()
+                .sink(target, FileType::Ipc(options), unified_sink_args)
+                .map(Into::into)
+                .map_err(RPolarsErr::from)
+                .map_err(Into::into)
         }
         #[cfg(target_arch = "wasm32")]
         {
