@@ -67,3 +67,25 @@ test_that("bin$size()", {
     error = TRUE
   )
 })
+
+test_that("bin$reinterpret()", {
+  skip_if_not_installed("blob")
+  df <- pl$DataFrame(x = blob::as_blob(c(5L, 35L)))
+
+  expect_equal(
+    df$select(
+      pl$col("x")$bin$reinterpret(dtype = pl$UInt8, endianness = "little")
+    ),
+    pl$DataFrame(x = c(5L, 35L))$cast(pl$UInt8)
+  )
+  expect_snapshot(
+    df$select(
+      pl$col("x")$bin$reinterpret(dtype = pl$UInt8, endianness = "foo")
+    ),
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(pl$col("x")$bin$reinterpret(dtype = 1)),
+    error = TRUE
+  )
+})

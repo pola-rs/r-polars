@@ -979,6 +979,11 @@ SEXP savvy_PlRExpr_bin_hex_encode__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_bin_reinterpret__impl(SEXP self__, SEXP c_arg__dtype, SEXP c_arg__kind) {
+    SEXP res = savvy_PlRExpr_bin_reinterpret__ffi(self__, c_arg__dtype, c_arg__kind);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_bin_size_bytes__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_bin_size_bytes__ffi(self__);
     return handle_result(res);
@@ -3610,6 +3615,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_bin_ends_with__impl", (DL_FUNC) &savvy_PlRExpr_bin_ends_with__impl, 2},
     {"savvy_PlRExpr_bin_hex_decode__impl", (DL_FUNC) &savvy_PlRExpr_bin_hex_decode__impl, 2},
     {"savvy_PlRExpr_bin_hex_encode__impl", (DL_FUNC) &savvy_PlRExpr_bin_hex_encode__impl, 1},
+    {"savvy_PlRExpr_bin_reinterpret__impl", (DL_FUNC) &savvy_PlRExpr_bin_reinterpret__impl, 3},
     {"savvy_PlRExpr_bin_size_bytes__impl", (DL_FUNC) &savvy_PlRExpr_bin_size_bytes__impl, 1},
     {"savvy_PlRExpr_bin_starts_with__impl", (DL_FUNC) &savvy_PlRExpr_bin_starts_with__impl, 2},
     {"savvy_PlRExpr_bitwise_and__impl", (DL_FUNC) &savvy_PlRExpr_bitwise_and__impl, 1},

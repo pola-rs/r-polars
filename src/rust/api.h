@@ -201,6 +201,7 @@ SEXP savvy_PlRExpr_bin_contains__ffi(SEXP self__, SEXP c_arg__literal);
 SEXP savvy_PlRExpr_bin_ends_with__ffi(SEXP self__, SEXP c_arg__suffix);
 SEXP savvy_PlRExpr_bin_hex_decode__ffi(SEXP self__, SEXP c_arg__strict);
 SEXP savvy_PlRExpr_bin_hex_encode__ffi(SEXP self__);
+SEXP savvy_PlRExpr_bin_reinterpret__ffi(SEXP self__, SEXP c_arg__dtype, SEXP c_arg__kind);
 SEXP savvy_PlRExpr_bin_size_bytes__ffi(SEXP self__);
 SEXP savvy_PlRExpr_bin_starts_with__ffi(SEXP self__, SEXP c_arg__prefix);
 SEXP savvy_PlRExpr_bitwise_and__ffi(SEXP self__);
