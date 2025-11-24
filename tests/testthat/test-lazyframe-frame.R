@@ -422,6 +422,14 @@ test_that("unique works", {
       ham = rep("b", 3)
     )
   )
+
+  # Expr input
+  expect_query_equal(
+    .input$unique(pl$col("a")$str$to_lowercase(), maintain_order = TRUE),
+    .input = pl$DataFrame(a = c("A", "a", "A", "a")),
+    pl$DataFrame(a = "A")
+  )
+
   expect_query_error(
     .input$unique("foobar", maintain_order = TRUE),
     df,
