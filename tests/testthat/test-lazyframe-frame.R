@@ -1813,6 +1813,83 @@ test_that("inequality joins require suffix when identical column names", {
   )
 })
 
+test_that("pivot() works", {
+  df <- pl$DataFrame(
+    index = c("x", "y", "z", "x", "y", "z"),
+    variable = c("b", "b", "b", "c", "c", "c"),
+    value = c(1, 3, 5, 2, 4, 6)
+  )
+
+  # TODO: remove sort after add the sort option to expect function
+  expect_query_equal(
+    .input$pivot(
+      on = "variable",
+      on_columns = c("b", "c"),
+      values = "value",
+      index = "index"
+    )$sort(cs$all()),
+    .input = df,
+    pl$DataFrame(
+      index = c("x", "y", "z"),
+      b = c(1, 3, 5),
+      c = c(2, 4, 6)
+    )$sort(cs$all())
+  )
+  expect_query_equal(
+    .input$pivot(
+      on = "variable",
+      on_columns = c("b"),
+      values = "value",
+      index = "index"
+    )$sort(cs$all()),
+    .input = df,
+    pl$DataFrame(
+      index = c("x", "y", "z"),
+      b = c(1, 3, 5)
+    )$sort(cs$all())
+  )
+
+  expect_query_equal(
+    .input$pivot(
+      on = c("index", "variable"),
+      on_columns = data.frame(
+        index = "x",
+        variable = "b"
+      ),
+      values = "value",
+      index = "index"
+    )$sort(cs$all()),
+    .input = df,
+    pl$DataFrame(
+      index = c("x", "y", "z"),
+      `{"x","b"}` = c(1, NA, NA)
+    )$sort(cs$all())
+  )
+
+  # The order of on and on_columns is important
+  expect_snapshot(
+    df$lazy()$pivot(
+      on = c("variable", "index"),
+      on_columns = data.frame(
+        index = "x",
+        variable = "b"
+      ),
+      values = "value",
+      index = "index"
+    )$collect(),
+    error = TRUE
+  )
+
+  expect_snapshot(
+    df$lazy()$pivot(
+      on = "variable",
+      values = "value",
+      index = "index"
+    )$collect(),
+    error = TRUE
+  )
+})
+
 test_that("unpivot() works", {
   df <- pl$DataFrame(
     a = c("x", "y", "z"),

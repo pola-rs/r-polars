@@ -1555,6 +1555,8 @@ lazyframe__join_where <- function(
 #' @param on_columns What value combinations will be considered for the output table.
 #'   Something can be converted to a [DataFrame] by
 #'   `as_polars_series(on_columns) |> as_polars_df()`.
+#'   If `on` contains multiple columns, the DataFrame passed to `on_columns` must have
+#'   exactly the same columns in the same order as `on`.
 #'   See examples for details.
 #' @param index The column(s) that remain from the input to the output. The
 #'   output will have one row for each unique combination of the `index`'s values.

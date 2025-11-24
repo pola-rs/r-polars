@@ -21,6 +21,8 @@ lazyframe__pivot(
 \item{on_columns}{What value combinations will be considered for the output table.
 Something can be converted to a \link{DataFrame} by
 \code{as_polars_series(on_columns) |> as_polars_df()}.
+If \code{on} contains multiple columns, the DataFrame passed to \code{on_columns} must have
+exactly the same columns in the same order as \code{on}.
 See examples for details.}
 
 \item{...}{These dots are for future extensions and must be empty.}

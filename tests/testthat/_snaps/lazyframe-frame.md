@@ -483,6 +483,32 @@
          │                      ╰──────────────────────────────────╯  │ PROJECT */5 COLUMNS                                                    │
          │                                                            ╰────────────────────────────────────────────────────────────────────────╯
 
+# pivot() works
+
+    Code
+      df$lazy()$pivot(on = c("variable", "index"), on_columns = data.frame(index = "x",
+        variable = "b"), values = "value", index = "index")$collect()
+    Condition
+      Error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: `pivot` has mismatching column names between `on` and `on_columns`.
+      
+      Resolved plan until failure:
+      
+      	---> FAILED HERE RESOLVING 'sink' <---
+      DF ["index", "variable", "value"]; PROJECT */3 COLUMNS
+
+---
+
+    Code
+      df$lazy()$pivot(on = "variable", values = "value", index = "index")$collect()
+    Condition
+      Error:
+      ! Evaluation failed in `$pivot()`.
+      Caused by error:
+      ! argument "on_columns" is missing, with no default
+
 # describe() works
 
     Code
