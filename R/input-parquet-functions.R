@@ -83,7 +83,7 @@ pl__scan_parquet <- function(
     values = c("insert", "raise")
   )
 
-  if (is_present(n_field_strategy)) {
+  if (is_present(allow_missing_columns)) {
     deprecate_warn(
       c(
         `!` = sprintf(

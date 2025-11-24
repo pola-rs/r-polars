@@ -124,7 +124,7 @@ prop_list_of_rexpr <- function(allow_null = FALSE, names = c("any", "all", "none
       if (allow_null && is.null(value)) {
         return()
       }
-      if (!is_list_of_polars_rexpr(value)) {
+      if (!is_list_of_rexpr(value)) {
         sprintf("must be a list of %s.", format_cls("PlRExpr"))
       }
       if (names == "all" && any(names2(value) == "")) {
