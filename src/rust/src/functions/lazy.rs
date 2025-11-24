@@ -151,14 +151,14 @@ pub fn lit_from_series(value: &PlRSeries, keep_series: bool, keep_name: bool) ->
 
 #[savvy]
 pub fn concat_list(s: ListSexp) -> Result<PlRExpr> {
-    let s = <Wrap<Vec<Expr>>>::try_from(s).unwrap().0;
+    let s = <Wrap<Vec<Expr>>>::try_from(s)?.0;
     let expr = dsl::concat_list(s).map_err(RPolarsErr::from)?;
     Ok(expr.into())
 }
 
 #[savvy]
 pub fn concat_arr(s: ListSexp) -> Result<PlRExpr> {
-    let s = <Wrap<Vec<Expr>>>::try_from(s).unwrap().0;
+    let s = <Wrap<Vec<Expr>>>::try_from(s)?.0;
     let expr = dsl::concat_arr(s).map_err(RPolarsErr::from)?;
     Ok(expr.into())
 }
@@ -239,7 +239,7 @@ pub fn concat_lf_diagonal(
 
 #[savvy]
 pub fn concat_str(s: ListSexp, separator: &str, ignore_nulls: bool) -> Result<PlRExpr> {
-    let s = <Wrap<Vec<Expr>>>::try_from(s).unwrap().0;
+    let s = <Wrap<Vec<Expr>>>::try_from(s)?.0;
     Ok(dsl::concat_str(s, separator, ignore_nulls).into())
 }
 

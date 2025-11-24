@@ -255,7 +255,7 @@ impl PlRLazyFrame {
     fn top_k(&self, k: NumericScalar, by: ListSexp, reverse: LogicalSexp) -> Result<Self> {
         let ldf = self.ldf.clone();
         let k = <Wrap<u32>>::try_from(k)?.0;
-        let exprs = <Wrap<Vec<Expr>>>::try_from(by).unwrap().0;
+        let exprs = <Wrap<Vec<Expr>>>::try_from(by)?.0;
         let reverse = reverse.to_vec();
         Ok(ldf
             .top_k(
@@ -269,7 +269,7 @@ impl PlRLazyFrame {
     fn bottom_k(&self, k: NumericScalar, by: ListSexp, reverse: LogicalSexp) -> Result<Self> {
         let ldf = self.ldf.clone();
         let k = <Wrap<u32>>::try_from(k)?.0;
-        let exprs = <Wrap<Vec<Expr>>>::try_from(by).unwrap().0;
+        let exprs = <Wrap<Vec<Expr>>>::try_from(by)?.0;
         let reverse = reverse.to_vec();
         Ok(ldf
             .bottom_k(
@@ -386,7 +386,7 @@ impl PlRLazyFrame {
         start_by: &str,
     ) -> Result<PlRLazyGroupBy> {
         let closed_window = <Wrap<ClosedWindow>>::try_from(closed)?.0;
-        let group_by = <Wrap<Vec<Expr>>>::try_from(group_by).unwrap().0;
+        let group_by = <Wrap<Vec<Expr>>>::try_from(group_by)?.0;
         let ldf = self.ldf.clone();
         let label = <Wrap<Label>>::try_from(label)?.0;
         let start_by = <Wrap<StartBy>>::try_from(start_by)?.0;
@@ -492,8 +492,8 @@ impl PlRLazyFrame {
         };
         let ldf = self.ldf.clone();
         let other = other.ldf.clone();
-        let left_on = <Wrap<Vec<Expr>>>::try_from(left_on).unwrap().0;
-        let right_on = <Wrap<Vec<Expr>>>::try_from(right_on).unwrap().0;
+        let left_on = <Wrap<Vec<Expr>>>::try_from(left_on)?.0;
+        let right_on = <Wrap<Vec<Expr>>>::try_from(right_on)?.0;
 
         let how = <Wrap<JoinType>>::try_from(how)?.0;
         let maintain_order = <Wrap<MaintainOrderJoin>>::try_from(maintain_order)?.0;
@@ -518,8 +518,7 @@ impl PlRLazyFrame {
     fn join_where(&self, other: &PlRLazyFrame, predicates: ListSexp, suffix: &str) -> Result<Self> {
         let ldf = self.ldf.clone();
         let other = other.ldf.clone();
-
-        let predicates = <Wrap<Vec<Expr>>>::try_from(predicates).unwrap().0;
+        let predicates = <Wrap<Vec<Expr>>>::try_from(predicates)?.0;
 
         Ok(ldf
             .join_builder()

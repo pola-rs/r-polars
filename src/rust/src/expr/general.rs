@@ -231,17 +231,19 @@ impl PlRExpr {
         order_by: Option<ListSexp>,
     ) -> Result<Self> {
         let partition_by = partition_by.map(|v| <Wrap<Vec<Expr>>>::try_from(v).unwrap().0);
-        let order_by = order_by.map(|order_by| {
-            (
-                <Wrap<Vec<Expr>>>::try_from(order_by).unwrap().0,
-                SortOptions {
+        let order_by = match order_by {
+            Some(exprs) => {
+                let exprs = <Wrap<Vec<Expr>>>::try_from(exprs)?.0;
+                let sort_options = SortOptions {
                     descending: order_by_descending,
                     nulls_last: order_by_nulls_last,
                     maintain_order: false,
                     ..Default::default()
-                },
-            )
-        });
+                };
+                Some((exprs, sort_options))
+            }
+            None => None,
+        };
         let mapping_strategy = <Wrap<WindowMapping>>::try_from(mapping_strategy)?.0;
 
         Ok(self
