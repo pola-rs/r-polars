@@ -578,6 +578,36 @@
       Caused by error:
       ! Argument `probs` must be numeric, not character
 
+# index_of works
+
+    Code
+      df$select(na = pl$col("a")$index_of(NA))
+    Condition
+      Warning:
+      ! As of polars 1.7.0, `<expr>$index_of()` checks dtype strictly.
+      i Please use `NULL` or `vctrs::unspecified(1)` instead of `NA`.
+    Output
+      shape: (1, 1)
+      ┌─────┐
+      │ na  │
+      │ --- │
+      │ u32 │
+      ╞═════╡
+      │ 1   │
+      └─────┘
+
+---
+
+    Code
+      df$select(na = pl$col("a")$index_of(NA_character_))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: cannot cast losslessly from str to f64
+
 # Deprecated shrink_dtype
 
     Code

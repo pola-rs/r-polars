@@ -4944,8 +4944,34 @@ expr__bitwise_xor <- function() {
 #'   fiftyfive = pl$col("a")$index_of(55),
 #' )
 expr__index_of <- function(element) {
-  self$`_rexpr`$index_of(as_polars_expr(element, as_lit = TRUE)$`_rexpr`) |>
-    wrap()
+  wrap({
+    # TODO: @2.0 remove this
+    if (identical(element, NA)) {
+      deprecate_warn(
+        c(
+          `!` = format_warning(
+            sprintf(
+              "As of %s 1.7.0, %s checks dtype strictly.",
+              format_pkg("polars"),
+              format_code("<expr>$index_of()")
+            )
+          ),
+          i = format_warning(
+            sprintf(
+              "Please use %s or %s instead of %s.",
+              format_code("NULL"),
+              format_code("vctrs::unspecified(1)"),
+              format_code("NA")
+            )
+          )
+        )
+      )
+
+      element <- NULL
+    }
+
+    self$`_rexpr`$index_of(as_polars_expr(element, as_lit = TRUE)$`_rexpr`)
+  })
 }
 
 #' Check if this expression is close, i.e. almost equal, to the other expression

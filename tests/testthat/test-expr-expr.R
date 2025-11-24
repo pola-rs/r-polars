@@ -2947,16 +2947,22 @@ test_that("index_of works", {
     df$select(
       seventeen = pl$col("a")$index_of(17),
       null = pl$col("a")$index_of(NULL),
+      null2 = pl$col("a")$index_of(vctrs::unspecified(1)),
       fiftyfive = pl$col("a")$index_of(55),
       x_char = pl$col("b")$index_of("x")
     ),
     pl$DataFrame(
       seventeen = 2,
       null = 1,
+      null2 = 1,
       fiftyfive = NA,
       x_char = 0
     )$cast(pl$UInt32)
   )
+
+  # Test deprecation and error
+  expect_snapshot(df$select(na = pl$col("a")$index_of(NA)))
+  expect_snapshot(df$select(na = pl$col("a")$index_of(NA_character_)), error = TRUE)
 })
 
 test_that("Deprecated shrink_dtype", {
