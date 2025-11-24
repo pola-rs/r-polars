@@ -230,7 +230,10 @@ impl PlRExpr {
         partition_by: Option<ListSexp>,
         order_by: Option<ListSexp>,
     ) -> Result<Self> {
-        let partition_by = partition_by.map(|v| <Wrap<Vec<Expr>>>::try_from(v).unwrap().0);
+        let partition_by = partition_by
+            .map(<Wrap<Vec<Expr>>>::try_from)
+            .transpose()?
+            .map(|w| w.0);
         let order_by = match order_by {
             Some(exprs) => {
                 let exprs = <Wrap<Vec<Expr>>>::try_from(exprs)?.0;
