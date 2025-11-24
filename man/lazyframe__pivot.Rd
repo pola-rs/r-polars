@@ -19,7 +19,8 @@ lazyframe__pivot(
 \item{on}{The column(s) whose values will be used as the new columns of the output.}
 
 \item{on_columns}{What value combinations will be considered for the output table.
-Something can be converted to a \link{DataFrame} by \code{as_polars_series(on_columns) |> as_polars_df()}.
+Something can be converted to a \link{DataFrame} by
+\code{as_polars_series(on_columns) |> as_polars_df()}.
 See examples for details.}
 
 \item{...}{These dots are for future extensions and must be empty.}
@@ -62,7 +63,7 @@ specified beforehand using \code{on_columns}.
 }
 \examples{
 \dontshow{if (exists("penguins", where = asNamespace("datasets"))) withAutoprint(\{ # examplesIf}
-df <- pl.DataFrame(
+df <- pl$DataFrame(
   name = c("Cady", "Cady", "Karen", "Karen"),
   subject = c("maths", "physics", "maths", "physics"),
   test_1 = c(98, 99, 61, 58),
@@ -72,7 +73,7 @@ df
 
 # Using `pivot`, we can reshape so we have one row per student, with different
 # subjects as columns, and their `test_1` scores as values:
-df.lazy()$pivot(
+df$lazy()$pivot(
   "subject",
   on_columns = c("maths", "physics"),
   index = "name",
@@ -80,7 +81,7 @@ df.lazy()$pivot(
 )$collect()
 
 # You can use selectors too - here we include all test scores in the pivoted table:
-df.lazy().pivot(
+df$lazy()$pivot(
   "subject",
   on_columns = c("maths", "physics"),
   values = cs$starts_with("test"),

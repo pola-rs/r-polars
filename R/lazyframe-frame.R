@@ -1553,7 +1553,8 @@ lazyframe__join_where <- function(
 #' @inheritParams rlang::args_dots_empty
 #' @param on The column(s) whose values will be used as the new columns of the output.
 #' @param on_columns What value combinations will be considered for the output table.
-#'   Something can be converted to a [DataFrame] by `as_polars_series(on_columns) |> as_polars_df()`.
+#'   Something can be converted to a [DataFrame] by
+#'   `as_polars_series(on_columns) |> as_polars_df()`.
 #'   See examples for details.
 #' @param index The column(s) that remain from the input to the output. The
 #'   output will have one row for each unique combination of the `index`'s values.
@@ -1576,7 +1577,7 @@ lazyframe__join_where <- function(
 #' @param separator Used as separator/delimiter in generated column names in
 #'   case of multiple values columns.
 #' @examplesIf exists("penguins", where = asNamespace("datasets"))
-#' df <- pl.DataFrame(
+#' df <- pl$DataFrame(
 #'   name = c("Cady", "Cady", "Karen", "Karen"),
 #'   subject = c("maths", "physics", "maths", "physics"),
 #'   test_1 = c(98, 99, 61, 58),
@@ -1586,7 +1587,7 @@ lazyframe__join_where <- function(
 #'
 #' # Using `pivot`, we can reshape so we have one row per student, with different
 #' # subjects as columns, and their `test_1` scores as values:
-#' df.lazy()$pivot(
+#' df$lazy()$pivot(
 #'   "subject",
 #'   on_columns = c("maths", "physics"),
 #'   index = "name",
@@ -1594,7 +1595,7 @@ lazyframe__join_where <- function(
 #' )$collect()
 #'
 #' # You can use selectors too - here we include all test scores in the pivoted table:
-#' df.lazy().pivot(
+#' df$lazy()$pivot(
 #'   "subject",
 #'   on_columns = c("maths", "physics"),
 #'   values = cs$starts_with("test"),
