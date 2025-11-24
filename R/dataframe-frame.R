@@ -1497,6 +1497,8 @@ dataframe__partition_by <- function(..., maintain_order = TRUE, include_key = TR
 #' @inheritParams rlang::args_dots_empty
 #' @param on The column(s) whose values will be used as the new columns of the
 #' output DataFrame.
+#' @param on_columns What value combinations will be considered for the output table.
+#'   If `NULL` (default), all unique values found in the `on` column(s) will be used.
 #' @param index The column(s) that remain from the input to the output. The
 #' output DataFrame will have one row for each unique combination of the
 #' `index`'s values. If `NULL`, all remaining columns not specified in `on` and

@@ -20,6 +20,9 @@ dataframe__pivot(
 \item{on}{The column(s) whose values will be used as the new columns of the
 output DataFrame.}
 
+\item{on_columns}{What value combinations will be considered for the output table.
+If \code{NULL} (default), all unique values found in the \code{on} column(s) will be used.}
+
 \item{...}{These dots are for future extensions and must be empty.}
 
 \item{index}{The column(s) that remain from the input to the output. The

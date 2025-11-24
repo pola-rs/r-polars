@@ -26,11 +26,17 @@
 #'   the datatypes in the file(s). If there are extra columns that are not in the
 #'   file(s), consider also enabling `allow_missing_columns`.
 #' @param low_memory Reduce memory pressure at the expense of performance
-#' @param allow_missing_columns When reading a list of parquet files, if a
-#' column existing in the first file cannot be found in subsequent files, the
-#' default behavior is to raise an error. However, if `allow_missing_columns`
-#' is set to `TRUE`, a full-NULL column is returned instead of erroring for the
-#' files that do not contain the column.
+#' @param missing_columns Configuration for behavior when columns defined in the schema
+#'   are missing from the data:
+#'   - `"raise"` (default): Raises an error.
+#'   - `"insert"`:  Inserts the missing columns using NULLs as the row values.
+#' @param allow_missing_columns `r lifecycle::badge("deprecated")`
+#'   Deprecated in favor of `missing_columns`.
+#'   When reading a list of parquet files, if a
+#'   column existing in the first file cannot be found in subsequent files, the
+#'   default behavior is to raise an error. However, if `allow_missing_columns`
+#'   is set to `TRUE`, a full-NULL column is returned instead of erroring for the
+#'   files that do not contain the column.
 #' @examplesIf requireNamespace("withr", quietly = TRUE)
 #' # Write a Parquet file than we can then import as DataFrame
 #' temp_file <- withr::local_tempfile(fileext = ".parquet")
