@@ -4945,7 +4945,12 @@ expr__bitwise_xor <- function() {
 #' )
 expr__index_of <- function(element) {
   wrap({
-    # TODO: @2.0 remove this
+    # TODO: @2.0 remove this workaround
+    # We use `NA` in examples before, but in 1.7.0,
+    # polars stricts dtype of `null` here.
+    # So users should use typed NA (like `NA_real_`) or
+    # Null dtype `null` converted from R `NULL` or
+    # `vctrs::unspecified(1)`.
     if (identical(element, NA)) {
       deprecate_warn(
         c(
