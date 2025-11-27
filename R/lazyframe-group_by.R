@@ -207,7 +207,7 @@ lazygroupby__len <- groupby__len
 #' This method can be chained and all conditions will be combined using `&`.
 #'
 #' @inheritParams lazyframe__filter
-#' @inherit as_polars_lf return
+#' @inherit lazyframe__group_by return
 #' @examples
 #' lf <- pl$LazyFrame(x = c("a", "b", "a", "b", "c"))
 #'

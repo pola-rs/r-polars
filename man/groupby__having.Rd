@@ -11,7 +11,7 @@ groupby__having(...)
 a boolean Series.}
 }
 \value{
-A polars \link{DataFrame}
+An object of class \code{polars_group_by}
 }
 \description{
 Using this method is equivalent to adding the predicates to the aggregation

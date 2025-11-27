@@ -236,7 +236,7 @@ groupby__len <- function(name = NULL) {
 }
 
 #' @inherit lazygroupby__having title description params
-#' @inherit as_polars_df return
+#' @inherit dataframe__group_by return
 #' @examples
 #' df <- pl$DataFrame(x = c("a", "b", "a", "b", "c"))
 #'

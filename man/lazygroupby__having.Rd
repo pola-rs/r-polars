@@ -11,7 +11,7 @@ lazygroupby__having(...)
 a boolean Series.}
 }
 \value{
-A polars \link{LazyFrame}
+A lazy groupby
 }
 \description{
 Using this method is equivalent to adding the predicates to the aggregation
