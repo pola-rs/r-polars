@@ -250,7 +250,12 @@ groupby__having <- function(...) {
   self$df <- old_self$df
   self$by <- old_self$by
   self$maintain_order <- old_self$maintain_order
-  self$predicates <- list2(...)
+  # Preserve existing predicates if present
+  if ("predicates" %in% names(old_self)) {
+    self$predicates <- c(old_self$predicates, list2(...))
+  } else {
+    self$predicates <- list2(...)
+  }
 
   class(self) <- c("polars_group_by", "polars_object")
   self

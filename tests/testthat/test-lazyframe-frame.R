@@ -2751,7 +2751,7 @@ test_that("group_by() + len()", {
 })
 
 test_that("group_by() + having()", {
-  df <- pl$DataFrame(x = c("a", "b", "a", "b", "c"))
+  df <- pl$DataFrame(x = c("a", "b", "a", "b", "a", "c"))
   expect_query_equal(
     .input$group_by("x", .maintain_order = TRUE)$having(
       pl$len() > 1
@@ -2765,5 +2765,12 @@ test_that("group_by() + having()", {
     .input$group_by("x")$having(pl$len() > 10)$agg(),
     df,
     pl$DataFrame(x = character(0))
+  )
+
+  # Can be chained
+  expect_query_equal(
+    .input$group_by("x")$having(pl$len() > 1)$having(pl$len() > 2)$agg(),
+    df,
+    pl$DataFrame(x = "a")
   )
 })
