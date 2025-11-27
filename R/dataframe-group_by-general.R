@@ -41,7 +41,7 @@ groupby__agg <- function(...) {
       .maintain_order = self$maintain_order
     )
 
-    if (!is.null(self$predicates)) {
+    if ("predicates" %in% names(self)) {
       out <- out$having(!!!self$predicates)
     }
 
