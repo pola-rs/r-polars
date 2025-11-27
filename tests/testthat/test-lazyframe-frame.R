@@ -2749,3 +2749,21 @@ test_that("group_by() + len()", {
     error = TRUE
   )
 })
+
+test_that("group_by() + having()", {
+  df <- pl$DataFrame(x = c("a", "b", "a", "b", "c"))
+  expect_query_equal(
+    .input$group_by("x", .maintain_order = TRUE)$having(
+      pl$len() > 1
+    )$agg(),
+    df,
+    pl$DataFrame(x = c("a", "b"))
+  )
+
+  # No groups selected
+  expect_query_equal(
+    .input$group_by("x")$having(pl$len() > 10)$agg(),
+    df,
+    pl$DataFrame(x = character(0))
+  )
+})

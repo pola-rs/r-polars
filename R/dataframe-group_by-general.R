@@ -35,11 +35,18 @@ wrap_to_group_by <- function(x, by, maintain_order) {
 #'   c_mean_squared = (pl$col("c") ** 2)$mean()
 #' )
 groupby__agg <- function(...) {
-  self$df$lazy()$group_by(
-    !!!self$by,
-    .maintain_order = self$maintain_order
-  )$agg(...)$collect(optimizations = QueryOptFlags()$no_optimizations()) |>
-    wrap()
+  wrap({
+    out <- self$df$lazy()$group_by(
+      !!!self$by,
+      .maintain_order = self$maintain_order
+    )
+
+    if (!is.null(self$predicates)) {
+      out <- out$having(!!!self$predicates)
+    }
+
+    out$agg(...)$collect(optimizations = QueryOptFlags()$no_optimizations())
+  })
 }
 
 #' @inherit lazygroupby__head title params
@@ -226,4 +233,25 @@ groupby__len <- function(name = NULL) {
     }
     self$agg(len_expr)
   })
+}
+
+#' @inherit lazygroupby__having title description params
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(x = c("a", "b", "a", "b", "c"))
+#'
+#' # Only keep groups that contain more than one element:
+#' df$group_by("x")$having(
+#'   pl$len() > 1
+#' )$agg()
+groupby__having <- function(...) {
+  old_self <- self
+  self <- new.env(parent = emptyenv())
+  self$df <- old_self$df
+  self$by <- old_self$by
+  self$maintain_order <- old_self$maintain_order
+  self$predicates <- list2(...)
+
+  class(self) <- c("polars_group_by", "polars_object")
+  self
 }

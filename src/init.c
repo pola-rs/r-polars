@@ -2969,6 +2969,11 @@ SEXP savvy_PlRLazyGroupBy_agg__impl(SEXP self__, SEXP c_arg__aggs) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRLazyGroupBy_having__impl(SEXP self__, SEXP c_arg__predicates) {
+    SEXP res = savvy_PlRLazyGroupBy_having__ffi(self__, c_arg__predicates);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRLazyGroupBy_head__impl(SEXP self__, SEXP c_arg__n) {
     SEXP res = savvy_PlRLazyGroupBy_head__ffi(self__, c_arg__n);
     return handle_result(res);
@@ -4013,6 +4018,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_with_optimizations__impl", (DL_FUNC) &savvy_PlRLazyFrame_with_optimizations__impl, 2},
     {"savvy_PlRLazyFrame_with_row_index__impl", (DL_FUNC) &savvy_PlRLazyFrame_with_row_index__impl, 3},
     {"savvy_PlRLazyGroupBy_agg__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_agg__impl, 2},
+    {"savvy_PlRLazyGroupBy_having__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_having__impl, 2},
     {"savvy_PlRLazyGroupBy_head__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_head__impl, 2},
     {"savvy_PlRLazyGroupBy_tail__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_tail__impl, 2},
     {"savvy_PlRSQLContext_execute__impl", (DL_FUNC) &savvy_PlRSQLContext_execute__impl, 2},
