@@ -351,7 +351,12 @@ dataframe__get_column_index <- function(name) {
 #'   pl$col("c")$mean()
 #' )
 dataframe__group_by <- function(..., .maintain_order = FALSE) {
-  wrap_to_group_by(self, list2(...), .maintain_order)
+  wrap_to_group_by(
+    self,
+    by = list2(...),
+    maintain_order = .maintain_order,
+    predicates = NULL
+  )
 }
 
 #' Select and modify columns of a DataFrame

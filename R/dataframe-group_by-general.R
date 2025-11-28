@@ -1,11 +1,12 @@
 # The env for storing group_by methods
 polars_groupby__methods <- new.env(parent = emptyenv())
 
-wrap_to_group_by <- function(x, by, maintain_order) {
+wrap_to_group_by <- function(x, by, maintain_order, predicates) {
   self <- new.env(parent = emptyenv())
   self$df <- x
   self$by <- by
   self$maintain_order <- maintain_order
+  self$predicates <- predicates
 
   class(self) <- c("polars_group_by", "polars_object")
   self
@@ -245,18 +246,10 @@ groupby__len <- function(name = NULL) {
 #'   pl$len() > 1
 #' )$agg()
 groupby__having <- function(...) {
-  old_self <- self
-  self <- new.env(parent = emptyenv())
-  self$df <- old_self$df
-  self$by <- old_self$by
-  self$maintain_order <- old_self$maintain_order
-  # Preserve existing predicates if present
-  if ("predicates" %in% names(old_self)) {
-    self$predicates <- c(old_self$predicates, list2(...))
-  } else {
-    self$predicates <- list2(...)
-  }
-
-  class(self) <- c("polars_group_by", "polars_object")
-  self
+  wrap_to_group_by(
+    self$df,
+    by = self$by,
+    maintain_order = self$maintain_order,
+    predicates = c(self$predicates, list2(...))
+  )
 }
