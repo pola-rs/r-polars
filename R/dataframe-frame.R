@@ -1843,7 +1843,8 @@ dataframe__rolling <- function(
       period = period,
       offset = offset,
       closed = closed,
-      group_by = group_by
+      group_by = group_by,
+      predicates = NULL
     )
   })
 }
