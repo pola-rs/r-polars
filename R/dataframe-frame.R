@@ -2098,7 +2098,8 @@ dataframe__group_by_dynamic <- function(
       closed = closed,
       label = label,
       group_by = group_by,
-      start_by = start_by
+      start_by = start_by,
+      predicates = NULL
     )
   })
 }
