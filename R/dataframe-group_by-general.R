@@ -42,7 +42,7 @@ groupby__agg <- function(...) {
       .maintain_order = self$maintain_order
     )
 
-    if ("predicates" %in% names(self)) {
+    if (!is.null(self$predicates)) {
       out <- out$having(!!!self$predicates)
     }
 
@@ -239,12 +239,12 @@ groupby__len <- function(name = NULL) {
 #' @inherit lazygroupby__having title description params
 #' @inherit dataframe__group_by return
 #' @examples
-#' df <- pl$DataFrame(x = c("a", "b", "a", "b", "c"))
-#'
-#' # Only keep groups that contain more than one element:
-#' df$group_by("x")$having(
-#'   pl$len() > 1
-#' )$agg()
+# df <- pl$DataFrame(x = c("a", "b", "a", "b", "c"))
+
+# # Only keep groups that contain more than one element:
+# df$group_by("x")$having(
+#   pl$len() > 1
+# )$agg()
 groupby__having <- function(...) {
   wrap_to_group_by(
     self$df,
