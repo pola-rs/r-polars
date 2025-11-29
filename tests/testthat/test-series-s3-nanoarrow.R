@@ -8,6 +8,7 @@ patrick::with_parameters_test_that(
       "int32", as_polars_series(1:3),
       "int128", as_polars_series(1:3)$cast(pl$Int128),
       "uint128", as_polars_series(1:3)$cast(pl$UInt128),
+      "float16", as_polars_series(1:3)$cast(pl$Float16),
       "string (with name)", as_polars_series(letters[1:3], "foo"),
       "struct", as_polars_series(data.frame(a = 1:3, b = letters[1:3])),
       "list", as_polars_series(list(1:2, 3:4)),

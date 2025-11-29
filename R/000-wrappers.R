@@ -104,8 +104,8 @@ NULL
 }
 
 
-`concat_df_horizontal` <- function(`dfs`) {
-  .savvy_wrap_PlRDataFrame(.Call(savvy_concat_df_horizontal__impl, `dfs`))
+`concat_df_horizontal` <- function(`dfs`, `strict`) {
+  .savvy_wrap_PlRDataFrame(.Call(savvy_concat_df_horizontal__impl, `dfs`, `strict`))
 }
 
 
@@ -119,8 +119,8 @@ NULL
 }
 
 
-`concat_lf_horizontal` <- function(`lfs`, `parallel`) {
-  .savvy_wrap_PlRLazyFrame(.Call(savvy_concat_lf_horizontal__impl, `lfs`, `parallel`))
+`concat_lf_horizontal` <- function(`lfs`, `parallel`, `strict`) {
+  .savvy_wrap_PlRLazyFrame(.Call(savvy_concat_lf_horizontal__impl, `lfs`, `parallel`, `strict`))
 }
 
 
@@ -3106,9 +3106,9 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 }
 
 `PlRExpr_str_extract_many` <- function(self) {
-  function(`patterns`, `ascii_case_insensitive`, `overlapping`) {
+  function(`patterns`, `ascii_case_insensitive`, `overlapping`, `leftmost`) {
     `patterns` <- .savvy_extract_ptr(`patterns`, "polars::PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_extract_many__impl, `self`, `patterns`, `ascii_case_insensitive`, `overlapping`))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_extract_many__impl, `self`, `patterns`, `ascii_case_insensitive`, `overlapping`, `leftmost`))
   }
 }
 
@@ -3120,9 +3120,9 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 }
 
 `PlRExpr_str_find_many` <- function(self) {
-  function(`patterns`, `ascii_case_insensitive`, `overlapping`) {
+  function(`patterns`, `ascii_case_insensitive`, `overlapping`, `leftmost`) {
     `patterns` <- .savvy_extract_ptr(`patterns`, "polars::PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_find_many__impl, `self`, `patterns`, `ascii_case_insensitive`, `overlapping`))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_find_many__impl, `self`, `patterns`, `ascii_case_insensitive`, `overlapping`, `leftmost`))
   }
 }
 
@@ -3214,10 +3214,10 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 }
 
 `PlRExpr_str_replace_many` <- function(self) {
-  function(`patterns`, `replace_with`, `ascii_case_insensitive`) {
+  function(`patterns`, `replace_with`, `ascii_case_insensitive`, `leftmost`) {
     `patterns` <- .savvy_extract_ptr(`patterns`, "polars::PlRExpr")
     `replace_with` <- .savvy_extract_ptr(`replace_with`, "polars::PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_replace_many__impl, `self`, `patterns`, `replace_with`, `ascii_case_insensitive`))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_replace_many__impl, `self`, `patterns`, `replace_with`, `ascii_case_insensitive`, `leftmost`))
   }
 }
 

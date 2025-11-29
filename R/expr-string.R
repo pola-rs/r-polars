@@ -1135,13 +1135,17 @@ expr_str_reverse <- function() {
 #' df$with_columns(
 #'   contains_any = pl$col("lyrics")$str$contains_any(list(c("you", "me")))
 #' )
-expr_str_contains_any <- function(patterns, ..., ascii_case_insensitive = FALSE) {
+expr_str_contains_any <- function(
+  patterns,
+  ...,
+  ascii_case_insensitive = FALSE
+) {
   wrap({
     check_dots_empty0(...)
     self$`_rexpr`$str_contains_any(
       # TODO: set this to FALSE in 2.0.0
       as_polars_expr(patterns, as_lit = TRUE)$`_rexpr`,
-      ascii_case_insensitive
+      ascii_case_insensitive = ascii_case_insensitive
     )
   })
 }
@@ -1152,7 +1156,9 @@ expr_str_contains_any <- function(patterns, ..., ascii_case_insensitive = FALSE)
 #'
 #' @inherit as_polars_expr return
 #' @inheritParams rlang::args_dots_empty
+# TODO: @2.0 remove inheriting from expr_str_contains_any
 #' @inheritParams expr_str_contains_any
+#' @inheritParams expr_str_extract_many
 #' @param replace_with A vector of strings used as replacements. If this is of
 #' length 1, then it is applied to all matches. Otherwise, it must be of same
 #' length as the `patterns` argument.
@@ -1178,7 +1184,13 @@ expr_str_contains_any <- function(patterns, ..., ascii_case_insensitive = FALSE)
 #' df$with_columns(
 #'   fake_pronouns = pl$col("lyrics")$str$replace_many(list(c("you", "me")), c("foo", "bar"))
 #' )
-expr_str_replace_many <- function(patterns, replace_with, ..., ascii_case_insensitive = FALSE) {
+expr_str_replace_many <- function(
+  patterns,
+  replace_with,
+  ...,
+  ascii_case_insensitive = FALSE,
+  leftmost = FALSE
+) {
   wrap({
     check_dots_empty0(...)
 
@@ -1186,7 +1198,8 @@ expr_str_replace_many <- function(patterns, replace_with, ..., ascii_case_insens
       # TODO: set this to FALSE in 2.0.0 (just for arg `patterns`)
       as_polars_expr(patterns, as_lit = TRUE)$`_rexpr`,
       as_polars_expr(replace_with, as_lit = TRUE)$`_rexpr`,
-      ascii_case_insensitive
+      ascii_case_insensitive = ascii_case_insensitive,
+      leftmost = leftmost
     )
   })
 }
@@ -1291,14 +1304,16 @@ expr_str_find_many <- function(
   patterns,
   ...,
   ascii_case_insensitive = FALSE,
-  overlapping = FALSE
+  overlapping = FALSE,
+  leftmost = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
     self$`_rexpr`$str_find_many(
       as_polars_expr(patterns, as_lit = FALSE)$`_rexpr`,
-      ascii_case_insensitive,
-      overlapping
+      ascii_case_insensitive = ascii_case_insensitive,
+      overlapping = overlapping,
+      leftmost = leftmost
     )
   })
 }
@@ -1385,7 +1400,9 @@ expr_str_tail <- function(n) {
 #' @inheritParams expr_str_contains_any
 #' @inheritParams rlang::args_dots_empty
 #' @param overlapping Whether matches can overlap.
-#'
+#' @param leftmost Whether to guarantee in case there are overlapping matches that
+#'   the leftmost match is used. In case there are multiple candidates for the
+#'   leftmost match, the pattern which comes first in `patterns` is used.
 #' @inherit expr_str_slice return
 #'
 #' @examples
@@ -1407,14 +1424,16 @@ expr_str_extract_many <- function(
   patterns,
   ...,
   ascii_case_insensitive = FALSE,
-  overlapping = FALSE
+  overlapping = FALSE,
+  leftmost = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
     self$`_rexpr`$str_extract_many(
       as_polars_expr(patterns, as_lit = FALSE)$`_rexpr`,
-      ascii_case_insensitive,
-      overlapping
+      ascii_case_insensitive = ascii_case_insensitive,
+      overlapping = overlapping,
+      leftmost = leftmost
     )
   })
 }

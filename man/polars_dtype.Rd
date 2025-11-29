@@ -76,7 +76,7 @@ see the section about floating point numbers for more information.
    \code{Boolean} \tab Boolean type that is bit packed efficiently. \cr
    \code{Int8}, \code{Int16}, \code{Int32}, \code{Int64} \tab Varying-precision signed integer types. \cr
    \code{UInt8}, \code{UInt16}, \code{UInt32}, \code{UInt64} \tab Varying-precision unsigned integer types. \cr
-   \code{Float32}, \code{Float64} \tab Varying-precision signed floating point numbers. \cr
+   \code{Float16}, \code{Float32}, \code{Float64} \tab Varying-precision signed floating point numbers. \cr
    \code{Decimal} \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} \tab Decimal 128-bit type with optional precision and non-negative scale. \cr
    \code{String} \tab Variable length UTF-8 encoded string data, typically Human-readable. \cr
    \code{Binary} \tab Stores arbitrary, varying length raw binary data. \cr

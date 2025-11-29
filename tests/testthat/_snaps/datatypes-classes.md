@@ -126,6 +126,21 @@
     Output
       UInt64
 
+# data types print Float16
+
+    Code
+      print(class(object))
+    Output
+      [1] "polars_dtype_float16" "polars_dtype_float"   "polars_dtype_numeric"
+      [4] "polars_dtype"         "polars_object"       
+
+---
+
+    Code
+      print(object)
+    Output
+      Float16
+
 # data types print Float32
 
     Code

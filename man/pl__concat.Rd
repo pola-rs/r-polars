@@ -4,7 +4,13 @@
 \alias{pl__concat}
 \title{Combine multiple DataFrames, LazyFrames, or Series into a single object}
 \usage{
-pl__concat(..., how = "vertical", rechunk = FALSE, parallel = TRUE)
+pl__concat(
+  ...,
+  how = "vertical",
+  rechunk = FALSE,
+  parallel = TRUE,
+  strict = FALSE
+)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> \link[=DataFrame]{DataFrames},
@@ -39,6 +45,9 @@ more control over this you should use a suitable \code{join} method directly).
 
 \item{parallel}{Only relevant for \link[=LazyFrame]{LazyFrames}. This determines if the
 concatenated lazy computations may be executed in parallel.}
+
+\item{strict}{When \code{how = "horizontal"}, whether to require all DataFrames to be
+the same height, raising an error if not.}
 }
 \value{
 The same class (\code{polars_data_frame}, \code{polars_lazy_frame} or

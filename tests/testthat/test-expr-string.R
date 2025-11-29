@@ -845,22 +845,28 @@ test_that("str$replace_many", {
   dat <- pl$DataFrame(x = c("HELLO there", "hi there", "good bye", NA))
 
   expect_equal(
-    dat$with_columns(
-      pl$col("x")$str$replace_many(list(c("hi", "hello")), list("foo"))
-    ),
-    pl$DataFrame(x = c("HELLO there", "foo there", "good bye", NA))
-  )
-
-  # case insensitive
-  expect_equal(
-    dat$with_columns(
-      pl$col("x")$str$replace_many(
-        list(c("hi", "hello")),
-        list("foo"),
+    dat$select(
+      case_sensitive = pl$col("x")$str$replace_many(
+        list(c("hello", "he")),
+        list(c("foo"))
+      ),
+      case_insensitive = pl$col("x")$str$replace_many(
+        list(c("hello", "he")),
+        list(c("foo")),
         ascii_case_insensitive = TRUE
-      )
+      ),
+      leftmost = pl$col("x")$str$replace_many(
+        list(c("hello", "he")),
+        list(c("foo")),
+        ascii_case_insensitive = TRUE,
+        leftmost = TRUE
+      ),
     ),
-    pl$DataFrame(x = c("foo there", "foo there", "good bye", NA))
+    pl$DataFrame(
+      case_sensitive = c("HELLO tfoore", "hi tfoore", "good bye", NA),
+      case_insensitive = c("fooLLO tfoore", "hi tfoore", "good bye", NA),
+      leftmost = c("foo tfoore", "hi tfoore", "good bye", NA),
+    )
   )
 
   # identical lengths of patterns and replacements
@@ -1041,16 +1047,18 @@ test_that("$str$tail works", {
 
 test_that("$str$extract_many works", {
   df <- pl$DataFrame(values = c("discontent", "dollar $"))
-  patterns <- list(c("winter", "disco", "ONTE", "discontent", "$"))
+  patterns <- list(c("winter", "ONTE", "discontent", "$", "disco"))
 
   expect_equal(
     df$select(
       matches = pl$col("values")$str$extract_many(patterns),
-      matches_overlap = pl$col("values")$str$extract_many(patterns, overlapping = TRUE)
+      matches_overlap = pl$col("values")$str$extract_many(patterns, overlapping = TRUE),
+      matches_leftmost = pl$col("values")$str$extract_many(patterns, leftmost = TRUE),
     ),
     pl$DataFrame(
       matches = list("disco", "$"),
-      matches_overlap = list(c("disco", "discontent"), "$")
+      matches_overlap = list(c("disco", "discontent"), "$"),
+      matches_leftmost = list("discontent", "$"),
     )
   )
 
@@ -1083,6 +1091,15 @@ test_that("$str$extract_many works", {
   expect_equal(
     df$select(pl$col("values")$str$extract_many("patterns")),
     pl$DataFrame(values = list("disco", c("rhap", "ody")))
+  )
+
+  expect_snapshot(
+    pl$select(pl$lit("foo")$str$extract_many(
+      pl$lit("foo"),
+      overlapping = TRUE,
+      leftmost = TRUE,
+    )),
+    error = TRUE
   )
 })
 
@@ -1132,15 +1149,19 @@ patrick::with_parameters_test_that(
 
 test_that("str$find_many()", {
   df <- pl$DataFrame(values = "discontent")
-  patterns <- pl$lit(list(c("winter", "disco", "onte", "discontent")))
+  patterns <- pl$lit(list(c("winter", "onte", "nt")))
 
   expect_equal(
-    df$select(matches = pl$col("values")$str$find_many(patterns, overlapping = FALSE)),
-    pl$DataFrame(matches = list(0))$cast(pl$List(pl$UInt32))
-  )
-  expect_equal(
-    df$select(matches = pl$col("values")$str$find_many(patterns, overlapping = TRUE)),
-    pl$DataFrame(matches = list(c(0, 4, 0)))$cast(pl$List(pl$UInt32))
+    df$select(
+      finds = pl$col("values")$str$find_many(patterns),
+      finds_overlapping = pl$col("values")$str$find_many(patterns, overlapping = TRUE),
+      finds_leftmost = pl$col("values")$str$find_many(patterns, leftmost = TRUE),
+    ),
+    pl$DataFrame(
+      finds = list(c(5, 8)),
+      finds_overlapping = list(c(5, 4, 8)),
+      finds_leftmost = list(c(4, 8))
+    )$select(cs$all()$cast(pl$List(pl$UInt32)))
   )
 
   patterns_2 <- pl$lit(list(c("WINTER", "disco", "ONTE", "discontent")))
@@ -1153,6 +1174,15 @@ test_that("str$find_many()", {
       )
     ),
     pl$DataFrame(matches = list(c(0, 4, 0)))$cast(pl$List(pl$UInt32))
+  )
+
+  expect_snapshot(
+    pl$select(pl$lit("foo")$str$find_many(
+      pl$lit("foo"),
+      overlapping = TRUE,
+      leftmost = TRUE,
+    )),
+    error = TRUE
   )
 })
 

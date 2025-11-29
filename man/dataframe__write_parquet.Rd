@@ -7,7 +7,7 @@
 dataframe__write_parquet(
   file,
   ...,
-  compression = c("lz4", "uncompressed", "snappy", "gzip", "lzo", "brotli", "zstd"),
+  compression = c("lz4", "uncompressed", "snappy", "gzip", "brotli", "zstd"),
   compression_level = NULL,
   statistics = TRUE,
   row_group_size = NULL,
@@ -32,7 +32,6 @@ a path to a directory if writing a partitioned dataset.}
 \item \code{"snappy"}: this guarantees that the parquet file will be compatible with
 older parquet readers.
 \item \code{"gzip"}
-\item \code{"lzo"}
 \item \code{"brotli"}
 \item \code{"zstd"}: good compression performance.
 }}

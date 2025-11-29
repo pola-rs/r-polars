@@ -1243,7 +1243,7 @@ impl PlRLazyFrame {
                 mkdir,
                 maintain_order,
                 sync_on_close: <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0,
-                cloud_options,
+                cloud_options: cloud_options.map(Arc::new),
             };
 
             self.ldf
@@ -1343,7 +1343,7 @@ impl PlRLazyFrame {
                 mkdir,
                 maintain_order,
                 sync_on_close: <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0,
-                cloud_options,
+                cloud_options: cloud_options.map(Arc::new),
             };
 
             self.ldf
@@ -1394,7 +1394,7 @@ impl PlRLazyFrame {
                 mkdir,
                 maintain_order,
                 sync_on_close: <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0,
-                cloud_options,
+                cloud_options: cloud_options.map(Arc::new),
             };
 
             self.ldf
@@ -1455,7 +1455,7 @@ impl PlRLazyFrame {
                 mkdir,
                 maintain_order,
                 sync_on_close: <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0,
-                cloud_options,
+                cloud_options: cloud_options.map(Arc::new),
             };
 
             self.ldf

@@ -28,7 +28,7 @@
 #' | `Boolean`                                      | Boolean type that is bit packed efficiently.                                    |
 #' | `Int8`, `Int16`, `Int32`, `Int64`              | Varying-precision signed integer types.                                         |
 #' | `UInt8`, `UInt16`, `UInt32`, `UInt64`          | Varying-precision unsigned integer types.                                       |
-#' | `Float32`, `Float64`                           | Varying-precision signed floating point numbers.                                |
+#' | `Float16`, `Float32`, `Float64`                | Varying-precision signed floating point numbers.                                |
 #' | `Decimal` `r lifecycle::badge("experimental")` | Decimal 128-bit type with optional precision and non-negative scale.            |
 #' | `String`                                       | Variable length UTF-8 encoded string data, typically Human-readable.            |
 #' | `Binary`                                       | Stores arbitrary, varying length raw binary data.                               |
@@ -127,6 +127,7 @@ on_load({
     "UInt32",
     "UInt64",
     "UInt128",
+    "Float16",
     "Float32",
     "Float64",
     "Boolean",

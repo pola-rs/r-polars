@@ -17,7 +17,7 @@ parquet_statistics(
 lazyframe__sink_parquet(
   path,
   ...,
-  compression = c("lz4", "uncompressed", "snappy", "gzip", "lzo", "brotli", "zstd"),
+  compression = c("lz4", "uncompressed", "snappy", "gzip", "brotli", "zstd"),
   compression_level = NULL,
   statistics = TRUE,
   row_group_size = NULL,
@@ -41,7 +41,7 @@ lazyframe__sink_parquet(
 lazyframe__lazy_sink_parquet(
   path,
   ...,
-  compression = c("lz4", "uncompressed", "snappy", "gzip", "lzo", "brotli", "zstd"),
+  compression = c("lz4", "uncompressed", "snappy", "gzip", "brotli", "zstd"),
   compression_level = NULL,
   statistics = TRUE,
   row_group_size = NULL,
@@ -74,7 +74,6 @@ column.}
 \item \code{"snappy"}: this guarantees that the parquet file will be compatible with
 older parquet readers.
 \item \code{"gzip"}
-\item \code{"lzo"}
 \item \code{"brotli"}
 \item \code{"zstd"}: good compression performance.
 }}

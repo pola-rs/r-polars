@@ -408,6 +408,7 @@ impl PlRExpr {
         patterns: &PlRExpr,
         replace_with: &PlRExpr,
         ascii_case_insensitive: bool,
+        leftmost: bool,
     ) -> Result<Self> {
         Ok(self
             .inner
@@ -417,6 +418,7 @@ impl PlRExpr {
                 patterns.inner.clone(),
                 replace_with.inner.clone(),
                 ascii_case_insensitive,
+                leftmost,
             )
             .into())
     }
@@ -426,12 +428,18 @@ impl PlRExpr {
         patterns: &PlRExpr,
         ascii_case_insensitive: bool,
         overlapping: bool,
+        leftmost: bool,
     ) -> Result<Self> {
         Ok(self
             .inner
             .clone()
             .str()
-            .extract_many(patterns.inner.clone(), ascii_case_insensitive, overlapping)
+            .extract_many(
+                patterns.inner.clone(),
+                ascii_case_insensitive,
+                overlapping,
+                leftmost,
+            )
             .into())
     }
 
@@ -471,12 +479,18 @@ impl PlRExpr {
         patterns: &PlRExpr,
         ascii_case_insensitive: bool,
         overlapping: bool,
+        leftmost: bool,
     ) -> Result<Self> {
         Ok(self
             .inner
             .clone()
             .str()
-            .find_many(patterns.inner.clone(), ascii_case_insensitive, overlapping)
+            .find_many(
+                patterns.inner.clone(),
+                ascii_case_insensitive,
+                overlapping,
+                leftmost,
+            )
             .into())
     }
 
