@@ -517,6 +517,19 @@
       * ..1 = "a"
       i Did you forget to name an argument?
 
+---
+
+    Code
+      pl$select(pl$lit("foo")$str$extract_many(pl$lit("foo"), overlapping = TRUE,
+      leftmost = TRUE, ))
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: can not match overlapping patterns when leftmost == True
+
 # to_decimal
 
     Code
@@ -612,4 +625,17 @@
       │ null          │
       │ 0             │
       └───────────────┘
+
+# str$find_many()
+
+    Code
+      pl$select(pl$lit("foo")$str$find_many(pl$lit("foo"), overlapping = TRUE,
+      leftmost = TRUE, ))
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: can not match overlapping patterns when leftmost == True
 

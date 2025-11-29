@@ -115,18 +115,24 @@ test_that("how = 'vertical_relaxed' works", {
 test_that("how = 'horizontal' works", {
   df <- pl$DataFrame(a = 1:2, b = letters[1:2])
   df2 <- pl$DataFrame(a2 = 1:2, b2 = letters[1:2])
-  df3 <- pl$DataFrame(a3 = 1:2, b3 = letters[1:2])
+  df3 <- pl$DataFrame(a3 = 1, b3 = letters[1])
+  df4 <- pl$DataFrame(
+    a = 1:2,
+    b = letters[1:2],
+    a2 = 1:2,
+    b2 = letters[1:2],
+    a3 = c(1, NA),
+    b3 = c(letters[1], NA)
+  )
 
   expect_equal(
     pl$concat(df, df2, df3, how = "horizontal"),
-    pl$DataFrame(
-      a = 1:2,
-      b = letters[1:2],
-      a2 = 1:2,
-      b2 = letters[1:2],
-      a3 = 1:2,
-      b3 = letters[1:2]
-    )
+    df4
+  )
+
+  expect_snapshot(
+    pl$concat(df, df2, df3, how = "horizontal", strict = TRUE),
+    error = TRUE
   )
 
   # Duplicated columns
@@ -136,20 +142,18 @@ test_that("how = 'horizontal' works", {
   )
 
   # works with lazy
-  lf <- pl$LazyFrame(a = 1:2, b = letters[1:2])
-  lf2 <- pl$LazyFrame(a2 = 1:2, b2 = letters[1:2])
-  lf3 <- pl$LazyFrame(a3 = 1:2, b3 = letters[1:2])
+  lf <- df$lazy()
+  lf2 <- df2$lazy()
+  lf3 <- df3$lazy()
 
   expect_equal(
     pl$concat(lf, lf2, lf3, how = "horizontal")$collect(),
-    pl$DataFrame(
-      a = 1:2,
-      b = letters[1:2],
-      a2 = 1:2,
-      b2 = letters[1:2],
-      a3 = 1:2,
-      b3 = letters[1:2]
-    )
+    df4
+  )
+
+  expect_snapshot(
+    pl$concat(lf, lf2, lf3, how = "horizontal", strict = TRUE)$collect(),
+    error = TRUE
   )
 
   # doesn't work with Series
