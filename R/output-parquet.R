@@ -22,7 +22,6 @@
 #' * `"snappy"`: this guarantees that the parquet file will be compatible with
 #'   older parquet readers.
 #' * `"gzip"`
-#' * `"lzo"`
 #' * `"brotli"`
 #' * `"zstd"`: good compression performance.
 #' @param compression_level `NULL` or integer. The level of compression to use.
@@ -78,7 +77,7 @@
 lazyframe__sink_parquet <- function(
   path,
   ...,
-  compression = c("lz4", "uncompressed", "snappy", "gzip", "lzo", "brotli", "zstd"),
+  compression = c("lz4", "uncompressed", "snappy", "gzip", "brotli", "zstd"),
   compression_level = NULL,
   statistics = TRUE,
   row_group_size = NULL,
@@ -132,7 +131,7 @@ lazyframe__sink_parquet <- function(
 lazyframe__lazy_sink_parquet <- function(
   path,
   ...,
-  compression = c("lz4", "uncompressed", "snappy", "gzip", "lzo", "brotli", "zstd"),
+  compression = c("lz4", "uncompressed", "snappy", "gzip", "brotli", "zstd"),
   compression_level = NULL,
   statistics = TRUE,
   row_group_size = NULL,
@@ -149,7 +148,7 @@ lazyframe__lazy_sink_parquet <- function(
     target <- arg_to_sink_target(path)
     compression <- arg_match0(
       compression,
-      values = c("lz4", "uncompressed", "snappy", "gzip", "lzo", "brotli", "zstd")
+      values = c("lz4", "uncompressed", "snappy", "gzip", "brotli", "zstd")
     )
     sync_on_close <- arg_match0(
       sync_on_close %||% "none",
@@ -223,7 +222,7 @@ lazyframe__lazy_sink_parquet <- function(
 dataframe__write_parquet <- function(
   file,
   ...,
-  compression = c("lz4", "uncompressed", "snappy", "gzip", "lzo", "brotli", "zstd"),
+  compression = c("lz4", "uncompressed", "snappy", "gzip", "brotli", "zstd"),
   compression_level = NULL,
   statistics = TRUE,
   row_group_size = NULL,

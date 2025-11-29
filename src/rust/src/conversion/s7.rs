@@ -119,20 +119,8 @@ impl TryFrom<Sexp> for Wrap<SinkDestination> {
             return Err(savvy_err!(
                 "cannot use `{parameter_name}` without specifying `partition_by`"
             ));
-        } else if let Some(max_rows_per_file) = &max_rows_per_file {
-            PartitionStrategy::MaxRowsPerFile {
-                max_rows_per_file: max_rows_per_file.0,
-                per_file_sort_by: per_file_sort_by
-                    .map(|wrap| wrap.0)
-                    .unwrap_or_default()
-                    .into_iter()
-                    .map(|x| SortColumn {
-                        expr: x,
-                        descending: false,
-                        nulls_last: false,
-                    })
-                    .collect(),
-            }
+        } else if max_rows_per_file.is_some() {
+            PartitionStrategy::FileSize
         } else {
             return Err(savvy_err!(
                 "at least one of (`partition_by`, `max_rows_per_file`) \
@@ -145,6 +133,8 @@ impl TryFrom<Sexp> for Wrap<SinkDestination> {
             file_path_provider: None,
             partition_strategy,
             finish_callback: None,
+            max_rows_per_file: max_rows_per_file.map(|wrap| wrap.0).unwrap_or(IdxSize::MAX),
+            approximate_bytes_per_file: u64::MAX,
         }))
     }
 }

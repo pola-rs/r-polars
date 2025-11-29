@@ -99,8 +99,8 @@ SEXP savvy_concat_df_diagonal__impl(SEXP c_arg__dfs) {
     return handle_result(res);
 }
 
-SEXP savvy_concat_df_horizontal__impl(SEXP c_arg__dfs) {
-    SEXP res = savvy_concat_df_horizontal__ffi(c_arg__dfs);
+SEXP savvy_concat_df_horizontal__impl(SEXP c_arg__dfs, SEXP c_arg__strict) {
+    SEXP res = savvy_concat_df_horizontal__ffi(c_arg__dfs, c_arg__strict);
     return handle_result(res);
 }
 
@@ -114,8 +114,8 @@ SEXP savvy_concat_lf_diagonal__impl(SEXP c_arg__lfs, SEXP c_arg__rechunk, SEXP c
     return handle_result(res);
 }
 
-SEXP savvy_concat_lf_horizontal__impl(SEXP c_arg__lfs, SEXP c_arg__parallel) {
-    SEXP res = savvy_concat_lf_horizontal__ffi(c_arg__lfs, c_arg__parallel);
+SEXP savvy_concat_lf_horizontal__impl(SEXP c_arg__lfs, SEXP c_arg__parallel, SEXP c_arg__strict) {
+    SEXP res = savvy_concat_lf_horizontal__ffi(c_arg__lfs, c_arg__parallel, c_arg__strict);
     return handle_result(res);
 }
 
@@ -2344,8 +2344,8 @@ SEXP savvy_PlRExpr_str_extract_groups__impl(SEXP self__, SEXP c_arg__pattern) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_str_extract_many__impl(SEXP self__, SEXP c_arg__patterns, SEXP c_arg__ascii_case_insensitive, SEXP c_arg__overlapping) {
-    SEXP res = savvy_PlRExpr_str_extract_many__ffi(self__, c_arg__patterns, c_arg__ascii_case_insensitive, c_arg__overlapping);
+SEXP savvy_PlRExpr_str_extract_many__impl(SEXP self__, SEXP c_arg__patterns, SEXP c_arg__ascii_case_insensitive, SEXP c_arg__overlapping, SEXP c_arg__leftmost) {
+    SEXP res = savvy_PlRExpr_str_extract_many__ffi(self__, c_arg__patterns, c_arg__ascii_case_insensitive, c_arg__overlapping, c_arg__leftmost);
     return handle_result(res);
 }
 
@@ -2354,8 +2354,8 @@ SEXP savvy_PlRExpr_str_find__impl(SEXP self__, SEXP c_arg__pat, SEXP c_arg__lite
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_str_find_many__impl(SEXP self__, SEXP c_arg__patterns, SEXP c_arg__ascii_case_insensitive, SEXP c_arg__overlapping) {
-    SEXP res = savvy_PlRExpr_str_find_many__ffi(self__, c_arg__patterns, c_arg__ascii_case_insensitive, c_arg__overlapping);
+SEXP savvy_PlRExpr_str_find_many__impl(SEXP self__, SEXP c_arg__patterns, SEXP c_arg__ascii_case_insensitive, SEXP c_arg__overlapping, SEXP c_arg__leftmost) {
+    SEXP res = savvy_PlRExpr_str_find_many__ffi(self__, c_arg__patterns, c_arg__ascii_case_insensitive, c_arg__overlapping, c_arg__leftmost);
     return handle_result(res);
 }
 
@@ -2424,8 +2424,8 @@ SEXP savvy_PlRExpr_str_replace_all__impl(SEXP self__, SEXP c_arg__pat, SEXP c_ar
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_str_replace_many__impl(SEXP self__, SEXP c_arg__patterns, SEXP c_arg__replace_with, SEXP c_arg__ascii_case_insensitive) {
-    SEXP res = savvy_PlRExpr_str_replace_many__ffi(self__, c_arg__patterns, c_arg__replace_with, c_arg__ascii_case_insensitive);
+SEXP savvy_PlRExpr_str_replace_many__impl(SEXP self__, SEXP c_arg__patterns, SEXP c_arg__replace_with, SEXP c_arg__ascii_case_insensitive, SEXP c_arg__leftmost) {
+    SEXP res = savvy_PlRExpr_str_replace_many__ffi(self__, c_arg__patterns, c_arg__replace_with, c_arg__ascii_case_insensitive, c_arg__leftmost);
     return handle_result(res);
 }
 
@@ -3444,10 +3444,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_concat_arr__impl", (DL_FUNC) &savvy_concat_arr__impl, 1},
     {"savvy_concat_df__impl", (DL_FUNC) &savvy_concat_df__impl, 1},
     {"savvy_concat_df_diagonal__impl", (DL_FUNC) &savvy_concat_df_diagonal__impl, 1},
-    {"savvy_concat_df_horizontal__impl", (DL_FUNC) &savvy_concat_df_horizontal__impl, 1},
+    {"savvy_concat_df_horizontal__impl", (DL_FUNC) &savvy_concat_df_horizontal__impl, 2},
     {"savvy_concat_lf__impl", (DL_FUNC) &savvy_concat_lf__impl, 4},
     {"savvy_concat_lf_diagonal__impl", (DL_FUNC) &savvy_concat_lf_diagonal__impl, 4},
-    {"savvy_concat_lf_horizontal__impl", (DL_FUNC) &savvy_concat_lf_horizontal__impl, 2},
+    {"savvy_concat_lf_horizontal__impl", (DL_FUNC) &savvy_concat_lf_horizontal__impl, 3},
     {"savvy_concat_list__impl", (DL_FUNC) &savvy_concat_list__impl, 1},
     {"savvy_concat_series__impl", (DL_FUNC) &savvy_concat_series__impl, 1},
     {"savvy_concat_str__impl", (DL_FUNC) &savvy_concat_str__impl, 3},
@@ -3893,9 +3893,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_str_extract__impl", (DL_FUNC) &savvy_PlRExpr_str_extract__impl, 3},
     {"savvy_PlRExpr_str_extract_all__impl", (DL_FUNC) &savvy_PlRExpr_str_extract_all__impl, 2},
     {"savvy_PlRExpr_str_extract_groups__impl", (DL_FUNC) &savvy_PlRExpr_str_extract_groups__impl, 2},
-    {"savvy_PlRExpr_str_extract_many__impl", (DL_FUNC) &savvy_PlRExpr_str_extract_many__impl, 4},
+    {"savvy_PlRExpr_str_extract_many__impl", (DL_FUNC) &savvy_PlRExpr_str_extract_many__impl, 5},
     {"savvy_PlRExpr_str_find__impl", (DL_FUNC) &savvy_PlRExpr_str_find__impl, 4},
-    {"savvy_PlRExpr_str_find_many__impl", (DL_FUNC) &savvy_PlRExpr_str_find_many__impl, 4},
+    {"savvy_PlRExpr_str_find_many__impl", (DL_FUNC) &savvy_PlRExpr_str_find_many__impl, 5},
     {"savvy_PlRExpr_str_head__impl", (DL_FUNC) &savvy_PlRExpr_str_head__impl, 2},
     {"savvy_PlRExpr_str_hex_decode__impl", (DL_FUNC) &savvy_PlRExpr_str_hex_decode__impl, 2},
     {"savvy_PlRExpr_str_hex_encode__impl", (DL_FUNC) &savvy_PlRExpr_str_hex_encode__impl, 1},
@@ -3909,7 +3909,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_str_pad_start__impl", (DL_FUNC) &savvy_PlRExpr_str_pad_start__impl, 3},
     {"savvy_PlRExpr_str_replace__impl", (DL_FUNC) &savvy_PlRExpr_str_replace__impl, 5},
     {"savvy_PlRExpr_str_replace_all__impl", (DL_FUNC) &savvy_PlRExpr_str_replace_all__impl, 4},
-    {"savvy_PlRExpr_str_replace_many__impl", (DL_FUNC) &savvy_PlRExpr_str_replace_many__impl, 4},
+    {"savvy_PlRExpr_str_replace_many__impl", (DL_FUNC) &savvy_PlRExpr_str_replace_many__impl, 5},
     {"savvy_PlRExpr_str_reverse__impl", (DL_FUNC) &savvy_PlRExpr_str_reverse__impl, 1},
     {"savvy_PlRExpr_str_slice__impl", (DL_FUNC) &savvy_PlRExpr_str_slice__impl, 3},
     {"savvy_PlRExpr_str_split__impl", (DL_FUNC) &savvy_PlRExpr_str_split__impl, 3},

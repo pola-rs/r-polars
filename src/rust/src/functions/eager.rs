@@ -1,4 +1,5 @@
 use crate::{PlRDataFrame, PlRSeries, RPolarsErr, prelude::*};
+use polars::functions;
 use savvy::{ListSexp, Result, savvy};
 
 #[savvy]
@@ -39,4 +40,20 @@ pub fn concat_series(series: ListSexp) -> Result<PlRSeries> {
         s.append(series).map_err(RPolarsErr::from)?;
     }
     Ok(s.into())
+}
+
+#[savvy]
+pub fn concat_df_diagonal(dfs: ListSexp) -> Result<PlRDataFrame> {
+    let dfs = <Wrap<Vec<DataFrame>>>::try_from(dfs)?.0;
+
+    let df = functions::concat_df_diagonal(&dfs).map_err(RPolarsErr::from)?;
+    Ok(df.into())
+}
+
+#[savvy]
+pub fn concat_df_horizontal(dfs: ListSexp, strict: bool) -> Result<PlRDataFrame> {
+    let dfs = <Wrap<Vec<DataFrame>>>::try_from(dfs)?.0;
+
+    let df = functions::concat_df_horizontal(&dfs, true, strict).map_err(RPolarsErr::from)?;
+    Ok(df.into())
 }
