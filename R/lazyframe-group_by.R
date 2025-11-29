@@ -2,7 +2,7 @@
 polars_lazygroupby__methods <- new.env(parent = emptyenv())
 
 #' @export
-wrap.PlRLazyGroupBy <- function(x, ...) {
+`wrap.polars::PlRLazyGroupBy` <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$lgb <- x
 

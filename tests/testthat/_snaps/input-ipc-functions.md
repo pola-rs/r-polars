@@ -76,7 +76,7 @@
       Error in `pl$scan_ipc()`:
       ! Evaluation failed in `$scan_ipc()`.
       Caused by error:
-      ! Argument `row_index_name` must be be length 1 of non-missing value
+      ! Argument `row_index_name` must be length 1 of non-missing value
 
 ---
 

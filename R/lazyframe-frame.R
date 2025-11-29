@@ -31,7 +31,7 @@ pl__LazyFrame <- function(..., .schema_overrides = NULL, .strict = TRUE) {
 polars_lazyframe__methods <- new.env(parent = emptyenv())
 
 #' @export
-wrap.PlRLazyFrame <- function(x, ...) {
+`wrap.polars::PlRLazyFrame` <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_ldf` <- x
 

@@ -13,7 +13,7 @@ namespace_datatype_expr <- function(x) {
 }
 
 #' @export
-wrap.PlRDataTypeExpr <- function(x, ...) {
+`wrap.polars::PlRDataTypeExpr` <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_datatype_expr` <- x
 

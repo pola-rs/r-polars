@@ -1,5 +1,5 @@
 #' @export
-wrap.PlRWhen <- function(x, ...) {
+`wrap.polars::PlRWhen` <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_when` <- x
 
@@ -21,7 +21,7 @@ when__then <- function(statement) {
 polars_then__methods <- new.env(parent = emptyenv())
 
 #' @export
-wrap.PlRThen <- function(x, ...) {
+`wrap.polars::PlRThen` <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_then` <- x
   makeActiveBinding("_rexpr", function() self$`_then`$otherwise(lit_null()), self)
@@ -47,7 +47,7 @@ then__otherwise <- function(otherwise) {
 }
 
 #' @export
-wrap.PlRChainedWhen <- function(x, ...) {
+`wrap.polars::PlRChainedWhen` <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_chained_when` <- x
 
@@ -69,7 +69,7 @@ chainedwhen__then <- function(statement) {
 polars_chainedthen__methods <- new.env(parent = emptyenv())
 
 #' @export
-wrap.PlRChainedThen <- function(x, ...) {
+`wrap.polars::PlRChainedThen` <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_chained_then` <- x
   makeActiveBinding("_rexpr", function() self$`_chained_then`$otherwise(lit_null()), self)
