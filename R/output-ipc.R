@@ -158,7 +158,7 @@ dataframe__write_ipc <- function(
       storage_options = storage_options,
       retries = retries,
       optimizations = DEFAULT_EAGER_OPT_FLAGS,
-      engine = "in-memory"
+      engine = "streaming"
     )
   })
   invisible(NULL)
