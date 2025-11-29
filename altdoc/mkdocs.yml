@@ -73,6 +73,7 @@ nav:
             - n_chunks: man/dataframe__n_chunks.md
         - GroupBy:
             - agg: man/groupby__agg.md
+            - having: man/groupby__having.md
             - head: man/groupby__head.md
             - len: man/groupby__len.md
             - mean: man/groupby__mean.md
@@ -155,6 +156,7 @@ nav:
             - explain: man/lazyframe__explain.md
         - GroupBy:
             - agg: man/lazygroupby__agg.md
+            - having: man/lazygroupby__having.md
             - head: man/lazygroupby__head.md
             - len: man/lazygroupby__len.md
             - mean: man/lazygroupby__mean.md

@@ -4408,6 +4408,12 @@ class(`PlRLazyFrame`) <- c("PlRLazyFrame__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRLazyGroupBy_having` <- function(self) {
+  function(`predicates`) {
+    .savvy_wrap_PlRLazyGroupBy(.Call(savvy_PlRLazyGroupBy_having__impl, `self`, `predicates`))
+  }
+}
+
 `PlRLazyGroupBy_head` <- function(self) {
   function(`n`) {
     .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyGroupBy_head__impl, `self`, `n`))
@@ -4424,6 +4430,7 @@ class(`PlRLazyFrame`) <- c("PlRLazyFrame__bundle", "savvy_polars__sealed")
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
   e$`agg` <- `PlRLazyGroupBy_agg`(ptr)
+  e$`having` <- `PlRLazyGroupBy_having`(ptr)
   e$`head` <- `PlRLazyGroupBy_head`(ptr)
   e$`tail` <- `PlRLazyGroupBy_tail`(ptr)
 

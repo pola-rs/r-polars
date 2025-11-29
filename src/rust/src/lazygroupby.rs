@@ -32,4 +32,13 @@ impl PlRLazyGroupBy {
         let n = <Wrap<usize>>::try_from(n)?.0;
         Ok(lgb.tail(Some(n)).into())
     }
+
+    fn having(&self, predicates: ListSexp) -> Result<PlRLazyGroupBy> {
+        let predicates = <Wrap<Vec<Expr>>>::try_from(predicates)?.0;
+        let mut lgb = self.lgb.clone().unwrap();
+        for predicate in predicates.into_iter() {
+            lgb = lgb.having(predicate);
+        }
+        Ok(PlRLazyGroupBy { lgb: Some(lgb) })
+    }
 }

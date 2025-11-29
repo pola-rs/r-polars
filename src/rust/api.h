@@ -603,6 +603,7 @@ SEXP savvy_PlRLazyFrame_with_row_index__ffi(SEXP self__, SEXP c_arg__name, SEXP 
 
 // methods and associated functions for PlRLazyGroupBy
 SEXP savvy_PlRLazyGroupBy_agg__ffi(SEXP self__, SEXP c_arg__aggs);
+SEXP savvy_PlRLazyGroupBy_having__ffi(SEXP self__, SEXP c_arg__predicates);
 SEXP savvy_PlRLazyGroupBy_head__ffi(SEXP self__, SEXP c_arg__n);
 SEXP savvy_PlRLazyGroupBy_tail__ffi(SEXP self__, SEXP c_arg__n);
 

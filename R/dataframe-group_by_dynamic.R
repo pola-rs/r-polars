@@ -11,7 +11,8 @@ wrap_to_group_by_dynamic <- function(
   closed,
   label,
   group_by,
-  start_by
+  start_by,
+  predicates
 ) {
   self <- new.env(parent = emptyenv())
   self$df <- x
@@ -24,13 +25,35 @@ wrap_to_group_by_dynamic <- function(
   self$label <- label
   self$group_by <- group_by
   self$start_by <- start_by
+  self$predicates <- predicates
 
   class(self) <- c("polars_group_by_dynamic", "polars_object")
   self
 }
 
 group_by_dynamic__agg <- function(...) {
-  self$df$lazy()$group_by_dynamic(
+  wrap({
+    out <- self$df$lazy()$group_by_dynamic(
+      index_column = self$index_column,
+      every = self$every,
+      period = self$period,
+      offset = self$offset,
+      include_boundaries = self$include_boundaries,
+      closed = self$closed,
+      label = self$label,
+      group_by = self$group_by,
+      start_by = self$start_by
+    )
+    if (!is.null(self$predicates)) {
+      out <- out$having(!!!self$predicates)
+    }
+    out$agg(...)$collect(optimizations = QueryOptFlags()$no_optimizations())
+  })
+}
+
+group_by_dynamic__having <- function(...) {
+  wrap_to_group_by_dynamic(
+    self$df,
     index_column = self$index_column,
     every = self$every,
     period = self$period,
@@ -39,7 +62,7 @@ group_by_dynamic__agg <- function(...) {
     closed = self$closed,
     label = self$label,
     group_by = self$group_by,
-    start_by = self$start_by
-  )$agg(...)$collect(optimizations = QueryOptFlags()$no_optimizations()) |>
-    wrap()
+    start_by = self$start_by,
+    predicates = c(self$predicates, list2(...))
+  )
 }

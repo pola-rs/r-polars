@@ -197,3 +197,26 @@ lazygroupby__n_unique <- groupby__n_unique
 #'
 #' lf$group_by("a")$len("n")$collect()
 lazygroupby__len <- groupby__len
+
+#' Filter groups with a list of predicates after aggregation
+#'
+#' @description
+#' Using this method is equivalent to adding the predicates to the aggregation
+#' and filtering afterwards.
+#'
+#' This method can be chained and all conditions will be combined using `&`.
+#'
+#' @inheritParams lazyframe__filter
+#' @inherit lazyframe__group_by return
+#' @examples
+#' lf <- pl$LazyFrame(x = c("a", "b", "a", "b", "c"))
+#'
+#' # Only keep groups that contain more than one element:
+#' lf$group_by("x")$having(
+#'   pl$len() > 1
+#' )$agg()$collect()
+lazygroupby__having <- function(...) {
+  parse_into_list_of_expressions(...) |>
+    self$lgb$having() |>
+    wrap()
+}

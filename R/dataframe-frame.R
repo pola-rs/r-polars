@@ -351,7 +351,12 @@ dataframe__get_column_index <- function(name) {
 #'   pl$col("c")$mean()
 #' )
 dataframe__group_by <- function(..., .maintain_order = FALSE) {
-  wrap_to_group_by(self, list2(...), .maintain_order)
+  wrap_to_group_by(
+    self,
+    by = list2(...),
+    maintain_order = .maintain_order,
+    predicates = NULL
+  )
 }
 
 #' Select and modify columns of a DataFrame
@@ -1838,7 +1843,8 @@ dataframe__rolling <- function(
       period = period,
       offset = offset,
       closed = closed,
-      group_by = group_by
+      group_by = group_by,
+      predicates = NULL
     )
   })
 }
@@ -2093,7 +2099,8 @@ dataframe__group_by_dynamic <- function(
       closed = closed,
       label = label,
       group_by = group_by,
-      start_by = start_by
+      start_by = start_by,
+      predicates = NULL
     )
   })
 }

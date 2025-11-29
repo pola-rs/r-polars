@@ -35,6 +35,8 @@ This is an update that corresponds to Python Polars 1.36.0, which includes signi
   - `<expr>$list$explode()`
   - `<lazyframe>$explode()`
 - `is_list_of_polars_expr()` (#1662).
+- `<groupby>$having()`, `<rolling_groupby>$having()`, `<dynamic_groupby>$having()`
+  (and their lazy implementations) to filter groups before applying aggregations (#1671).
 
 ### Bug fixes
 

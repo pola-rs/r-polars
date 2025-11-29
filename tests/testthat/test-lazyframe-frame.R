@@ -2749,3 +2749,76 @@ test_that("group_by() + len()", {
     error = TRUE
   )
 })
+
+test_that("group_by() + having()", {
+  df <- pl$DataFrame(x = c("a", "b", "a", "b", "a", "c"))
+  expect_query_equal(
+    .input$group_by("x", .maintain_order = TRUE)$having(pl$len() > 1)$agg(),
+    df,
+    pl$DataFrame(x = c("a", "b"))
+  )
+
+  # No groups selected
+  expect_query_equal(
+    .input$group_by("x")$having(pl$len() > 10)$agg(),
+    df,
+    pl$DataFrame(x = character(0))
+  )
+
+  # Can be chained
+  expect_query_equal(
+    .input$group_by("x")$having(pl$len() > 1)$having(pl$len() > 2)$agg(),
+    df,
+    pl$DataFrame(x = "a")
+  )
+})
+
+test_that("group_by_dynamic() + having()", {
+  df <- pl$DataFrame(
+    date = as.Date(c("2020-01-01", "2020-01-02", "2020-01-03", "2020-01-04", "2020-01-05"))
+  )
+  expect_query_equal(
+    .input$group_by_dynamic("date", every = "3d")$having(pl$len() > 1)$agg(),
+    df,
+    pl$DataFrame(date = as.Date(c("2019-12-31", "2020-01-03")))
+  )
+
+  # No groups selected
+  expect_query_equal(
+    .input$group_by_dynamic("date", every = "3d")$having(pl$len() > 10)$agg(),
+    df,
+    pl$DataFrame(date = as.Date(character(0)))
+  )
+
+  # Can be chained
+  expect_query_equal(
+    .input$group_by_dynamic("date", every = "3d")$having(pl$len() > 1)$having(pl$len() > 2)$agg(),
+    df,
+    pl$DataFrame(date = as.Date("2020-01-03"))
+  )
+})
+
+test_that("rolling() + having()", {
+  df <- pl$DataFrame(
+    date = as.Date(c("2020-01-01", "2020-01-02", "2020-01-03", "2020-01-04", "2020-01-05"))
+  )
+  expect_query_equal(
+    .input$rolling("date", period = "3d")$having(pl$len() > 1)$agg(),
+    df,
+    pl$DataFrame(date = as.Date(c("2020-01-02", "2020-01-03", "2020-01-04", "2020-01-05")))
+  )
+
+  # No groups selected
+  expect_query_equal(
+    .input$rolling("date", period = "3d")$having(pl$len() > 10)$agg(),
+    df,
+    pl$DataFrame(date = as.Date(character(0)))
+  )
+
+  # Can be chained
+  expect_query_equal(
+    .input$rolling("date", period = "3d")$having(pl$len() > 1)$having(pl$len() > 2)$agg(),
+    df,
+    pl$DataFrame(date = as.Date(c("2020-01-03", "2020-01-04", "2020-01-05")))
+  )
+})
