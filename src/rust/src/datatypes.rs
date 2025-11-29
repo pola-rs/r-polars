@@ -260,6 +260,7 @@ impl PlRDataType {
             DataType::UInt32 => vec!["uint32", "unsigned_integer", "integer", "numeric"],
             DataType::UInt64 => vec!["uint64", "unsigned_integer", "integer", "numeric"],
             DataType::UInt128 => vec!["uint128", "unsigned_integer", "integer", "numeric"],
+            DataType::Float16 => vec!["float16", "float", "numeric"],
             DataType::Float32 => vec!["float32", "float", "numeric"],
             DataType::Float64 => vec!["float64", "float", "numeric"],
             DataType::Decimal(_, _) => vec!["decimal", "numeric"],

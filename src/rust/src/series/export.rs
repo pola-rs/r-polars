@@ -146,7 +146,7 @@ impl PlRSeries {
                         series.cast(&DataType::Int64).unwrap().i64().unwrap(),
                     ))),
                 },
-                DataType::Float32 => Ok(<Sexp>::from(Wrap(
+                DataType::Float16 | DataType::Float32 => Ok(<Sexp>::from(Wrap(
                     series.cast(&DataType::Float64).unwrap().f64().unwrap(),
                 ))),
                 DataType::Float64 => Ok(<Sexp>::from(Wrap(series.f64().unwrap()))),
@@ -361,7 +361,11 @@ impl PlRSeries {
                 }
                 DataType::Binary => Ok(<Sexp>::from(Wrap(series.binary().unwrap()))),
                 DataType::Null => Ok(vctrs_unspecified_sexp(series.len())),
-                _ => todo!(),
+                _ => Err(RPolarsErr::Other(format!(
+                    "Conversion from Polars dtype {:?} to R vector is not supported.",
+                    series.dtype()
+                ))
+                .into()),
             }
         }
 

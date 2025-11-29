@@ -77,6 +77,7 @@ impl TryFrom<&str> for PlRDataType {
             "UInt32" => DataType::UInt32,
             "UInt64" => DataType::UInt64,
             "UInt128" => DataType::UInt128,
+            "Float16" => DataType::Float16,
             "Float32" => DataType::Float32,
             "Float64" => DataType::Float64,
             "Boolean" => DataType::Boolean,
