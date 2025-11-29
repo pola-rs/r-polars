@@ -683,7 +683,7 @@
       Caused by error:
       ! Evaluation failed in `$is_close()`.
       Caused by error:
-      ! Argument `abs_tol` must be be length 1 of non-missing value
+      ! Argument `abs_tol` must be length 1 of non-missing value
 
 ---
 
@@ -697,7 +697,7 @@
       Caused by error:
       ! Evaluation failed in `$is_close()`.
       Caused by error:
-      ! Argument `rel_tol` must be be length 1 of non-missing value
+      ! Argument `rel_tol` must be length 1 of non-missing value
 
 # item() works
 

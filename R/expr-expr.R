@@ -38,7 +38,7 @@ polars_namespaces_expr <- new.env(parent = emptyenv())
 polars_expr__methods <- new.env(parent = emptyenv())
 
 #' @export
-wrap.PlRExpr <- function(x, ...) {
+`wrap.polars::PlRExpr` <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_rexpr` <- x
 

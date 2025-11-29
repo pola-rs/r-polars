@@ -102,7 +102,7 @@ pl__DataFrame <- function(..., .schema_overrides = NULL, .strict = TRUE) {
 polars_dataframe__methods <- new.env(parent = emptyenv())
 
 #' @export
-wrap.PlRDataFrame <- function(x, ...) {
+`wrap.polars::PlRDataFrame` <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_df` <- x
 

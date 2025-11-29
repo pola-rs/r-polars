@@ -47,7 +47,7 @@ cs <- new.env(parent = emptyenv())
 polars_selector__methods <- new.env(parent = emptyenv())
 
 #' @export
-wrap.PlRSelector <- function(x, ...) {
+`wrap.polars::PlRSelector` <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_rselector` <- x
   self$`_rexpr` <- PlRExpr$new_selector(x)

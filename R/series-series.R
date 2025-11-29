@@ -43,7 +43,7 @@ polars_namespaces_series <- new.env(parent = emptyenv())
 polars_series__methods <- new.env(parent = emptyenv())
 
 #' @export
-wrap.PlRSeries <- function(x, ...) {
+`wrap.polars::PlRSeries` <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_s` <- x
 

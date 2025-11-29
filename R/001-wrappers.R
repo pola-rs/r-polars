@@ -8,12 +8,12 @@ PlRExprMethods <- new.env(parent = emptyenv())
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
 
-  class(e) <- c("PlRExpr", "savvy_polars__sealed")
+  class(e) <- c("polars::PlRExpr", "PlRExpr", "savvy_polars__sealed")
   e
 }
 
 #' @export
-`$.PlRExpr` <- function(x, name) {
+`$.polars::PlRExpr` <- function(x, name) {
   method_names <- names(PlRExprMethods)
   ptr <- env_get(x, ".ptr")
 

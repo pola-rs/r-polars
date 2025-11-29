@@ -76,7 +76,7 @@ NULL
 polars_datatype__methods <- new.env(parent = emptyenv())
 
 #' @export
-wrap.PlRDataType <- function(x, ...) {
+`wrap.polars::PlRDataType` <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_dt` <- x
   dtype_names <- x$`_get_dtype_names`()

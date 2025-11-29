@@ -2,7 +2,7 @@
 polars_sql_context__methods <- new.env(parent = emptyenv())
 
 #' @export
-wrap.PlRSQLContext <- function(x, ...) {
+`wrap.polars::PlRSQLContext` <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_ctxt` <- x
 
