@@ -27,7 +27,8 @@
 #' @param rechunk Make sure that the result data is in contiguous memory.
 #' @param parallel Only relevant for [LazyFrames][LazyFrame]. This determines if the
 #' concatenated lazy computations may be executed in parallel.
-#'
+#' @param strict When `how = "horizontal"`, whether to require all DataFrames to be
+#'   the same height, raising an error if not.
 #' @return The same class (`polars_data_frame`, `polars_lazy_frame` or
 #' `polars_series`) as the input.
 #' @examples
@@ -60,7 +61,8 @@ pl__concat <- function(
   ...,
   how = "vertical",
   rechunk = FALSE,
-  parallel = TRUE
+  parallel = TRUE,
+  strict = FALSE
 ) {
   check_dots_unnamed()
   dots <- list2(...)
@@ -187,7 +189,7 @@ pl__concat <- function(
       horizontal = {
         dots |>
           lapply(\(x) x$`_df`) |>
-          concat_df_horizontal() |>
+          concat_df_horizontal(strict = strict) |>
           wrap()
       },
       abort("Unreachable")
@@ -218,7 +220,7 @@ pl__concat <- function(
       horizontal = {
         dots |>
           lapply(\(x) x$`_ldf`) |>
-          concat_lf_horizontal(parallel = parallel)
+          concat_lf_horizontal(parallel = parallel, strict = strict)
       },
       abort("Unreachable")
     ) |>

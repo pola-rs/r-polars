@@ -8,7 +8,8 @@ expr_str_find_many(
   patterns,
   ...,
   ascii_case_insensitive = FALSE,
-  overlapping = FALSE
+  overlapping = FALSE,
+  leftmost = FALSE
 )
 }
 \arguments{
@@ -24,6 +25,10 @@ When this option is enabled, searching will be performed without respect to
 case for ASCII letters (a-z and A-Z) only.}
 
 \item{overlapping}{Whether matches can overlap.}
+
+\item{leftmost}{Whether to guarantee in case there are overlapping matches that
+the leftmost match is used. In case there are multiple candidates for the
+leftmost match, the pattern which comes first in \code{patterns} is used.}
 }
 \value{
 A polars \link{expression}
