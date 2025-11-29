@@ -47,7 +47,7 @@ This is an update that corresponds to Python Polars 1.36.0, which includes signi
 - `<expr>$list$eval()` now properly errors (as documented) if the input is not a Polars expression (#1655).
 - `<lazyframe>$sink_parquet()` and `<dataframe>$write_parquet()`'s `compression` argument
   should not be `"lzo"`, which does not work correctly
-  (#1673, [pola-rs/polars#25136](https://github.com/pola-rs/polars/pull/25522)).
+  (#1673, [pola-rs/polars#25522](https://github.com/pola-rs/polars/pull/25522)).
 
 ### Other changes
 
