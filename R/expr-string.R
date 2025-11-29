@@ -1121,9 +1121,6 @@ expr_str_reverse <- function() {
 #' @param ascii_case_insensitive Enable ASCII-aware case insensitive matching.
 #' When this option is enabled, searching will be performed without respect to
 #' case for ASCII letters (a-z and A-Z) only.
-#' @param leftmost Whether to guarantee in case there are overlapping matches that
-#'   the leftmost match is used. In case there are multiple candidates for the
-#'   leftmost match, the pattern which comes first in `patterns` is used.
 #' @seealso
 #' - [`<Expr>$str$contains()`][expr_str_contains]
 #' @examples
@@ -1159,7 +1156,9 @@ expr_str_contains_any <- function(
 #'
 #' @inherit as_polars_expr return
 #' @inheritParams rlang::args_dots_empty
+# TODO: @2.0 remove inheriting from expr_str_contains_any
 #' @inheritParams expr_str_contains_any
+#' @inheritParams expr_str_extract_many
 #' @param replace_with A vector of strings used as replacements. If this is of
 #' length 1, then it is applied to all matches. Otherwise, it must be of same
 #' length as the `patterns` argument.
@@ -1401,7 +1400,9 @@ expr_str_tail <- function(n) {
 #' @inheritParams expr_str_contains_any
 #' @inheritParams rlang::args_dots_empty
 #' @param overlapping Whether matches can overlap.
-#'
+#' @param leftmost Whether to guarantee in case there are overlapping matches that
+#'   the leftmost match is used. In case there are multiple candidates for the
+#'   leftmost match, the pattern which comes first in `patterns` is used.
 #' @inherit expr_str_slice return
 #'
 #' @examples

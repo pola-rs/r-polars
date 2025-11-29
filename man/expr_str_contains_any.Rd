@@ -16,10 +16,6 @@ the same character vector for all rows, use
 \item{ascii_case_insensitive}{Enable ASCII-aware case insensitive matching.
 When this option is enabled, searching will be performed without respect to
 case for ASCII letters (a-z and A-Z) only.}
-
-\item{leftmost}{Whether to guarantee in case there are overlapping matches that
-the leftmost match is used. In case there are multiple candidates for the
-leftmost match, the pattern which comes first in \code{patterns} is used.}
 }
 \value{
 A polars \link{expression}

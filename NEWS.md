@@ -14,6 +14,7 @@ This is an update that corresponds to Python Polars 1.36.0, which includes signi
 
 ### New features
 
+- New data type `Float16` (#1673, [pola-rs/polars#25185](https://github.com/pola-rs/polars/pull/25185)).
 - New method `<lazyframe>$pivot()` and `<dataframe>$pivot()`'s new argument `on_columns`
   (#1662, [pola-rs/polars#25016](https://github.com/pola-rs/polars/pull/25016)).
 - `<lazyframe>$unique()` and `<dataframe>$unique()`' now allow polars expressions in `...`
@@ -37,10 +38,16 @@ This is an update that corresponds to Python Polars 1.36.0, which includes signi
 - `is_list_of_polars_expr()` (#1662).
 - `<groupby>$having()`, `<rolling_groupby>$having()`, `<dynamic_groupby>$having()`
   (and their lazy implementations) to filter groups before applying aggregations (#1671).
+- `<expr>$str$extract_many()`, `<expr>$str$find_many()`, and `<expr>$str$replace_many()`
+  gain the `leftmost` argument (#1673, [pola-rs/polars#25398](https://github.com/pola-rs/polars/pull/25398)).
+- `pl$concat()` gains the `strict` argument (#1673, [pola-rs/polars#25452](https://github.com/pola-rs/polars/pull/25452)).
 
 ### Bug fixes
 
 - `<expr>$list$eval()` now properly errors (as documented) if the input is not a Polars expression (#1655).
+- `<lazyframe>$sink_parquet()` and `<dataframe>$write_parquet()`'s `compression` argument
+  should not be `"lzo"`, which does not work correctly
+  (#1673, [pola-rs/polars#25136](https://github.com/pola-rs/polars/pull/25522)).
 
 ### Other changes
 
