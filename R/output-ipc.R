@@ -158,7 +158,10 @@ dataframe__write_ipc <- function(
       storage_options = storage_options,
       retries = retries,
       optimizations = DEFAULT_EAGER_OPT_FLAGS,
-      engine = "in-memory"
+      # To avoid the bug of in-memory engine, use streaming engine here
+      # as Python Polars does.
+      # https://github.com/pola-rs/polars/issues/25487
+      engine = "streaming"
     )
   })
   invisible(NULL)
