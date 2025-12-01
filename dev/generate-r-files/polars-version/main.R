@@ -26,12 +26,15 @@ dsl_schema_hash_current <- glue::glue(
   charToRaw() |>
   tools::sha256sum(bytes = _)
 
-dsl_schema_hash_py <- glue::glue(
-  "https://raw.githubusercontent.com/pola-rs/polars/refs/tags/py-{py_semver}/crates/polars-plan/dsl-schema-hashes.json"
-) |>
-  readr::read_file() |>
-  charToRaw() |>
-  tools::sha256sum(bytes = _)
+dsl_schema_hash_py <- tryCatch(
+  glue::glue(
+    "https://raw.githubusercontent.com/pola-rs/polars/refs/tags/py-{py_semver}/crates/polars-plan/dsl-schema-hashes.json"
+  ) |>
+    readr::read_file() |>
+    charToRaw() |>
+    tools::sha256sum(bytes = _),
+  error = function(e) "" # Unreleased version
+)
 # nolint end
 
 template <- readr::read_file(
