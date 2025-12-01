@@ -33,7 +33,8 @@ dsl_schema_hash_py <- tryCatch(
     readr::read_file() |>
     charToRaw() |>
     tools::sha256sum(bytes = _),
-  error = function(e) "" # Unreleased version
+  error = function(e) dsl_schema_hash_current # The git tag does not exist yet
+  # TODO: rewrite to `""` instead of current hash when the upstream github release workflow is fixed
 )
 # nolint end
 
