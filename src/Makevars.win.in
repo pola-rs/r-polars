@@ -27,8 +27,7 @@ PKG_LIBS = \
 	-lsynchronization \
 	-lpropsys \
 	-lruntimeobject \
-	@ADDITIONAL_LIBS@ \
-	--trace
+	@ADDITIONAL_LIBS@
 
 CARGO_BUILD_ARGS = --lib \
 	--profile="$(PROFILE)" \
