@@ -57,7 +57,7 @@ $(STATLIB): remove-prev
 			x86_64-pc-windows-gnu) \
 				export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="x86_64-w64-mingw32.static.posix-gcc.exe" ;; \
 			aarch64-pc-windows-gnullvm) \
-				export CARGO_TARGET_AARCH64_PC_WINDOWS_GNULLVM_LINKER="clang-cl.exe" && \
+				export CARGO_TARGET_AARCH64_PC_WINDOWS_GNULLVM_LINKER="clang-cl.exe" ; \
 				export CC="clang-cl.exe" ;; \
 		esac && \
 		export LIBRARY_PATH="$${LIBRARY_PATH};$(LIBDIR)/libgcc_mock" && \
