@@ -54,7 +54,8 @@ $(STATLIB): remove-prev
 		mv "$(CURDIR)/../tools/$(LIBNAME)" "$(STATLIB)" ; \
 		exit 0; \
 	fi && \
-		export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="x86_64-w64-mingw32.static.posix-gcc" && \
+		export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="x86_64-w64-mingw32.static.posix-gcc.exe" && \
+		export CARGO_TARGET_AARCH64_PC_WINDOWS_GNULLVM_LINKER="aarch64-w64-mingw32.static.posix-clang.exe" && \
 		export LIBRARY_PATH="$${LIBRARY_PATH};$(LIBDIR)/libgcc_mock" && \
 		cargo build $(CARGO_BUILD_ARGS)
 
