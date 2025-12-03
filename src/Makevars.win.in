@@ -28,7 +28,7 @@ PKG_LIBS = \
 	-lpropsys \
 	-lruntimeobject \
 	@ADDITIONAL_LIBS@ \
-	-t
+	--trace
 
 CARGO_BUILD_ARGS = --lib \
 	--profile="$(PROFILE)" \
