@@ -37,10 +37,6 @@ CARGO_BUILD_ARGS = --lib \
 	--target="$(TARGET)" \
 	--features="$(FEATURES)"
 
-# Rtools doesn't have the linker in the location that cargo expects, so we need
-# to overwrite it via configuration.
-CARGO_LINKER = x86_64-w64-mingw32.static.posix-gcc.exe
-
 .PHONY: all
 all: cleanup
 
@@ -52,14 +48,16 @@ $(STATLIB): remove-prev
 	# in actual, but we need this tweak to please the compiler.
 	mkdir -p $(LIBDIR)/libgcc_mock && touch $(LIBDIR)/libgcc_mock/libgcc_eh.a
 
+	# Rtools doesn't have the linker in the location that cargo expects, so we need to overwrite it via configuration.
 	if [ -f "$(CURDIR)/../tools/$(LIBNAME)" ]; then \
 		mkdir -p "$(LIBDIR)" ; \
 		mv "$(CURDIR)/../tools/$(LIBNAME)" "$(STATLIB)" ; \
 		exit 0; \
 	fi && \
-	export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CARGO_LINKER)" && \
-	  export LIBRARY_PATH="$${LIBRARY_PATH};$(LIBDIR)/libgcc_mock" && \
-	  cargo build $(CARGO_BUILD_ARGS)
+		export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="x86_64-w64-mingw32.static.posix-gcc.exe" && \
+		export CARGO_TARGET_AARCH64_PC_WINDOWS_GNULLVM_LINKER="aarch64-w64-mingw32.static.posix-clang.exe" && \
+		export LIBRARY_PATH="$${LIBRARY_PATH};$(LIBDIR)/libgcc_mock" && \
+		cargo build $(CARGO_BUILD_ARGS)
 
 .PHONY: remove-prev
 # Remove previous build artifacts
