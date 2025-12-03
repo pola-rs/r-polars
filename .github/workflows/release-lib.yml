@@ -155,7 +155,7 @@ jobs:
           if [[ "${{ runner.os }}" == "Windows" && "${{ runner.arch }}" == "X64" ]]; then
             echo "LIB_TARGET=x86_64-pc-windows-gnu" >>"$GITHUB_ENV"
           elif [[ "${{ runner.os }}" == "Windows" && "${{ runner.arch }}" == "ARM64" ]]; then
-            echo "LIB_TARGET=aarch64-pc-windows-gnullvm" >>"$G
+            echo "LIB_TARGET=aarch64-pc-windows-gnullvm" >>"$GITHUB_ENV"
           elif [[ "${{ runner.os }}" == "Linux" ]]; then
             echo "LIB_TARGET=$(uname -m)-unknown-linux-gnu" >>"$GITHUB_ENV"
           else
