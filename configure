@@ -2,12 +2,6 @@
 
 export PATH="$PATH:$HOME/.cargo/bin"
 
-cat <<EOF
-Rscript path: "${R_HOME}/bin${R_ARCH_BIN}/Rscript"
-which Rscript: "$(command -v "${R_HOME}/bin${R_ARCH_BIN}/Rscript")"
-R version: "$("${R_HOME}/bin${R_ARCH_BIN}/Rscript" --version)"
-EOF
-
 NOT_CRAN=${NOT_CRAN:-"false"}
 
 LIB_BUILD=${LIBR_POLARS_BUILD:-""}
