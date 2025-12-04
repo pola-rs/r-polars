@@ -228,6 +228,9 @@ jobs:
         exclude:
           - os: macos-latest
             r: "4.3"
+        include:
+          - os: windows-11-arm
+            r: release
 
     steps:
       - uses: actions/checkout@v6
