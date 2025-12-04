@@ -48,7 +48,7 @@ This is an update that corresponds to Python Polars 1.36.0, which includes signi
 - `<lazyframe>$sink_parquet()` and `<dataframe>$write_parquet()`'s `compression` argument
   should not be `"lzo"`, which does not work correctly
   (#1673, [pola-rs/polars#25522](https://github.com/pola-rs/polars/pull/25522)).
-- Installing on arm64 Windows (aarch64-pc-windows-gnullvm) now works (#1681).
+- Installing on arm64 Windows (aarch64-pc-windows-gnullvm) now works (#1681, #1684).
 
 ### Other changes
 
