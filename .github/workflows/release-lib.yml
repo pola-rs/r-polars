@@ -41,6 +41,8 @@ jobs:
             target: aarch64-apple-darwin
           - os: windows-latest
             target: x86_64-pc-windows-gnu
+          - os: windows-11-arm
+            target: aarch64-pc-windows-gnullvm
     permissions:
       contents: read
       packages: write
@@ -135,6 +137,8 @@ jobs:
             r: release
           - os: ubuntu-24.04-arm # Use 24.04, because P3M does not provide binaries for 22.04 arm64
             r: release
+          - os: windows-11-arm
+            r: release
 
     permissions:
       contents: read
@@ -145,12 +149,13 @@ jobs:
       - uses: rui314/setup-mold@v1
 
       - name: prep Rust
-        working-directory: src/rust
         run: |
-          LIB_VERSION="$(cargo metadata --format-version=1 --no-deps | jq --raw-output '.packages[0].version')"
+          LIB_VERSION="$(cargo metadata --format-version=1 --no-deps --manifest-path src/rust/Cargo.toml | jq --raw-output '.packages[0].version')"
           echo "LIB_VERSION=${LIB_VERSION}" >>"$GITHUB_ENV"
-          if [[ "${{ runner.os }}" == "Windows" ]]; then
+          if [[ "${{ runner.os }}" == "Windows" && "${{ runner.arch }}" == "X64" ]]; then
             echo "LIB_TARGET=x86_64-pc-windows-gnu" >>"$GITHUB_ENV"
+          elif [[ "${{ runner.os }}" == "Windows" && "${{ runner.arch }}" == "ARM64" ]]; then
+            echo "LIB_TARGET=aarch64-pc-windows-gnullvm" >>"$GITHUB_ENV"
           elif [[ "${{ runner.os }}" == "Linux" ]]; then
             echo "LIB_TARGET=$(uname -m)-unknown-linux-gnu" >>"$GITHUB_ENV"
           else
@@ -223,7 +228,7 @@ jobs:
 
       - name: get version
         run: |
-          new_version="$(cargo metadata --format-version=1 --no-deps  --manifest-path src/rust/Cargo.toml |
+          new_version="$(cargo metadata --format-version=1 --no-deps --manifest-path src/rust/Cargo.toml |
             jq --raw-output '.packages[] | select(.name == "r-polars") | .version')"
           echo "TAG_NAME=lib-v${new_version}" >>"$GITHUB_ENV"
 

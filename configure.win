@@ -1,6 +1,10 @@
 #!/bin/sh
 
-# TODO: support arm64 target (c.f. the hellorust package)
-export TARGET="${TARGET:-"x86_64-pc-windows-gnu"}"
+case "$(uname -m)" in
+    "x86_64") default_target="x86_64-pc-windows-gnu" ;;
+    "aarch64") default_target="aarch64-pc-windows-gnullvm" ;;
+    *) default_target="" ;;
+esac
+export TARGET="${TARGET:-$default_target}"
 
 . ./configure
