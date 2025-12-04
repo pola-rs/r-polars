@@ -47,13 +47,15 @@ which_os <- function() {
 }
 
 which_arch <- function() {
-  if ((Sys.info()[["machine"]] %in% c("amd64", "x86_64", "x86-64"))) {
-    "x86_64"
-  } else if (Sys.info()[["machine"]] %in% c("arm64", "aarch64")) {
-    "aarch64"
-  } else {
-    stop("Pre-built binaries are not available for Arch: ", Sys.info()[["machine"]])
-  }
+  switch(
+    R.version$arch,
+    x86_64 = ,
+    amd64 = ,
+    `x86-64` = "x86_64",
+    arm64 = ,
+    aarch64 = "aarch64",
+    stop("Pre-built binaries are not available for Arch: ", R.version$arch)
+  )
 }
 
 which_vendor_sys_abi <- function(
