@@ -229,7 +229,11 @@ jobs:
           - os: macos-latest
             r: "4.3"
         include:
+          - os: macos-15-intel
+            r: release
           - os: windows-11-arm
+            r: release
+          - os: ubuntu-24.04-arm
             r: release
 
     steps:
