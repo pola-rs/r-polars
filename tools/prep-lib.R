@@ -80,11 +80,12 @@ current_os <- which_os()
 current_arch <- which_arch()
 vendor_sys_abi <- which_vendor_sys_abi(current_os, current_arch)
 
-target_triple <- ifelse(
-  Sys.getenv("TARGET") != "",
-  Sys.getenv("TARGET"),
+target_triple <- if (nzchar(Sys.getenv("TARGET"))) {
+  message(sprintf("TARGET is overridden to '%s'", Sys.getenv("TARGET")))
+  Sys.getenv("TARGET")
+} else {
   paste0(current_arch, "-", vendor_sys_abi)
-)
+}
 
 lib_data <- utils::read.table("tools/lib-sums.tsv", header = TRUE, stringsAsFactors = FALSE)
 
