@@ -47,33 +47,45 @@ which_os <- function() {
 }
 
 which_arch <- function() {
-  if ((Sys.info()[["machine"]] %in% c("amd64", "x86_64", "x86-64"))) {
-    "x86_64"
-  } else if (Sys.info()[["machine"]] %in% c("arm64", "aarch64")) {
-    "aarch64"
-  } else {
-    stop("Pre-built binaries are not available for Arch: ", Sys.info()[["machine"]])
-  }
+  switch(
+    R.Version()$arch,
+    x86_64 = "x86_64",
+    aarch64 = "aarch64",
+    stop("Pre-built binaries are not available for Arch: ", R.Version()$arch)
+  )
 }
 
-which_vendor_sys_abi <- function(os = c("linux-gnu", "linux-musl", "macos", "windows")) {
+which_vendor_sys_abi <- function(
+  os = c("linux-gnu", "linux-musl", "macos", "windows"),
+  arch = c("x86_64", "aarch64")
+) {
   switch(
     match.arg(os),
     macos = "apple-darwin",
-    windows = "pc-windows-gnu",
+    # GCC does not support Windows on arm64
+    # Ref: https://blog.r-project.org/2024/04/23/r-on-64-bit-arm-windows/
+    windows = sprintf(
+      "pc-windows-%s",
+      switch(
+        match.arg(arch),
+        x86_64 = "gnu",
+        aarch64 = "gnullvm"
+      )
+    ),
     sprintf("unknown-%s", os)
   )
 }
 
 current_os <- which_os()
-vendor_sys_abi <- which_vendor_sys_abi(current_os)
 current_arch <- which_arch()
+vendor_sys_abi <- which_vendor_sys_abi(current_os, current_arch)
 
-target_triple <- ifelse(
-  Sys.getenv("TARGET") != "",
-  Sys.getenv("TARGET"),
+target_triple <- if (nzchar(Sys.getenv("TARGET"))) {
+  message(sprintf("TARGET is overridden to '%s'", Sys.getenv("TARGET")))
+  Sys.getenv("TARGET")
+} else {
   paste0(current_arch, "-", vendor_sys_abi)
-)
+}
 
 lib_data <- utils::read.table("tools/lib-sums.tsv", header = TRUE, stringsAsFactors = FALSE)
 

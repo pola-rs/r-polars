@@ -238,11 +238,24 @@ add_additional_lib() {
   fi
 }
 
+check_env() {
+  cat <<EOF
+--------------------- [ENVIRONMENT VARIABLES] ---------------------
+TARGET = '${TARGET}'
+PROFILE = '${PROFILE}'
+FEATURES = '${FEATURES}'
+NOT_CRAN = '${NOT_CRAN}'
+LIBR_POLARS_BUILD = '${LIB_BUILD}'
+-------------------------------------------------------------------
+EOF
+}
+
 # catch DEBUG envvar, which is passed from pkgbuild::compile_dll()
 if [ "${DEBUG}" = "true" ]; then
   PROFILE=dev
 fi
 
+check_env
 check_mold
 check_emscripten
 check_bin_lib
