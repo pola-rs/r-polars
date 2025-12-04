@@ -48,13 +48,10 @@ which_os <- function() {
 
 which_arch <- function() {
   switch(
-    R.version$arch,
-    x86_64 = ,
-    amd64 = ,
-    `x86-64` = "x86_64",
-    arm64 = ,
+    R.Version()$arch,
+    x86_64 = "x86_64",
     aarch64 = "aarch64",
-    stop("Pre-built binaries are not available for Arch: ", R.version$arch)
+    stop("Pre-built binaries are not available for Arch: ", R.Version()$arch)
   )
 }
 
