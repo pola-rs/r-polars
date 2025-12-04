@@ -1,10 +1,5 @@
 #!/bin/sh
 
-case "$(uname -m)" in
-    "x86_64") default_target="x86_64-pc-windows-gnu" ;;
-    "aarch64") default_target="aarch64-pc-windows-gnullvm" ;;
-    *) default_target="" ;;
-esac
-export TARGET="${TARGET:-$default_target}"
+export TARGET="${TARGET:-$("${R_HOME}/bin${R_ARCH_BIN}/Rscript" "tools/get-win-triple.R")}"
 
 . ./configure
