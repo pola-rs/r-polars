@@ -13,15 +13,16 @@ dataframe__unpivot(
 )
 }
 \arguments{
-\item{on}{Values to use as identifier variables. If \code{value_vars} is
-empty all columns that are not in \code{id_vars} will be used.}
+\item{on}{Column(s) or selector(s) to use as values variables.
+If \code{on} is empty (\code{\link[=cs__empty]{cs$empty()}}), no columns will be used.
+If set to \code{NULL} (default), all columns that are not in \code{index} will be used.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{index}{Columns to use as identifier variables.}
+\item{index}{Column(s) or selector(s) to use as identifier variables.}
 
 \item{variable_name}{Name to give to the new column containing the names of
-the melted columns. Defaults to "variable".}
+the melted columns. Defaults to \code{"variable"}.}
 
 \item{value_name}{Name to give to the new column containing the values of
 the melted columns. Defaults to \code{"value"}.}

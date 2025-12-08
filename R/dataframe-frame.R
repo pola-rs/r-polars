@@ -1385,15 +1385,16 @@ dataframe__unpivot <- function(
 
     # Like `_expand_selectors` in Python Polars
     cleared_self <- self$clear()
-    on_selector <- parse_into_selector(!!!c(on), .arg_name = "on")
-    on <- cleared_self$select(on_selector)$columns
 
-    index <- if (is.null(index)) {
+    on <- if (is.null(on)) {
       NULL
     } else {
-      index_selector <- parse_into_selector(!!!c(index), .arg_name = "index")
-      cleared_self$select(index_selector)$columns
+      on_selector <- parse_into_selector(!!!c(on), .arg_name = "on")
+      cleared_self$select(on_selector)$columns
     }
+
+    index_selector <- parse_into_selector(!!!c(index), .arg_name = "index")
+    index <- cleared_self$select(index_selector)$columns
 
     self$`_df`$unpivot(
       on = on,

@@ -107,38 +107,14 @@ test_that("write_parquet can create a hive partition", {
 
   # basic
   dat$write_parquet(temp_dir, partition_by = c("gear", "cyl"))
-  expect_equal(
-    list.files(temp_dir, recursive = TRUE),
-    c(
-      "gear=3.0/cyl=4.0/0.parquet",
-      "gear=3.0/cyl=6.0/0.parquet",
-      "gear=3.0/cyl=8.0/0.parquet",
-      "gear=4.0/cyl=4.0/0.parquet",
-      "gear=4.0/cyl=6.0/0.parquet",
-      "gear=5.0/cyl=4.0/0.parquet",
-      "gear=5.0/cyl=6.0/0.parquet",
-      "gear=5.0/cyl=8.0/0.parquet"
-    )
-  )
+  expect_snapshot(list.files(temp_dir, recursive = TRUE))
 
   # works fine with integers
   temp_dir <- withr::local_tempdir()
 
   dat2 <- dat$with_columns(pl$col("gear")$cast(pl$Int32), pl$col("cyl")$cast(pl$Int32))
   dat2$write_parquet(temp_dir, partition_by = c("gear", "cyl"))
-  expect_equal(
-    list.files(temp_dir, recursive = TRUE),
-    c(
-      "gear=3/cyl=4/0.parquet",
-      "gear=3/cyl=6/0.parquet",
-      "gear=3/cyl=8/0.parquet",
-      "gear=4/cyl=4/0.parquet",
-      "gear=4/cyl=6/0.parquet",
-      "gear=5/cyl=4/0.parquet",
-      "gear=5/cyl=6/0.parquet",
-      "gear=5/cyl=8/0.parquet"
-    )
-  )
+  expect_snapshot(list.files(temp_dir, recursive = TRUE))
 
   # check inputs
   expect_snapshot(
