@@ -45,7 +45,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: etiennebacher/setup-jarl@v0.1.0
+      - name: Set up jarl and check
+        uses: etiennebacher/setup-jarl@v0.1.0
 
   lintr-lint-package:
     runs-on: ubuntu-latest
