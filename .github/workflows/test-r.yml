@@ -153,6 +153,7 @@ jobs:
           sudo rm -rf /usr/local/lib/android || true
           du -hsc /opt/hostedtoolcache/*
           sudo rm -rf /opt/hostedtoolcache/CodeQL || true
+          sudo rm -rf /opt/hostedtoolcache/go || true
 
       - uses: actions/checkout@v6
 
@@ -229,11 +230,7 @@ jobs:
           - os: macos-latest
             r: "4.3"
         include:
-          - os: macos-15-intel
-            r: release
           - os: windows-11-arm
-            r: release
-          - os: ubuntu-24.04-arm
             r: release
 
     steps:
