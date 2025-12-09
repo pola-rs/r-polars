@@ -684,8 +684,8 @@ class(`PlRChainedWhen`) <- c("polars::PlRChainedWhen__bundle", "savvy_polars__se
 }
 
 `PlRDataFrame_unpivot` <- function(self) {
-  function(`on`, `index`, `value_name` = NULL, `variable_name` = NULL) {
-    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_unpivot__impl, `self`, `on`, `index`, `value_name`, `variable_name`))
+  function(`index`, `on` = NULL, `value_name` = NULL, `variable_name` = NULL) {
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_unpivot__impl, `self`, `index`, `on`, `value_name`, `variable_name`))
   }
 }
 
@@ -4259,10 +4259,10 @@ class(`PlRExpr`) <- c("polars::PlRExpr__bundle", "savvy_polars__sealed")
 }
 
 `PlRLazyFrame_unpivot` <- function(self) {
-  function(`on`, `index`, `value_name` = NULL, `variable_name` = NULL) {
-    `on` <- .savvy_extract_ptr(`on`, "polars::PlRSelector")
+  function(`index`, `on` = NULL, `value_name` = NULL, `variable_name` = NULL) {
     `index` <- .savvy_extract_ptr(`index`, "polars::PlRSelector")
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_unpivot__impl, `self`, `on`, `index`, `value_name`, `variable_name`))
+    `on` <- .savvy_extract_ptr(`on`, "polars::PlRSelector")
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_unpivot__impl, `self`, `index`, `on`, `value_name`, `variable_name`))
   }
 }
 

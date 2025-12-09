@@ -18,33 +18,32 @@ patrick::with_parameters_test_that(
     out_by_key <- withr::local_tempdir()
     fn(pl$PartitionByKey(out_by_key, by = c("am", "cyl")), mkdir = TRUE)
     expect_snapshot(list.files(out_by_key, recursive = TRUE))
-    expect_identical(
-      reader(out_by_key) |> dim(),
-      expected_dim
+    expect_shape(
+      reader(out_by_key),
+      dim = expected_dim
     )
 
     out_max_size <- withr::local_tempdir()
     fn(pl$PartitionMaxSize(out_max_size, max_size = 5), mkdir = TRUE)
     expect_snapshot(list.files(out_max_size, recursive = TRUE))
-    expect_identical(
-      reader(out_max_size) |> dim(),
-      expected_dim
+    expect_shape(
+      reader(out_max_size),
+      dim = expected_dim
     )
 
     out_parted <- withr::local_tempdir()
     fn(pl$PartitionParted(out_parted, by = c("am", "cyl")), mkdir = TRUE)
     expect_snapshot(list.files(out_parted, recursive = TRUE))
-    # Wrong output if keys are not sorted first
-    expect_identical(
-      reader(out_parted) |> dim(),
-      c(10L, 11L)
+    expect_shape(
+      reader(out_parted),
+      dim = if (.test_name == "sink_parquet") expected_dim else c(10L, 11L)
     )
 
     out_parted_sorted <- withr::local_tempdir()
     fn_sorted(pl$PartitionParted(out_parted_sorted, by = c("am", "cyl")), mkdir = TRUE)
-    expect_identical(
-      reader(out_parted_sorted) |> dim(),
-      expected_dim
+    expect_shape(
+      reader(out_parted_sorted),
+      dim = expected_dim
     )
   }
 )

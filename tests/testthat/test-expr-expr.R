@@ -2539,7 +2539,7 @@ test_that("rolling, arg offset", {
   )
 
   df <- pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")
+    pl$col("dt")$str$to_datetime()
   )
 
   # with offset = "1d", we start the window at one or two days after the value
@@ -2552,8 +2552,8 @@ test_that("rolling, arg offset", {
   expect_equal(
     out,
     pl$DataFrame(
-      sum_a_offset1 = c(11, 11, 11, 2, NA, NA),
-      sum_a_offset2 = c(2, 2, 2, NA, NA, NA)
+      sum_a_offset1 = c(11, 11, 11, 2, 0, 0),
+      sum_a_offset2 = c(2, 2, 2, 0, 0, 0)
     )
   )
 })

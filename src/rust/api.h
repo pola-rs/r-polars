@@ -102,7 +102,7 @@ SEXP savvy_PlRDataFrame_to_dummies__ffi(SEXP self__, SEXP c_arg__drop_first, SEX
 SEXP savvy_PlRDataFrame_to_series__ffi(SEXP self__, SEXP c_arg__index);
 SEXP savvy_PlRDataFrame_to_struct__ffi(SEXP self__, SEXP c_arg__name);
 SEXP savvy_PlRDataFrame_transpose__ffi(SEXP self__, SEXP c_arg__column_names, SEXP c_arg__keep_names_as);
-SEXP savvy_PlRDataFrame_unpivot__ffi(SEXP self__, SEXP c_arg__on, SEXP c_arg__index, SEXP c_arg__value_name, SEXP c_arg__variable_name);
+SEXP savvy_PlRDataFrame_unpivot__ffi(SEXP self__, SEXP c_arg__index, SEXP c_arg__on, SEXP c_arg__value_name, SEXP c_arg__variable_name);
 SEXP savvy_PlRDataFrame_width__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_with_row_index__ffi(SEXP self__, SEXP c_arg__name, SEXP c_arg__offset);
 SEXP savvy_PlRDataFrame_write_ipc_stream__ffi(SEXP self__, SEXP c_arg__path, SEXP c_arg__compression, SEXP c_arg__compat_level);
@@ -594,7 +594,7 @@ SEXP savvy_PlRLazyFrame_to_dot__ffi(SEXP self__, SEXP c_arg__optimized);
 SEXP savvy_PlRLazyFrame_top_k__ffi(SEXP self__, SEXP c_arg__k, SEXP c_arg__by, SEXP c_arg__reverse);
 SEXP savvy_PlRLazyFrame_unique__ffi(SEXP self__, SEXP c_arg__maintain_order, SEXP c_arg__keep, SEXP c_arg__subset);
 SEXP savvy_PlRLazyFrame_unnest__ffi(SEXP self__, SEXP c_arg__columns, SEXP c_arg__separator);
-SEXP savvy_PlRLazyFrame_unpivot__ffi(SEXP self__, SEXP c_arg__on, SEXP c_arg__index, SEXP c_arg__value_name, SEXP c_arg__variable_name);
+SEXP savvy_PlRLazyFrame_unpivot__ffi(SEXP self__, SEXP c_arg__index, SEXP c_arg__on, SEXP c_arg__value_name, SEXP c_arg__variable_name);
 SEXP savvy_PlRLazyFrame_var__ffi(SEXP self__, SEXP c_arg__ddof);
 SEXP savvy_PlRLazyFrame_with_columns__ffi(SEXP self__, SEXP c_arg__exprs);
 SEXP savvy_PlRLazyFrame_with_columns_seq__ffi(SEXP self__, SEXP c_arg__exprs);

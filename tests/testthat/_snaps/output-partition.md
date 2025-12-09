@@ -75,9 +75,9 @@
     Code
       list.files(out_by_key, recursive = TRUE)
     Output
-      [1] "am=0.0/cyl=4.0/0.parquet" "am=0.0/cyl=6.0/0.parquet"
-      [3] "am=0.0/cyl=8.0/0.parquet" "am=1.0/cyl=4.0/0.parquet"
-      [5] "am=1.0/cyl=6.0/0.parquet" "am=1.0/cyl=8.0/0.parquet"
+      [1] "am=0.0/cyl=4.0/00000000.parquet" "am=0.0/cyl=6.0/00000000.parquet"
+      [3] "am=0.0/cyl=8.0/00000000.parquet" "am=1.0/cyl=4.0/00000000.parquet"
+      [5] "am=1.0/cyl=6.0/00000000.parquet" "am=1.0/cyl=8.0/00000000.parquet"
 
 ---
 
@@ -92,7 +92,7 @@
     Code
       list.files(out_parted, recursive = TRUE)
     Output
-      [1] "am=0.0/cyl=4.0/0.parquet" "am=0.0/cyl=6.0/0.parquet"
-      [3] "am=0.0/cyl=8.0/0.parquet" "am=1.0/cyl=4.0/0.parquet"
-      [5] "am=1.0/cyl=6.0/0.parquet" "am=1.0/cyl=8.0/0.parquet"
+      [1] "am=0.0/cyl=4.0/00000000.parquet" "am=0.0/cyl=6.0/00000000.parquet"
+      [3] "am=0.0/cyl=8.0/00000000.parquet" "am=1.0/cyl=4.0/00000000.parquet"
+      [5] "am=1.0/cyl=6.0/00000000.parquet" "am=1.0/cyl=8.0/00000000.parquet"
 

@@ -213,17 +213,18 @@ impl PlRDataFrame {
 
     pub fn unpivot(
         &self,
-        on: StringSexp,
         index: StringSexp,
+        on: Option<StringSexp>,
         value_name: Option<&str>,
         variable_name: Option<&str>,
     ) -> Result<Self> {
-        let args = UnpivotArgsIR {
-            on: strings_to_pl_smallstr(on),
-            index: strings_to_pl_smallstr(index),
-            value_name: value_name.map(|s| s.into()),
-            variable_name: variable_name.map(|s| s.into()),
-        };
+        let args = UnpivotArgsIR::new(
+            self.df.clone().get_column_names_owned(),
+            on.map(strings_to_pl_smallstr),
+            strings_to_pl_smallstr(index),
+            value_name.map(|s| s.into()),
+            variable_name.map(|s| s.into()),
+        );
         let out = self.df.unpivot2(args).map_err(RPolarsErr::from)?;
 
         Ok(out.into())

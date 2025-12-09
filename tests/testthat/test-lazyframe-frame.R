@@ -2192,17 +2192,15 @@ test_that("rolling: error if index not int or date/time", {
 
 test_that("rolling: arg 'offset' works", {
   df <- pl$DataFrame(
-    dt = c(
+    dt = as.Date(c(
       "2020-01-01",
       "2020-01-01",
       "2020-01-01",
       "2020-01-02",
       "2020-01-03",
       "2020-01-08"
-    ),
+    )),
     a = c(3, 7, 5, 9, 2, 1)
-  )$with_columns(
-    pl$col("dt")$str$strptime(pl$Date, format = NULL)
   )
 
   expect_query_equal(
@@ -2213,7 +2211,7 @@ test_that("rolling: arg 'offset' works", {
     )$select("sum_a", "min_a", "max_a"),
     .input = df,
     pl$DataFrame(
-      sum_a = c(2, 2, 2, NA, NA, NA),
+      sum_a = c(2, 2, 2, 0, 0, 0),
       min_a = c(2, 2, 2, NA, NA, NA),
       max_a = c(2, 2, 2, NA, NA, NA)
     )

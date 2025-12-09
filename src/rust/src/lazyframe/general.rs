@@ -680,13 +680,13 @@ impl PlRLazyFrame {
 
     fn unpivot(
         &self,
-        on: &PlRSelector,
         index: &PlRSelector,
+        on: Option<&PlRSelector>,
         value_name: Option<&str>,
         variable_name: Option<&str>,
     ) -> Result<Self> {
         let args = UnpivotArgsDSL {
-            on: on.inner.clone(),
+            on: on.map(|e| e.inner.clone()),
             index: index.inner.clone(),
             value_name: value_name.map(|s| s.into()),
             variable_name: variable_name.map(|s| s.into()),

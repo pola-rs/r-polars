@@ -1730,11 +1730,12 @@ lazyframe__pivot <- function(
 #' leaving just two non-identifier columns, "variable" and "value".
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param on Values to use as identifier variables. If `value_vars` is
-#' empty all columns that are not in `id_vars` will be used.
-#' @param index Columns to use as identifier variables.
+#' @param on Column(s) or selector(s) to use as values variables.
+#'   If `on` is empty ([`cs$empty()`][cs__empty]), no columns will be used.
+#'   If set to `NULL` (default), all columns that are not in `index` will be used.
+#' @param index Column(s) or selector(s) to use as identifier variables.
 #' @param variable_name Name to give to the new column containing the names of
-#' the melted columns. Defaults to "variable".
+#' the melted columns. Defaults to `"variable"`.
 #' @param value_name Name to give to the new column containing the values of
 #' the melted columns. Defaults to `"value"`.
 #'
@@ -1756,9 +1757,18 @@ lazyframe__unpivot <- function(
 ) {
   wrap({
     check_dots_empty0(...)
-    on <- parse_into_selector(!!!c(on))$`_rselector`
+    on <- if (is.null(on)) {
+      NULL
+    } else {
+      parse_into_selector(!!!c(on))$`_rselector`
+    }
     index <- parse_into_selector(!!!c(index))$`_rselector`
-    self$`_ldf`$unpivot(on, index, value_name, variable_name)
+    self$`_ldf`$unpivot(
+      on = on,
+      index = index,
+      value_name = value_name,
+      variable_name = variable_name
+    )
   })
 }
 

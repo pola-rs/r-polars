@@ -514,8 +514,8 @@ SEXP savvy_PlRDataFrame_transpose__impl(SEXP self__, SEXP c_arg__column_names, S
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataFrame_unpivot__impl(SEXP self__, SEXP c_arg__on, SEXP c_arg__index, SEXP c_arg__value_name, SEXP c_arg__variable_name) {
-    SEXP res = savvy_PlRDataFrame_unpivot__ffi(self__, c_arg__on, c_arg__index, c_arg__value_name, c_arg__variable_name);
+SEXP savvy_PlRDataFrame_unpivot__impl(SEXP self__, SEXP c_arg__index, SEXP c_arg__on, SEXP c_arg__value_name, SEXP c_arg__variable_name) {
+    SEXP res = savvy_PlRDataFrame_unpivot__ffi(self__, c_arg__index, c_arg__on, c_arg__value_name, c_arg__variable_name);
     return handle_result(res);
 }
 
@@ -2934,8 +2934,8 @@ SEXP savvy_PlRLazyFrame_unnest__impl(SEXP self__, SEXP c_arg__columns, SEXP c_ar
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_unpivot__impl(SEXP self__, SEXP c_arg__on, SEXP c_arg__index, SEXP c_arg__value_name, SEXP c_arg__variable_name) {
-    SEXP res = savvy_PlRLazyFrame_unpivot__ffi(self__, c_arg__on, c_arg__index, c_arg__value_name, c_arg__variable_name);
+SEXP savvy_PlRLazyFrame_unpivot__impl(SEXP self__, SEXP c_arg__index, SEXP c_arg__on, SEXP c_arg__value_name, SEXP c_arg__variable_name) {
+    SEXP res = savvy_PlRLazyFrame_unpivot__ffi(self__, c_arg__index, c_arg__on, c_arg__value_name, c_arg__variable_name);
     return handle_result(res);
 }
 
