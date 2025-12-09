@@ -154,6 +154,7 @@ jobs:
           du -hsc /opt/hostedtoolcache/*
           sudo rm -rf /opt/hostedtoolcache/CodeQL || true
           sudo rm -rf /opt/hostedtoolcache/go || true
+          sudo rm -rf /opt/hostedtoolcache/Python || true
 
       - uses: actions/checkout@v6
 
