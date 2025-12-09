@@ -40,6 +40,14 @@ jobs:
       - name: Run air format
         run: air format --check .
 
+  jarl-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up jarl and check
+        uses: etiennebacher/setup-jarl@v0.1.0
+
   lintr-lint-package:
     runs-on: ubuntu-latest
     steps:
