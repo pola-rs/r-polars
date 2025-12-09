@@ -795,7 +795,9 @@ test_that("$glimpse() works", {
   expect_snapshot(df$glimpse(max_items_per_column = 2))
   expect_snapshot(df$glimpse(max_colname_length = 2))
 
-  capture.output(out <- df$glimpse())
+  capture.output({
+    out <- df$glimpse()
+  })
   expect_type(out, "character")
 })
 
