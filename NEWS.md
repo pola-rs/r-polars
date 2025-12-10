@@ -2,7 +2,7 @@
 
 ## polars (development version)
 
-This is an update that corresponds to Python Polars 1.36.0, which includes significant internal changes.
+This is an update that corresponds to Python Polars 1.36.1, which includes significant internal changes.
 
 ### Deprecations
 
