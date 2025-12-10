@@ -56,7 +56,7 @@ one would any other R package.
 This R port relies on the [**savvy**](https://docs.rs/savvy)
 package, which is the R equivalent to pyo3+maturin. **savvy** is very
 convenient for calling Rust from R, and vice versa, and is what we use to build
-the **polars** package. Once built, however, **polars** only depends on [`rlang`](https://rlang.r-lib.org/).
+the **polars** package. Once built, however, **polars** only depends on `{rlang}` and `{S7}`.
 This makes it very fast and lightweight to
 install, and so **polars** can immediately be used to tackle your big (or
 small!) data wrangling tasks.
