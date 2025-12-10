@@ -263,8 +263,7 @@ jobs:
           dependencies: "'hard'"
           # TODO: move to the DESCRIPTION file
           packages: >-
-            deps::.,
-            any::pkgload,
+            local::.,
             any::testthat,
             any::knitr,
             any::patrick,
@@ -275,5 +274,4 @@ jobs:
         if: env.TEST_BIN_LIB == 'true'
         shell: Rscript {0}
         run: |
-          pkgload::load_all()
-          testthat::test_local()
+          testthat::test_local(load_package = "installed")
