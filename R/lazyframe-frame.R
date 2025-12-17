@@ -1444,7 +1444,7 @@ lazyframe__join <- function(
       abort("`right_on` requires corresponding `left_on`.")
     }
     if (how == "cross") {
-      if (uses_on | uses_lr_on) {
+      if (uses_on || uses_lr_on) {
         abort("cross join should not pass join keys.")
       }
       return(
@@ -2471,7 +2471,7 @@ lazyframe__with_row_index <- function(name = "index", offset = 0) {
     tryCatch(
       self$`_ldf`$with_row_index(name, offset),
       error = function(e) {
-        is_overflow_error <- grepl("out of range", e$message)
+        is_overflow_error <- grepl("out of range", e$message, fixed = TRUE)
         if (isTRUE(is_overflow_error)) {
           issue <- if (offset < 0) {
             "negative"
