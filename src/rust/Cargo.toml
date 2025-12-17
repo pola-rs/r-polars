@@ -27,7 +27,7 @@ too_many_arguments = "allow"
 [dependencies]
 ciborium = "0.2"
 either = "1.15"
-flume = "0.11"
+flume = "0.12"
 polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "2a151c10fa76790711c2f75e6d012dd69c627ddd", default-features = false }
 polars-error = { git = "https://github.com/pola-rs/polars.git", rev = "2a151c10fa76790711c2f75e6d012dd69c627ddd", default-features = false }
 savvy = { version = "0.9", features = ["use-custom-error"] }
