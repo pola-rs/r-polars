@@ -153,7 +153,7 @@ pl__Decimal <- function(precision = 38L, scale = 0L) {
     deprecate_warn(
       c(
         `!` = sprintf("%s should not be %s.", format_arg("precision"), format_code("NULL")),
-        `i` = sprintf("Use an integer between 1 and 38 instead.")
+        `i` = "Use an integer between 1 and 38 instead."
       )
     )
     precision <- 38L

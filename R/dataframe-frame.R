@@ -1942,7 +1942,7 @@ dataframe__with_row_index <- function(name = "index", offset = 0) {
     tryCatch(
       self$`_df`$with_row_index(name, offset),
       error = function(e) {
-        is_overflow_error <- grepl("out of range", e$message)
+        is_overflow_error <- grepl("out of range", e$message, fixed = TRUE)
         if (isTRUE(is_overflow_error)) {
           issue <- if (offset < 0) {
             "negative"

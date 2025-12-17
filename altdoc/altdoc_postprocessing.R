@@ -25,43 +25,43 @@ to_modify <- grep(
 )
 
 for (i in to_modify) {
-  which_class <- if (grepl("man/expr__", i)) {
+  which_class <- if (grepl("man/expr__", i, fixed = TRUE)) {
     "expr"
-  } else if (grepl("man/expr_arr_", i)) {
+  } else if (grepl("man/expr_arr_", i, fixed = TRUE)) {
     "expr_arr"
-  } else if (grepl("man/expr_bin_", i)) {
+  } else if (grepl("man/expr_bin_", i, fixed = TRUE)) {
     "expr_bin"
-  } else if (grepl("man/expr_cat_", i)) {
+  } else if (grepl("man/expr_cat_", i, fixed = TRUE)) {
     "expr_cat"
-  } else if (grepl("man/expr_dt_", i)) {
+  } else if (grepl("man/expr_dt_", i, fixed = TRUE)) {
     "expr_dt"
-  } else if (grepl("man/expr_list_", i)) {
+  } else if (grepl("man/expr_list_", i, fixed = TRUE)) {
     "expr_list"
-  } else if (grepl("man/expr_meta_", i)) {
+  } else if (grepl("man/expr_meta_", i, fixed = TRUE)) {
     "expr_meta"
-  } else if (grepl("man/expr_name_", i)) {
+  } else if (grepl("man/expr_name_", i, fixed = TRUE)) {
     "expr_name"
-  } else if (grepl("man/expr_str_", i)) {
+  } else if (grepl("man/expr_str_", i, fixed = TRUE)) {
     "expr_str"
-  } else if (grepl("man/expr_struct_", i)) {
+  } else if (grepl("man/expr_struct_", i, fixed = TRUE)) {
     "expr_struct"
-  } else if (grepl("man/expr__", i)) {
+  } else if (grepl("man/expr__", i, fixed = TRUE)) {
     "expr"
-  } else if (grepl("man/dataframe__", i)) {
+  } else if (grepl("man/dataframe__", i, fixed = TRUE)) {
     "dataframe"
-  } else if (grepl("man/lazyframe__", i)) {
+  } else if (grepl("man/lazyframe__", i, fixed = TRUE)) {
     "lazyframe"
-  } else if (grepl("man/groupby__", i)) {
+  } else if (grepl("man/groupby__", i, fixed = TRUE)) {
     "groupby"
-  } else if (grepl("man/lazygroupby__", i)) {
+  } else if (grepl("man/lazygroupby__", i, fixed = TRUE)) {
     "lazygroupby"
-  } else if (grepl("man/series__", i)) {
+  } else if (grepl("man/series__", i, fixed = TRUE)) {
     "series"
-  } else if (grepl("man/pl__", i)) {
+  } else if (grepl("man/pl__", i, fixed = TRUE)) {
     "pl"
-  } else if (grepl("man/sql_context", i)) {
+  } else if (grepl("man/sql_context", i, fixed = TRUE)) {
     "sql_context"
-  } else if (grepl("man/datatype_expr", i)) {
+  } else if (grepl("man/datatype_expr", i, fixed = TRUE)) {
     "datatype_expr"
   } else {
     "foobar"
@@ -78,13 +78,15 @@ for (i in to_modify) {
     new <- gsub(
       "<code class='language-R'>pl__",
       "<code class='language-R'>pl$",
-      orig
+      orig,
+      fixed = TRUE
     )
   } else if (which_class == "expr") {
     new <- gsub(
       "<code class='language-R'>expr__",
       "<code class='language-R'>&lt;Expr&gt;$",
-      orig
+      orig,
+      fixed = TRUE
     )
   } else if (
     which_class %in%
@@ -100,7 +102,7 @@ for (i in to_modify) {
         "expr_struct"
       )
   ) {
-    subns <- gsub("expr_", "", which_class)
+    subns <- gsub("expr_", "", which_class, fixed = TRUE)
 
     new <- gsub(
       paste0("<code class='language-R'>", which_class, "_"),
