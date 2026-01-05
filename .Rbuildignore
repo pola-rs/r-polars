@@ -24,3 +24,4 @@
 
 ^altdoc$
 ^docs$
+^jarl\.toml$
