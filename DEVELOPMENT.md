@@ -103,7 +103,7 @@ class Expr:
         return self._from_pyexpr(self._pyexpr.sum())
 ```
 
-_source: `py-polars/polars/expr/expr.py` of <https://github.com/pola-rs/polars>_
+_source: `py-polars/src/polars/expr/expr.py` of <https://github.com/pola-rs/polars>_
 
 That `Expr` class stores a `PyExpr` as a member `_pyexpr` and calls the `sum` method of `PyExpr`
 (defined on the Rust side) in the `sum` method.
@@ -252,7 +252,7 @@ class Expr:
         return self._from_pyexpr(self._pyexpr.any(ignore_nulls))
 ```
 
-_source: `py-polars/polars/expr/expr.py` of <https://github.com/pola-rs/polars>_
+_source: `py-polars/src/polars/expr/expr.py` of <https://github.com/pola-rs/polars>_
 
 This is defined as follows in R Polars:
 
@@ -302,7 +302,7 @@ class LazyFrame:
         return self._from_pyldf(self._ldf.select(pyexprs))
 ```
 
-_source: `py-polars/polars/lazyframe/frame.py` of <https://github.com/pola-rs/polars>_
+_source: `py-polars/src/polars/lazyframe/frame.py` of <https://github.com/pola-rs/polars>_
 
 The `parse_into_list_of_expressions` function is responsible for converting the variable-length arguments
 (`*exprs` and `**named_exprs`) into a list of expressions.
