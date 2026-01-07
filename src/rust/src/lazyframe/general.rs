@@ -10,8 +10,8 @@ use polars::{
     polars_utils::slice_enum::Slice,
 };
 use savvy::{
-    ListSexp, LogicalSexp, NumericScalar, OwnedListSexp, OwnedStringSexp, Result, Sexp, StringSexp,
-    savvy,
+    ListSexp, LogicalSexp, NumericScalar, ObjSexp, OwnedListSexp, OwnedStringSexp, Result, Sexp,
+    StringSexp, savvy,
 };
 use std::num::NonZeroUsize;
 
@@ -285,7 +285,7 @@ impl PlRLazyFrame {
         Ok(ldf.cache().into())
     }
 
-    fn with_optimizations(&self, optimizations: Sexp) -> Result<Self> {
+    fn with_optimizations(&self, optimizations: ObjSexp) -> Result<Self> {
         let ldf = self.ldf.clone();
         let optimizations = <PlROptFlags>::try_from(optimizations)?;
         Ok(ldf

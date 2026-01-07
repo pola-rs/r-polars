@@ -1,11 +1,28 @@
-use super::try_extract_attribute;
 use crate::{lazyframe::PlROptFlags, prelude::*};
-use savvy::{Sexp, savvy_err};
+use savvy::{ObjSexp, Sexp, savvy_err};
 
-impl TryFrom<Sexp> for PlROptFlags {
+// TODO: Move this to upstream?
+pub(crate) fn try_extract_prop<T>(obj: &ObjSexp, attr_name: &str) -> savvy::Result<T>
+where
+    T: TryFrom<Sexp, Error = savvy::Error>,
+{
+    obj.get_attrib(attr_name)?
+        .ok_or(savvy_err!("Attribute '{attr_name}' does not exist."))
+        .and_then(|v| T::try_from(v))
+}
+
+pub(crate) fn try_extract_opt_prop<T>(obj: &ObjSexp, attr_name: &str) -> savvy::Result<Option<T>>
+where
+    T: TryFrom<Sexp, Error = savvy::Error>,
+{
+    obj.get_attrib(attr_name)?
+        .map_or(Ok(None), |v| Ok(Some(T::try_from(v)?)))
+}
+
+impl TryFrom<ObjSexp> for PlROptFlags {
     type Error = savvy::Error;
 
-    fn try_from(obj: Sexp) -> Result<Self, savvy::Error> {
+    fn try_from(obj: ObjSexp) -> Result<Self, savvy::Error> {
         let opts = PlROptFlags::empty();
 
         const ATTR_NAMES: &[&str] = &[
@@ -25,7 +42,7 @@ impl TryFrom<Sexp> for PlROptFlags {
         ];
 
         for &attr_name in ATTR_NAMES {
-            let attr_value: bool = try_extract_attribute(&obj, attr_name)?;
+            let attr_value: bool = try_extract_prop(&obj, attr_name)?;
 
             match attr_name {
                 "type_coercion" => opts.set_type_coercion(attr_value),
@@ -49,30 +66,20 @@ impl TryFrom<Sexp> for PlROptFlags {
 }
 
 // Same as PyFileSinkDestination::extract_file_sink_destination
-impl TryFrom<Sexp> for Wrap<SinkDestination> {
+impl TryFrom<ObjSexp> for Wrap<SinkDestination> {
     type Error = savvy::Error;
 
-    fn try_from(obj: Sexp) -> Result<Self, savvy::Error> {
-        // Special case for single string, not an S7 object
-        // Workaround for savvy does not support ObjSexp
-        if obj.is_string() {
-            let path: &str = obj.try_into()?;
-            let target = <Wrap<SinkDestination>>::try_from(path)?.0;
-            return Ok(Wrap(target));
-        }
-
-        let base_path: &str = try_extract_attribute(&obj, "base_path")?;
-        let partition_by: Option<Wrap<Vec<Expr>>> =
-            try_extract_opt_attribute(&obj, "partition_by")?;
+    fn try_from(obj: ObjSexp) -> Result<Self, savvy::Error> {
+        let base_path: &str = try_extract_prop(&obj, "base_path")?;
+        let partition_by: Option<Wrap<Vec<Expr>>> = try_extract_opt_prop(&obj, "partition_by")?;
         let partition_keys_sorted: Option<bool> =
-            try_extract_opt_attribute(&obj, "partition_keys_sorted")?;
-        let include_keys: Option<bool> = try_extract_opt_attribute(&obj, "include_keys")?;
+            try_extract_opt_prop(&obj, "partition_keys_sorted")?;
+        let include_keys: Option<bool> = try_extract_opt_prop(&obj, "include_keys")?;
         let per_partition_sort_by: Option<Wrap<Vec<Expr>>> =
-            try_extract_opt_attribute(&obj, "per_partition_sort_by")?;
+            try_extract_opt_prop(&obj, "per_partition_sort_by")?;
         let per_file_sort_by: Option<Wrap<Vec<Expr>>> =
-            try_extract_opt_attribute(&obj, "per_file_sort_by")?;
-        let max_rows_per_file: Option<Wrap<u32>> =
-            try_extract_opt_attribute(&obj, "max_rows_per_file")?;
+            try_extract_opt_prop(&obj, "per_file_sort_by")?;
+        let max_rows_per_file: Option<Wrap<u32>> = try_extract_opt_prop(&obj, "max_rows_per_file")?;
 
         if per_partition_sort_by.is_some() && per_file_sort_by.is_some() {
             return Err(savvy_err!(

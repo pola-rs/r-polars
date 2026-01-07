@@ -1,9 +1,0 @@
-url	sha256sum
-https://github.com/pola-rs/r-polars/releases/download/lib-v1.7.0-rc.3/libr_polars-1.7.0-rc.3-aarch64-apple-darwin.tar.gz	81dfefb1670d2d4eef2b23a8e0f783766e63a9c7aeff95480a0a7492fe697799
-https://github.com/pola-rs/r-polars/releases/download/lib-v1.7.0-rc.3/libr_polars-1.7.0-rc.3-aarch64-pc-windows-gnullvm.tar.gz	2f35d28147d680cd0c5fd316b2f8bbc357823aef06bd1ce1dea6d1cfcdf647e4
-https://github.com/pola-rs/r-polars/releases/download/lib-v1.7.0-rc.3/libr_polars-1.7.0-rc.3-aarch64-unknown-linux-gnu.tar.gz	c91e567b76feddfeda2e8713da7039bdff3b19fbadec80a7bc5e13889febb2db
-https://github.com/pola-rs/r-polars/releases/download/lib-v1.7.0-rc.3/libr_polars-1.7.0-rc.3-aarch64-unknown-linux-musl.tar.gz	39cfd4807400e88bf90671bf1a336e6608ffc7e6918dc8421141cb7f005c2d60
-https://github.com/pola-rs/r-polars/releases/download/lib-v1.7.0-rc.3/libr_polars-1.7.0-rc.3-x86_64-apple-darwin.tar.gz	bda0d0490ee40002eef31a86ba9ee9fe65367666dee85b8c8eb371ee8e8164a6
-https://github.com/pola-rs/r-polars/releases/download/lib-v1.7.0-rc.3/libr_polars-1.7.0-rc.3-x86_64-pc-windows-gnu.tar.gz	ccfe789289b4b1d31f9e32715b8cd563df5881977855a7a27020128a2fc755cc
-https://github.com/pola-rs/r-polars/releases/download/lib-v1.7.0-rc.3/libr_polars-1.7.0-rc.3-x86_64-unknown-linux-gnu.tar.gz	a87a91471e9dde9d43cf2ee2792835b57f71cf0cdcdda67ed42d6b58e4577986
-https://github.com/pola-rs/r-polars/releases/download/lib-v1.7.0-rc.3/libr_polars-1.7.0-rc.3-x86_64-unknown-linux-musl.tar.gz	5dd50e8d105e7435b6e2ef8de566d9afea077cbfa0aa21829845abbaa8d41d04

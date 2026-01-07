@@ -40,24 +40,6 @@ impl<T> From<T> for Wrap<T> {
     }
 }
 
-// TODO: Move this to upstream?
-pub(crate) fn try_extract_attribute<T>(obj: &Sexp, attr_name: &str) -> savvy::Result<T>
-where
-    T: TryFrom<Sexp, Error = savvy::Error>,
-{
-    obj.get_attrib(attr_name)?
-        .ok_or(savvy_err!("Attribute '{attr_name}' does not exist."))
-        .and_then(|v| T::try_from(v))
-}
-
-pub(crate) fn try_extract_opt_attribute<T>(obj: &Sexp, attr_name: &str) -> savvy::Result<Option<T>>
-where
-    T: TryFrom<Sexp, Error = savvy::Error>,
-{
-    obj.get_attrib(attr_name)?
-        .map_or(Ok(None), |v| Ok(Some(T::try_from(v)?)))
-}
-
 pub(crate) fn strings_to_pl_smallstr(container: StringSexp) -> Vec<PlSmallStr> {
     container.iter().map(PlSmallStr::from_str).collect()
 }
@@ -1159,5 +1141,23 @@ impl TryFrom<&str> for Wrap<SinkDestination> {
         Ok(Wrap(SinkDestination::File {
             target: SinkTarget::Path(PlPath::new(path)),
         }))
+    }
+}
+
+impl TryFrom<Sexp> for Wrap<SinkDestination> {
+    type Error = savvy::Error;
+
+    fn try_from(value: Sexp) -> Result<Self, Self::Error> {
+        match value.into_typed() {
+            TypedSexp::String(s) => {
+                let path: &str = Sexp::from(s).try_into()?;
+                let target = <Wrap<SinkDestination>>::try_from(path)?.0;
+                return Ok(Wrap(target));
+            }
+            TypedSexp::Obj(o) => <Wrap<SinkDestination>>::try_from(o),
+            _ => Err("Only accept a path string or SinkDestination object"
+                .to_string()
+                .into()),
+        }
     }
 }
