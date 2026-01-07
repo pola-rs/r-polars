@@ -4,6 +4,7 @@ use crate::{
 };
 pub use categorical::PlRCategories;
 use polars::series::ops::NullBehavior;
+use polars_utils::compression::{BrotliLevel, GzipLevel, ZstdLevel};
 use savvy::{
     ListSexp, NotAvailableValue, NumericScalar, NumericSexp, NumericTypedSexp, Sexp, StringSexp,
     TypedSexp, savvy_err,

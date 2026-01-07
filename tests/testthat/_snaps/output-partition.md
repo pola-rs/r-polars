@@ -3,8 +3,9 @@
     Code
       list.files(out_by_key, recursive = TRUE)
     Output
-      [1] "am=0.0/cyl=4.0/0.csv" "am=0.0/cyl=6.0/0.csv" "am=0.0/cyl=8.0/0.csv"
-      [4] "am=1.0/cyl=4.0/0.csv" "am=1.0/cyl=6.0/0.csv" "am=1.0/cyl=8.0/0.csv"
+      [1] "am=0.0/cyl=4.0/00000000.csv" "am=0.0/cyl=6.0/00000000.csv"
+      [3] "am=0.0/cyl=8.0/00000000.csv" "am=1.0/cyl=4.0/00000000.csv"
+      [5] "am=1.0/cyl=6.0/00000000.csv" "am=1.0/cyl=8.0/00000000.csv"
 
 ---
 
@@ -19,16 +20,18 @@
     Code
       list.files(out_parted, recursive = TRUE)
     Output
-      [1] "am=0.0/cyl=4.0/0.csv" "am=0.0/cyl=6.0/0.csv" "am=0.0/cyl=8.0/0.csv"
-      [4] "am=1.0/cyl=4.0/0.csv" "am=1.0/cyl=6.0/0.csv" "am=1.0/cyl=8.0/0.csv"
+      [1] "am=0.0/cyl=4.0/00000000.csv" "am=0.0/cyl=6.0/00000000.csv"
+      [3] "am=0.0/cyl=8.0/00000000.csv" "am=1.0/cyl=4.0/00000000.csv"
+      [5] "am=1.0/cyl=6.0/00000000.csv" "am=1.0/cyl=8.0/00000000.csv"
 
 # partition functions work sink_ipc
 
     Code
       list.files(out_by_key, recursive = TRUE)
     Output
-      [1] "am=0.0/cyl=4.0/0.ipc" "am=0.0/cyl=6.0/0.ipc" "am=0.0/cyl=8.0/0.ipc"
-      [4] "am=1.0/cyl=4.0/0.ipc" "am=1.0/cyl=6.0/0.ipc" "am=1.0/cyl=8.0/0.ipc"
+      [1] "am=0.0/cyl=4.0/00000000.ipc" "am=0.0/cyl=6.0/00000000.ipc"
+      [3] "am=0.0/cyl=8.0/00000000.ipc" "am=1.0/cyl=4.0/00000000.ipc"
+      [5] "am=1.0/cyl=6.0/00000000.ipc" "am=1.0/cyl=8.0/00000000.ipc"
 
 ---
 
@@ -43,16 +46,18 @@
     Code
       list.files(out_parted, recursive = TRUE)
     Output
-      [1] "am=0.0/cyl=4.0/0.ipc" "am=0.0/cyl=6.0/0.ipc" "am=0.0/cyl=8.0/0.ipc"
-      [4] "am=1.0/cyl=4.0/0.ipc" "am=1.0/cyl=6.0/0.ipc" "am=1.0/cyl=8.0/0.ipc"
+      [1] "am=0.0/cyl=4.0/00000000.ipc" "am=0.0/cyl=6.0/00000000.ipc"
+      [3] "am=0.0/cyl=8.0/00000000.ipc" "am=1.0/cyl=4.0/00000000.ipc"
+      [5] "am=1.0/cyl=6.0/00000000.ipc" "am=1.0/cyl=8.0/00000000.ipc"
 
 # partition functions work sink_ndjson
 
     Code
       list.files(out_by_key, recursive = TRUE)
     Output
-      [1] "am=0.0/cyl=4.0/0.jsonl" "am=0.0/cyl=6.0/0.jsonl" "am=0.0/cyl=8.0/0.jsonl"
-      [4] "am=1.0/cyl=4.0/0.jsonl" "am=1.0/cyl=6.0/0.jsonl" "am=1.0/cyl=8.0/0.jsonl"
+      [1] "am=0.0/cyl=4.0/00000000.jsonl" "am=0.0/cyl=6.0/00000000.jsonl"
+      [3] "am=0.0/cyl=8.0/00000000.jsonl" "am=1.0/cyl=4.0/00000000.jsonl"
+      [5] "am=1.0/cyl=6.0/00000000.jsonl" "am=1.0/cyl=8.0/00000000.jsonl"
 
 ---
 
@@ -67,8 +72,9 @@
     Code
       list.files(out_parted, recursive = TRUE)
     Output
-      [1] "am=0.0/cyl=4.0/0.jsonl" "am=0.0/cyl=6.0/0.jsonl" "am=0.0/cyl=8.0/0.jsonl"
-      [4] "am=1.0/cyl=4.0/0.jsonl" "am=1.0/cyl=6.0/0.jsonl" "am=1.0/cyl=8.0/0.jsonl"
+      [1] "am=0.0/cyl=4.0/00000000.jsonl" "am=0.0/cyl=6.0/00000000.jsonl"
+      [3] "am=0.0/cyl=8.0/00000000.jsonl" "am=1.0/cyl=4.0/00000000.jsonl"
+      [5] "am=1.0/cyl=6.0/00000000.jsonl" "am=1.0/cyl=8.0/00000000.jsonl"
 
 # partition functions work sink_parquet
 
