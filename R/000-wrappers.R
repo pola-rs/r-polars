@@ -2018,9 +2018,9 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 }
 
 `PlRExpr_get` <- function(self) {
-  function(`idx`) {
+  function(`idx`, `null_on_oob`) {
     `idx` <- .savvy_extract_ptr(`idx`, "polars::PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_get__impl, `self`, `idx`))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_get__impl, `self`, `idx`, `null_on_oob`))
   }
 }
 

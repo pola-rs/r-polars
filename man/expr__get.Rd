@@ -4,10 +4,18 @@
 \alias{expr__get}
 \title{Return a single value by index}
 \usage{
-expr__get(index)
+expr__get(index, ..., null_on_oob = FALSE)
 }
 \arguments{
 \item{index}{An expression that leads to a UInt32 dtyped Series.}
+
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{null_on_oob}{Behavior if an index is out of bounds:
+\itemize{
+\item \code{TRUE}: return \code{null}
+\item \code{FALSE}: raise an error
+}}
 }
 \value{
 A polars \link{expression}

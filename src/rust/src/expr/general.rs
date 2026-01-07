@@ -716,8 +716,12 @@ impl PlRExpr {
         Ok(self.inner.clone().gather(idx.inner.clone()).into())
     }
 
-    fn get(&self, idx: &PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().get(idx.inner.clone(), false).into())
+    fn get(&self, idx: &PlRExpr, null_on_oob: bool) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .get(idx.inner.clone(), null_on_oob)
+            .into())
     }
 
     fn gather_every(&self, n: NumericScalar, offset: NumericScalar) -> Result<Self> {
