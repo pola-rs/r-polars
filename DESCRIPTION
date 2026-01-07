@@ -53,7 +53,7 @@ VignetteBuilder:
 Config/Needs/dev: devtools, lifecycle, readr, glue, RcppTOML, smvr
 Config/Needs/lint: fs, lintr
 Config/Needs/website: etiennebacher/altdoc, future.apply
-Config/polars/lib-version: 1.7.0-rc.3
+Config/polars/lib-version: 1.7.1-rc.1
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 Config/testthat/start-first: lazyframe-frame, *-s3-base, polars_options,

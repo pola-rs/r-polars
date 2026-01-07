@@ -3,7 +3,9 @@ use crate::{
     lazyframe::PlROptFlags, prelude::*,
 };
 use polars::lazy::dsl;
-use savvy::{ListSexp, LogicalSexp, OwnedListSexp, RawSexp, Result, Sexp, StringSexp, savvy};
+use savvy::{
+    ListSexp, LogicalSexp, ObjSexp, OwnedListSexp, RawSexp, Result, Sexp, StringSexp, savvy,
+};
 
 macro_rules! set_unwrapped_or_0 {
     ($($var:ident),+ $(,)?) => {
@@ -275,7 +277,7 @@ fn lfs_to_plans(lfs: Vec<LazyFrame>) -> Result<Vec<DslPlan>> {
 }
 
 #[savvy]
-pub fn collect_all(lfs: ListSexp, engine: &str, optimizations: Sexp) -> Result<Sexp> {
+pub fn collect_all(lfs: ListSexp, engine: &str, optimizations: ObjSexp) -> Result<Sexp> {
     let lfs = <Wrap<Vec<LazyFrame>>>::try_from(lfs)?.0;
     let engine = <Wrap<Engine>>::try_from(engine)?.0;
     let plans = lfs_to_plans(lfs)?;
@@ -291,7 +293,7 @@ pub fn collect_all(lfs: ListSexp, engine: &str, optimizations: Sexp) -> Result<S
 }
 
 #[savvy]
-pub fn explain_all(lfs: ListSexp, optimizations: Sexp) -> Result<Sexp> {
+pub fn explain_all(lfs: ListSexp, optimizations: ObjSexp) -> Result<Sexp> {
     let lfs = <Wrap<Vec<LazyFrame>>>::try_from(lfs)?.0;
     let optimizations = <PlROptFlags>::try_from(optimizations)?;
     let plans = lfs_to_plans(lfs)?;
