@@ -1152,7 +1152,7 @@ impl TryFrom<Sexp> for Wrap<SinkDestination> {
             TypedSexp::String(s) => {
                 let path: &str = Sexp::from(s).try_into()?;
                 let target = <Wrap<SinkDestination>>::try_from(path)?.0;
-                return Ok(Wrap(target));
+                Ok(Wrap(target))
             }
             TypedSexp::Obj(o) => <Wrap<SinkDestination>>::try_from(o),
             _ => Err("Only accept a path string or SinkDestination object"
