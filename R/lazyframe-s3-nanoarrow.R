@@ -1,0 +1,28 @@
+#' @rdname s3-as_nanoarrow_array_stream
+as_nanoarrow_array_stream.polars_lazy_frame <- function(
+  x,
+  ...,
+  schema = NULL,
+  polars_compat_level = c("newest", "oldest"),
+  maintain_order = FALSE,
+  chunk_size = NULL
+) {
+  polars_compat_level <- use_option_if_missing(
+    polars_compat_level,
+    missing(polars_compat_level),
+    "newest",
+    option_basename = "compat_level"
+  )
+
+  polars_compat_level <- arg_match_compat_level(polars_compat_level)
+
+  stream <- nanoarrow::nanoarrow_allocate_array_stream()
+  x$`_ldf`$to_arrow_c_stream(
+    stream,
+    polars_compat_level = polars_compat_level,
+    engine = "streaming",
+    maintain_order = maintain_order,
+    chunk_size = chunk_size
+  )
+  stream
+}

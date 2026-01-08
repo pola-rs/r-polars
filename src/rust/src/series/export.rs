@@ -392,7 +392,7 @@ impl PlRSeries {
         let compat_level = <Wrap<CompatLevel>>::try_from(polars_compat_level)?.0;
 
         let field = self.series.field().to_arrow(compat_level);
-        let iter = Box::new(SeriesStreamIterator::new(self.series.clone(), compat_level));
+        let iter = Box::new(SeriesStreamIterator::new(&self.series, compat_level));
         let stream = export_iterator(iter, field);
 
         unsafe {
@@ -428,7 +428,7 @@ struct SeriesStreamIterator {
 }
 
 impl SeriesStreamIterator {
-    fn new(series: Series, compat_level: CompatLevel) -> Self {
+    fn new(series: &Series, compat_level: CompatLevel) -> Self {
         Self {
             series: series.clone(),
             idx: 0,
