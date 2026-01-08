@@ -1034,6 +1034,25 @@ test_that("gather that", {
   )
 })
 
+test_that("get null_on_oob", {
+  expect_error(
+    pl$select(pl$lit(0:10)$get(1, foo = 1)),
+    "must be empty"
+  )
+  expect_snapshot(
+    pl$select(pl$lit(0:10)$get(11)),
+    error = TRUE
+  )
+  expect_equal(
+    pl$select(pl$lit(0:10)$get(11, null_on_oob = TRUE)),
+    pl$DataFrame(literal = NA_integer_)
+  )
+  expect_equal(
+    pl$select(pl$lit(0:10)$get(-12, null_on_oob = TRUE)),
+    pl$DataFrame(literal = NA_integer_)
+  )
+})
+
 test_that("shift", {
   r_shift <- \(x, n) {
     idx <- seq_along(x) - n

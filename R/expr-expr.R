@@ -4087,8 +4087,10 @@ expr__gather <- function(indices) {
 # TODO: difference with "gather" is unclear
 #' Return a single value by index
 #'
+#' @inheritParams rlang::args_dots_empty
 #' @param index An expression that leads to a UInt32 dtyped Series.
-#'
+#' @param null_on_oob If `TRUE`, return `null` if an index is out of bounds.
+#'   Otherwise, raise an error.
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(
@@ -4098,9 +4100,13 @@ expr__gather <- function(indices) {
 #' df$group_by("group", maintain_order = TRUE)$agg(
 #'   pl$col("value")$get(1)
 #' )
-expr__get <- function(index) {
+expr__get <- function(index, ..., null_on_oob = FALSE) {
   wrap({
-    self$`_rexpr`$get(as_polars_expr(index)$cast(pl$Int64, strict = TRUE)$`_rexpr`)
+    check_dots_empty0(...)
+    self$`_rexpr`$get(
+      as_polars_expr(index)$cast(pl$Int64, strict = TRUE)$`_rexpr`,
+      null_on_oob
+    )
   })
 }
 

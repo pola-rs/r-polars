@@ -165,9 +165,8 @@ expr_list_concat <- function(other) {
 #'   single index. Values are 0-indexed (so index 0 would return the first item
 #'   of every sub-list) and negative values start from the end (index `-1`
 #'   returns the last item).
+#' @inheritParams expr__get
 #' @inheritParams rlang::args_dots_empty
-#' @param null_on_oob If `TRUE`, return `null` if an index is out of bounds.
-#' Otherwise, raise an error.
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(

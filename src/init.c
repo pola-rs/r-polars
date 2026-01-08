@@ -1494,8 +1494,8 @@ SEXP savvy_PlRExpr_gather_every__impl(SEXP self__, SEXP c_arg__n, SEXP c_arg__of
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_get__impl(SEXP self__, SEXP c_arg__idx) {
-    SEXP res = savvy_PlRExpr_get__ffi(self__, c_arg__idx);
+SEXP savvy_PlRExpr_get__impl(SEXP self__, SEXP c_arg__idx, SEXP c_arg__null_on_oob) {
+    SEXP res = savvy_PlRExpr_get__ffi(self__, c_arg__idx, c_arg__null_on_oob);
     return handle_result(res);
 }
 
@@ -3727,7 +3727,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_floor_div__impl", (DL_FUNC) &savvy_PlRExpr_floor_div__impl, 2},
     {"savvy_PlRExpr_gather__impl", (DL_FUNC) &savvy_PlRExpr_gather__impl, 2},
     {"savvy_PlRExpr_gather_every__impl", (DL_FUNC) &savvy_PlRExpr_gather_every__impl, 3},
-    {"savvy_PlRExpr_get__impl", (DL_FUNC) &savvy_PlRExpr_get__impl, 2},
+    {"savvy_PlRExpr_get__impl", (DL_FUNC) &savvy_PlRExpr_get__impl, 3},
     {"savvy_PlRExpr_gt__impl", (DL_FUNC) &savvy_PlRExpr_gt__impl, 2},
     {"savvy_PlRExpr_gt_eq__impl", (DL_FUNC) &savvy_PlRExpr_gt_eq__impl, 2},
     {"savvy_PlRExpr_hash__impl", (DL_FUNC) &savvy_PlRExpr_hash__impl, 5},

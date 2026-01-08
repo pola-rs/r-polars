@@ -1292,7 +1292,7 @@ impl PlRLazyFrame {
             };
             let retries = <Wrap<usize>>::try_from(retries)?.0;
             let null_value = null_value
-                .map(|x| x.to_string())
+                .map(PlSmallStr::from_str)
                 .unwrap_or(SerializeOptions::default().null);
             let batch_size = <Wrap<NonZeroUsize>>::try_from(batch_size)?.0;
             let float_precision = match float_precision {
@@ -1316,16 +1316,16 @@ impl PlRLazyFrame {
             };
 
             let serialize_options = SerializeOptions {
-                date_format: date_format.map(|x| x.to_string()),
-                time_format: time_format.map(|x| x.to_string()),
-                datetime_format: datetime_format.map(|x| x.to_string()),
+                date_format: date_format.map(PlSmallStr::from_str),
+                time_format: time_format.map(PlSmallStr::from_str),
+                datetime_format: datetime_format.map(PlSmallStr::from_str),
                 float_scientific,
                 float_precision,
                 decimal_comma,
                 separator,
                 quote_char,
-                null: null_value.to_string(),
-                line_terminator: line_terminator.to_string(),
+                null: null_value,
+                line_terminator: PlSmallStr::from_str(line_terminator),
                 quote_style,
             };
 

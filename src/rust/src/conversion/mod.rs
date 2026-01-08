@@ -3,7 +3,10 @@ use crate::{
     prelude::{cloud::CloudOptions, *},
 };
 pub use categorical::PlRCategories;
-use polars::series::ops::NullBehavior;
+use polars::{
+    polars_utils::compression::{BrotliLevel, GzipLevel, ZstdLevel},
+    series::ops::NullBehavior,
+};
 use savvy::{
     ListSexp, NotAvailableValue, NumericScalar, NumericSexp, NumericTypedSexp, Sexp, StringSexp,
     TypedSexp, savvy_err,

@@ -36,7 +36,7 @@ patrick::with_parameters_test_that(
     expect_snapshot(list.files(out_parted, recursive = TRUE))
     expect_shape(
       reader(out_parted),
-      dim = if (.test_name == "sink_parquet") expected_dim else c(10L, 11L)
+      dim = expected_dim
     )
 
     out_parted_sorted <- withr::local_tempdir()

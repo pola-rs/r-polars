@@ -132,6 +132,18 @@
       Caused by error:
       ! gather indices are out of bounds
 
+# get null_on_oob
+
+    Code
+      pl$select(pl$lit(0:10)$get(11))
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! gather indices are out of bounds
+
 # fill_nan() works
 
     Code
