@@ -4089,10 +4089,8 @@ expr__gather <- function(indices) {
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @param index An expression that leads to a UInt32 dtyped Series.
-#' @param null_on_oob Behavior if an index is out of bounds:
-#'   * `TRUE`: return `null`
-#'   * `FALSE`: raise an error
-#'
+#' @param null_on_oob If `TRUE`, return `null` if an index is out of bounds.
+#'   Otherwise, raise an error.
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(

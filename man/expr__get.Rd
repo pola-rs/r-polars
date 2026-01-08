@@ -11,11 +11,8 @@ expr__get(index, ..., null_on_oob = FALSE)
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{null_on_oob}{Behavior if an index is out of bounds:
-\itemize{
-\item \code{TRUE}: return \code{null}
-\item \code{FALSE}: raise an error
-}}
+\item{null_on_oob}{If \code{TRUE}, return \code{null} if an index is out of bounds.
+Otherwise, raise an error.}
 }
 \value{
 A polars \link{expression}
