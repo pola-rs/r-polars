@@ -79,7 +79,7 @@ impl Iterator for ArrowStreamIterator {
             None => None,
             Some(Err(err)) => Some(Err(err)),
             Some(Ok(df)) => {
-                let series = df.clone().into_struct(PlSmallStr::EMPTY).into_series();
+                let series = df.into_struct(PlSmallStr::EMPTY).into_series();
                 let batch = series.rechunk().to_arrow(0, self.compat_level);
                 Some(Ok(batch))
             }
