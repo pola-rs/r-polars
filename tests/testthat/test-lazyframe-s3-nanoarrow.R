@@ -41,3 +41,32 @@ test_that("polars_compat_level works", {
     error = TRUE
   )
 })
+
+test_that("test lazy scan", {
+  skip_if_not_installed("nanoarrow")
+
+  tmpf <- withr::local_tempfile(fileext = ".csv")
+
+  # write a csv file with one row
+  writeLines("a\n1", tmpf)
+
+  # create array stream
+  stream <- pl$scan_csv(tmpf) |>
+    nanoarrow::as_nanoarrow_array_stream()
+
+  # write more rows after creating the stream
+  writeLines("a\n1\n2", tmpf)
+
+  # collect the array stream, collecting the rows this time should have two rows
+  df <- as_polars_df(stream)
+  expect_shape(df, dim = c(2L, 1L))
+
+  # create array stream again
+  stream <- pl$scan_csv(tmpf) |>
+    nanoarrow::as_nanoarrow_array_stream()
+
+  # overwrite the file having another schema
+  writeLines("a\nfoo", tmpf)
+
+  expect_snapshot(as_polars_df(stream), error = TRUE)
+})
