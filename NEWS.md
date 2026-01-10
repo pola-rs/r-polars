@@ -4,7 +4,7 @@
 
 ### New features
 
-- New S3 method `nanoarrow::as_nanoarrow_array_stream(<lazyframe>)` for export LazyFrame via Arrow C stream interface
+- New S3 method `nanoarrow::as_nanoarrow_array_stream(<lazyframe>)` to export a LazyFrame via the Arrow C stream interface
   ([pola-rs/polars#25918](https://github.com/pola-rs/polars/pull/25918), #1709).
 
 ## polars 1.7.0
