@@ -28,7 +28,7 @@ as_nanoarrow_array_stream.polars_lazy_frame <- function(
       format_warning(
         c(
           `!` = sprintf(
-            "The %s argument is not yet supported for polars lazy frames yet.",
+            "The %s argument is not supported for polars lazy frames yet.",
             format_arg("schema")
           )
         )
