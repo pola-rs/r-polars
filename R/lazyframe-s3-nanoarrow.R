@@ -1,3 +1,10 @@
+#' @param maintain_order `r lifecycle::badge("experimental")`
+#'   Maintain the order in which data is processed. Setting this to `FALSE` will be slightly faster.
+#' @param chunk_size `r lifecycle::badge("experimental")`
+#'   A positive integer or `NULL` (default).
+#'   The number of rows each chunk collected from the lazy computation before
+#'   being sent to the Arrow C stream.
+#'   If `NULL`, Polars tries to compute an optimal chunk size automatically.
 #' @rdname s3-as_nanoarrow_array_stream
 as_nanoarrow_array_stream.polars_lazy_frame <- function(
   x,
@@ -21,7 +28,7 @@ as_nanoarrow_array_stream.polars_lazy_frame <- function(
       format_warning(
         c(
           `!` = sprintf(
-            "The %s argument is not yet supported for polars lazy frames.",
+            "The %s argument is not yet supported for polars lazy frames yet.",
             format_arg("schema")
           )
         )
