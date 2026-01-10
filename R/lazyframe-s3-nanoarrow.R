@@ -16,6 +16,19 @@ as_nanoarrow_array_stream.polars_lazy_frame <- function(
 
   polars_compat_level <- arg_match_compat_level(polars_compat_level)
 
+  if (!is.null(schema)) {
+    warn(
+      format_warning(
+        c(
+          `!` = sprintf(
+            "The %s argument is not yet supported for polars lazy frames.",
+            format_arg("schema")
+          )
+        )
+      )
+    )
+  }
+
   stream <- nanoarrow::nanoarrow_allocate_array_stream()
   x$`_ldf`$to_arrow_c_stream(
     stream,
