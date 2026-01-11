@@ -1829,6 +1829,11 @@ SEXP savvy_PlRExpr_max__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_max_by__impl(SEXP self__, SEXP c_arg__by) {
+    SEXP res = savvy_PlRExpr_max_by__ffi(self__, c_arg__by);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_mean__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_mean__ffi(self__);
     return handle_result(res);
@@ -1891,6 +1896,11 @@ SEXP savvy_PlRExpr_meta_undo_aliases__impl(SEXP self__) {
 
 SEXP savvy_PlRExpr_min__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_min__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_min_by__impl(SEXP self__, SEXP c_arg__by) {
+    SEXP res = savvy_PlRExpr_min_by__ffi(self__, c_arg__by);
     return handle_result(res);
 }
 
@@ -3799,6 +3809,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_lt_eq__impl", (DL_FUNC) &savvy_PlRExpr_lt_eq__impl, 2},
     {"savvy_PlRExpr_map_batches__impl", (DL_FUNC) &savvy_PlRExpr_map_batches__impl, 3},
     {"savvy_PlRExpr_max__impl", (DL_FUNC) &savvy_PlRExpr_max__impl, 1},
+    {"savvy_PlRExpr_max_by__impl", (DL_FUNC) &savvy_PlRExpr_max_by__impl, 2},
     {"savvy_PlRExpr_mean__impl", (DL_FUNC) &savvy_PlRExpr_mean__impl, 1},
     {"savvy_PlRExpr_median__impl", (DL_FUNC) &savvy_PlRExpr_median__impl, 1},
     {"savvy_PlRExpr_meta_eq__impl", (DL_FUNC) &savvy_PlRExpr_meta_eq__impl, 2},
@@ -3812,6 +3823,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_meta_root_names__impl", (DL_FUNC) &savvy_PlRExpr_meta_root_names__impl, 1},
     {"savvy_PlRExpr_meta_undo_aliases__impl", (DL_FUNC) &savvy_PlRExpr_meta_undo_aliases__impl, 1},
     {"savvy_PlRExpr_min__impl", (DL_FUNC) &savvy_PlRExpr_min__impl, 1},
+    {"savvy_PlRExpr_min_by__impl", (DL_FUNC) &savvy_PlRExpr_min_by__impl, 2},
     {"savvy_PlRExpr_mode__impl", (DL_FUNC) &savvy_PlRExpr_mode__impl, 2},
     {"savvy_PlRExpr_mul__impl", (DL_FUNC) &savvy_PlRExpr_mul__impl, 2},
     {"savvy_PlRExpr_n_unique__impl", (DL_FUNC) &savvy_PlRExpr_n_unique__impl, 1},

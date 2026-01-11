@@ -6,6 +6,7 @@
 
 - New S3 method `nanoarrow::as_nanoarrow_array_stream(<lazyframe>)` to export a LazyFrame via the Arrow C stream interface
   ([pola-rs/polars#25918](https://github.com/pola-rs/polars/pull/25918), #1709).
+- `<expr>$min_by()` and `<expr>$max_by()` to get the value of a column ordered by another column (#1715).
 
 ## polars 1.7.0
 

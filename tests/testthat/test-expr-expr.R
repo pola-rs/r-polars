@@ -3096,3 +3096,26 @@ test_that("item() works", {
     error = TRUE
   )
 })
+
+test_that("min_by() / max_by() work", {
+  df <- pl$DataFrame(a = c(-1, NaN, 1), b = c("x", "y", "z"))
+  expect_identical(
+    df$select(max_b_by_a = pl$col("b")$max_by("a")),
+    pl$DataFrame(max_b_by_a = "z")
+  )
+  expect_identical(
+    df$select(min_b_by_a = pl$col("b")$min_by("a")),
+    pl$DataFrame(min_b_by_a = "x")
+  )
+
+  # Ties in the min/max: only keep the first index
+  df <- pl$DataFrame(a = c(-1, -1, 1, 1), b = c("x", "y", "z", "z2"))
+  expect_identical(
+    df$select(max_b_by_a = pl$col("b")$max_by("a")),
+    pl$DataFrame(max_b_by_a = "z")
+  )
+  expect_identical(
+    df$select(min_b_by_a = pl$col("b")$min_by("a")),
+    pl$DataFrame(min_b_by_a = "x")
+  )
+})

@@ -2448,6 +2448,13 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   }
 }
 
+`PlRExpr_max_by` <- function(self) {
+  function(`by`) {
+    `by` <- .savvy_extract_ptr(`by`, "polars::PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_max_by__impl, `self`, `by`))
+  }
+}
+
 `PlRExpr_mean` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_mean__impl, `self`))
@@ -2524,6 +2531,13 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 `PlRExpr_min` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_min__impl, `self`))
+  }
+}
+
+`PlRExpr_min_by` <- function(self) {
+  function(`by`) {
+    `by` <- .savvy_extract_ptr(`by`, "polars::PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_min_by__impl, `self`, `by`))
   }
 }
 
@@ -3702,6 +3716,7 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   e$`lt_eq` <- `PlRExpr_lt_eq`(ptr)
   e$`map_batches` <- `PlRExpr_map_batches`(ptr)
   e$`max` <- `PlRExpr_max`(ptr)
+  e$`max_by` <- `PlRExpr_max_by`(ptr)
   e$`mean` <- `PlRExpr_mean`(ptr)
   e$`median` <- `PlRExpr_median`(ptr)
   e$`meta_eq` <- `PlRExpr_meta_eq`(ptr)
@@ -3715,6 +3730,7 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   e$`meta_root_names` <- `PlRExpr_meta_root_names`(ptr)
   e$`meta_undo_aliases` <- `PlRExpr_meta_undo_aliases`(ptr)
   e$`min` <- `PlRExpr_min`(ptr)
+  e$`min_by` <- `PlRExpr_min_by`(ptr)
   e$`mode` <- `PlRExpr_mode`(ptr)
   e$`mul` <- `PlRExpr_mul`(ptr)
   e$`n_unique` <- `PlRExpr_n_unique`(ptr)

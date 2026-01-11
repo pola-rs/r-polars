@@ -5024,3 +5024,39 @@ expr__item <- function(..., allow_empty = FALSE) {
     self$`_rexpr`$item(allow_empty)
   })
 }
+
+#' Get maximum value, ordered by another expression
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
+#' @param by Column used to determine the largest element. Accepts expression
+#' input. Strings are parsed as column names.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(a = c(-1, NaN, 1), b = c("x", "y", "z"))
+#' df$with_columns(max_b_by_a = pl$col("b")$max_by("a"))
+expr__max_by <- function(by) {
+  wrap({
+    self$`_rexpr`$max_by(as_polars_expr(by)$`_rexpr`)
+  })
+}
+
+#' Get minimum value, ordered by another expression
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
+#' @param by Column used to determine the smallest element. Accepts expression
+#' input. Strings are parsed as column names.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(a = c(-1, NaN, 1), b = c("x", "y", "z"))
+#' df$with_columns(min_b_by_a = pl$col("b")$min_by("a"))
+expr__min_by <- function(by) {
+  wrap({
+    self$`_rexpr`$min_by(as_polars_expr(by)$`_rexpr`)
+  })
+}
