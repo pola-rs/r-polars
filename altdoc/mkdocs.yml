@@ -347,9 +347,11 @@ nav:
             - lt: man/expr__lt.md
             - map_batches: man/expr__map_batches.md
             - max: man/expr__max.md
+            - max_by: man/expr__max_by.md
             - mean: man/expr__mean.md
             - median: man/expr__median.md
             - min: man/expr__min.md
+            - min_by: man/expr__min_by.md
             - mod: man/expr__mod.md
             - mode: man/expr__mode.md
             - mul: man/expr__mul.md

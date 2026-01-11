@@ -1069,4 +1069,12 @@ impl PlRExpr {
     fn item(&self, allow_empty: bool) -> Result<Self> {
         Ok(self.inner.clone().item(allow_empty).into())
     }
+
+    fn min_by(&self, by: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().min_by(by.inner.clone()).into())
+    }
+
+    fn max_by(&self, by: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().max_by(by.inner.clone()).into())
+    }
 }
