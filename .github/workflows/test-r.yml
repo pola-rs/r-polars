@@ -163,7 +163,8 @@ jobs:
           sudo rm -rf /usr/local/share/powershell
 
           du -hsc /usr/share/*
-          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/share/dotnet || true
+          sudo rm -rf /usr/share/swift || true
 
       - uses: actions/checkout@v6
 
