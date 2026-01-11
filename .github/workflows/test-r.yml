@@ -155,6 +155,8 @@ jobs:
           sudo rm -rf /opt/hostedtoolcache/CodeQL || true
           sudo rm -rf /opt/hostedtoolcache/go || true
           sudo rm -rf /opt/hostedtoolcache/Python || true
+          sudo rm -rf /opt/hostedtoolcache/PyPy || true
+          sudo rm -rf /opt/hostedtoolcache/node || true
 
       - uses: actions/checkout@v6
 
