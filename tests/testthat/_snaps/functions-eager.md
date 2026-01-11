@@ -56,7 +56,7 @@
       Error in `pl$concat()`:
       ! Evaluation failed in `$concat()`.
       Caused by error:
-      ! Duplicated column(s): column with name 'a' has more than one occurrence
+      ! Duplicated column(s): could not create a new DataFrame: column with name 'a' has more than one occurrence
 
 ---
 

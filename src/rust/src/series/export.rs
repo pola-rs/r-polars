@@ -330,7 +330,8 @@ impl PlRSeries {
                         }
                     }
 
-                    for (i, s) in df.iter().enumerate() {
+                    for (i, c) in df.columns().iter().enumerate() {
+                        let s = c.as_materialized_series();
                         list.set_name_and_value(
                             i,
                             s.name(),
