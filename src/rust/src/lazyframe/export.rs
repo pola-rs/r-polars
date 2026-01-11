@@ -15,37 +15,44 @@ impl PlRLazyFrame {
         maintain_order: bool,
         chunk_size: Option<NumericScalar>,
     ) -> Result<()> {
-        let stream_ptr = unsafe {
-            ExternalPointerSexp::try_from(stream_ptr)?.cast_mut_unchecked::<ArrowArrayStream>()
-        };
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            let stream_ptr = unsafe {
+                ExternalPointerSexp::try_from(stream_ptr)?.cast_mut_unchecked::<ArrowArrayStream>()
+            };
 
-        let compat_level = <Wrap<CompatLevel>>::try_from(polars_compat_level)?.0;
-        let engine = <Wrap<Engine>>::try_from(engine)?.0;
-        let chunk_size = match chunk_size {
-            Some(cs) => Some(<Wrap<NonZeroUsize>>::try_from(cs)?.0),
-            None => None,
-        };
+            let compat_level = <Wrap<CompatLevel>>::try_from(polars_compat_level)?.0;
+            let engine = <Wrap<Engine>>::try_from(engine)?.0;
+            let chunk_size = match chunk_size {
+                Some(cs) => Some(<Wrap<NonZeroUsize>>::try_from(cs)?.0),
+                None => None,
+            };
 
-        let schema = self
-            .ldf
-            .clone()
-            .collect_schema()
-            .map_err(RPolarsErr::from)?
-            .to_arrow(compat_level);
-        let dtype = ArrowDataType::Struct(schema.clone().into_iter_values().collect());
+            let schema = self
+                .ldf
+                .clone()
+                .collect_schema()
+                .map_err(RPolarsErr::from)?
+                .to_arrow(compat_level);
+            let dtype = ArrowDataType::Struct(schema.clone().into_iter_values().collect());
 
-        let batches = self
-            .ldf
-            .clone()
-            .collect_batches(engine, maintain_order, chunk_size, true)
-            .map_err(RPolarsErr::from)?;
-        let iter = Box::new(ArrowStreamIterator::new(batches, compat_level, dtype));
-        let field = iter.field();
-        let stream = export_iterator(iter, field);
-        unsafe {
-            std::ptr::replace(stream_ptr, stream);
+            let batches = self
+                .ldf
+                .clone()
+                .collect_batches(engine, maintain_order, chunk_size, true)
+                .map_err(RPolarsErr::from)?;
+            let iter = Box::new(ArrowStreamIterator::new(batches, compat_level, dtype));
+            let field = iter.field();
+            let stream = export_iterator(iter, field);
+            unsafe {
+                std::ptr::replace(stream_ptr, stream);
+            }
+            Ok(())
         }
-        Ok(())
+        #[cfg(target_arch = "wasm32")]
+        {
+            Err(RPolarsErr::Other(format!("Not supported in WASM")).into())
+        }
     }
 }
 
