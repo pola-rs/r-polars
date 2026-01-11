@@ -115,6 +115,14 @@ impl TryFrom<Sexp> for Wrap<u32> {
     }
 }
 
+impl TryFrom<Sexp> for Wrap<u64> {
+    type Error = savvy::Error;
+
+    fn try_from(value: Sexp) -> Result<Self, Self::Error> {
+        <NumericScalar>::try_from(value).and_then(<Wrap<u64>>::try_from)
+    }
+}
+
 impl TryFrom<Sexp> for Wrap<Vec<Expr>> {
     type Error = savvy::Error;
 
