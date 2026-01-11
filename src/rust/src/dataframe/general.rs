@@ -24,8 +24,8 @@ impl PlRDataFrame {
                 _ => unreachable!("Only accept a list of Series"),
             })
             .collect();
-        let columns = columns.into_iter().map(|s| s.into()).collect();
-        let df = DataFrame::new(columns).map_err(RPolarsErr::from)?;
+        let columns: Vec<Column> = columns.into_iter().map(|s| s.into()).collect();
+        let df = DataFrame::new_infer_height(columns).map_err(RPolarsErr::from)?;
         Ok(df.into())
     }
 
@@ -36,7 +36,7 @@ impl PlRDataFrame {
     pub fn get_columns(&self) -> Result<Sexp> {
         let cols: Vec<Series> = self
             .df
-            .get_columns()
+            .columns()
             .iter()
             .cloned()
             .map(|c| c.take_materialized_series())
@@ -121,19 +121,25 @@ impl PlRDataFrame {
     }
 
     pub fn columns(&self) -> Result<Sexp> {
-        self.df.get_column_names_str().try_into()
+        let names: Vec<String> = self
+            .df
+            .get_column_names()
+            .into_iter()
+            .map(|s| s.to_string())
+            .collect();
+        names.try_into()
     }
 
     pub fn set_column_names(&mut self, names: StringSexp) -> Result<()> {
-        self.df
-            .set_column_names(names.iter())
-            .map_err(RPolarsErr::from)?;
+        let names: Vec<&str> = names.iter().collect();
+        self.df.set_column_names(&names).map_err(RPolarsErr::from)?;
         Ok(())
     }
 
     pub fn dtypes(&self) -> Result<Sexp> {
         let iter = self
             .df
+            .columns()
             .iter()
             .map(|s| <PlRDataType>::from(s.dtype().clone()));
         let mut list = OwnedListSexp::new(self.df.width(), false)?;
@@ -203,7 +209,7 @@ impl PlRDataFrame {
 
     pub fn rechunk(&self) -> Result<Self> {
         let mut df = self.df.clone();
-        df.as_single_chunk_par();
+        df.rechunk_mut_par();
         Ok(df.into())
     }
 
@@ -291,7 +297,7 @@ impl PlRDataFrame {
     }
 
     pub fn is_empty(&self) -> Result<Sexp> {
-        self.df.is_empty().try_into()
+        self.df.shape_has_zero().try_into()
     }
 
     fn with_row_index(&self, name: &str, offset: Option<NumericScalar>) -> Result<Self> {

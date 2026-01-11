@@ -4233,6 +4233,12 @@ class(`PlRExpr`) <- c("polars::PlRExpr__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRLazyFrame_to_arrow_c_stream` <- function(self) {
+  function(`stream_ptr`, `polars_compat_level`, `engine`, `maintain_order`, `chunk_size` = NULL) {
+    invisible(.Call(savvy_PlRLazyFrame_to_arrow_c_stream__impl, `self`, `stream_ptr`, `polars_compat_level`, `engine`, `maintain_order`, `chunk_size`))
+  }
+}
+
 `PlRLazyFrame_to_dot` <- function(self) {
   function(`optimized`) {
     .Call(savvy_PlRLazyFrame_to_dot__impl, `self`, `optimized`)
@@ -4351,6 +4357,7 @@ class(`PlRExpr`) <- c("polars::PlRExpr__bundle", "savvy_polars__sealed")
   e$`std` <- `PlRLazyFrame_std`(ptr)
   e$`sum` <- `PlRLazyFrame_sum`(ptr)
   e$`tail` <- `PlRLazyFrame_tail`(ptr)
+  e$`to_arrow_c_stream` <- `PlRLazyFrame_to_arrow_c_stream`(ptr)
   e$`to_dot` <- `PlRLazyFrame_to_dot`(ptr)
   e$`top_k` <- `PlRLazyFrame_top_k`(ptr)
   e$`unique` <- `PlRLazyFrame_unique`(ptr)

@@ -1,4 +1,4 @@
-use crate::{PlRSeries, prelude::*};
+use crate::{PlRSeries, RPolarsErr, prelude::*};
 use polars_core::utils::arrow::{
     array::Array,
     ffi::{ArrowArrayStream, ArrowArrayStreamReader},
@@ -14,11 +14,11 @@ impl PlRSeries {
                 ExternalPointerSexp::try_from(stream_ptr)?.cast_mut_unchecked::<ArrowArrayStream>(),
                 ArrowArrayStream::empty(),
             ));
-            ArrowArrayStreamReader::try_new(stream_ptr).map_err(|e| e.to_string())?
+            ArrowArrayStreamReader::try_new(stream_ptr).map_err(RPolarsErr::from)?
         };
         let mut produced_arrays: Vec<Box<dyn Array>> = vec![];
         while let Some(array) = unsafe { stream.next() } {
-            produced_arrays.push(array.unwrap());
+            produced_arrays.push(array.map_err(RPolarsErr::from)?);
         }
 
         let s = if produced_arrays.is_empty() {
@@ -26,7 +26,7 @@ impl PlRSeries {
             let polars_dt = DataType::from_arrow_field(stream.field());
             Series::new_empty(stream.field().name.clone(), &polars_dt)
         } else {
-            Series::try_from((stream.field(), produced_arrays)).map_err(|e| e.to_string())?
+            Series::try_from((stream.field(), produced_arrays)).map_err(RPolarsErr::from)?
         };
         Ok(s.into())
     }

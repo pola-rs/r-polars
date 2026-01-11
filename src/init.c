@@ -2919,6 +2919,11 @@ SEXP savvy_PlRLazyFrame_tail__impl(SEXP self__, SEXP c_arg__n) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRLazyFrame_to_arrow_c_stream__impl(SEXP self__, SEXP c_arg__stream_ptr, SEXP c_arg__polars_compat_level, SEXP c_arg__engine, SEXP c_arg__maintain_order, SEXP c_arg__chunk_size) {
+    SEXP res = savvy_PlRLazyFrame_to_arrow_c_stream__ffi(self__, c_arg__stream_ptr, c_arg__polars_compat_level, c_arg__engine, c_arg__maintain_order, c_arg__chunk_size);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRLazyFrame_to_dot__impl(SEXP self__, SEXP c_arg__optimized) {
     SEXP res = savvy_PlRLazyFrame_to_dot__ffi(self__, c_arg__optimized);
     return handle_result(res);
@@ -4012,6 +4017,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_std__impl", (DL_FUNC) &savvy_PlRLazyFrame_std__impl, 2},
     {"savvy_PlRLazyFrame_sum__impl", (DL_FUNC) &savvy_PlRLazyFrame_sum__impl, 1},
     {"savvy_PlRLazyFrame_tail__impl", (DL_FUNC) &savvy_PlRLazyFrame_tail__impl, 2},
+    {"savvy_PlRLazyFrame_to_arrow_c_stream__impl", (DL_FUNC) &savvy_PlRLazyFrame_to_arrow_c_stream__impl, 6},
     {"savvy_PlRLazyFrame_to_dot__impl", (DL_FUNC) &savvy_PlRLazyFrame_to_dot__impl, 2},
     {"savvy_PlRLazyFrame_top_k__impl", (DL_FUNC) &savvy_PlRLazyFrame_top_k__impl, 4},
     {"savvy_PlRLazyFrame_unique__impl", (DL_FUNC) &savvy_PlRLazyFrame_unique__impl, 4},
