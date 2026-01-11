@@ -23,7 +23,7 @@ If you have access to a [Dev Container](https://containers.dev/) execution envir
 such as [GitHub Codespaces](https://github.com/features/codespaces) or [DevPod](https://devpod.sh/),
 you can work within a container that contains all of the above tools.
 
-We also use [Jarl](https://jarl.etiennebacher.com/) to lint R files.
+We also use [Air](https://posit-dev.github.io/air/) to format R files and [Jarl](https://jarl.etiennebacher.com/) to lint them.
 
 ## Translation from Python Polars
 
