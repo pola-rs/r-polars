@@ -157,6 +157,8 @@ jobs:
           sudo rm -rf /opt/hostedtoolcache/Python || true
           sudo rm -rf /opt/hostedtoolcache/PyPy || true
           sudo rm -rf /opt/hostedtoolcache/node || true
+          du -hsc /usr/local/share/*
+          sudo rm -rf /usr/local/share/powershell
 
       - uses: actions/checkout@v6
 
