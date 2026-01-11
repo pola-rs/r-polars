@@ -1,3 +1,5 @@
+# nolint start: object_name_linter
+
 #' @param maintain_order `r lifecycle::badge("experimental")`
 #'   Maintain the order in which data is processed. Setting this to `FALSE` will be slightly faster.
 #' @param chunk_size `r lifecycle::badge("experimental")`
@@ -46,3 +48,5 @@ as_nanoarrow_array_stream.polars_lazy_frame <- function(
   )
   stream
 }
+
+# nolint end
