@@ -1248,7 +1248,11 @@ impl PlRLazyFrame {
 
             self.ldf
                 .clone()
-                .sink(target, FileType::Parquet(options), unified_sink_args)
+                .sink(
+                    target,
+                    FileWriteFormat::Parquet(Arc::new(options)),
+                    unified_sink_args,
+                )
                 .map(Into::into)
                 .map_err(RPolarsErr::from)
                 .map_err(Into::into)
@@ -1333,7 +1337,7 @@ impl PlRLazyFrame {
                 include_bom,
                 include_header,
                 batch_size,
-                serialize_options,
+                serialize_options: serialize_options.into(),
             };
 
             let cloud_options =
@@ -1348,7 +1352,7 @@ impl PlRLazyFrame {
 
             self.ldf
                 .clone()
-                .sink(target, FileType::Csv(options), unified_sink_args)
+                .sink(target, FileWriteFormat::Csv(options), unified_sink_args)
                 .map(Into::into)
                 .map_err(RPolarsErr::from)
                 .map_err(Into::into)
@@ -1399,7 +1403,7 @@ impl PlRLazyFrame {
 
             self.ldf
                 .clone()
-                .sink(target, FileType::Json(options), unified_sink_args)
+                .sink(target, FileWriteFormat::NDJson(options), unified_sink_args)
                 .map(Into::into)
                 .map_err(RPolarsErr::from)
                 .map_err(Into::into)
@@ -1460,7 +1464,7 @@ impl PlRLazyFrame {
 
             self.ldf
                 .clone()
-                .sink(target, FileType::Ipc(options), unified_sink_args)
+                .sink(target, FileWriteFormat::Ipc(options), unified_sink_args)
                 .map(Into::into)
                 .map_err(RPolarsErr::from)
                 .map_err(Into::into)
