@@ -789,8 +789,8 @@ impl PlRLazyFrame {
                 try_parse_dates: try_parse_hive_dates,
             };
 
-            let first_path = sources.first_path().map(|p| p.into_owned());
-            let cloud_schema = first_path.and_then(|p| CloudScheme::from_uri(p.to_str()));
+            let first_path = sources.first_path().map(|p| p.to_owned());
+            let cloud_schema = first_path.and_then(|p| CloudScheme::from_path(p.as_str()));
 
             let cloud_options = parse_cloud_options(cloud_schema, storage_options, retries)?;
 
@@ -925,8 +925,8 @@ impl PlRLazyFrame {
                 None => None,
             };
 
-            let first_path = sources.first_path().map(|p| p.into_owned());
-            let cloud_schema = first_path.and_then(|p| CloudScheme::from_uri(p.to_str()));
+            let first_path = sources.first_path().map(|p| p.to_owned());
+            let cloud_schema = first_path.and_then(|p| CloudScheme::from_path(p.as_str()));
 
             let mut cloud_options = parse_cloud_options(cloud_schema, storage_options, retries)?;
 
@@ -1042,8 +1042,8 @@ impl PlRLazyFrame {
                 use_statistics,
             };
 
-            let first_path = sources.first_path().map(|p| p.into_owned());
-            let cloud_schema = first_path.and_then(|p| CloudScheme::from_uri(p.to_str()));
+            let first_path = sources.first_path().map(|p| p.to_owned());
+            let cloud_schema = first_path.and_then(|p| CloudScheme::from_path(p.as_str()));
 
             let cloud_options = parse_cloud_options(cloud_schema, storage_options, retries)?;
 
@@ -1137,8 +1137,8 @@ impl PlRLazyFrame {
                 None => None,
             };
 
-            let first_path = sources.first_path().map(|p| p.into_owned());
-            let cloud_schema = first_path.and_then(|p| CloudScheme::from_uri(p.to_str()));
+            let first_path = sources.first_path().map(|p| p.to_owned());
+            let cloud_schema = first_path.and_then(|p| CloudScheme::from_path(p.as_str()));
 
             let mut cloud_options = parse_cloud_options(cloud_schema, storage_options, retries)?;
 
