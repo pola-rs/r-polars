@@ -60,11 +60,11 @@ Defaults to approximately 4GB when \code{key} is specified without \code{max_row
 otherwise unlimited.}
 
 \item{by}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-Something can be coerced to a list of \link[=polars_expr]{expressions}.
+Something that can be coerced to a list of \link[=polars_expr]{expressions}.
 Used to partition by. Use the \code{key} property of \code{pl$PartitionBy} instead.}
 
 \item{per_partition_sort_by}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-Something can be coerced to a list of \link[=polars_expr]{expressions}, or \code{NULL} (default).
+Something that can be coerced to a list of \link[=polars_expr]{expressions}, or \code{NULL} (default).
 Used to sort over within each partition.
 Use the \code{per_partition_sort_by} property of \code{pl$PartitionBy} instead.}
 

@@ -37,10 +37,10 @@
 #'   Defaults to approximately 4GB when `key` is specified without `max_rows_per_file`;
 #'   otherwise unlimited.
 #' @param by `r lifecycle::badge("deprecated")`
-#'   Something can be coerced to a list of [expressions][polars_expr].
+#'   Something that can be coerced to a list of [expressions][polars_expr].
 #'   Used to partition by. Use the `key` property of `pl$PartitionBy` instead.
 #' @param per_partition_sort_by `r lifecycle::badge("deprecated")`
-#'   Something can be coerced to a list of [expressions][polars_expr], or `NULL` (default).
+#'   Something that can be coerced to a list of [expressions][polars_expr], or `NULL` (default).
 #'   Used to sort over within each partition.
 #'   Use the `per_partition_sort_by` property of `pl$PartitionBy` instead.
 #' @param max_size `r lifecycle::badge("deprecated")`
