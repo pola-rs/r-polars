@@ -3,7 +3,8 @@
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
-#' Partitioning schemes are used to write multiple files with `sink_*` methods.
+#' Partitioning schemes are used to write multiple files with `sink_*` and
+#' `write_*` methods.
 #'
 #' - [`pl$PartitionBy()`][polars_partitioning_scheme]: Configuration for writing to
 #'   multiple output files. Supports partitioning by key expressions, file size limits,

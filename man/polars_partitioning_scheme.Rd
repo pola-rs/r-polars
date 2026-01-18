@@ -75,7 +75,8 @@ Use the \code{max_rows_per_file} property of \code{pl$PartitionBy} instead.}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-Partitioning schemes are used to write multiple files with \verb{sink_*} methods.
+Partitioning schemes are used to write multiple files with \verb{sink_*} and
+\verb{write_*} methods.
 \itemize{
 \item \code{\link[=polars_partitioning_scheme]{pl$PartitionBy()}}: Configuration for writing to
 multiple output files. Supports partitioning by key expressions, file size limits,
