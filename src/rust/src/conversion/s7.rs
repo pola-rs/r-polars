@@ -1,6 +1,22 @@
 use crate::{lazyframe::PlROptFlags, prelude::*};
 use savvy::{ObjSexp, Sexp, savvy_err};
 
+// Get the S7 class name from an object.
+// In R: `attr(obj, "S7_class") |> attr("name")`
+fn get_s7_class_name(obj: &ObjSexp) -> Option<String> {
+    obj.get_attrib("S7_class")
+        .ok()
+        .flatten()
+        .and_then(|s7_class| {
+            s7_class
+                .get_attrib("name")
+                .ok()
+                .flatten()
+                .and_then(|name_sexp| <&str>::try_from(name_sexp).ok())
+                .map(|s| s.to_string())
+        })
+}
+
 // TODO: Move this to upstream?
 pub(crate) fn try_extract_prop<T>(obj: &ObjSexp, attr_name: &str) -> savvy::Result<T>
 where
@@ -70,78 +86,115 @@ impl TryFrom<ObjSexp> for Wrap<SinkDestination> {
     type Error = savvy::Error;
 
     fn try_from(obj: ObjSexp) -> Result<Self, savvy::Error> {
-        let base_path: &str = try_extract_prop(&obj, "base_path")?;
-        let partition_by: Option<Wrap<Vec<Expr>>> = try_extract_opt_prop(&obj, "partition_by")?;
-        let partition_keys_sorted: Option<bool> =
-            try_extract_opt_prop(&obj, "partition_keys_sorted")?;
-        let include_keys: Option<bool> = try_extract_opt_prop(&obj, "include_keys")?;
-        let per_partition_sort_by: Option<Wrap<Vec<Expr>>> =
-            try_extract_opt_prop(&obj, "per_partition_sort_by")?;
-        let per_file_sort_by: Option<Wrap<Vec<Expr>>> =
-            try_extract_opt_prop(&obj, "per_file_sort_by")?;
-        let max_rows_per_file: Option<Wrap<u32>> = try_extract_opt_prop(&obj, "max_rows_per_file")?;
+        let class_name = get_s7_class_name(&obj);
 
-        if per_partition_sort_by.is_some() && per_file_sort_by.is_some() {
+        // Check if this is the new PartitionBy class or legacy SinkDirectory-based classes
+        if class_name.as_deref() == Some("PartitionBy") {
+            extract_partition_by(&obj)
+        } else {
+            // TODO: remove legacy support later
+            extract_sink_directory(&obj)
+        }
+    }
+}
+
+fn extract_partition_by(obj: &ObjSexp) -> savvy::Result<Wrap<SinkDestination>> {
+    let base_path: &str = try_extract_prop(obj, "base_path")?;
+    let key: Option<Wrap<Vec<Expr>>> = try_extract_opt_prop(obj, "key")?;
+    let include_key: Option<bool> = try_extract_opt_prop(obj, "include_key")?;
+    let max_rows_per_file: Option<Wrap<u32>> = try_extract_opt_prop(obj, "max_rows_per_file")?;
+    let approximate_bytes_per_file: Option<Wrap<u64>> =
+        try_extract_opt_prop(obj, "approximate_bytes_per_file")?;
+
+    let partition_strategy: PartitionStrategy = if let Some(key) = &key {
+        PartitionStrategy::Keyed {
+            keys: key.0.clone(),
+            include_keys: include_key.unwrap_or(true),
+            keys_pre_grouped: false,
+            per_partition_sort_by: vec![],
+        }
+    } else {
+        PartitionStrategy::FileSize
+    };
+
+    Ok(Wrap(SinkDestination::Partitioned {
+        base_path: PlPath::new(base_path),
+        file_path_provider: None,
+        partition_strategy,
+        finish_callback: None,
+        max_rows_per_file: max_rows_per_file.map(|wrap| wrap.0).unwrap_or(IdxSize::MAX),
+        approximate_bytes_per_file: approximate_bytes_per_file
+            .map(|wrap| wrap.0)
+            .unwrap_or(u64::MAX),
+    }))
+}
+
+/// Extract from legacy SinkDirectory-based classes (PartitionMaxSize, PartitionByKey, PartitionParted)
+fn extract_sink_directory(obj: &ObjSexp) -> savvy::Result<Wrap<SinkDestination>> {
+    let base_path: &str = try_extract_prop(obj, "base_path")?;
+    let partition_by: Option<Wrap<Vec<Expr>>> = try_extract_opt_prop(obj, "partition_by")?;
+    let partition_keys_sorted: Option<bool> = try_extract_opt_prop(obj, "partition_keys_sorted")?;
+    let include_keys: Option<bool> = try_extract_opt_prop(obj, "include_keys")?;
+    let per_partition_sort_by: Option<Wrap<Vec<Expr>>> =
+        try_extract_opt_prop(obj, "per_partition_sort_by")?;
+    let per_file_sort_by: Option<Wrap<Vec<Expr>>> = try_extract_opt_prop(obj, "per_file_sort_by")?;
+    let max_rows_per_file: Option<Wrap<u32>> = try_extract_opt_prop(obj, "max_rows_per_file")?;
+
+    if per_partition_sort_by.is_some() && per_file_sort_by.is_some() {
+        return Err(savvy_err!(
+            "cannot specify both `per_partition_sort_by` and `per_file_sort_by`"
+        ));
+    }
+
+    let partition_strategy: PartitionStrategy = if let Some(partition_by) = &partition_by {
+        if per_file_sort_by.is_some() {
             return Err(savvy_err!(
-                "cannot specify both `per_partition_sort_by` and `per_file_sort_by`"
+                "unimplemented: `per_file_sort_by` with `partition_by`"
             ));
         }
 
-        let partition_strategy: PartitionStrategy = if let Some(partition_by) = &partition_by {
-            if max_rows_per_file.is_some() {
-                return Err(savvy_err!(
-                    "unimplemented: `max_rows_per_file` with `partition_by`"
-                ));
-            }
-
-            if per_file_sort_by.is_some() {
-                return Err(savvy_err!(
-                    "unimplemented: `per_file_sort_by` with `partition_by`"
-                ));
-            }
-
-            PartitionStrategy::Keyed {
-                keys: partition_by.0.clone(),
-                include_keys: include_keys.unwrap_or(true),
-                keys_pre_grouped: partition_keys_sorted.unwrap_or(false),
-                per_partition_sort_by: per_partition_sort_by
-                    .map(|wrap| wrap.0)
-                    .unwrap_or_default()
-                    .into_iter()
-                    .map(|x| SortColumn {
-                        expr: x,
-                        descending: false,
-                        nulls_last: false,
-                    })
-                    .collect(),
-            }
-        } else if let Some(parameter_name) = partition_keys_sorted
+        PartitionStrategy::Keyed {
+            keys: partition_by.0.clone(),
+            include_keys: include_keys.unwrap_or(true),
+            keys_pre_grouped: partition_keys_sorted.unwrap_or(false),
+            per_partition_sort_by: per_partition_sort_by
+                .map(|wrap| wrap.0)
+                .unwrap_or_default()
+                .into_iter()
+                .map(|x| SortColumn {
+                    expr: x,
+                    descending: false,
+                    nulls_last: false,
+                })
+                .collect(),
+        }
+    } else if let Some(parameter_name) = partition_keys_sorted
+        .is_some()
+        .then_some("partition_keys_sorted")
+        .or(include_keys.is_some().then_some("include_keys"))
+        .or(per_partition_sort_by
             .is_some()
-            .then_some("partition_keys_sorted")
-            .or(include_keys.is_some().then_some("include_keys"))
-            .or(per_partition_sort_by
-                .is_some()
-                .then_some("per_partition_sort_by"))
-        {
-            return Err(savvy_err!(
-                "cannot use `{parameter_name}` without specifying `partition_by`"
-            ));
-        } else if max_rows_per_file.is_some() {
-            PartitionStrategy::FileSize
-        } else {
-            return Err(savvy_err!(
-                "at least one of (`partition_by`, `max_rows_per_file`) \
-                 must be specified for SinkPartitioned",
-            ));
-        };
+            .then_some("per_partition_sort_by"))
+    {
+        return Err(savvy_err!(
+            "cannot use `{parameter_name}` without specifying `partition_by`"
+        ));
+    } else if max_rows_per_file.is_some() {
+        PartitionStrategy::FileSize
+    } else {
+        return Err(savvy_err!(
+            "at least one of (`partition_by`, `max_rows_per_file`) \
+             must be specified for SinkPartitioned",
+        ));
+    };
 
-        Ok(Wrap(SinkDestination::Partitioned {
-            base_path: PlPath::new(base_path),
-            file_path_provider: None,
-            partition_strategy,
-            finish_callback: None,
-            max_rows_per_file: max_rows_per_file.map(|wrap| wrap.0).unwrap_or(IdxSize::MAX),
-            approximate_bytes_per_file: u64::MAX,
-        }))
-    }
+    Ok(Wrap(SinkDestination::Partitioned {
+        base_path: PlPath::new(base_path),
+        file_path_provider: None,
+        partition_strategy,
+        finish_callback: None,
+        max_rows_per_file: max_rows_per_file.map(|wrap| wrap.0).unwrap_or(IdxSize::MAX),
+        // Legacy classes don't support approximate_bytes_per_file
+        approximate_bytes_per_file: u64::MAX,
+    }))
 }
