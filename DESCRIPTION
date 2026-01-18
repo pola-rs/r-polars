@@ -44,7 +44,7 @@ Suggests:
     purrr (>= 1.1.0),
     reticulate (>= 1.43.0),
     rmarkdown,
-    testthat (>= 3.3.0),
+    testthat (>= 3.3.2),
     tibble (>= 3.3.0),
     vctrs,
     withr

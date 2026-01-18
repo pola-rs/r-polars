@@ -97,7 +97,7 @@
 
     Code
       opt_flags@type_coercion <- 1L
-    Condition <rlang_error>
+    Condition <simpleError>
       Error:
       ! <polars::QueryOptFlags>@type_coercion must be <logical>, not <integer>
 
@@ -105,7 +105,7 @@
 
     Code
       opt_flags@type_coercion <- NA
-    Condition <rlang_error>
+    Condition <simpleError>
       Error:
       ! <polars::QueryOptFlags>@type_coercion must be a single `TRUE` or `FALSE`, not `NA`.
 
@@ -113,7 +113,7 @@
 
     Code
       opt_flags@type_coercion <- c(TRUE, TRUE)
-    Condition <rlang_error>
+    Condition <simpleError>
       Error:
       ! <polars::QueryOptFlags>@type_coercion must be a single `TRUE`, `FALSE` or `NA`, not a logical vector.
 
@@ -178,7 +178,7 @@
 
     Code
       validate(opt_flags)
-    Condition <rlang_error>
+    Condition <simpleError>
       Error:
       ! <polars::QueryOptFlags> object properties are invalid:
       - @eager must be <logical>, not <integer>

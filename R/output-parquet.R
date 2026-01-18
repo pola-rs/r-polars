@@ -246,7 +246,7 @@ dataframe__write_parquet <- function(
         ))
       }
 
-      target <- pl$PartitionByKey(file, by = partition_by)
+      target <- pl$PartitionBy(file, key = partition_by)
       mkdir <- TRUE
     }
 

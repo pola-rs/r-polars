@@ -2,6 +2,13 @@
 
 ## polars (development version)
 
+### Deprecations
+
+- The experimental partitioning scheme classes
+  (constructed with `pl$PartitionByKey()`, `pl$PartitionMaxSize()`, or `pl$PartitionParted()`)
+  are deprecated in favor of the new experimental partition by class, constructed with
+  `pl$PartitionBy()` (#1716).
+
 ### New features
 
 - New S3 method `nanoarrow::as_nanoarrow_array_stream(<lazyframe>)` to export a LazyFrame via the Arrow C stream interface
