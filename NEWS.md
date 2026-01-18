@@ -4,7 +4,7 @@
 
 ### Deprecations
 
-- The experimental partitioning scheme class
+- The experimental partitioning scheme classes
   (constructed with `pl$PartitionByKey()`, `pl$PartitionMaxSize()`, or `pl$PartitionParted()`)
   are deprecated in favor of the new experimental partition by class, constructed with
   `pl$PartitionBy()` (#1716).
