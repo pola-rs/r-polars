@@ -118,7 +118,7 @@ fn extract_partition_by(obj: &ObjSexp) -> savvy::Result<Wrap<SinkDestination>> {
     };
 
     Ok(Wrap(SinkDestination::Partitioned {
-        base_path: PlPath::new(base_path),
+        base_path: PlRefPath::new(base_path),
         file_path_provider: None,
         partition_strategy,
         finish_callback: None,
@@ -189,7 +189,7 @@ fn extract_sink_directory(obj: &ObjSexp) -> savvy::Result<Wrap<SinkDestination>>
     };
 
     Ok(Wrap(SinkDestination::Partitioned {
-        base_path: PlPath::new(base_path),
+        base_path: PlRefPath::new(base_path),
         file_path_provider: None,
         partition_strategy,
         finish_callback: None,

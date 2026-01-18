@@ -1121,7 +1121,7 @@ impl TryFrom<StringSexp> for Wrap<ScanSources> {
                 if s.is_na() {
                     return Err("`NA` can't be included in scan sources.");
                 }
-                Ok(PlPath::new(s))
+                Ok(PlRefPath::new(s))
             })
             .collect::<Result<Vec<_>, _>>()?;
 
@@ -1150,7 +1150,7 @@ impl TryFrom<&str> for Wrap<SinkDestination> {
 
     fn try_from(path: &str) -> Result<Self, Self::Error> {
         Ok(Wrap(SinkDestination::File {
-            target: SinkTarget::Path(PlPath::new(path)),
+            target: SinkTarget::Path(PlRefPath::new(path)),
         }))
     }
 }
