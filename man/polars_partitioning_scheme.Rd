@@ -60,11 +60,11 @@ Defaults to approximately 4GB when \code{key} is specified without \code{max_row
 otherwise unlimited.}
 
 \item{by}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-Something can be coerced to a list of \link[=polars_expr]{expressions}.
+Something that can be coerced to a list of \link[=polars_expr]{expressions}.
 Used to partition by. Use the \code{key} property of \code{pl$PartitionBy} instead.}
 
 \item{per_partition_sort_by}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-Something can be coerced to a list of \link[=polars_expr]{expressions}, or \code{NULL} (default).
+Something that can be coerced to a list of \link[=polars_expr]{expressions}, or \code{NULL} (default).
 Used to sort over within each partition.
 Use the \code{per_partition_sort_by} property of \code{pl$PartitionBy} instead.}
 
@@ -75,7 +75,8 @@ Use the \code{max_rows_per_file} property of \code{pl$PartitionBy} instead.}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-Partitioning schemes are used to write multiple files with \verb{sink_*} methods.
+Partitioning schemes are used to write multiple files with \verb{sink_*} and
+\verb{write_*} methods.
 \itemize{
 \item \code{\link[=polars_partitioning_scheme]{pl$PartitionBy()}}: Configuration for writing to
 multiple output files. Supports partitioning by key expressions, file size limits,
