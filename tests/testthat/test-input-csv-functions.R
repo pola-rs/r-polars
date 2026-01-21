@@ -224,6 +224,10 @@ test_that("read/scan: scan_csv can include file path", {
 
   df <- pl$scan_csv(c(temp_file_1, temp_file_2), include_file_paths = "file_paths")$collect()
 
+  # Due to https://github.com/pola-rs/polars/pull/26052,
+  # the former uses `C:/Users/...`, but the latter `C:\\Users\\...`
+  # TODO: This may be fixed after https://github.com/servo/rust-url/issues/1077 is fixed
+  skip_on_os("windows")
   expect_equal(
     df$select("file_paths"),
     pl$DataFrame(file_paths = rep(c(temp_file_1, temp_file_2), each = 32))
