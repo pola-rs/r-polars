@@ -257,7 +257,7 @@ as_polars_series.raw <- function(x, name = NULL, ...) {
 #' @export
 as_polars_series.factor <- function(x, name = NULL, ...) {
   PlRSeries$new_str(name %||% "", as.character(x))$cast(
-    pl$Categorical()$`_dt`,
+    pl$Enum(levels(x))$`_dt`,
     strict = TRUE
   ) |>
     wrap()
