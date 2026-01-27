@@ -160,16 +160,23 @@ impl PlRSeries {
                     Ok(r_func.call(args)?.into())
                 }
                 DataType::Enum(_, mapping) => {
-                    // Create factor using as.factor()
-                    let as_factor: FunctionSexp =
-                        <Sexp>::from(savvy::eval_parse_text("as.factor")?).try_into()?;
-                    let chr_vec =
-                        <Sexp>::from(Wrap(series.cast(&DataType::String).unwrap().str().unwrap()));
-                    let mut args = FunctionArgs::new();
-                    let _ = args.add("x", chr_vec);
-                    let factor: Sexp = as_factor.call(args)?.into();
+                    // Build factor manually to preserve Enum's level order
+                    // Convert to physical representation and cast to u32
+                    let phys = series.to_physical_repr();
+                    let phys_u32 = phys.cast(&DataType::UInt32).map_err(RPolarsErr::from)?;
+                    let phys_ca = phys_u32.u32().map_err(RPolarsErr::from)?;
+                    let len = phys_ca.len();
 
-                    // Replace levels with full Enum categories using `levels<-`
+                    // Get physical codes (0-indexed) and convert to R's 1-indexed
+                    let mut codes = OwnedIntegerSexp::new(len)?;
+                    for (i, opt_v) in phys_ca.into_iter().enumerate() {
+                        match opt_v {
+                            Some(v) => codes.set_elt(i, (v + 1) as i32)?,
+                            None => codes.set_na(i)?,
+                        }
+                    }
+
+                    // Get categories from Enum mapping and set as levels
                     let categories = unsafe {
                         StringChunked::from_chunks(
                             PlSmallStr::from_static("category"),
@@ -177,13 +184,10 @@ impl PlRSeries {
                         )
                     };
                     let levels: Sexp = Wrap(&categories).into();
-                    let set_levels: FunctionSexp =
-                        <Sexp>::from(savvy::eval_parse_text("`levels<-`")?).try_into()?;
-                    let mut args = FunctionArgs::new();
-                    let _ = args.add("x", factor);
-                    let _ = args.add("value", levels);
+                    codes.set_attrib("levels", levels)?;
+                    codes.set_class(["factor"])?;
 
-                    Ok(set_levels.call(args)?.into())
+                    Ok(codes.into())
                 }
                 DataType::List(inner) => unsafe {
                     let len = series.len();
