@@ -150,7 +150,7 @@ impl PlRSeries {
                     series.cast(&DataType::Float64).unwrap().f64().unwrap(),
                 ))),
                 DataType::Float64 => Ok(<Sexp>::from(Wrap(series.f64().unwrap()))),
-                DataType::Categorical(_, _) | DataType::Enum(_, _) => {
+                DataType::Categorical(_, _) => {
                     let r_func: FunctionSexp =
                         <Sexp>::from(savvy::eval_parse_text("as.factor")?).try_into()?;
                     let chr_vec =
@@ -158,6 +158,32 @@ impl PlRSeries {
                     let mut args = FunctionArgs::new();
                     let _ = args.add("x", chr_vec);
                     Ok(r_func.call(args)?.into())
+                }
+                DataType::Enum(_, mapping) => {
+                    // Create factor using as.factor()
+                    let as_factor: FunctionSexp =
+                        <Sexp>::from(savvy::eval_parse_text("as.factor")?).try_into()?;
+                    let chr_vec =
+                        <Sexp>::from(Wrap(series.cast(&DataType::String).unwrap().str().unwrap()));
+                    let mut args = FunctionArgs::new();
+                    let _ = args.add("x", chr_vec);
+                    let factor: Sexp = as_factor.call(args)?.into();
+
+                    // Replace levels with full Enum categories using `levels<-`
+                    let categories = unsafe {
+                        StringChunked::from_chunks(
+                            PlSmallStr::from_static("category"),
+                            vec![mapping.to_arrow(true)],
+                        )
+                    };
+                    let levels: Sexp = Wrap(&categories).into();
+                    let set_levels: FunctionSexp =
+                        <Sexp>::from(savvy::eval_parse_text("`levels<-`")?).try_into()?;
+                    let mut args = FunctionArgs::new();
+                    let _ = args.add("x", factor);
+                    let _ = args.add("value", levels);
+
+                    Ok(set_levels.call(args)?.into())
                 }
                 DataType::List(inner) => unsafe {
                     let len = series.len();
