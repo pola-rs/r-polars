@@ -337,3 +337,36 @@ patrick::with_parameters_test_that(
     expect_snapshot(dat[[value]], error = TRUE)
   }
 )
+
+test_that("as.data.frame() and as.list() keep all levels of Enums", {
+  lev <- c("b", "a", "c")
+  dat <- pl$DataFrame(
+    x = factor(c("a", "b"), levels = lev)
+  )$cast(x = pl$Enum(lev))
+
+  expect_equal(
+    dat |>
+      as.data.frame() |>
+      getElement("x") |>
+      levels(),
+    lev
+  )
+
+  # Same with as.list()
+  expect_equal(
+    dat |>
+      as.list(as_series = FALSE) |>
+      getElement("x") |>
+      levels(),
+    lev
+  )
+
+  # Changing the levels works
+  expect_equal(
+    dat$cast(x = pl$Enum(c("c", "b", "a"))) |>
+      as.data.frame() |>
+      getElement("x") |>
+      levels(),
+    c("c", "b", "a")
+  )
+})

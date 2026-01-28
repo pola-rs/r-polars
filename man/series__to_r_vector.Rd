@@ -132,6 +132,8 @@ depending on the \code{int64} argument.
 \item Decimal: \link{double}.
 \item String: \link{character}.
 \item Categorical: \link{factor}.
+\item Enum: \link{factor}, all categories (levels) are preserved, even if unobserved in
+the data.
 \item Date: \link{Date} or \link[data.table:IDateTime]{data.table::IDate},
 depending on the \code{date} argument.
 \item Time: \link[hms:hms]{hms::hms} or \link[data.table:IDateTime]{data.table::ITime},

@@ -9,6 +9,9 @@
   factors in an R `data.frame` to enums with `as_polars_df()`) with
   `options(polars.factor_as_enum = TRUE)` (#1723).
 
+- Converting a Polars enum to an R factor now preserves all levels, even if they
+  don't appear in the data (#1723).
+
 ## polars 1.8.0
 
 This is an update that corresponds to Python Polars 1.37.1.
