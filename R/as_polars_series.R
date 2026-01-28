@@ -253,11 +253,16 @@ as_polars_series.raw <- function(x, name = NULL, ...) {
     wrap()
 }
 
+#' @param factor_as_enum if `FALSE` (default), R factors are converted to Polars'
+#' [Categorical][pl__Categorical]. If `TRUE`, they are converted to Polars'
+#' [Enum][pl__Enum].
 #' @rdname as_polars_series
 #' @export
-as_polars_series.factor <- function(x, name = NULL, ...) {
+as_polars_series.factor <- function(x, name = NULL, ..., factor_as_enum = FALSE) {
+  opt <- getOption("polars.factor_as_enum")
+  factor_as_enum <- opt %||% factor_as_enum
   PlRSeries$new_str(name %||% "", as.character(x))$cast(
-    pl$Enum(levels(x))$`_dt`,
+    if (isTRUE(factor_as_enum)) pl$Enum(levels(x))$`_dt` else pl$Categorical()$`_dt`,
     strict = TRUE
   ) |>
     wrap()

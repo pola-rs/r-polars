@@ -86,6 +86,14 @@
       Error in `polars_options()`:
       ! `to_r_vector.non_existent` must be one of "raise" or "null", not "foo".
 
+# options are validated by polars_options() polars.factor_as_enum
+
+    Code
+      print(polars_options())
+    Condition
+      Error in `polars_options()`:
+      ! `factor_as_enum` must be `TRUE` or `FALSE`, not the string "foo".
+
 # options for to_r_vector() works: polars.to_r_vector.uint8 = integer
 
     Code

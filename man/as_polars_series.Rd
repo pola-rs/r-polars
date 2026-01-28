@@ -58,7 +58,7 @@ as_polars_series(x, name = NULL, ...)
 
 \method{as_polars_series}{raw}(x, name = NULL, ...)
 
-\method{as_polars_series}{factor}(x, name = NULL, ...)
+\method{as_polars_series}{factor}(x, name = NULL, ..., factor_as_enum = FALSE)
 
 \method{as_polars_series}{Date}(x, name = NULL, ...)
 
@@ -116,6 +116,10 @@ Will be used as a column name when used in a \link[=DataFrame]{polars DataFrame}
 When not specified, name is set to an empty string.}
 
 \item{...}{Additional arguments passed to the methods.}
+
+\item{factor_as_enum}{if \code{FALSE} (default), R factors are converted to Polars'
+\link[=pl__Categorical]{Categorical}. If \code{TRUE}, they are converted to Polars'
+\link[=pl__Enum]{Enum}.}
 
 \item{strict}{A logical value to indicate whether throwing an error when
 the input \link{list}'s elements have different data types.

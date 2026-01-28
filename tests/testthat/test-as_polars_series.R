@@ -68,6 +68,13 @@ patrick::with_parameters_test_that(
   }
 )
 
+test_that("use option to convert factor to enum", {
+  withr::with_options(
+    list(polars.factor_as_enum = TRUE),
+    expect_snapshot(as_polars_series(factor(1:2)))
+  )
+})
+
 test_that("as_polars_series.default throws an error", {
   x <- 1
   class(x) <- "foo"
