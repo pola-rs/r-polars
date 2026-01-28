@@ -2,6 +2,13 @@
 
 ## polars (development version)
 
+### New features
+
+- `as_polars_series()` on R factors now has an option `factor_as_enum` to convert
+  to a Polars Enum type. This can be set globally (for instance to convert all
+  factors in an R `data.frame` to enums with `as_polars_df()`) with
+  `options(polars.factor_as_enum = TRUE)` (#1723).
+
 ## polars 1.8.0
 
 This is an update that corresponds to Python Polars 1.37.1.
