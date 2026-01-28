@@ -223,6 +223,9 @@ pl__Categorical <- function(ordering = deprecated()) {
 #' Should not contain `NA` values and all values should be unique.
 pl__Enum <- function(categories) {
   wrap({
+    if (is_polars_series(categories)) {
+      return(PlRDataType$new_enum(categories$`_s`))
+    }
     check_character(categories, allow_na = FALSE)
 
     if (anyDuplicated(categories)) {

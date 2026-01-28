@@ -20,6 +20,9 @@
 #'   `compat_level` argument. See the documentation of those functions for details.
 #' * for all `to_r_vector.*` options, see arguments of [to_r_vector()][series__to_r_vector].
 #' * `df_knitr_print` (TODO: possible values??)
+#' * `factor_as_enum`: if `FALSE` (default), R factors are converted to Polars'
+#'   [Categorical][pl__Categorical]. If `TRUE`, they are converted to Polars'
+#'   [Enum][pl__Enum].
 #'
 #' @return
 #' `polars_options()` returns a named list where the names are option names and
@@ -47,7 +50,8 @@ polars_options <- function() {
     to_r_vector.decimal = getOption("polars.to_r_vector.decimal", "double"),
     to_r_vector.as_clock_class = getOption("polars.to_r_vector.as_clock_class", FALSE),
     to_r_vector.ambiguous = getOption("polars.to_r_vector.ambiguous", "raise"),
-    to_r_vector.non_existent = getOption("polars.to_r_vector.non_existent", "raise")
+    to_r_vector.non_existent = getOption("polars.to_r_vector.non_existent", "raise"),
+    factor_as_enum = getOption("polars.factor_as_enum", FALSE)
   )
 
   arg_match_compat_level(out[["compat_level"]], arg_nm = "compat_level")
@@ -74,6 +78,7 @@ polars_options <- function() {
     c("raise", "null"),
     arg_nm = "to_r_vector.non_existent"
   )
+  check_bool(out[["factor_as_enum"]], arg = "factor_as_enum")
   structure(out, class = "polars_options_list")
 }
 
