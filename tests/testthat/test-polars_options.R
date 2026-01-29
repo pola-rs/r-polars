@@ -13,6 +13,7 @@ patrick::with_parameters_test_that(
     "polars.to_r_vector.as_clock_class",
     "polars.to_r_vector.ambiguous",
     "polars.to_r_vector.non_existent",
+    "polars.factor_as_enum",
   ),
   {
     withr::with_options(

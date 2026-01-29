@@ -15,6 +15,8 @@
 #' - Decimal: [double].
 #' - String: [character].
 #' - Categorical: [factor].
+#' - Enum: [factor], all categories (levels) are preserved, even if unobserved in
+#'   the data.
 #' - Date: [Date] or [data.table::IDate][data.table::IDateTime],
 #'   depending on the `date` argument.
 #' - Time: [hms::hms] or [data.table::ITime][data.table::IDateTime],

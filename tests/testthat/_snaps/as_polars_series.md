@@ -426,6 +426,30 @@
       	null
       ]
 
+# use option to convert factor to enum
+
+    Code
+      as_polars_series(factor(1:2))
+    Output
+      shape: (2,)
+      Series: '' [enum]
+      [
+      	"1"
+      	"2"
+      ]
+
+---
+
+    Code
+      as_polars_series(factor(1:2), factor_as_enum = FALSE)
+    Output
+      shape: (2,)
+      Series: '' [cat]
+      [
+      	"1"
+      	"2"
+      ]
+
 # as_polars_series.default throws an error
 
     Code

@@ -36,6 +36,9 @@ default value in parenthesis):
 \code{compat_level} argument. See the documentation of those functions for details.
 \item for all \verb{to_r_vector.*} options, see arguments of \link[=series__to_r_vector]{to_r_vector()}.
 \item \code{df_knitr_print} (TODO: possible values??)
+\item \code{factor_as_enum}: if \code{FALSE} (default), R factors are converted to Polars'
+\link[=pl__Categorical]{Categorical}. If \code{TRUE}, they are converted to Polars'
+\link[=pl__Enum]{Enum}.
 }
 }
 \examples{
