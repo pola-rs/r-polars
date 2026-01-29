@@ -117,9 +117,9 @@ When not specified, name is set to an empty string.}
 
 \item{...}{Additional arguments passed to the methods.}
 
-\item{factor_as_enum}{if \code{FALSE} (default), R factors are converted to Polars'
-\link[=pl__Categorical]{Categorical}. If \code{TRUE}, they are converted to Polars'
-\link[=pl__Enum]{Enum}.}
+\item{factor_as_enum}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} if \code{FALSE}
+(default), R factors are converted to Polars \link[=pl__Categorical]{Categorical}.
+If \code{TRUE}, they are converted to Polars \link[=pl__Enum]{Enum}.}
 
 \item{strict}{A logical value to indicate whether throwing an error when
 the input \link{list}'s elements have different data types.
