@@ -111,7 +111,6 @@ fn extract_partition_by(obj: &ObjSexp) -> savvy::Result<Wrap<SinkDestination>> {
             keys: key.0.clone(),
             include_keys: include_key.unwrap_or(true),
             keys_pre_grouped: false,
-            per_partition_sort_by: vec![],
         }
     } else {
         PartitionStrategy::FileSize
@@ -121,7 +120,6 @@ fn extract_partition_by(obj: &ObjSexp) -> savvy::Result<Wrap<SinkDestination>> {
         base_path: PlRefPath::new(base_path),
         file_path_provider: None,
         partition_strategy,
-        finish_callback: None,
         max_rows_per_file: max_rows_per_file.map(|wrap| wrap.0).unwrap_or(IdxSize::MAX),
         approximate_bytes_per_file: approximate_bytes_per_file
             .map(|wrap| wrap.0)
@@ -157,16 +155,6 @@ fn extract_sink_directory(obj: &ObjSexp) -> savvy::Result<Wrap<SinkDestination>>
             keys: partition_by.0.clone(),
             include_keys: include_keys.unwrap_or(true),
             keys_pre_grouped: partition_keys_sorted.unwrap_or(false),
-            per_partition_sort_by: per_partition_sort_by
-                .map(|wrap| wrap.0)
-                .unwrap_or_default()
-                .into_iter()
-                .map(|x| SortColumn {
-                    expr: x,
-                    descending: false,
-                    nulls_last: false,
-                })
-                .collect(),
         }
     } else if let Some(parameter_name) = partition_keys_sorted
         .is_some()
@@ -192,7 +180,6 @@ fn extract_sink_directory(obj: &ObjSexp) -> savvy::Result<Wrap<SinkDestination>>
         base_path: PlRefPath::new(base_path),
         file_path_provider: None,
         partition_strategy,
-        finish_callback: None,
         max_rows_per_file: max_rows_per_file.map(|wrap| wrap.0).unwrap_or(IdxSize::MAX),
         // Legacy classes don't support approximate_bytes_per_file
         approximate_bytes_per_file: u64::MAX,

@@ -738,6 +738,7 @@ impl PlRLazyFrame {
         try_parse_hive_dates: bool,
         retries: NumericScalar,
         row_index_offset: NumericScalar,
+        record_batch_statistics: bool,
         n_rows: Option<NumericScalar>,
         row_index_name: Option<&str>,
         storage_options: Option<StringSexp>,
@@ -748,11 +749,14 @@ impl PlRLazyFrame {
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            let options = IpcScanOptions;
+            let options = IpcScanOptions {
+                record_batch_statistics,
+                checked: Default::default(),
+            };
 
             let sources = <Wrap<ScanSources>>::try_from(source)?.0;
             let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
-            let retries = <Wrap<usize>>::try_from(retries)?.0;
+            let _retries = <Wrap<usize>>::try_from(retries)?.0;
             let hive_schema = match hive_schema {
                 Some(x) => Some(<Wrap<Schema>>::try_from(x)?),
                 None => None,
@@ -792,7 +796,7 @@ impl PlRLazyFrame {
             let first_path = sources.first_path().map(|p| p.to_owned());
             let cloud_schema = first_path.and_then(|p| CloudScheme::from_path(p.as_str()));
 
-            let cloud_options = parse_cloud_options(cloud_schema, storage_options, retries)?;
+            let cloud_options = parse_cloud_options(cloud_schema, storage_options)?;
 
             let mut unified_scan_args = UnifiedScanArgs {
                 cloud_options,
@@ -873,7 +877,7 @@ impl PlRLazyFrame {
                 Some(x) => Some(<Wrap<NullValues>>::try_from(x)?.0),
                 None => None,
             };
-            let retries = <Wrap<usize>>::try_from(retries)?.0;
+            let _retries = <Wrap<usize>>::try_from(retries)?.0;
             let file_cache_ttl = match file_cache_ttl {
                 Some(x) => Some(<Wrap<u64>>::try_from(x)?.0),
                 None => None,
@@ -928,7 +932,7 @@ impl PlRLazyFrame {
             let first_path = sources.first_path().map(|p| p.to_owned());
             let cloud_schema = first_path.and_then(|p| CloudScheme::from_path(p.as_str()));
 
-            let mut cloud_options = parse_cloud_options(cloud_schema, storage_options, retries)?;
+            let mut cloud_options = parse_cloud_options(cloud_schema, storage_options)?;
 
             if let Some(file_cache_ttl) = file_cache_ttl {
                 cloud_options.get_or_insert_default().file_cache_ttl = file_cache_ttl;
@@ -1001,7 +1005,7 @@ impl PlRLazyFrame {
                 None => None,
             };
             let parallel = <Wrap<ParallelStrategy>>::try_from(parallel)?.0;
-            let retries = <Wrap<usize>>::try_from(retries)?.0;
+            let _retries = <Wrap<usize>>::try_from(retries)?.0;
             let hive_schema = match hive_schema {
                 Some(x) => Some(Arc::new(<Wrap<Schema>>::try_from(x)?.0)),
                 None => None,
@@ -1045,7 +1049,7 @@ impl PlRLazyFrame {
             let first_path = sources.first_path().map(|p| p.to_owned());
             let cloud_schema = first_path.and_then(|p| CloudScheme::from_path(p.as_str()));
 
-            let cloud_options = parse_cloud_options(cloud_schema, storage_options, retries)?;
+            let cloud_options = parse_cloud_options(cloud_schema, storage_options)?;
 
             let unified_scan_args = UnifiedScanArgs {
                 cloud_options,
@@ -1110,7 +1114,7 @@ impl PlRLazyFrame {
                 Some(x) => Some(<Wrap<u64>>::try_from(x)?.0),
                 None => None,
             };
-            let retries = <Wrap<usize>>::try_from(retries)?.0;
+            let _retries = <Wrap<usize>>::try_from(retries)?.0;
             let schema = match schema {
                 Some(x) => Some(<Wrap<Schema>>::try_from(x)?.0),
                 None => None,
@@ -1140,7 +1144,7 @@ impl PlRLazyFrame {
             let first_path = sources.first_path().map(|p| p.to_owned());
             let cloud_schema = first_path.and_then(|p| CloudScheme::from_path(p.as_str()));
 
-            let mut cloud_options = parse_cloud_options(cloud_schema, storage_options, retries)?;
+            let mut cloud_options = parse_cloud_options(cloud_schema, storage_options)?;
 
             if let Some(file_cache_ttl) = file_cache_ttl {
                 cloud_options.get_or_insert_default().file_cache_ttl = file_cache_ttl;
@@ -1187,7 +1191,7 @@ impl PlRLazyFrame {
         storage_options: Option<StringSexp>,
         // TODO: support these arguments
         // metadata,
-        // field_overwrites,
+        // arrow_schema,
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
@@ -1212,7 +1216,7 @@ impl PlRLazyFrame {
                 Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
                 None => None,
             };
-            let retries = <Wrap<usize>>::try_from(retries)?.0;
+            let _retries = <Wrap<usize>>::try_from(retries)?.0;
             let storage_options = match storage_options {
                 Some(x) => {
                     let out = <Wrap<Vec<(String, String)>>>::try_from(x)
@@ -1233,11 +1237,10 @@ impl PlRLazyFrame {
                 row_group_size,
                 data_page_size,
                 key_value_metadata: None,
-                field_overwrites: vec![],
+                arrow_schema: None,
             };
 
-            let cloud_options =
-                parse_cloud_options(target.cloud_scheme(), storage_options, retries)?;
+            let cloud_options = parse_cloud_options(target.cloud_scheme(), storage_options)?;
 
             let unified_sink_args = UnifiedSinkArgs {
                 mkdir,
@@ -1267,6 +1270,8 @@ impl PlRLazyFrame {
         &self,
         target: Sexp,
         include_bom: bool,
+        compression: &str,
+        check_extension: bool,
         include_header: bool,
         separator: &str,
         line_terminator: &str,
@@ -1277,6 +1282,7 @@ impl PlRLazyFrame {
         maintain_order: bool,
         mkdir: bool,
         decimal_comma: bool,
+        compression_level: Option<NumericScalar>,
         datetime_format: Option<&str>,
         date_format: Option<&str>,
         time_format: Option<&str>,
@@ -1294,7 +1300,7 @@ impl PlRLazyFrame {
                 Some(x) => <Wrap<QuoteStyle>>::try_from(x)?.0,
                 None => QuoteStyle::default(),
             };
-            let retries = <Wrap<usize>>::try_from(retries)?.0;
+            let _retries = <Wrap<usize>>::try_from(retries)?.0;
             let null_value = null_value
                 .map(PlSmallStr::from_str)
                 .unwrap_or(SerializeOptions::default().null);
@@ -1319,6 +1325,13 @@ impl PlRLazyFrame {
                 None => None,
             };
 
+            let compression_level = match compression_level {
+                Some(x) => Some(<Wrap<u32>>::try_from(x)?.0),
+                None => None,
+            };
+            let compression = ExternalCompression::try_from(compression, compression_level)
+                .map_err(RPolarsErr::from)?;
+
             let serialize_options = SerializeOptions {
                 date_format: date_format.map(PlSmallStr::from_str),
                 time_format: time_format.map(PlSmallStr::from_str),
@@ -1337,11 +1350,12 @@ impl PlRLazyFrame {
                 include_bom,
                 include_header,
                 batch_size,
+                compression,
+                check_extension,
                 serialize_options: serialize_options.into(),
             };
 
-            let cloud_options =
-                parse_cloud_options(target.cloud_scheme(), storage_options, retries)?;
+            let cloud_options = parse_cloud_options(target.cloud_scheme(), storage_options)?;
 
             let unified_sink_args = UnifiedSinkArgs {
                 mkdir,
@@ -1363,19 +1377,22 @@ impl PlRLazyFrame {
         }
     }
 
-    fn sink_json(
+    fn sink_ndjson(
         &self,
         target: Sexp,
         retries: NumericScalar,
         sync_on_close: &str,
         maintain_order: bool,
         mkdir: bool,
+        compression: &str,
+        check_extension: bool,
+        compression_level: Option<NumericScalar>,
         storage_options: Option<StringSexp>,
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
             let target = <Wrap<SinkDestination>>::try_from(target)?.0;
-            let retries = <Wrap<usize>>::try_from(retries)?.0;
+            let _retries = <Wrap<usize>>::try_from(retries)?.0;
             let storage_options = match storage_options {
                 Some(x) => {
                     let out = <Wrap<Vec<(String, String)>>>::try_from(x)
@@ -1390,10 +1407,19 @@ impl PlRLazyFrame {
                 None => None,
             };
 
-            let options = JsonWriterOptions {};
+            let compression_level = match compression_level {
+                Some(x) => Some(<Wrap<u32>>::try_from(x)?.0),
+                None => None,
+            };
+            let compression = ExternalCompression::try_from(compression, compression_level)
+                .map_err(RPolarsErr::from)?;
 
-            let cloud_options =
-                parse_cloud_options(target.cloud_scheme(), storage_options, retries)?;
+            let options = NDJsonWriterOptions {
+                compression,
+                check_extension,
+            };
+
+            let cloud_options = parse_cloud_options(target.cloud_scheme(), storage_options)?;
             let unified_sink_args = UnifiedSinkArgs {
                 mkdir,
                 maintain_order,
@@ -1428,7 +1454,7 @@ impl PlRLazyFrame {
         #[cfg(not(target_arch = "wasm32"))]
         {
             let target = <Wrap<SinkDestination>>::try_from(target)?.0;
-            let retries = <Wrap<usize>>::try_from(retries)?.0;
+            let _retries = <Wrap<usize>>::try_from(retries)?.0;
             let compression: Option<IpcCompression> =
                 <Wrap<Option<IpcCompression>>>::try_from(compression)?.0;
             let compat_level = <Wrap<CompatLevel>>::try_from(compat_level)?.0;
@@ -1452,8 +1478,7 @@ impl PlRLazyFrame {
                 ..Default::default()
             };
 
-            let cloud_options =
-                parse_cloud_options(target.cloud_scheme(), storage_options, retries)?;
+            let cloud_options = parse_cloud_options(target.cloud_scheme(), storage_options)?;
 
             let unified_sink_args = UnifiedSinkArgs {
                 mkdir,

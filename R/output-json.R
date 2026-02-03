@@ -1,5 +1,5 @@
 # Output (ND)JSON functions: sink_ndjson, write_json, write_ndjson
-# (there is only sink_ndjson() in Python Polars but there is sink_json() in
+# (there is only sink_ndjson() in Python Polars but there is sink_ndjson() in
 # Rust Polars).
 
 #' Evaluate the query in streaming mode and write to a NDJSON file
@@ -84,7 +84,7 @@ lazyframe__lazy_sink_ndjson <- function(
       values = c("none", "data", "all")
     )
 
-    self$`_ldf`$sink_json(
+    self$`_ldf`$sink_ndjson(
       target = target,
       maintain_order = maintain_order,
       sync_on_close = sync_on_close,
