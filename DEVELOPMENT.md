@@ -530,10 +530,6 @@ When a new version of Polars is released, we update this hash (and the package v
 upstream changes. The py-polars release tags (e.g. `py-1.38.1`) serve as the reference point
 for what changed, since they correspond to specific Polars revisions.
 
-The `refs/polars/` directory (gitignored) can hold a checkout of the upstream
-[polars](https://github.com/pola-rs/polars) repository. This is useful for browsing
-the Python source code in `py-polars/` and the Rust crates while working on a bump.
-
 ### Step-by-step Workflow
 
 #### 1. Research upstream changes
@@ -546,7 +542,8 @@ the current and target versions. Categorize changes into:
 - **New features** — new functions, methods, or options added in py-polars
 
 The upstream polars CHANGELOG can be unreliable, so base your analysis on the actual code diff
-when possible (e.g. `git diff py-1.37.1..py-1.38.1 -- py-polars/` in the `refs/polars/` checkout).
+when possible (e.g. comparing between the two py-polars release tags on GitHub or in a local
+clone of the [polars](https://github.com/pola-rs/polars) repository).
 
 #### 2. Update `src/rust/Cargo.toml`
 
