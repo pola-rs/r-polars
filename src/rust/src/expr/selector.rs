@@ -80,7 +80,7 @@ impl PlRSelector {
     }
 
     fn by_name(names: StringSexp, require_all: bool) -> Result<Self> {
-        Ok(dsl::by_name(names.to_vec(), require_all).into())
+        Ok(dsl::by_name(names.to_vec(), require_all, false).into())
     }
 
     fn by_index(indices: NumericSexp, require_all: bool) -> Result<Self> {
