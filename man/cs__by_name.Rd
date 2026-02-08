@@ -4,7 +4,7 @@
 \alias{cs__by_name}
 \title{Select all columns matching the given names}
 \usage{
-cs__by_name(..., require_all = TRUE)
+cs__by_name(..., require_all = TRUE, expand_patterns = FALSE)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column names to select.}
