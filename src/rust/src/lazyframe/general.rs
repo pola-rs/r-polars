@@ -748,7 +748,9 @@ impl PlRLazyFrame {
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            let options = IpcScanOptions;
+            let options = IpcScanOptions {
+                ..Default::default()
+            };
 
             let sources = <Wrap<ScanSources>>::try_from(source)?.0;
             let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
