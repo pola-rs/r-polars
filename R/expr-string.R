@@ -882,6 +882,10 @@ expr_str_count_matches <- function(pattern, ..., literal = FALSE) {
 #' @inheritParams rlang::args_dots_empty
 #' @param by Substring to split by. Can be an Expr.
 #' @param inclusive If `TRUE`, include the split character/string in the results.
+#' @param literal If `TRUE` (default),  treat `by` as a literal string, not as
+#' a regular expression.
+#' @param strict If `TRUE` (default), raise an error if the underlying pattern
+#' is not a valid regex, otherwise mask out with a null value.
 #'
 #' @inherit as_polars_expr return
 #'
@@ -895,13 +899,59 @@ expr_str_count_matches <- function(pattern, ..., literal = FALSE) {
 #' )
 #' df
 #' df$select(split = pl$col("s")$str$split(by = pl$col("by")))
-expr_str_split <- function(by, ..., inclusive = FALSE) {
+#'
+#' df <- pl$DataFrame(s = c("foo1bar", "foo99bar", "foo1bar2baz"))
+#' df
+#' df$with_columns(
+#'   pl$col("s")$str$split(by = "\\d+", literal = FALSE)$alias("split_regex"),
+#'   pl$col("s")$str$split(by = "\\d+", literal = FALSE, inclusive = TRUE)$alias(
+#'     "split_regex_inclusive"
+#'   ),
+#' )
+#'
+#' df <- pl$DataFrame(
+#'   s = c("foo1bar", "foo bar", "foo-bar baz"),
+#'   by = c("\\d", "\\s", "-"),
+#' )
+#' df$with_columns(
+#'   pl$col("s")$str$split(by = pl$col("by"), literal = FALSE)$alias("split_regex"),
+#'   pl$col("s")$str$split(by = pl$col("by"), literal = FALSE, inclusive = TRUE)$alias(
+#'     "split_regex_inclusive"
+#'   ),
+#' )
+expr_str_split <- function(by, ..., inclusive = FALSE, literal = TRUE, strict = TRUE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$str_split(
-      as_polars_expr(by, as_lit = TRUE)$`_rexpr`,
-      inclusive
-    )
+    check_bool(inclusive)
+    check_bool(literal)
+    check_bool(strict)
+    by <- as_polars_expr(by, as_lit = TRUE)$`_rexpr`
+
+    if (isFALSE(literal)) {
+      if (isTRUE(inclusive)) {
+        return(
+          self$`_rexpr`$str_split_regex_inclusive(by, strict) |>
+            wrap()
+        )
+      } else {
+        return(
+          self$`_rexpr`$str_split_regex(by, strict) |>
+            wrap()
+        )
+      }
+    }
+
+    if (isTRUE(inclusive)) {
+      return(
+        self$`_rexpr`$str_split_inclusive(by) |>
+          wrap()
+      )
+    } else {
+      return(
+        self$`_rexpr`$str_split(by) |>
+          wrap()
+      )
+    }
   })
 }
 
@@ -925,11 +975,13 @@ expr_str_split <- function(by, ..., inclusive = FALSE) {
 expr_str_split_exact <- function(by, n, ..., inclusive = FALSE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$str_split_exact(
-      as_polars_expr(by, as_lit = TRUE)$`_rexpr`,
-      n,
-      inclusive
-    )
+    check_bool(inclusive)
+    by <- as_polars_expr(by, as_lit = TRUE)
+    if (isTRUE(inclusive)) {
+      self$`_rexpr`$str_split_exact_inclusive(by$`_rexpr`, n)
+    } else {
+      self$`_rexpr`$str_split_exact(by$`_rexpr`, n)
+    }
   })
 }
 
