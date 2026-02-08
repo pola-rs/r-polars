@@ -3981,7 +3981,7 @@ expr_arr_explode <- expr__explode
 #' @description
 #' `r lifecycle::badge("deprecated")`
 #'
-#' `$flatten()` is deprecated. Use [$list$explode()][exprlist__explode] instead.
+#' `$flatten()` is deprecated. Use [$list$explode()][expr_list_explode] instead.
 #'
 #' @inherit as_polars_expr return
 #' @examples

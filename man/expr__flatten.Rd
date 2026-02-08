@@ -12,7 +12,7 @@ A polars \link{expression}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
-\verb{$flatten()} is deprecated. Use \link[=exprlist__explode]{$list$explode()} instead.
+\verb{$flatten()} is deprecated. Use \link[=expr_list_explode]{$list$explode()} instead.
 }
 \examples{
 df <- pl$DataFrame(
