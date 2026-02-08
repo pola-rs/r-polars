@@ -21,23 +21,11 @@ pl__PartitionBy(
   approximate_bytes_per_file = NULL
 )
 
-pl__PartitionByKey(
-  base_path,
-  ...,
-  by,
-  include_key = TRUE,
-  per_partition_sort_by = NULL
-)
+pl__PartitionByKey(base_path, ..., by, include_key = TRUE)
 
-pl__PartitionMaxSize(base_path, ..., max_size, per_partition_sort_by = NULL)
+pl__PartitionMaxSize(base_path, ..., max_size)
 
-pl__PartitionParted(
-  base_path,
-  ...,
-  by,
-  include_key = TRUE,
-  per_partition_sort_by = NULL
-)
+pl__PartitionParted(base_path, ..., by, include_key = TRUE)
 }
 \arguments{
 \item{base_path}{The base path for the output files.
@@ -62,11 +50,6 @@ otherwise unlimited.}
 \item{by}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 Something that can be coerced to a list of \link[=polars_expr]{expressions}.
 Used to partition by. Use the \code{key} property of \code{pl$PartitionBy} instead.}
-
-\item{per_partition_sort_by}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-Something that can be coerced to a list of \link[=polars_expr]{expressions}, or \code{NULL} (default).
-Used to sort over within each partition.
-Use the \code{per_partition_sort_by} property of \code{pl$PartitionBy} instead.}
 
 \item{max_size}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 An integer-ish value indicating the maximum size in rows of each of the generated files.

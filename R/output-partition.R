@@ -39,10 +39,6 @@
 #' @param by `r lifecycle::badge("deprecated")`
 #'   Something that can be coerced to a list of [expressions][polars_expr].
 #'   Used to partition by. Use the `key` property of `pl$PartitionBy` instead.
-#' @param per_partition_sort_by `r lifecycle::badge("deprecated")`
-#'   Something that can be coerced to a list of [expressions][polars_expr], or `NULL` (default).
-#'   Used to sort over within each partition.
-#'   Use the `per_partition_sort_by` property of `pl$PartitionBy` instead.
 #' @param max_size `r lifecycle::badge("deprecated")`
 #'   An integer-ish value indicating the maximum size in rows of each of the generated files.
 #'   Use the `max_rows_per_file` property of `pl$PartitionBy` instead.
@@ -169,8 +165,6 @@ SinkDirectory <- new_class(
     partition_by = prop_list_of_rexpr(allow_null = TRUE, names = "none"),
     partition_keys_sorted = prop_bool(allow_null = TRUE),
     include_keys = prop_bool(allow_null = TRUE),
-    per_partition_sort_by = prop_list_of_rexpr(allow_null = TRUE, names = "none"),
-    per_file_sort_by = prop_list_of_rexpr(allow_null = TRUE, names = "none"),
     max_rows_per_file = prop_number_whole(allow_null = TRUE)
   ),
   constructor = function(
@@ -179,8 +173,6 @@ SinkDirectory <- new_class(
     partition_by = NULL,
     partition_keys_sorted = NULL,
     include_keys = NULL,
-    per_partition_sort_by = NULL,
-    per_file_sort_by = NULL,
     max_rows_per_file = NULL
   ) {
     check_dots_empty0(...)
@@ -191,8 +183,6 @@ SinkDirectory <- new_class(
       partition_by = parse_to_rexpr_list(partition_by),
       partition_keys_sorted = partition_keys_sorted,
       include_keys = include_keys,
-      per_partition_sort_by = parse_to_rexpr_list(per_partition_sort_by),
-      per_file_sort_by = parse_to_rexpr_list(per_file_sort_by),
       max_rows_per_file = max_rows_per_file
     )
   }
@@ -204,8 +194,7 @@ PartitionMaxSize <- new_class(
   constructor = function(
     base_path,
     ...,
-    max_size,
-    per_partition_sort_by = NULL
+    max_size
   ) {
     check_dots_empty0(...)
     deprecate_warn(
@@ -222,8 +211,7 @@ PartitionMaxSize <- new_class(
     new_object(
       SinkDirectory(
         base_path = base_path,
-        max_rows_per_file = max_size,
-        per_partition_sort_by = per_partition_sort_by
+        max_rows_per_file = max_size
       )
     )
   }
@@ -241,8 +229,7 @@ PartitionByKey <- new_class(
     base_path,
     ...,
     by,
-    include_key = TRUE,
-    per_partition_sort_by = NULL
+    include_key = TRUE
   ) {
     check_dots_empty0(...)
     deprecate_warn(
@@ -260,8 +247,7 @@ PartitionByKey <- new_class(
       SinkDirectory(
         base_path = base_path,
         partition_by = by,
-        include_keys = include_key,
-        per_partition_sort_by = per_partition_sort_by
+        include_keys = include_key
       )
     )
   }
@@ -279,8 +265,7 @@ PartitionParted <- new_class(
     base_path,
     ...,
     by,
-    include_key = TRUE,
-    per_partition_sort_by = NULL
+    include_key = TRUE
   ) {
     check_dots_empty0(...)
     deprecate_warn(
@@ -299,8 +284,7 @@ PartitionParted <- new_class(
         base_path = base_path,
         partition_by = by,
         partition_keys_sorted = TRUE,
-        include_keys = include_key,
-        per_partition_sort_by = per_partition_sort_by
+        include_keys = include_key
       )
     )
   }
