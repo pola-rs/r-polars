@@ -220,6 +220,18 @@
 # rolling_*_by: arg 'closed'
 
     Code
+      df$select(pl$col("a")$rolling_rank_by("date", window_size = "2d", closed = "left"))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: `rolling_rank_by` window needs to be closed on the right side (i.e., `closed` must be `right` or `both`)
+
+---
+
+    Code
       df$select(pl$col("a")$rolling_min_by("date", window_size = "2d", closed = "foo"))
     Condition
       Error in `df$select()`:

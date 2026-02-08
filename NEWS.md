@@ -2,6 +2,36 @@
 
 ## polars (development version)
 
+This is an update that corresponds to Python Polars 1.38.1.
+
+### Deprecations
+
+- The `retries` argument in scan/read and sink/write functions is deprecated.
+  Use `max_retries` in `storage_options` instead.
+- The `file_cache_ttl` argument in `pl$scan_csv()`, `pl$scan_ipc()`, `pl$scan_ndjson()`,
+  and their `read_*` counterparts is deprecated.
+  Use `file_cache_ttl` in `storage_options` instead.
+- `<expr>$flatten()` is deprecated. Use `<expr>$list$explode()` instead.
+
+### New features
+
+- `cs$by_name()` gains the `expand_patterns` argument. When set to `TRUE`, regex patterns
+  (`^...$`) and wildcards (`*`) in column names are expanded
+  ([pola-rs/polars#26437](https://github.com/pola-rs/polars/pull/26437)).
+
+### Bug fixes
+
+- `<expr>$rolling_rank_by()` now requires the `closed` argument to be `"right"` or `"both"`.
+  Previously, `"left"` and `"none"` were silently accepted but could produce incorrect results
+  ([pola-rs/polars#26287](https://github.com/pola-rs/polars/pull/26287)).
+
+### Other changes
+
+- The `per_partition_sort_by` argument of the deprecated partition classes
+  (`pl$PartitionByKey()`, `pl$PartitionMaxSize()`, `pl$PartitionParted()`) has been removed.
+  This feature was removed from upstream Polars
+  ([pola-rs/polars#26130](https://github.com/pola-rs/polars/pull/26130)).
+
 ## polars 1.8.0
 
 This is an update that corresponds to Python Polars 1.37.1.

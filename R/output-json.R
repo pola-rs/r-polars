@@ -26,7 +26,7 @@ lazyframe__sink_ndjson <- function(
   ...,
   maintain_order = TRUE,
   storage_options = NULL,
-  retries = 2,
+  retries = deprecated(),
   sync_on_close = c("none", "data", "all"),
   mkdir = FALSE,
   engine = c("auto", "in-memory", "streaming"),
@@ -71,12 +71,32 @@ lazyframe__lazy_sink_ndjson <- function(
   ...,
   maintain_order = TRUE,
   storage_options = NULL,
-  retries = 2,
+  retries = deprecated(),
   sync_on_close = c("none", "data", "all"),
   mkdir = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
+    check_character(storage_options, allow_null = TRUE)
+
+    if (is_present(retries)) {
+      deprecate_warn(
+        c(
+          `!` = sprintf(
+            "The %s argument is deprecated as of %s 1.9.0.",
+            format_arg("retries"),
+            format_pkg("polars")
+          ),
+          i = sprintf(
+            "Specify %s in %s instead.",
+            format_code("max_retries"),
+            format_arg("storage_options")
+          )
+        )
+      )
+      storage_options <- storage_options %||% character()
+      storage_options[["max_retries"]] <- as.character(retries)
+    }
 
     target <- arg_to_sink_target(path)
     sync_on_close <- arg_match0(
@@ -89,8 +109,7 @@ lazyframe__lazy_sink_ndjson <- function(
       maintain_order = maintain_order,
       sync_on_close = sync_on_close,
       mkdir = mkdir,
-      storage_options = storage_options,
-      retries = retries
+      storage_options = storage_options
     )
   })
 }

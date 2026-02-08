@@ -6,7 +6,7 @@
       Error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! failed to retrieve first file schema (ipc): empty input: paths: [].: 'ipc scan': 'sink'
+      ! failed to retrieve first file schema (ipc): empty input: paths: [].
 
 ---
 

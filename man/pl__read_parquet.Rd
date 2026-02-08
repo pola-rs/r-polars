@@ -21,7 +21,7 @@ pl__read_parquet(
   low_memory = FALSE,
   cache = TRUE,
   storage_options = NULL,
-  retries = 2,
+  retries = deprecated(),
   include_file_paths = NULL,
   missing_columns = c("insert", "raise"),
   allow_missing_columns = deprecated()
@@ -100,7 +100,9 @@ variable.
 If \code{storage_options} is not provided, Polars will try to infer the
 information from environment variables.}
 
-\item{retries}{Number of retries if accessing a cloud instance fails.}
+\item{retries}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Number of retries if
+accessing a cloud instance fails. Specify \code{max_retries} in
+\code{storage_options} instead.}
 
 \item{include_file_paths}{Include the path of the source file(s) as a column
 with this name.}

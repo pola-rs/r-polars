@@ -45,7 +45,7 @@ pl__col <- function(...) {
       if (length(dots) == 1L) {
         col(dots[[1]])
       } else {
-        cs__by_name(!!!dots, require_all = TRUE)$as_expr()
+        cs__by_name(!!!dots, require_all = TRUE, expand_patterns = TRUE)$as_expr()
       }
     } else if (is_list_of_polars_dtype(dots)) {
       cs__by_dtype(!!!dots)$as_expr()

@@ -1824,8 +1824,7 @@ test_that("rolling_*_by: arg 'closed'", {
     std = c(NA, NA, rep(0.7071067811865476, 4)),
     var = c(NA, NA, rep(0.5, 4)),
     median = c(NA, 1, 1.5, 2.5, 3.5, 4.5),
-    quantile_linear = c(NA, 1.00, 1.33, 2.33, 3.33, 4.33),
-    rank = c(NA, 1, rep(2, 4))
+    quantile_linear = c(NA, 1.00, 1.33, 2.33, 3.33, 4.33)
   )
 
   expect_equal(
@@ -1844,9 +1843,19 @@ test_that("rolling_*_by: arg 'closed'", {
         closed = "left",
         interpolation = "linear"
       ),
-      rank = pl$col("a")$rolling_rank_by("date", window_size = "2d", closed = "left"),
     ),
     expected
+  )
+
+  # rolling_rank_by requires closed to be "right" or "both"
+  expect_snapshot(
+    df$select(pl$col("a")$rolling_rank_by("date", window_size = "2d", closed = "left")),
+    error = TRUE
+  )
+
+  expect_equal(
+    df$select(pl$col("a")$rolling_rank_by("date", window_size = "2d", closed = "right")),
+    pl$DataFrame(a = c(1, 2, 2, 2, 2, 2))
   )
 
   expect_snapshot(

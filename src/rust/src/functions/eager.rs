@@ -54,6 +54,7 @@ pub fn concat_df_diagonal(dfs: ListSexp) -> Result<PlRDataFrame> {
 pub fn concat_df_horizontal(dfs: ListSexp, strict: bool) -> Result<PlRDataFrame> {
     let dfs = <Wrap<Vec<DataFrame>>>::try_from(dfs)?.0;
 
-    let df = functions::concat_df_horizontal(&dfs, true, strict).map_err(RPolarsErr::from)?;
+    let df =
+        functions::concat_df_horizontal(&dfs, true, strict, false).map_err(RPolarsErr::from)?;
     Ok(df.into())
 }
