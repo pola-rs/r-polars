@@ -3049,8 +3049,8 @@ SEXP savvy_PlRSelector_by_index__impl(SEXP c_arg__indices, SEXP c_arg__require_a
     return handle_result(res);
 }
 
-SEXP savvy_PlRSelector_by_name__impl(SEXP c_arg__names, SEXP c_arg__require_all) {
-    SEXP res = savvy_PlRSelector_by_name__ffi(c_arg__names, c_arg__require_all);
+SEXP savvy_PlRSelector_by_name__impl(SEXP c_arg__names, SEXP c_arg__require_all, SEXP c_arg__expand_patterns) {
+    SEXP res = savvy_PlRSelector_by_name__ffi(c_arg__names, c_arg__require_all, c_arg__expand_patterns);
     return handle_result(res);
 }
 
@@ -4053,7 +4053,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSelector_array__impl", (DL_FUNC) &savvy_PlRSelector_array__impl, 2},
     {"savvy_PlRSelector_by_dtype__impl", (DL_FUNC) &savvy_PlRSelector_by_dtype__impl, 1},
     {"savvy_PlRSelector_by_index__impl", (DL_FUNC) &savvy_PlRSelector_by_index__impl, 2},
-    {"savvy_PlRSelector_by_name__impl", (DL_FUNC) &savvy_PlRSelector_by_name__impl, 2},
+    {"savvy_PlRSelector_by_name__impl", (DL_FUNC) &savvy_PlRSelector_by_name__impl, 3},
     {"savvy_PlRSelector_categorical__impl", (DL_FUNC) &savvy_PlRSelector_categorical__impl, 0},
     {"savvy_PlRSelector_datetime__impl", (DL_FUNC) &savvy_PlRSelector_datetime__impl, 2},
     {"savvy_PlRSelector_decimal__impl", (DL_FUNC) &savvy_PlRSelector_decimal__impl, 0},

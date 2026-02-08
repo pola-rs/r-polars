@@ -149,7 +149,7 @@ selector__exclude <- function(...) {
     if (length(exclude_dtypes) > 0L) {
       self - cs__by_dtype(...)
     } else {
-      self - cs__by_name(..., require_all = FALSE)
+      self - cs__by_name(..., require_all = FALSE, expand_patterns = TRUE)
     }
   })
 }
@@ -403,13 +403,13 @@ cs__by_index <- function(indices, ..., require_all = TRUE) {
 #'
 #' # Match all columns except for those given:
 #' df$select(!cs$by_name("foo", "bar"))
-cs__by_name <- function(..., require_all = TRUE) {
+cs__by_name <- function(..., require_all = TRUE, expand_patterns = FALSE) {
   wrap({
     check_dots_unnamed()
     names <- list2(...)
     check_list_of_string(names, arg = "...")
 
-    PlRSelector$by_name(as.character(names), require_all)
+    PlRSelector$by_name(as.character(names), require_all, expand_patterns)
   })
 }
 
