@@ -190,14 +190,12 @@ pub fn concat_lf(
 pub fn concat_lf_horizontal(lfs: ListSexp, parallel: bool, strict: bool) -> Result<PlRLazyFrame> {
     let lfs = <Wrap<Vec<LazyFrame>>>::try_from(lfs)?.0;
 
-    let args = UnionArgs {
-        rechunk: false, // No need to rechunk with horizontal concatenation
+    let options = HConcatOptions {
         parallel,
-        to_supertypes: false,
         strict,
         ..Default::default()
     };
-    let lf = dsl::functions::concat_lf_horizontal(lfs, args).map_err(RPolarsErr::from)?;
+    let lf = dsl::functions::concat_lf_horizontal(lfs, options).map_err(RPolarsErr::from)?;
     Ok(lf.into())
 }
 
