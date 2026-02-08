@@ -144,6 +144,7 @@ lazyframe__lazy_sink_parquet <- function(
 ) {
   wrap({
     check_dots_empty0(...)
+    check_character(storage_options, allow_null = TRUE)
 
     if (is_present(retries)) {
       deprecate_warn(

@@ -85,6 +85,7 @@ pl__scan_ipc <- function(
 ) {
   check_dots_empty0(...)
   check_list_of_polars_dtype(hive_schema, allow_null = TRUE)
+  check_character(storage_options, allow_null = TRUE)
 
   if (is_present(retries)) {
     deprecate_warn(

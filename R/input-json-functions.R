@@ -35,6 +35,7 @@ pl__scan_ndjson <- function(
   }
   check_list_of_polars_dtype(schema, allow_null = TRUE)
   check_list_of_polars_dtype(schema_overrides, allow_null = TRUE)
+  check_character(storage_options, allow_null = TRUE)
 
   if (is_present(retries)) {
     deprecate_warn(

@@ -78,6 +78,7 @@ pl__scan_parquet <- function(
   if (length(source) == 0) {
     abort("`source` must have length > 0.")
   }
+  check_character(storage_options, allow_null = TRUE)
 
   if (is_present(retries)) {
     deprecate_warn(
