@@ -974,6 +974,11 @@ SEXP savvy_PlRExpr_bin_ends_with__impl(SEXP self__, SEXP c_arg__suffix) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_bin_get__impl(SEXP self__, SEXP c_arg__index, SEXP c_arg__null_on_oob) {
+    SEXP res = savvy_PlRExpr_bin_get__ffi(self__, c_arg__index, c_arg__null_on_oob);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_bin_hex_decode__impl(SEXP self__, SEXP c_arg__strict) {
     SEXP res = savvy_PlRExpr_bin_hex_decode__ffi(self__, c_arg__strict);
     return handle_result(res);
@@ -3638,6 +3643,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_bin_base64_encode__impl", (DL_FUNC) &savvy_PlRExpr_bin_base64_encode__impl, 1},
     {"savvy_PlRExpr_bin_contains__impl", (DL_FUNC) &savvy_PlRExpr_bin_contains__impl, 2},
     {"savvy_PlRExpr_bin_ends_with__impl", (DL_FUNC) &savvy_PlRExpr_bin_ends_with__impl, 2},
+    {"savvy_PlRExpr_bin_get__impl", (DL_FUNC) &savvy_PlRExpr_bin_get__impl, 3},
     {"savvy_PlRExpr_bin_hex_decode__impl", (DL_FUNC) &savvy_PlRExpr_bin_hex_decode__impl, 2},
     {"savvy_PlRExpr_bin_hex_encode__impl", (DL_FUNC) &savvy_PlRExpr_bin_hex_encode__impl, 1},
     {"savvy_PlRExpr_bin_reinterpret__impl", (DL_FUNC) &savvy_PlRExpr_bin_reinterpret__impl, 3},

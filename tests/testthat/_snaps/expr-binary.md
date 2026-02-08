@@ -68,3 +68,15 @@
       Caused by error in `as_polars_dtype_expr()`:
       ! the number 1 can't be converted to a polars datatype expression.
 
+# bin$get()
+
+    Code
+      df$select(pl$col("x")$bin$get(0))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! get index is out of bounds
+
