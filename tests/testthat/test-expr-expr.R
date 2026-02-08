@@ -1853,6 +1853,11 @@ test_that("rolling_*_by: arg 'closed'", {
     error = TRUE
   )
 
+  expect_equal(
+    df$select(pl$col("a")$rolling_rank_by("date", window_size = "2d", closed = "right")),
+    pl$DataFrame(a = c(1, 2, 2, 2, 2, 2))
+  )
+
   expect_snapshot(
     df$select(pl$col("a")$rolling_min_by("date", window_size = "2d", closed = "foo")),
     error = TRUE
