@@ -2,6 +2,20 @@
 
 ## polars (development version)
 
+This is an update that corresponds to Python Polars 1.38.1.
+
+### New features
+
+- `cs$by_name()` gains the `expand_patterns` argument. When set to `TRUE`, regex patterns
+  (`^...$`) and wildcards (`*`) in column names are expanded
+  ([pola-rs/polars#26437](https://github.com/pola-rs/polars/pull/26437)).
+
+### Bug fixes
+
+- `<expr>$rolling_rank_by()` now requires the `closed` argument to be `"right"` or `"both"`.
+  Previously, `"left"` and `"none"` were silently accepted but could produce incorrect results
+  ([pola-rs/polars#26287](https://github.com/pola-rs/polars/pull/26287)).
+
 ## polars 1.8.0
 
 This is an update that corresponds to Python Polars 1.37.1.
