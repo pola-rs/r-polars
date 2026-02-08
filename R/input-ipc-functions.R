@@ -101,7 +101,8 @@ pl__scan_ipc <- function(
         )
       )
     )
-    storage_options <- c(storage_options, max_retries = as.character(retries))
+    storage_options <- storage_options %||% character()
+    storage_options[["max_retries"]] <- as.character(retries)
   }
 
   if (is_present(file_cache_ttl)) {
@@ -119,7 +120,8 @@ pl__scan_ipc <- function(
         )
       )
     )
-    storage_options <- c(storage_options, file_cache_ttl = as.character(file_cache_ttl))
+    storage_options <- storage_options %||% character()
+    storage_options[["file_cache_ttl"]] <- as.character(file_cache_ttl)
   }
 
   if (!is.null(hive_schema)) {

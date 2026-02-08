@@ -110,7 +110,8 @@ lazyframe__lazy_sink_ipc <- function(
           )
         )
       )
-      storage_options <- c(storage_options, max_retries = as.character(retries))
+      storage_options <- storage_options %||% character()
+      storage_options[["max_retries"]] <- as.character(retries)
     }
 
     compat_level <- use_option_if_missing(

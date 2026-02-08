@@ -58,17 +58,16 @@ check_list_of_string <- function(
   arg = caller_arg(x),
   call = caller_env()
 ) {
-  if (!missing(x)) {
-    if (
+  if (
+    !missing(x) &&
       is_list_of_string(
         x,
         allow_empty = allow_empty,
         allow_na = allow_na,
         allow_null = allow_null
       )
-    ) {
-      return(invisible(NULL))
-    }
+  ) {
+    return(invisible(NULL))
   }
 
   stop_input_type(

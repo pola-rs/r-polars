@@ -258,15 +258,13 @@ series__to_r_vector <- function(
     }
 
     # Ensure the bit64 package is loaded if int64 is set to 'integer64'
-    if (identical(int64, "integer64")) {
-      if (!is_bit64_installed()) {
-        abort(
-          c(
-            "The `bit64` package is not installed.",
-            `*` = 'If `int64 = "integer64"`, the `bit64` package must be installed.'
-          )
+    if (identical(int64, "integer64") && !is_bit64_installed()) {
+      abort(
+        c(
+          "The `bit64` package is not installed.",
+          `*` = 'If `int64 = "integer64"`, the `bit64` package must be installed.'
         )
-      }
+      )
     }
     if (identical(time, "ITime")) {
       if (!is_datatable_installed()) {
@@ -288,25 +286,21 @@ series__to_r_vector <- function(
         )
       }
     }
-    if (identical(struct, "tibble")) {
-      if (!is_tibble_installed()) {
-        warn(
-          c(
-            `!` = "The `tibble` package is not installed.",
-            i = 'If `struct = "tibble"`, the `tibble` package is recommended to be installed.'
-          )
+    if (identical(struct, "tibble") && !is_tibble_installed()) {
+      warn(
+        c(
+          `!` = "The `tibble` package is not installed.",
+          i = 'If `struct = "tibble"`, the `tibble` package is recommended to be installed.'
         )
-      }
+      )
     }
-    if (isTRUE(as_clock_class)) {
-      if (!is_clock_installed()) {
-        abort(
-          c(
-            "The `clock` package is not installed.",
-            `*` = "If `as_clock_class = TRUE`, the `clock` package must be installed."
-          )
+    if (isTRUE(as_clock_class) && !is_clock_installed()) {
+      abort(
+        c(
+          "The `clock` package is not installed.",
+          `*` = "If `as_clock_class = TRUE`, the `clock` package must be installed."
         )
-      }
+      )
     }
 
     ambiguous <- as_polars_expr(ambiguous, as_lit = TRUE)$`_rexpr`

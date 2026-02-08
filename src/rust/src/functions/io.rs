@@ -7,8 +7,8 @@ pub fn parse_cloud_options(
     cloud_scheme: Option<CloudScheme>,
     storage_options: Option<Vec<(String, String)>>,
 ) -> Result<Option<CloudOptions>, RPolarsErr> {
-    use crate::prelude::parse_cloud_options;
+    use crate::prelude::parse_cloud_options as parse_cloud_opts;
 
-    let cloud_options = parse_cloud_options(cloud_scheme, storage_options.unwrap_or_default())?;
+    let cloud_options = parse_cloud_opts(cloud_scheme, storage_options.unwrap_or_default())?;
     Ok(Some(cloud_options))
 }

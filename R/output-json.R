@@ -93,7 +93,8 @@ lazyframe__lazy_sink_ndjson <- function(
           )
         )
       )
-      storage_options <- c(storage_options, max_retries = as.character(retries))
+      storage_options <- storage_options %||% character()
+      storage_options[["max_retries"]] <- as.character(retries)
     }
 
     target <- arg_to_sink_target(path)

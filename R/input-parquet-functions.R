@@ -94,7 +94,8 @@ pl__scan_parquet <- function(
         )
       )
     )
-    storage_options <- c(storage_options, max_retries = as.character(retries))
+    storage_options <- storage_options %||% character()
+    storage_options[["max_retries"]] <- as.character(retries)
   }
 
   parallel <- arg_match0(
