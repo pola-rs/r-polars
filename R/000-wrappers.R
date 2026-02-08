@@ -3291,20 +3291,6 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   }
 }
 
-`PlRExpr_str_split_regex_inclusive_with_strict` <- function(self) {
-  function(`by`, `strict`) {
-    `by` <- .savvy_extract_ptr(`by`, "polars::PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_split_regex_inclusive_with_strict__impl, `self`, `by`, `strict`))
-  }
-}
-
-`PlRExpr_str_split_regex_with_strict` <- function(self) {
-  function(`by`, `strict`) {
-    `by` <- .savvy_extract_ptr(`by`, "polars::PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_split_regex_with_strict__impl, `self`, `by`, `strict`))
-  }
-}
-
 `PlRExpr_str_splitn` <- function(self) {
   function(`by`, `n`) {
     `by` <- .savvy_extract_ptr(`by`, "polars::PlRExpr")
@@ -3888,8 +3874,6 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   e$`str_split_inclusive` <- `PlRExpr_str_split_inclusive`(ptr)
   e$`str_split_regex` <- `PlRExpr_str_split_regex`(ptr)
   e$`str_split_regex_inclusive` <- `PlRExpr_str_split_regex_inclusive`(ptr)
-  e$`str_split_regex_inclusive_with_strict` <- `PlRExpr_str_split_regex_inclusive_with_strict`(ptr)
-  e$`str_split_regex_with_strict` <- `PlRExpr_str_split_regex_with_strict`(ptr)
   e$`str_splitn` <- `PlRExpr_str_splitn`(ptr)
   e$`str_starts_with` <- `PlRExpr_str_starts_with`(ptr)
   e$`str_strip_chars` <- `PlRExpr_str_strip_chars`(ptr)

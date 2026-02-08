@@ -880,9 +880,9 @@ expr_str_count_matches <- function(pattern, ..., literal = FALSE) {
 #' Split the string by a substring
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param by Substring to split by. Can be an Expr.
+#' @param by Substring (or regex if `literal = FALSE`) to split by. Can be an Expr.
 #' @param inclusive If `TRUE`, include the split character/string in the results.
-#' @param literal If `TRUE` (default),  treat `by` as a literal string, not as
+#' @param literal If `TRUE` (default), treat `by` as a literal string, not as
 #' a regular expression.
 #' @param strict If `TRUE` (default), raise an error if the underlying pattern
 #' is not a valid regex, otherwise mask out with a null value.
@@ -962,6 +962,7 @@ expr_str_split <- function(by, ..., inclusive = FALSE, literal = TRUE, strict = 
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams expr_str_split
+#' @param by Substring to split by. Can be an Expr.
 #' @param n Number of splits to make.
 #'
 #' @inherit as_polars_expr return

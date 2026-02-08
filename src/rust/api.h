@@ -501,8 +501,6 @@ SEXP savvy_PlRExpr_str_split_exact_inclusive__ffi(SEXP self__, SEXP c_arg__by, S
 SEXP savvy_PlRExpr_str_split_inclusive__ffi(SEXP self__, SEXP c_arg__by);
 SEXP savvy_PlRExpr_str_split_regex__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__strict);
 SEXP savvy_PlRExpr_str_split_regex_inclusive__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__strict);
-SEXP savvy_PlRExpr_str_split_regex_inclusive_with_strict__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__strict);
-SEXP savvy_PlRExpr_str_split_regex_with_strict__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__strict);
 SEXP savvy_PlRExpr_str_splitn__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__n);
 SEXP savvy_PlRExpr_str_starts_with__ffi(SEXP self__, SEXP c_arg__prefix);
 SEXP savvy_PlRExpr_str_strip_chars__ffi(SEXP self__, SEXP c_arg__characters);

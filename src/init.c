@@ -2484,16 +2484,6 @@ SEXP savvy_PlRExpr_str_split_regex_inclusive__impl(SEXP self__, SEXP c_arg__by, 
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_str_split_regex_inclusive_with_strict__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__strict) {
-    SEXP res = savvy_PlRExpr_str_split_regex_inclusive_with_strict__ffi(self__, c_arg__by, c_arg__strict);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRExpr_str_split_regex_with_strict__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__strict) {
-    SEXP res = savvy_PlRExpr_str_split_regex_with_strict__ffi(self__, c_arg__by, c_arg__strict);
-    return handle_result(res);
-}
-
 SEXP savvy_PlRExpr_str_splitn__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__n) {
     SEXP res = savvy_PlRExpr_str_splitn__ffi(self__, c_arg__by, c_arg__n);
     return handle_result(res);
@@ -3970,8 +3960,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_str_split_inclusive__impl", (DL_FUNC) &savvy_PlRExpr_str_split_inclusive__impl, 2},
     {"savvy_PlRExpr_str_split_regex__impl", (DL_FUNC) &savvy_PlRExpr_str_split_regex__impl, 3},
     {"savvy_PlRExpr_str_split_regex_inclusive__impl", (DL_FUNC) &savvy_PlRExpr_str_split_regex_inclusive__impl, 3},
-    {"savvy_PlRExpr_str_split_regex_inclusive_with_strict__impl", (DL_FUNC) &savvy_PlRExpr_str_split_regex_inclusive_with_strict__impl, 3},
-    {"savvy_PlRExpr_str_split_regex_with_strict__impl", (DL_FUNC) &savvy_PlRExpr_str_split_regex_with_strict__impl, 3},
     {"savvy_PlRExpr_str_splitn__impl", (DL_FUNC) &savvy_PlRExpr_str_splitn__impl, 3},
     {"savvy_PlRExpr_str_starts_with__impl", (DL_FUNC) &savvy_PlRExpr_str_starts_with__impl, 2},
     {"savvy_PlRExpr_str_strip_chars__impl", (DL_FUNC) &savvy_PlRExpr_str_strip_chars__impl, 2},
