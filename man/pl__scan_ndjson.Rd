@@ -18,8 +18,8 @@ pl__scan_ndjson(
   row_index_offset = 0L,
   ignore_errors = FALSE,
   storage_options = NULL,
-  retries = 2,
-  file_cache_ttl = NULL,
+  retries = deprecated(),
+  file_cache_ttl = deprecated(),
   include_file_paths = NULL
 )
 }
@@ -75,11 +75,13 @@ variable.
 If \code{storage_options} is not provided, Polars will try to infer the
 information from environment variables.}
 
-\item{retries}{Number of retries if accessing a cloud instance fails.}
+\item{retries}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Number of retries if
+accessing a cloud instance fails. Specify \code{max_retries} in
+\code{storage_options} instead.}
 
-\item{file_cache_ttl}{Amount of time to keep downloaded cloud files since
-their last access time, in seconds. Uses the \code{POLARS_FILE_CACHE_TTL}
-environment variable (which defaults to 1 hour) if not given.}
+\item{file_cache_ttl}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Amount of time to
+keep downloaded cloud files since their last access time, in seconds.
+Specify \code{file_cache_ttl} in \code{storage_options} instead.}
 
 \item{include_file_paths}{Include the path of the source file(s) as a column
 with this name.}

@@ -13,8 +13,8 @@ pl__read_ipc(
   row_index_name = NULL,
   row_index_offset = 0L,
   storage_options = NULL,
-  retries = 2,
-  file_cache_ttl = NULL,
+  retries = deprecated(),
+  file_cache_ttl = deprecated(),
   hive_partitioning = NULL,
   hive_schema = NULL,
   try_parse_hive_dates = TRUE,
@@ -55,11 +55,13 @@ variable.
 If \code{storage_options} is not provided, Polars will try to infer the
 information from environment variables.}
 
-\item{retries}{Number of retries if accessing a cloud instance fails.}
+\item{retries}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Number of retries if
+accessing a cloud instance fails. Specify \code{max_retries} in
+\code{storage_options} instead.}
 
-\item{file_cache_ttl}{Amount of time to keep downloaded cloud files since
-their last access time, in seconds. Uses the \code{POLARS_FILE_CACHE_TTL}
-environment variable (which defaults to 1 hour) if not given.}
+\item{file_cache_ttl}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Amount of time to
+keep downloaded cloud files since their last access time, in seconds.
+Specify \code{file_cache_ttl} in \code{storage_options} instead.}
 
 \item{hive_partitioning}{Infer statistics and schema from Hive partitioned
 sources and use them to prune reads. If \code{NULL} (default), it is automatically

@@ -10,7 +10,7 @@ dataframe__write_ipc(
   compression = c("zstd", "lz4", "uncompressed"),
   compat_level = c("newest", "oldest"),
   storage_options = NULL,
-  retries = 2
+  retries = deprecated()
 )
 }
 \arguments{
@@ -56,7 +56,9 @@ variable.
 If \code{storage_options} is not provided, Polars will try to infer the
 information from environment variables.}
 
-\item{retries}{Number of retries if accessing a cloud instance fails.}
+\item{retries}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Number of retries if
+accessing a cloud instance fails. Specify \code{max_retries} in
+\code{storage_options} instead.}
 }
 \value{
 \code{NULL} invisibly.

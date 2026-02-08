@@ -10,7 +10,9 @@ expr__flatten()
 A polars \link{expression}
 }
 \description{
-This is an alias for \link[=expr__explode]{$explode()}.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\verb{$flatten()} is deprecated. Use \link[=exprlist__explode]{$list$explode()} instead.
 }
 \examples{
 df <- pl$DataFrame(
@@ -18,5 +20,5 @@ df <- pl$DataFrame(
   values = list(1:2, 2:3, 4)
 )
 
-df$group_by("group")$agg(pl$col("values")$flatten())
+df$group_by("group")$agg(pl$col("values")$list$explode())
 }
