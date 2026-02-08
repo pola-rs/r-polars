@@ -6,7 +6,7 @@ use crate::{
     prelude::{sync_on_close::SyncOnCloseType, *},
 };
 use polars::{
-    io::{HiveOptions, RowIndex},
+    io::{HiveOptions, RowIndex, ndjson::NDJsonWriterOptions},
     polars_utils::slice_enum::Slice,
 };
 use savvy::{
@@ -1233,7 +1233,8 @@ impl PlRLazyFrame {
                 row_group_size,
                 data_page_size,
                 key_value_metadata: None,
-                field_overwrites: vec![],
+                arrow_schema: None,
+                compat_level: None,
             };
 
             let cloud_options =
@@ -1338,6 +1339,8 @@ impl PlRLazyFrame {
                 include_header,
                 batch_size,
                 serialize_options: serialize_options.into(),
+                compression: Default::default(),
+                check_extension: false,
             };
 
             let cloud_options =
@@ -1390,7 +1393,9 @@ impl PlRLazyFrame {
                 None => None,
             };
 
-            let options = JsonWriterOptions {};
+            let options = NDJsonWriterOptions {
+                ..Default::default()
+            };
 
             let cloud_options =
                 parse_cloud_options(target.cloud_scheme(), storage_options, retries)?;
