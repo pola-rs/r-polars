@@ -150,7 +150,7 @@ impl PlRSeries {
                     series.cast(&DataType::Float64).unwrap().f64().unwrap(),
                 ))),
                 DataType::Float64 => Ok(<Sexp>::from(Wrap(series.f64().unwrap()))),
-                DataType::Categorical(_, _) | DataType::Enum(_, _) => {
+                DataType::Categorical(_, _) => {
                     let r_func: FunctionSexp =
                         <Sexp>::from(savvy::eval_parse_text("as.factor")?).try_into()?;
                     let chr_vec =
@@ -158,6 +158,36 @@ impl PlRSeries {
                     let mut args = FunctionArgs::new();
                     let _ = args.add("x", chr_vec);
                     Ok(r_func.call(args)?.into())
+                }
+                DataType::Enum(_, mapping) => {
+                    // Build factor manually to preserve Enum's level order
+                    // Convert to physical representation and cast to u32
+                    let phys = series.to_physical_repr();
+                    let phys_u32 = phys.cast(&DataType::UInt32).map_err(RPolarsErr::from)?;
+                    let phys_ca = phys_u32.u32().map_err(RPolarsErr::from)?;
+                    let len = phys_ca.len();
+
+                    // Get physical codes (0-indexed) and convert to R's 1-indexed
+                    let mut codes = OwnedIntegerSexp::new(len)?;
+                    for (i, opt_v) in phys_ca.into_iter().enumerate() {
+                        match opt_v {
+                            Some(v) => codes.set_elt(i, (v + 1) as i32)?,
+                            None => codes.set_na(i)?,
+                        }
+                    }
+
+                    // Get categories from Enum mapping and set as levels
+                    let categories = unsafe {
+                        StringChunked::from_chunks(
+                            PlSmallStr::from_static("category"),
+                            vec![mapping.to_arrow(true)],
+                        )
+                    };
+                    let levels: Sexp = Wrap(&categories).into();
+                    codes.set_attrib("levels", levels)?;
+                    codes.set_class(["factor"])?;
+
+                    Ok(codes.into())
                 }
                 DataType::List(inner) => unsafe {
                     let len = series.len();

@@ -132,6 +132,8 @@ depending on the \code{int64} argument.
 \item Decimal: \link{double}.
 \item String: \link{character}.
 \item Categorical: \link{factor}.
+\item Enum: \link{factor}, all categories (levels) are preserved, even if unobserved in
+the data.
 \item Date: \link{Date} or \link[data.table:IDateTime]{data.table::IDate},
 depending on the \code{date} argument.
 \item Time: \link[hms:hms]{hms::hms} or \link[data.table:IDateTime]{data.table::ITime},
@@ -143,7 +145,7 @@ depending on the \code{as_clock_class} argument.
 \item Duration: \link{difftime} or \link[clock:duration-helper]{clock_duration},
 depending on the \code{as_clock_class} argument.
 \item Binary: \link[blob:blob]{blob::blob}.
-\item Null: \link[vctrs:unspecified]{vctrs::unspecified}.
+\item Null: \link[vctrs:vctrs-unspecified]{vctrs::unspecified}.
 \item List, Array: \link[vctrs:list_of]{vctrs::list_of}.
 \item Struct: \link{data.frame} or \link[tibble:tbl_df-class]{tibble}, depending on the \code{struct} argument.
 }
