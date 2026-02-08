@@ -94,8 +94,8 @@ pl__scan_parquet <- function(
       c(
         `!` = sprintf(
           "The argument %s of %s is deprecated.",
-          format_fn("scan_parquet"),
-          format_arg("allow_missing_columns")
+          format_arg("allow_missing_columns"),
+          format_fn("scan_parquet")
         ),
         i = sprintf(
           "Use the argument %s instead and pass one of %s.",
