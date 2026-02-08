@@ -384,6 +384,8 @@ cs__by_index <- function(indices, ..., require_all = TRUE) {
 #'
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column names to select.
 #' @param require_all Whether to match all names (the default) or any of the names.
+#' @param expand_patterns Whether to expand regex patterns (`^...$`) and
+#'   wildcards (`*`) in names. Default is `FALSE` (treat names as literals).
 #'
 #' @inherit cs__by_index details
 #' @inherit cs__empty return seealso

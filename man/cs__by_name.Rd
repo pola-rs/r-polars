@@ -10,6 +10,9 @@ cs__by_name(..., require_all = TRUE, expand_patterns = FALSE)
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column names to select.}
 
 \item{require_all}{Whether to match all names (the default) or any of the names.}
+
+\item{expand_patterns}{Whether to expand regex patterns (\verb{^...$}) and
+wildcards (\code{*}) in names. Default is \code{FALSE} (treat names as literals).}
 }
 \value{
 A Polars \link[=cs]{selector}
