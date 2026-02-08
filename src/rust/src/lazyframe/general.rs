@@ -748,9 +748,7 @@ impl PlRLazyFrame {
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            let options = IpcScanOptions {
-                ..Default::default()
-            };
+            let options = IpcScanOptions::default();
 
             let sources = <Wrap<ScanSources>>::try_from(source)?.0;
             let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
@@ -1395,9 +1393,7 @@ impl PlRLazyFrame {
                 None => None,
             };
 
-            let options = NDJsonWriterOptions {
-                ..Default::default()
-            };
+            let options = NDJsonWriterOptions::default();
 
             let cloud_options =
                 parse_cloud_options(target.cloud_scheme(), storage_options, retries)?;
