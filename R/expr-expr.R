@@ -3978,7 +3978,10 @@ expr_arr_explode <- expr__explode
 
 #' Flatten a list or string column
 #'
-#' This is an alias for [$explode()][expr__explode].
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' `$flatten()` is deprecated. Use [$list$explode()][exprlist__explode] instead.
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -3987,8 +3990,18 @@ expr_arr_explode <- expr__explode
 #'   values = list(1:2, 2:3, 4)
 #' )
 #'
-#' df$group_by("group")$agg(pl$col("values")$flatten())
+#' df$group_by("group")$agg(pl$col("values")$list$explode())
 expr__flatten <- function() {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "%s is deprecated as of %s 1.9.0.",
+        format_fn("flatten"),
+        format_pkg("polars")
+      ),
+      i = sprintf("Use %s instead.", format_fn("list$explode"))
+    )
+  )
   wrap({
     self$explode()
   })

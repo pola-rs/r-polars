@@ -32,10 +32,12 @@
 #'
 #'   If `storage_options` is not provided, Polars will try to infer the
 #'   information from environment variables.
-#' @param retries Number of retries if accessing a cloud instance fails.
-#' @param file_cache_ttl Amount of time to keep downloaded cloud files since
-#'   their last access time, in seconds. Uses the `POLARS_FILE_CACHE_TTL`
-#'   environment variable (which defaults to 1 hour) if not given.
+#' @param retries `r lifecycle::badge("deprecated")` Number of retries if
+#'   accessing a cloud instance fails. Specify `max_retries` in
+#'   `storage_options` instead.
+#' @param file_cache_ttl `r lifecycle::badge("deprecated")` Amount of time to
+#'   keep downloaded cloud files since their last access time, in seconds.
+#'   Specify `file_cache_ttl` in `storage_options` instead.
 #' @param hive_partitioning Infer statistics and schema from Hive partitioned
 #' sources and use them to prune reads. If `NULL` (default), it is automatically
 #' enabled when a single directory is passed, and otherwise disabled.
@@ -74,8 +76,8 @@ pl__scan_ipc <- function(
   row_index_name = NULL,
   row_index_offset = 0L,
   storage_options = NULL,
-  retries = 2,
-  file_cache_ttl = NULL,
+  retries = deprecated(),
+  file_cache_ttl = deprecated(),
   hive_partitioning = NULL,
   hive_schema = NULL,
   try_parse_hive_dates = TRUE,
@@ -83,6 +85,42 @@ pl__scan_ipc <- function(
 ) {
   check_dots_empty0(...)
   check_list_of_polars_dtype(hive_schema, allow_null = TRUE)
+
+  if (is_present(retries)) {
+    deprecate_warn(
+      c(
+        `!` = sprintf(
+          "The %s argument is deprecated as of %s 1.9.0.",
+          format_arg("retries"),
+          format_pkg("polars")
+        ),
+        i = sprintf(
+          "Specify %s in %s instead.",
+          format_code("max_retries"),
+          format_arg("storage_options")
+        )
+      )
+    )
+    storage_options <- c(storage_options, max_retries = as.character(retries))
+  }
+
+  if (is_present(file_cache_ttl)) {
+    deprecate_warn(
+      c(
+        `!` = sprintf(
+          "The %s argument is deprecated as of %s 1.9.0.",
+          format_arg("file_cache_ttl"),
+          format_pkg("polars")
+        ),
+        i = sprintf(
+          "Specify %s in %s instead.",
+          format_code("file_cache_ttl"),
+          format_arg("storage_options")
+        )
+      )
+    )
+    storage_options <- c(storage_options, file_cache_ttl = as.character(file_cache_ttl))
+  }
 
   if (!is.null(hive_schema)) {
     hive_schema <- parse_into_list_of_datatypes(!!!hive_schema)
@@ -93,8 +131,6 @@ pl__scan_ipc <- function(
     n_rows = n_rows,
     cache = cache,
     rechunk = rechunk,
-    retries = retries,
-    file_cache_ttl = file_cache_ttl,
     storage_options = storage_options,
     row_index_name = row_index_name,
     row_index_offset = row_index_offset,
@@ -138,8 +174,8 @@ pl__read_ipc <- function(
   row_index_name = NULL,
   row_index_offset = 0L,
   storage_options = NULL,
-  retries = 2,
-  file_cache_ttl = NULL,
+  retries = deprecated(),
+  file_cache_ttl = deprecated(),
   hive_partitioning = NULL,
   hive_schema = NULL,
   try_parse_hive_dates = TRUE,

@@ -68,7 +68,7 @@ pl__scan_parquet <- function(
   low_memory = FALSE,
   cache = TRUE,
   storage_options = NULL,
-  retries = 2,
+  retries = deprecated(),
   include_file_paths = NULL,
   missing_columns = c("insert", "raise"),
   allow_missing_columns = deprecated()
@@ -78,6 +78,25 @@ pl__scan_parquet <- function(
   if (length(source) == 0) {
     abort("`source` must have length > 0.")
   }
+
+  if (is_present(retries)) {
+    deprecate_warn(
+      c(
+        `!` = sprintf(
+          "The %s argument is deprecated as of %s 1.9.0.",
+          format_arg("retries"),
+          format_pkg("polars")
+        ),
+        i = sprintf(
+          "Specify %s in %s instead.",
+          format_code("max_retries"),
+          format_arg("storage_options")
+        )
+      )
+    )
+    storage_options <- c(storage_options, max_retries = as.character(retries))
+  }
+
   parallel <- arg_match0(
     parallel,
     values = c("auto", "columns", "row_groups", "prefiltered", "none")
@@ -128,7 +147,6 @@ pl__scan_parquet <- function(
     low_memory = low_memory,
     cache = cache,
     storage_options = storage_options,
-    retries = retries,
     include_file_paths = include_file_paths,
     missing_columns = missing_columns
   ) |>
@@ -171,7 +189,7 @@ pl__read_parquet <- function(
   low_memory = FALSE,
   cache = TRUE,
   storage_options = NULL,
-  retries = 2,
+  retries = deprecated(),
   include_file_paths = NULL,
   missing_columns = c("insert", "raise"),
   allow_missing_columns = deprecated()

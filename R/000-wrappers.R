@@ -4190,26 +4190,26 @@ class(`PlRExpr`) <- c("polars::PlRExpr__bundle", "savvy_polars__sealed")
 }
 
 `PlRLazyFrame_sink_csv` <- function(self) {
-  function(`target`, `include_bom`, `include_header`, `separator`, `line_terminator`, `quote_char`, `batch_size`, `retries`, `sync_on_close`, `maintain_order`, `mkdir`, `decimal_comma`, `datetime_format` = NULL, `date_format` = NULL, `time_format` = NULL, `float_scientific` = NULL, `float_precision` = NULL, `null_value` = NULL, `quote_style` = NULL, `storage_options` = NULL) {
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_sink_csv__impl, `self`, `target`, `include_bom`, `include_header`, `separator`, `line_terminator`, `quote_char`, `batch_size`, `retries`, `sync_on_close`, `maintain_order`, `mkdir`, `decimal_comma`, `datetime_format`, `date_format`, `time_format`, `float_scientific`, `float_precision`, `null_value`, `quote_style`, `storage_options`))
+  function(`target`, `include_bom`, `include_header`, `separator`, `line_terminator`, `quote_char`, `batch_size`, `sync_on_close`, `maintain_order`, `mkdir`, `decimal_comma`, `datetime_format` = NULL, `date_format` = NULL, `time_format` = NULL, `float_scientific` = NULL, `float_precision` = NULL, `null_value` = NULL, `quote_style` = NULL, `storage_options` = NULL) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_sink_csv__impl, `self`, `target`, `include_bom`, `include_header`, `separator`, `line_terminator`, `quote_char`, `batch_size`, `sync_on_close`, `maintain_order`, `mkdir`, `decimal_comma`, `datetime_format`, `date_format`, `time_format`, `float_scientific`, `float_precision`, `null_value`, `quote_style`, `storage_options`))
   }
 }
 
 `PlRLazyFrame_sink_ipc` <- function(self) {
-  function(`target`, `compression`, `compat_level`, `retries`, `sync_on_close`, `maintain_order`, `mkdir`, `storage_options` = NULL) {
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_sink_ipc__impl, `self`, `target`, `compression`, `compat_level`, `retries`, `sync_on_close`, `maintain_order`, `mkdir`, `storage_options`))
+  function(`target`, `compression`, `compat_level`, `sync_on_close`, `maintain_order`, `mkdir`, `storage_options` = NULL) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_sink_ipc__impl, `self`, `target`, `compression`, `compat_level`, `sync_on_close`, `maintain_order`, `mkdir`, `storage_options`))
   }
 }
 
 `PlRLazyFrame_sink_json` <- function(self) {
-  function(`target`, `retries`, `sync_on_close`, `maintain_order`, `mkdir`, `storage_options` = NULL) {
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_sink_json__impl, `self`, `target`, `retries`, `sync_on_close`, `maintain_order`, `mkdir`, `storage_options`))
+  function(`target`, `sync_on_close`, `maintain_order`, `mkdir`, `storage_options` = NULL) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_sink_json__impl, `self`, `target`, `sync_on_close`, `maintain_order`, `mkdir`, `storage_options`))
   }
 }
 
 `PlRLazyFrame_sink_parquet` <- function(self) {
-  function(`target`, `compression`, `stat_min`, `stat_max`, `stat_distinct_count`, `stat_null_count`, `retries`, `sync_on_close`, `maintain_order`, `mkdir`, `compression_level` = NULL, `row_group_size` = NULL, `data_page_size` = NULL, `storage_options` = NULL) {
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_sink_parquet__impl, `self`, `target`, `compression`, `stat_min`, `stat_max`, `stat_distinct_count`, `stat_null_count`, `retries`, `sync_on_close`, `maintain_order`, `mkdir`, `compression_level`, `row_group_size`, `data_page_size`, `storage_options`))
+  function(`target`, `compression`, `stat_min`, `stat_max`, `stat_distinct_count`, `stat_null_count`, `sync_on_close`, `maintain_order`, `mkdir`, `compression_level` = NULL, `row_group_size` = NULL, `data_page_size` = NULL, `storage_options` = NULL) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_sink_parquet__impl, `self`, `target`, `compression`, `stat_min`, `stat_max`, `stat_distinct_count`, `stat_null_count`, `sync_on_close`, `maintain_order`, `mkdir`, `compression_level`, `row_group_size`, `data_page_size`, `storage_options`))
   }
 }
 
@@ -4399,20 +4399,20 @@ class(`PlRExpr`) <- c("polars::PlRExpr__bundle", "savvy_polars__sealed")
   .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_deserialize_binary__impl, `data`))
 }
 
-`PlRLazyFrame`$`new_from_csv` <- function(`source`, `separator`, `has_header`, `ignore_errors`, `skip_rows`, `cache`, `missing_utf8_is_empty_string`, `low_memory`, `rechunk`, `skip_rows_after_header`, `encoding`, `try_parse_dates`, `eol_char`, `raise_if_empty`, `truncate_ragged_lines`, `decimal_comma`, `glob`, `retries`, `row_index_offset`, `comment_prefix` = NULL, `quote_char` = NULL, `null_values` = NULL, `infer_schema_length` = NULL, `row_index_name` = NULL, `n_rows` = NULL, `overwrite_dtype` = NULL, `schema` = NULL, `storage_options` = NULL, `file_cache_ttl` = NULL, `include_file_paths` = NULL) {
-  .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_csv__impl, `source`, `separator`, `has_header`, `ignore_errors`, `skip_rows`, `cache`, `missing_utf8_is_empty_string`, `low_memory`, `rechunk`, `skip_rows_after_header`, `encoding`, `try_parse_dates`, `eol_char`, `raise_if_empty`, `truncate_ragged_lines`, `decimal_comma`, `glob`, `retries`, `row_index_offset`, `comment_prefix`, `quote_char`, `null_values`, `infer_schema_length`, `row_index_name`, `n_rows`, `overwrite_dtype`, `schema`, `storage_options`, `file_cache_ttl`, `include_file_paths`))
+`PlRLazyFrame`$`new_from_csv` <- function(`source`, `separator`, `has_header`, `ignore_errors`, `skip_rows`, `cache`, `missing_utf8_is_empty_string`, `low_memory`, `rechunk`, `skip_rows_after_header`, `encoding`, `try_parse_dates`, `eol_char`, `raise_if_empty`, `truncate_ragged_lines`, `decimal_comma`, `glob`, `row_index_offset`, `comment_prefix` = NULL, `quote_char` = NULL, `null_values` = NULL, `infer_schema_length` = NULL, `row_index_name` = NULL, `n_rows` = NULL, `overwrite_dtype` = NULL, `schema` = NULL, `storage_options` = NULL, `include_file_paths` = NULL) {
+  .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_csv__impl, `source`, `separator`, `has_header`, `ignore_errors`, `skip_rows`, `cache`, `missing_utf8_is_empty_string`, `low_memory`, `rechunk`, `skip_rows_after_header`, `encoding`, `try_parse_dates`, `eol_char`, `raise_if_empty`, `truncate_ragged_lines`, `decimal_comma`, `glob`, `row_index_offset`, `comment_prefix`, `quote_char`, `null_values`, `infer_schema_length`, `row_index_name`, `n_rows`, `overwrite_dtype`, `schema`, `storage_options`, `include_file_paths`))
 }
 
-`PlRLazyFrame`$`new_from_ipc` <- function(`source`, `cache`, `rechunk`, `try_parse_hive_dates`, `retries`, `row_index_offset`, `n_rows` = NULL, `row_index_name` = NULL, `storage_options` = NULL, `hive_partitioning` = NULL, `hive_schema` = NULL, `file_cache_ttl` = NULL, `include_file_paths` = NULL) {
-  .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_ipc__impl, `source`, `cache`, `rechunk`, `try_parse_hive_dates`, `retries`, `row_index_offset`, `n_rows`, `row_index_name`, `storage_options`, `hive_partitioning`, `hive_schema`, `file_cache_ttl`, `include_file_paths`))
+`PlRLazyFrame`$`new_from_ipc` <- function(`source`, `cache`, `rechunk`, `try_parse_hive_dates`, `row_index_offset`, `n_rows` = NULL, `row_index_name` = NULL, `storage_options` = NULL, `hive_partitioning` = NULL, `hive_schema` = NULL, `include_file_paths` = NULL) {
+  .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_ipc__impl, `source`, `cache`, `rechunk`, `try_parse_hive_dates`, `row_index_offset`, `n_rows`, `row_index_name`, `storage_options`, `hive_partitioning`, `hive_schema`, `include_file_paths`))
 }
 
-`PlRLazyFrame`$`new_from_ndjson` <- function(`source`, `low_memory`, `rechunk`, `ignore_errors`, `retries`, `row_index_offset`, `row_index_name` = NULL, `infer_schema_length` = NULL, `schema` = NULL, `schema_overrides` = NULL, `batch_size` = NULL, `n_rows` = NULL, `include_file_paths` = NULL, `storage_options` = NULL, `file_cache_ttl` = NULL) {
-  .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_ndjson__impl, `source`, `low_memory`, `rechunk`, `ignore_errors`, `retries`, `row_index_offset`, `row_index_name`, `infer_schema_length`, `schema`, `schema_overrides`, `batch_size`, `n_rows`, `include_file_paths`, `storage_options`, `file_cache_ttl`))
+`PlRLazyFrame`$`new_from_ndjson` <- function(`source`, `low_memory`, `rechunk`, `ignore_errors`, `row_index_offset`, `row_index_name` = NULL, `infer_schema_length` = NULL, `schema` = NULL, `schema_overrides` = NULL, `batch_size` = NULL, `n_rows` = NULL, `include_file_paths` = NULL, `storage_options` = NULL) {
+  .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_ndjson__impl, `source`, `low_memory`, `rechunk`, `ignore_errors`, `row_index_offset`, `row_index_name`, `infer_schema_length`, `schema`, `schema_overrides`, `batch_size`, `n_rows`, `include_file_paths`, `storage_options`))
 }
 
-`PlRLazyFrame`$`new_from_parquet` <- function(`source`, `cache`, `parallel`, `rechunk`, `low_memory`, `use_statistics`, `try_parse_hive_dates`, `retries`, `glob`, `missing_columns`, `row_index_offset`, `storage_options` = NULL, `n_rows` = NULL, `row_index_name` = NULL, `hive_partitioning` = NULL, `schema` = NULL, `hive_schema` = NULL, `include_file_paths` = NULL) {
-  .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_parquet__impl, `source`, `cache`, `parallel`, `rechunk`, `low_memory`, `use_statistics`, `try_parse_hive_dates`, `retries`, `glob`, `missing_columns`, `row_index_offset`, `storage_options`, `n_rows`, `row_index_name`, `hive_partitioning`, `schema`, `hive_schema`, `include_file_paths`))
+`PlRLazyFrame`$`new_from_parquet` <- function(`source`, `cache`, `parallel`, `rechunk`, `low_memory`, `use_statistics`, `try_parse_hive_dates`, `glob`, `missing_columns`, `row_index_offset`, `storage_options` = NULL, `n_rows` = NULL, `row_index_name` = NULL, `hive_partitioning` = NULL, `schema` = NULL, `hive_schema` = NULL, `include_file_paths` = NULL) {
+  .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_parquet__impl, `source`, `cache`, `parallel`, `rechunk`, `low_memory`, `use_statistics`, `try_parse_hive_dates`, `glob`, `missing_columns`, `row_index_offset`, `storage_options`, `n_rows`, `row_index_name`, `hive_partitioning`, `schema`, `hive_schema`, `include_file_paths`))
 }
 
 

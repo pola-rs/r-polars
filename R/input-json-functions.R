@@ -24,8 +24,8 @@ pl__scan_ndjson <- function(
   row_index_offset = 0L,
   ignore_errors = FALSE,
   storage_options = NULL,
-  retries = 2,
-  file_cache_ttl = NULL,
+  retries = deprecated(),
+  file_cache_ttl = deprecated(),
   include_file_paths = NULL
 ) {
   check_dots_empty0(...)
@@ -35,6 +35,42 @@ pl__scan_ndjson <- function(
   }
   check_list_of_polars_dtype(schema, allow_null = TRUE)
   check_list_of_polars_dtype(schema_overrides, allow_null = TRUE)
+
+  if (is_present(retries)) {
+    deprecate_warn(
+      c(
+        `!` = sprintf(
+          "The %s argument is deprecated as of %s 1.9.0.",
+          format_arg("retries"),
+          format_pkg("polars")
+        ),
+        i = sprintf(
+          "Specify %s in %s instead.",
+          format_code("max_retries"),
+          format_arg("storage_options")
+        )
+      )
+    )
+    storage_options <- c(storage_options, max_retries = as.character(retries))
+  }
+
+  if (is_present(file_cache_ttl)) {
+    deprecate_warn(
+      c(
+        `!` = sprintf(
+          "The %s argument is deprecated as of %s 1.9.0.",
+          format_arg("file_cache_ttl"),
+          format_pkg("polars")
+        ),
+        i = sprintf(
+          "Specify %s in %s instead.",
+          format_code("file_cache_ttl"),
+          format_arg("storage_options")
+        )
+      )
+    )
+    storage_options <- c(storage_options, file_cache_ttl = as.character(file_cache_ttl))
+  }
 
   if (!is.null(schema)) {
     schema <- parse_into_list_of_datatypes(!!!schema)
@@ -54,8 +90,6 @@ pl__scan_ndjson <- function(
     row_index_offset = row_index_offset,
     ignore_errors = ignore_errors,
     storage_options = storage_options,
-    retries = retries,
-    file_cache_ttl = file_cache_ttl,
     include_file_paths = include_file_paths
   ) |>
     wrap()
@@ -83,8 +117,8 @@ pl__read_ndjson <- function(
   row_index_offset = 0L,
   ignore_errors = FALSE,
   storage_options = NULL,
-  retries = 2,
-  file_cache_ttl = NULL,
+  retries = deprecated(),
+  file_cache_ttl = deprecated(),
   include_file_paths = NULL
 ) {
   check_dots_empty0(...)

@@ -105,8 +105,8 @@ pl__scan_csv <- function(
   decimal_comma = FALSE,
   glob = TRUE,
   storage_options = NULL,
-  retries = 2,
-  file_cache_ttl = NULL,
+  retries = deprecated(),
+  file_cache_ttl = deprecated(),
   include_file_paths = NULL
 ) {
   check_dots_empty0(...)
@@ -119,6 +119,42 @@ pl__scan_csv <- function(
   check_character(storage_options, allow_null = TRUE)
   check_character(null_values, allow_null = TRUE)
   encoding <- arg_match0(encoding, values = c("utf8", "utf8-lossy"))
+
+  if (is_present(retries)) {
+    deprecate_warn(
+      c(
+        `!` = sprintf(
+          "The %s argument is deprecated as of %s 1.9.0.",
+          format_arg("retries"),
+          format_pkg("polars")
+        ),
+        i = sprintf(
+          "Specify %s in %s instead.",
+          format_code("max_retries"),
+          format_arg("storage_options")
+        )
+      )
+    )
+    storage_options <- c(storage_options, max_retries = as.character(retries))
+  }
+
+  if (is_present(file_cache_ttl)) {
+    deprecate_warn(
+      c(
+        `!` = sprintf(
+          "The %s argument is deprecated as of %s 1.9.0.",
+          format_arg("file_cache_ttl"),
+          format_pkg("polars")
+        ),
+        i = sprintf(
+          "Specify %s in %s instead.",
+          format_code("file_cache_ttl"),
+          format_arg("storage_options")
+        )
+      )
+    )
+    storage_options <- c(storage_options, file_cache_ttl = as.character(file_cache_ttl))
+  }
 
   if (isFALSE(infer_schema)) {
     infer_schema_length <- 0
@@ -148,7 +184,6 @@ pl__scan_csv <- function(
     truncate_ragged_lines = truncate_ragged_lines,
     decimal_comma = decimal_comma,
     glob = glob,
-    retries = retries,
     comment_prefix = comment_prefix,
     quote_char = quote_char,
     null_values = null_values,
@@ -159,7 +194,6 @@ pl__scan_csv <- function(
     overwrite_dtype = schema_overrides,
     schema = schema,
     storage_options = storage_options,
-    file_cache_ttl = file_cache_ttl,
     include_file_paths = include_file_paths
   ) |>
     wrap()
@@ -203,8 +237,8 @@ pl__read_csv <- function(
   decimal_comma = FALSE,
   glob = TRUE,
   storage_options = NULL,
-  retries = 2,
-  file_cache_ttl = NULL,
+  retries = deprecated(),
+  file_cache_ttl = deprecated(),
   include_file_paths = NULL
 ) {
   check_dots_empty0(...)

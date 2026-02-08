@@ -4,6 +4,15 @@
 
 This is an update that corresponds to Python Polars 1.38.1.
 
+### Deprecations
+
+- The `retries` argument in scan/read and sink/write functions is deprecated.
+  Use `max_retries` in `storage_options` instead.
+- The `file_cache_ttl` argument in `pl$scan_csv()`, `pl$scan_ipc()`, `pl$scan_ndjson()`,
+  and their `read_*` counterparts is deprecated.
+  Use `file_cache_ttl` in `storage_options` instead.
+- `<expr>$flatten()` is deprecated. Use `<expr>$list$explode()` instead.
+
 ### New features
 
 - `cs$by_name()` gains the `expand_patterns` argument. When set to `TRUE`, regex patterns
