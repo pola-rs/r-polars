@@ -350,14 +350,6 @@ impl PlRExpr {
     }
 
     fn str_split_regex(&self, by: &PlRExpr, strict: bool) -> Result<Self> {
-        Ok(self.str_split_regex_with_strict(by, strict)?)
-    }
-
-    fn str_split_regex_inclusive(&self, by: &PlRExpr, strict: bool) -> Result<Self> {
-        Ok(self.str_split_regex_inclusive_with_strict(by, strict)?)
-    }
-
-    fn str_split_regex_with_strict(&self, by: &PlRExpr, strict: bool) -> Result<Self> {
         Ok(self
             .inner
             .clone()
@@ -366,7 +358,7 @@ impl PlRExpr {
             .into())
     }
 
-    fn str_split_regex_inclusive_with_strict(&self, by: &PlRExpr, strict: bool) -> Result<Self> {
+    fn str_split_regex_inclusive(&self, by: &PlRExpr, strict: bool) -> Result<Self> {
         Ok(self
             .inner
             .clone()
