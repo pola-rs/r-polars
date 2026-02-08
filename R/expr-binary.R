@@ -213,3 +213,27 @@ expr_bin_reinterpret <- function(..., dtype, endianness = c("little", "big")) {
     self$`_rexpr`$bin_reinterpret(dtype = dtype$`_datatype_expr`, kind = endianness)
   })
 }
+
+#' Get the byte value at the given index
+#'
+#' For example, index `0` would return the first byte of every binary value
+#' and index `-1` would return the last byte of every binary value.
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @inheritParams expr__get
+#' @param index Index to return per binary value.
+#'
+#' @inherit as_polars_expr return
+#'
+#' @examples
+#' df <- pl$DataFrame(x = c("\x01\x02\x03", "", "\x04\x05"))$cast(pl$Binary)
+#'
+#' df$with_columns(
+#'   get = pl$col("x")$bin$get(0, null_on_oob = TRUE)
+#' )
+expr_bin_get <- function(index, ..., null_on_oob = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$bin_get(as_polars_expr(index)$`_rexpr`, null_on_oob)
+  })
+}
