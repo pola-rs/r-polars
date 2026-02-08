@@ -764,8 +764,6 @@ Some CI issues that commonly arise during version bumps:
 
 - **Pre-built binary failures:** These are expected until new binaries are published at release time.
   Not actionable during the bump PR.
-- **Jarl lint failures:** New jarl versions may introduce rules that flag pre-existing code.
-  Fix these even if they are unrelated to your changes.
 - **`usethis::use_standalone()` side effects:** The `build-standalone-files` task calls
   `usethis::use_standalone()`, which may regress the rlang version requirement in `DESCRIPTION`.
   Always check the `DESCRIPTION` diff after running `task build-documents` or `task build-all`.
