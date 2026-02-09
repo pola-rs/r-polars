@@ -380,8 +380,48 @@
       ! Evaluation failed in `$select()`.
       Caused by error in `pl$col("x")$str$split()`:
       ! Evaluation failed in `$split()`.
+      Caused by error in `pl$col("x")$str$split()`:
+      ! `inclusive` must be `TRUE` or `FALSE`, not the number 42.
+
+---
+
+    Code
+      df$select(pl$col("x")$str$split(by = "foo", literal = 42))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
       Caused by error:
-      ! Argument `inclusive` must be logical, not double
+      ! Evaluation failed in `$select()`.
+      Caused by error in `pl$col("x")$str$split()`:
+      ! Evaluation failed in `$split()`.
+      Caused by error in `pl$col("x")$str$split()`:
+      ! `literal` must be `TRUE` or `FALSE`, not the number 42.
+
+---
+
+    Code
+      df$select(pl$col("x")$str$split(by = "foo", strict = 42))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error in `pl$col("x")$str$split()`:
+      ! Evaluation failed in `$split()`.
+      Caused by error in `pl$col("x")$str$split()`:
+      ! `strict` must be `TRUE` or `FALSE`, not the number 42.
+
+# str$split with regex
+
+    Code
+      df$select(pl$col("x")$str$split(by = "(", literal = FALSE))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! invalid regex pattern in str.split_regex: (
 
 # str$split_exact
 
@@ -400,8 +440,8 @@
     Condition
       Error in `pl$lit("42")$str$split_exact()`:
       ! Evaluation failed in `$split_exact()`.
-      Caused by error:
-      ! Argument `inclusive` must be logical, not character
+      Caused by error in `pl$lit("42")$str$split_exact()`:
+      ! `inclusive` must be `TRUE` or `FALSE`, not the string "joe".
 
 # str$replace
 

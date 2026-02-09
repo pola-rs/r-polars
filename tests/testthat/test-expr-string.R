@@ -618,6 +618,16 @@ test_that("str$split", {
     error = TRUE
   )
 
+  expect_snapshot(
+    df$select(pl$col("x")$str$split(by = "foo", literal = 42)),
+    error = TRUE
+  )
+
+  expect_snapshot(
+    df$select(pl$col("x")$str$split(by = "foo", strict = 42)),
+    error = TRUE
+  )
+
   # with expression in "by" arg
   df <- pl$DataFrame(
     s = c("foo^bar", "foo_bar", "foo*bar*baz"),
@@ -626,6 +636,49 @@ test_that("str$split", {
   expect_equal(
     df$select(pl$col("s")$str$split(by = pl$col("by"))),
     pl$DataFrame(s = list("foo^bar", c("foo", "bar"), c("foo", "bar", "baz")))
+  )
+})
+
+test_that("str$split with regex", {
+  df <- pl$DataFrame(x = c("foo1bar", "foo99bar", "foo1bar2baz"))
+  expect_equal(
+    df$select(pl$col("x")$str$split(by = "\\d+", literal = FALSE)),
+    pl$DataFrame(x = list(c("foo", "bar"), c("foo", "bar"), c("foo", "bar", "baz")))
+  )
+  expect_equal(
+    df$select(pl$col("x")$str$split(by = "\\d+", literal = FALSE, inclusive = TRUE)),
+    pl$DataFrame(x = list(c("foo1", "bar"), c("foo99", "bar"), c("foo1", "bar2", "baz")))
+  )
+
+  # with expression in "by" arg
+  df <- pl$DataFrame(
+    x = c("foo1bar", "foo bar", "foo-bar baz"),
+    by = c("\\d", "\\s", "-")
+  )
+  expect_equal(
+    df$select(pl$col("x")$str$split(by = pl$col("by"), literal = FALSE)),
+    pl$DataFrame(x = list(c("foo", "bar"), c("foo", "bar"), c("foo", "bar baz")))
+  )
+  expect_equal(
+    df$select(pl$col("x")$str$split(by = pl$col("by"), literal = FALSE, inclusive = TRUE)),
+    pl$DataFrame(x = list(c("foo1", "bar"), c("foo ", "bar"), c("foo-", "bar baz")))
+  )
+
+  # invalid pattern
+  expect_snapshot(
+    df$select(pl$col("x")$str$split(by = "(", literal = FALSE)),
+    error = TRUE
+  )
+  expect_equal(
+    df$select(pl$col("x")$str$split(by = "(", literal = FALSE, strict = FALSE)),
+    pl$DataFrame(x = c(NA_character_, NA_character_, NA_character_))$cast(pl$List(pl$String))
+  )
+
+  # scalar string expr
+  df <- pl$DataFrame(by = c("\\d", "\\d+", "bar"))
+  expect_equal(
+    df$select(split = pl$lit("foo1bar2baz")$str$split(by = pl$col("by"), literal = FALSE)),
+    pl$DataFrame(split = list(c("foo", "bar", "baz"), c("foo", "bar", "baz"), c("foo1", "2baz")))
   )
 })
 

@@ -4,14 +4,20 @@
 \alias{expr_str_split}
 \title{Split the string by a substring}
 \usage{
-expr_str_split(by, ..., inclusive = FALSE)
+expr_str_split(by, ..., inclusive = FALSE, literal = TRUE, strict = TRUE)
 }
 \arguments{
-\item{by}{Substring to split by. Can be an Expr.}
+\item{by}{Substring (or regex if \code{literal = FALSE}) to split by. Can be an Expr.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
 \item{inclusive}{If \code{TRUE}, include the split character/string in the results.}
+
+\item{literal}{If \code{TRUE} (default), treat \code{by} as a literal string, not as
+a regular expression.}
+
+\item{strict}{If \code{TRUE} (default), raise an error if the underlying pattern
+is not a valid regex, otherwise mask out with a null value.}
 }
 \value{
 A polars \link{expression}
@@ -29,4 +35,24 @@ df <- pl$DataFrame(
 )
 df
 df$select(split = pl$col("s")$str$split(by = pl$col("by")))
+
+df <- pl$DataFrame(s = c("foo1bar", "foo99bar", "foo1bar2baz"))
+df
+df$with_columns(
+  pl$col("s")$str$split(by = "\\\\d+", literal = FALSE)$alias("split_regex"),
+  pl$col("s")$str$split(by = "\\\\d+", literal = FALSE, inclusive = TRUE)$alias(
+    "split_regex_inclusive"
+  ),
+)
+
+df <- pl$DataFrame(
+  s = c("foo1bar", "foo bar", "foo-bar baz"),
+  by = c("\\\\d", "\\\\s", "-"),
+)
+df$with_columns(
+  pl$col("s")$str$split(by = pl$col("by"), literal = FALSE)$alias("split_regex"),
+  pl$col("s")$str$split(by = pl$col("by"), literal = FALSE, inclusive = TRUE)$alias(
+    "split_regex_inclusive"
+  ),
+)
 }
