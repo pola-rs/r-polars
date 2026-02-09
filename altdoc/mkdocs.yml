@@ -467,6 +467,7 @@ nav:
             - bin_decode: man/expr_bin_decode.md
             - bin_encode: man/expr_bin_encode.md
             - bin_ends_with: man/expr_bin_ends_with.md
+            - bin_get: man/expr_bin_get.md
             - bin_reinterpret: man/expr_bin_reinterpret.md
             - bin_size: man/expr_bin_size.md
             - bin_starts_with: man/expr_bin_starts_with.md

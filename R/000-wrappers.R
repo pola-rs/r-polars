@@ -1370,6 +1370,13 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   }
 }
 
+`PlRExpr_bin_get` <- function(self) {
+  function(`index`, `null_on_oob`) {
+    `index` <- .savvy_extract_ptr(`index`, "polars::PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_get__impl, `self`, `index`, `null_on_oob`))
+  }
+}
+
 `PlRExpr_bin_hex_decode` <- function(self) {
   function(`strict`) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_hex_decode__impl, `self`, `strict`))
@@ -3575,6 +3582,7 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   e$`bin_base64_encode` <- `PlRExpr_bin_base64_encode`(ptr)
   e$`bin_contains` <- `PlRExpr_bin_contains`(ptr)
   e$`bin_ends_with` <- `PlRExpr_bin_ends_with`(ptr)
+  e$`bin_get` <- `PlRExpr_bin_get`(ptr)
   e$`bin_hex_decode` <- `PlRExpr_bin_hex_decode`(ptr)
   e$`bin_hex_encode` <- `PlRExpr_bin_hex_encode`(ptr)
   e$`bin_reinterpret` <- `PlRExpr_bin_reinterpret`(ptr)

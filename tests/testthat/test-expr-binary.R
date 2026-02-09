@@ -89,3 +89,40 @@ test_that("bin$reinterpret()", {
     error = TRUE
   )
 })
+
+test_that("bin$get()", {
+  df <- pl$DataFrame(x = c("\x01\x02\x03", "", "\x04\x05"))$cast(pl$Binary)
+
+  # out of bounds
+  expect_snapshot(
+    df$select(pl$col("x")$bin$get(0)),
+    error = TRUE
+  )
+
+  expect_equal(
+    df$select(pl$col("x")$bin$get(0, null_on_oob = TRUE)),
+    pl$DataFrame(x = c(1, NA, 4))$cast(pl$UInt8)
+  )
+  # negative index
+  expect_equal(
+    df$select(pl$col("x")$bin$get(-1, null_on_oob = TRUE)),
+    pl$DataFrame(x = c(3, NA, 5))$cast(pl$UInt8)
+  )
+  # null index
+  expect_equal(
+    df$select(pl$col("x")$bin$get(NA_integer_, null_on_oob = TRUE)),
+    pl$DataFrame(x = c(NA, NA, NA))$cast(pl$UInt8)
+  )
+  # expr index
+  df <- pl$DataFrame(x = c("\x01\x02\x03", "", "\x04\x05"), index = c(2, 0, 0))$cast(x = pl$Binary)
+  expect_equal(
+    df$select(pl$col("x")$bin$get(pl$col("index"), null_on_oob = TRUE)),
+    pl$DataFrame(x = c(3, NA, 4))$cast(pl$UInt8)
+  )
+
+  df <- pl$DataFrame(x = c("\x01\x02\x03"))$cast(x = pl$Binary)
+  expect_equal(
+    df$select(pl$col("x")$bin$get(pl$Series("idx", 1:3), null_on_oob = TRUE)),
+    pl$DataFrame(x = c(2, 3, NA))$cast(pl$UInt8)
+  )
+})
