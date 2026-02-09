@@ -496,8 +496,12 @@ SEXP savvy_PlRExpr_str_replace_all__ffi(SEXP self__, SEXP c_arg__pat, SEXP c_arg
 SEXP savvy_PlRExpr_str_replace_many__ffi(SEXP self__, SEXP c_arg__patterns, SEXP c_arg__replace_with, SEXP c_arg__ascii_case_insensitive, SEXP c_arg__leftmost);
 SEXP savvy_PlRExpr_str_reverse__ffi(SEXP self__);
 SEXP savvy_PlRExpr_str_slice__ffi(SEXP self__, SEXP c_arg__offset, SEXP c_arg__length);
-SEXP savvy_PlRExpr_str_split__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__inclusive);
-SEXP savvy_PlRExpr_str_split_exact__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__n, SEXP c_arg__inclusive);
+SEXP savvy_PlRExpr_str_split__ffi(SEXP self__, SEXP c_arg__by);
+SEXP savvy_PlRExpr_str_split_exact__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__n);
+SEXP savvy_PlRExpr_str_split_exact_inclusive__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__n);
+SEXP savvy_PlRExpr_str_split_inclusive__ffi(SEXP self__, SEXP c_arg__by);
+SEXP savvy_PlRExpr_str_split_regex__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__strict);
+SEXP savvy_PlRExpr_str_split_regex_inclusive__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__strict);
 SEXP savvy_PlRExpr_str_splitn__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__n);
 SEXP savvy_PlRExpr_str_starts_with__ffi(SEXP self__, SEXP c_arg__prefix);
 SEXP savvy_PlRExpr_str_strip_chars__ffi(SEXP self__, SEXP c_arg__characters);

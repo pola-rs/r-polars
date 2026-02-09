@@ -311,35 +311,60 @@ impl PlRExpr {
             .into())
     }
 
-    fn str_split(&self, by: &PlRExpr, inclusive: bool) -> Result<Self> {
-        if inclusive {
-            Ok(self
-                .inner
-                .clone()
-                .str()
-                .split_inclusive(by.inner.clone())
-                .into())
-        } else {
-            Ok(self.inner.clone().str().split(by.inner.clone()).into())
-        }
+    fn str_split(&self, by: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().str().split(by.inner.clone()).into())
     }
 
-    fn str_split_exact(&self, by: &PlRExpr, n: NumericScalar, inclusive: bool) -> Result<Self> {
+    fn str_split_inclusive(&self, by: &PlRExpr) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .str()
+            .split_inclusive(by.inner.clone())
+            .into())
+    }
+
+    fn str_split_exact(&self, by: &PlRExpr, n: NumericScalar) -> Result<Self> {
         let n = <Wrap<usize>>::try_from(n)?.0;
-        Ok(if inclusive {
-            self.inner
-                .clone()
-                .str()
-                .split_exact_inclusive(by.inner.clone(), n)
-        } else {
-            self.inner.clone().str().split_exact(by.inner.clone(), n)
-        }
-        .into())
+        Ok(self
+            .inner
+            .clone()
+            .str()
+            .split_exact(by.inner.clone(), n)
+            .into())
+    }
+
+    fn str_split_exact_inclusive(&self, by: &PlRExpr, n: NumericScalar) -> Result<Self> {
+        let n = <Wrap<usize>>::try_from(n)?.0;
+        Ok(self
+            .inner
+            .clone()
+            .str()
+            .split_exact_inclusive(by.inner.clone(), n)
+            .into())
     }
 
     fn str_splitn(&self, by: &PlRExpr, n: NumericScalar) -> Result<Self> {
         let n = <Wrap<usize>>::try_from(n)?.0;
         Ok(self.inner.clone().str().splitn(by.inner.clone(), n).into())
+    }
+
+    fn str_split_regex(&self, by: &PlRExpr, strict: bool) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .str()
+            .split_regex(by.inner.clone(), strict)
+            .into())
+    }
+
+    fn str_split_regex_inclusive(&self, by: &PlRExpr, strict: bool) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .str()
+            .split_regex_inclusive(by.inner.clone(), strict)
+            .into())
     }
 
     fn str_replace(
