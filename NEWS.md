@@ -22,6 +22,7 @@ This is an update that corresponds to Python Polars 1.38.1.
 - `<expr>$str$split()` has two new arguments `literal` and `strict` (#1730).
 - New `pl$scan_lines()` and `pl$read_lines()` to read one or several files into
   a single column (#1732).
+- `sink_ndjson()` and `write_ndjson()` can now export compressed files (#1733).
 
 ### Bug fixes
 

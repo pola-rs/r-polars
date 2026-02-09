@@ -1,6 +1,4 @@
 # Output (ND)JSON functions: sink_ndjson, write_json, write_ndjson
-# (there is only sink_ndjson() in Python Polars but there is sink_json() in
-# Rust Polars).
 
 #' Evaluate the query in streaming mode and write to a NDJSON file
 #'
@@ -15,6 +13,16 @@
 #' @inheritParams lazyframe__sink_parquet
 #' @inheritParams lazyframe__collect
 #' @inheritParams pl__scan_parquet
+#' @param compression What compression format to use. Must be one of
+#' `uncompressed` (default), `gzip`, or `zstd`.
+#' @param compression_level The compression level to use, typically 0-9 or `NULL`
+#' to let the engine choose.
+#' @param check_extension Whether to check if the filename matches the
+#' compression settings. Will raise an error if compression is set to
+#' `"uncompressed"` and the filename ends in one of `".gz"`, `".zst"`, `".zstd"`,
+#' or if `compression != "uncompressed"` and the file uses a mismatched extension.
+#' Only applies if file is a path.
+#'
 #' @examplesIf requireNamespace("jsonlite", quiet = TRUE)
 #' dat <- as_polars_lf(head(mtcars))
 #' destination <- tempfile()
@@ -24,6 +32,9 @@
 lazyframe__sink_ndjson <- function(
   path,
   ...,
+  compression = c("uncompressed", "gzip", "zstd"),
+  compression_level = NULL,
+  check_extension = TRUE,
   maintain_order = TRUE,
   storage_options = NULL,
   retries = deprecated(),
@@ -44,6 +55,9 @@ lazyframe__sink_ndjson <- function(
 
     self$lazy_sink_ndjson(
       path = path,
+      compression = compression,
+      compression_level = compression_level,
+      check_extension = check_extension,
       maintain_order = maintain_order,
       storage_options = storage_options,
       retries = retries,
@@ -69,6 +83,9 @@ lazyframe__sink_ndjson <- function(
 lazyframe__lazy_sink_ndjson <- function(
   path,
   ...,
+  compression = c("uncompressed", "gzip", "zstd"),
+  compression_level = NULL,
+  check_extension = TRUE,
   maintain_order = TRUE,
   storage_options = NULL,
   retries = deprecated(),
@@ -78,6 +95,7 @@ lazyframe__lazy_sink_ndjson <- function(
   wrap({
     check_dots_empty0(...)
     check_character(storage_options, allow_null = TRUE)
+    compression <- arg_match0(compression, values = c("uncompressed", "gzip", "zstd"))
 
     if (is_present(retries)) {
       deprecate_warn(
@@ -104,8 +122,11 @@ lazyframe__lazy_sink_ndjson <- function(
       values = c("none", "data", "all")
     )
 
-    self$`_ldf`$sink_json(
+    self$`_ldf`$sink_ndjson(
       target = target,
+      compression = compression,
+      compression_level = compression_level,
+      check_extension = check_extension,
       maintain_order = maintain_order,
       sync_on_close = sync_on_close,
       mkdir = mkdir,
@@ -142,10 +163,19 @@ dataframe__write_json <- function(file) {
 #'
 #' dat$select(pl$col("drat", "mpg"))$write_ndjson(destination)
 #' jsonlite::stream_in(file(destination))
-dataframe__write_ndjson <- function(file) {
+dataframe__write_ndjson <- function(
+  file,
+  ...,
+  compression = c("uncompressed", "gzip", "zstd"),
+  compression_level = NULL,
+  check_extension = TRUE
+) {
   wrap({
     self$lazy()$sink_ndjson(
       file,
+      compression = compression,
+      compression_level = compression_level,
+      check_extension = check_extension,
       optimizations = DEFAULT_EAGER_OPT_FLAGS,
       engine = "in-memory"
     )

@@ -1404,9 +1404,12 @@ test_that("explode/flatten", {
     pl$DataFrame(a = list(letters))$select(pl$col("a")$explode()),
     pl$DataFrame(a = letters)
   )
-  expect_equal(
-    pl$DataFrame(a = list(letters))$select(pl$col("a")$flatten()),
-    pl$DataFrame(a = letters)
+  expect_warning(
+    expect_equal(
+      pl$DataFrame(a = list(letters))$select(pl$col("a")$flatten()),
+      pl$DataFrame(a = letters)
+    ),
+    "is deprecated"
   )
 
   # empty and null handling

@@ -1,4 +1,4 @@
-# Input (ND)JSON functions: scan_json, scan_ndjson, read_json, read_ndjson
+# Input (ND)JSON functions: scan_ndjson, read_json, read_ndjson
 
 #' Lazily read from a local or cloud-hosted NDJSON file(s)
 #'
