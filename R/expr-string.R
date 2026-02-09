@@ -929,19 +929,15 @@ expr_str_split <- function(by, ..., inclusive = FALSE, literal = TRUE, strict = 
 
     if (isFALSE(literal)) {
       if (isTRUE(inclusive)) {
-        self$`_rexpr`$str_split_regex_inclusive(by, strict) |>
-          wrap()
+        self$`_rexpr`$str_split_regex_inclusive(by, strict)
       } else {
-        self$`_rexpr`$str_split_regex(by, strict) |>
-          wrap()
+        self$`_rexpr`$str_split_regex(by, strict)
       }
     } else {
       if (isTRUE(inclusive)) {
-        self$`_rexpr`$str_split_inclusive(by) |>
-          wrap()
+        self$`_rexpr`$str_split_inclusive(by)
       } else {
-        self$`_rexpr`$str_split(by) |>
-          wrap()
+        self$`_rexpr`$str_split(by)
       }
     }
   })
