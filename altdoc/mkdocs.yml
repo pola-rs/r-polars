@@ -467,6 +467,7 @@ nav:
             - bin_decode: man/expr_bin_decode.md
             - bin_encode: man/expr_bin_encode.md
             - bin_ends_with: man/expr_bin_ends_with.md
+            - bin_get: man/expr_bin_get.md
             - bin_reinterpret: man/expr_bin_reinterpret.md
             - bin_size: man/expr_bin_size.md
             - bin_starts_with: man/expr_bin_starts_with.md
@@ -748,6 +749,8 @@ nav:
         - sink_ipc: man/lazyframe__sink_ipc.md
         - write_ipc: man/dataframe__write_ipc.md
         - write_ipc_stream: man/dataframe__write_ipc_stream.md
+        - read_lines: man/pl__read_lines.md
+        - scan_lines: man/pl__scan_lines.md
         - read_ndjson: man/pl__read_ndjson.md
         - scan_ndjson: man/pl__scan_ndjson.md
         - sink_ndjson: man/lazyframe__sink_ndjson.md

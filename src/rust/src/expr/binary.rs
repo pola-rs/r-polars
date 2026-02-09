@@ -63,4 +63,13 @@ impl PlRExpr {
             .reinterpret(dtype.inner.clone(), is_little_endian)
             .into())
     }
+
+    fn bin_get(&self, index: &PlRExpr, null_on_oob: bool) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .binary()
+            .get(index.inner.clone(), null_on_oob)
+            .into())
+    }
 }

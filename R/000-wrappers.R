@@ -1370,6 +1370,13 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   }
 }
 
+`PlRExpr_bin_get` <- function(self) {
+  function(`index`, `null_on_oob`) {
+    `index` <- .savvy_extract_ptr(`index`, "polars::PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_get__impl, `self`, `index`, `null_on_oob`))
+  }
+}
+
 `PlRExpr_bin_hex_decode` <- function(self) {
   function(`strict`) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_hex_decode__impl, `self`, `strict`))
@@ -3547,6 +3554,7 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   e$`bin_base64_encode` <- `PlRExpr_bin_base64_encode`(ptr)
   e$`bin_contains` <- `PlRExpr_bin_contains`(ptr)
   e$`bin_ends_with` <- `PlRExpr_bin_ends_with`(ptr)
+  e$`bin_get` <- `PlRExpr_bin_get`(ptr)
   e$`bin_hex_decode` <- `PlRExpr_bin_hex_decode`(ptr)
   e$`bin_hex_encode` <- `PlRExpr_bin_hex_encode`(ptr)
   e$`bin_reinterpret` <- `PlRExpr_bin_reinterpret`(ptr)
@@ -4413,6 +4421,10 @@ class(`PlRExpr`) <- c("polars::PlRExpr__bundle", "savvy_polars__sealed")
 
 `PlRLazyFrame`$`new_from_parquet` <- function(`source`, `cache`, `parallel`, `rechunk`, `low_memory`, `use_statistics`, `try_parse_hive_dates`, `glob`, `missing_columns`, `row_index_offset`, `storage_options` = NULL, `n_rows` = NULL, `row_index_name` = NULL, `hive_partitioning` = NULL, `schema` = NULL, `hive_schema` = NULL, `include_file_paths` = NULL) {
   .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_parquet__impl, `source`, `cache`, `parallel`, `rechunk`, `low_memory`, `use_statistics`, `try_parse_hive_dates`, `glob`, `missing_columns`, `row_index_offset`, `storage_options`, `n_rows`, `row_index_name`, `hive_partitioning`, `schema`, `hive_schema`, `include_file_paths`))
+}
+
+`PlRLazyFrame`$`new_from_scan_lines` <- function(`source`, `name`, `row_index_offset`, `glob`, `n_rows` = NULL, `row_index_name` = NULL, `storage_options` = NULL, `include_file_paths` = NULL) {
+  .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_scan_lines__impl, `source`, `name`, `row_index_offset`, `glob`, `n_rows`, `row_index_name`, `storage_options`, `include_file_paths`))
 }
 
 

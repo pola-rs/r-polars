@@ -18,6 +18,9 @@ This is an update that corresponds to Python Polars 1.38.1.
 - `cs$by_name()` gains the `expand_patterns` argument. When set to `TRUE`, regex patterns
   (`^...$`) and wildcards (`*`) in column names are expanded
   ([pola-rs/polars#26437](https://github.com/pola-rs/polars/pull/26437)).
+- New `<expr>$bin$get()` to extract a specific byte from a binary value (#1731).
+- New `pl$scan_lines()` and `pl$read_lines()` to read one or several files into
+  a single column (#1732).
 
 ### Bug fixes
 
