@@ -156,6 +156,7 @@ dataframe__write_json <- function(file) {
 #' Serialize to newline delimited JSON representation
 #'
 #' @inheritParams dataframe__write_json
+#' @inheritParams lazyframe__sink_ndjson
 #' @inherit dataframe__write_parquet return
 #' @examplesIf requireNamespace("jsonlite", quiet = TRUE)
 #' dat <- as_polars_df(head(mtcars))
@@ -171,6 +172,7 @@ dataframe__write_ndjson <- function(
   check_extension = TRUE
 ) {
   wrap({
+    check_dots_empty0(...)
     self$lazy()$sink_ndjson(
       file,
       compression = compression,
