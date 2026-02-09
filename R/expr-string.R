@@ -929,28 +929,20 @@ expr_str_split <- function(by, ..., inclusive = FALSE, literal = TRUE, strict = 
 
     if (isFALSE(literal)) {
       if (isTRUE(inclusive)) {
-        return(
-          self$`_rexpr`$str_split_regex_inclusive(by, strict) |>
-            wrap()
-        )
+        self$`_rexpr`$str_split_regex_inclusive(by, strict) |>
+          wrap()
       } else {
-        return(
-          self$`_rexpr`$str_split_regex(by, strict) |>
-            wrap()
-        )
+        self$`_rexpr`$str_split_regex(by, strict) |>
+          wrap()
       }
-    }
-
-    if (isTRUE(inclusive)) {
-      return(
+    } else {
+      if (isTRUE(inclusive)) {
         self$`_rexpr`$str_split_inclusive(by) |>
           wrap()
-      )
-    } else {
-      return(
+      } else {
         self$`_rexpr`$str_split(by) |>
           wrap()
-      )
+      }
     }
   })
 }
