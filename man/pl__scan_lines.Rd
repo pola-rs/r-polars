@@ -52,8 +52,6 @@ information from environment variables.}
 
 \item{include_file_paths}{Include the path of the source file(s) as a column
 with this name.}
-
-\item{batch_size}{Number of rows to read in each batch.}
 }
 \value{
 A polars \link{LazyFrame}

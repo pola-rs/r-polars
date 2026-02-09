@@ -9,7 +9,6 @@
 #' @param name Name to use for the output column.
 #'
 #' @inherit as_polars_lf return
-#' @param batch_size Number of rows to read in each batch.
 #' @examplesIf requireNamespace("withr", quietly = TRUE)
 #' dest <- withr::local_tempfile()
 #' writeLines("Hello\nworld", dest)
