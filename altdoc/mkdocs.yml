@@ -749,6 +749,8 @@ nav:
         - sink_ipc: man/lazyframe__sink_ipc.md
         - write_ipc: man/dataframe__write_ipc.md
         - write_ipc_stream: man/dataframe__write_ipc_stream.md
+        - read_lines: man/pl__read_lines.md
+        - scan_lines: man/pl__scan_lines.md
         - read_ndjson: man/pl__read_ndjson.md
         - scan_ndjson: man/pl__scan_ndjson.md
         - sink_ndjson: man/lazyframe__sink_ndjson.md

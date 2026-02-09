@@ -2834,6 +2834,11 @@ SEXP savvy_PlRLazyFrame_new_from_parquet__impl(SEXP c_arg__source, SEXP c_arg__c
     return handle_result(res);
 }
 
+SEXP savvy_PlRLazyFrame_new_from_scan_lines__impl(SEXP c_arg__source, SEXP c_arg__name, SEXP c_arg__row_index_offset, SEXP c_arg__glob, SEXP c_arg__n_rows, SEXP c_arg__row_index_name, SEXP c_arg__storage_options, SEXP c_arg__include_file_paths) {
+    SEXP res = savvy_PlRLazyFrame_new_from_scan_lines__ffi(c_arg__source, c_arg__name, c_arg__row_index_offset, c_arg__glob, c_arg__n_rows, c_arg__row_index_name, c_arg__storage_options, c_arg__include_file_paths);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRLazyFrame_null_count__impl(SEXP self__) {
     SEXP res = savvy_PlRLazyFrame_null_count__ffi(self__);
     return handle_result(res);
@@ -4035,6 +4040,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_new_from_ipc__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_ipc__impl, 11},
     {"savvy_PlRLazyFrame_new_from_ndjson__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_ndjson__impl, 13},
     {"savvy_PlRLazyFrame_new_from_parquet__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_parquet__impl, 17},
+    {"savvy_PlRLazyFrame_new_from_scan_lines__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_scan_lines__impl, 8},
     {"savvy_PlRLazyFrame_null_count__impl", (DL_FUNC) &savvy_PlRLazyFrame_null_count__impl, 1},
     {"savvy_PlRLazyFrame_pivot__impl", (DL_FUNC) &savvy_PlRLazyFrame_pivot__impl, 8},
     {"savvy_PlRLazyFrame_profile__impl", (DL_FUNC) &savvy_PlRLazyFrame_profile__impl, 1},

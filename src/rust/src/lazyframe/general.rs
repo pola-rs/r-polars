@@ -808,6 +808,69 @@ impl PlRLazyFrame {
         }
     }
 
+    fn new_from_scan_lines(
+        source: StringSexp,
+        name: &str,
+        row_index_offset: NumericScalar,
+        glob: bool,
+        n_rows: Option<NumericScalar>,
+        row_index_name: Option<&str>,
+        storage_options: Option<StringSexp>,
+        include_file_paths: Option<&str>,
+    ) -> Result<Self> {
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            let sources = <Wrap<ScanSources>>::try_from(source)?.0;
+            let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
+            let n_rows = match n_rows {
+                Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
+                None => None,
+            };
+            let row_index = row_index_name.map(|x| RowIndex {
+                name: x.into(),
+                offset: row_index_offset,
+            });
+            let storage_options = match storage_options {
+                Some(x) => {
+                    let out = <Wrap<Vec<(String, String)>>>::try_from(x)
+                        .map_err(|_| {
+                            RPolarsErr::Other(
+                                "`storage_options` must be a named character vector".to_string(),
+                            )
+                        })?
+                        .0;
+                    Some(out)
+                }
+                None => None,
+            };
+
+            let first_path = sources.first_path().map(|p| p.to_owned());
+            let cloud_schema = first_path.and_then(|p| CloudScheme::from_path(p.as_str()));
+
+            let cloud_options = parse_cloud_options(cloud_schema, storage_options)?;
+
+            let unified_scan_args = UnifiedScanArgs {
+                cloud_options,
+                pre_slice: n_rows.map(|len| Slice::Positive { offset: 0, len }),
+                row_index,
+                include_file_paths: include_file_paths.map(|x| x.into()),
+                glob,
+                ..Default::default()
+            };
+
+            let dsl: DslPlan =
+                DslBuilder::scan_lines(sources, unified_scan_args, PlSmallStr::from(name))
+                    .map_err(RPolarsErr::from)?
+                    .build();
+            let lf: LazyFrame = dsl.into();
+            Ok(lf.into())
+        }
+        #[cfg(target_arch = "wasm32")]
+        {
+            Err(RPolarsErr::Other(format!("Not supported in WASM")).into())
+        }
+    }
+
     fn new_from_csv(
         source: StringSexp,
         separator: &str,

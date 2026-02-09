@@ -4455,6 +4455,10 @@ class(`PlRExpr`) <- c("polars::PlRExpr__bundle", "savvy_polars__sealed")
   .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_parquet__impl, `source`, `cache`, `parallel`, `rechunk`, `low_memory`, `use_statistics`, `try_parse_hive_dates`, `glob`, `missing_columns`, `row_index_offset`, `storage_options`, `n_rows`, `row_index_name`, `hive_partitioning`, `schema`, `hive_schema`, `include_file_paths`))
 }
 
+`PlRLazyFrame`$`new_from_scan_lines` <- function(`source`, `name`, `row_index_offset`, `glob`, `n_rows` = NULL, `row_index_name` = NULL, `storage_options` = NULL, `include_file_paths` = NULL) {
+  .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_scan_lines__impl, `source`, `name`, `row_index_offset`, `glob`, `n_rows`, `row_index_name`, `storage_options`, `include_file_paths`))
+}
+
 
 class(`PlRLazyFrame`) <- c("polars::PlRLazyFrame__bundle", "savvy_polars__sealed")
 
