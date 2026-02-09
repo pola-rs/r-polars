@@ -4230,8 +4230,8 @@ class(`PlRExpr`) <- c("polars::PlRExpr__bundle", "savvy_polars__sealed")
 }
 
 `PlRLazyFrame_sink_csv` <- function(self) {
-  function(`target`, `include_bom`, `include_header`, `separator`, `line_terminator`, `quote_char`, `batch_size`, `sync_on_close`, `maintain_order`, `mkdir`, `decimal_comma`, `datetime_format` = NULL, `date_format` = NULL, `time_format` = NULL, `float_scientific` = NULL, `float_precision` = NULL, `null_value` = NULL, `quote_style` = NULL, `storage_options` = NULL) {
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_sink_csv__impl, `self`, `target`, `include_bom`, `include_header`, `separator`, `line_terminator`, `quote_char`, `batch_size`, `sync_on_close`, `maintain_order`, `mkdir`, `decimal_comma`, `datetime_format`, `date_format`, `time_format`, `float_scientific`, `float_precision`, `null_value`, `quote_style`, `storage_options`))
+  function(`target`, `include_bom`, `compression`, `check_extension`, `include_header`, `separator`, `line_terminator`, `quote_char`, `batch_size`, `sync_on_close`, `maintain_order`, `mkdir`, `decimal_comma`, `datetime_format` = NULL, `date_format` = NULL, `time_format` = NULL, `float_scientific` = NULL, `float_precision` = NULL, `null_value` = NULL, `quote_style` = NULL, `storage_options` = NULL, `compression_level` = NULL) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_sink_csv__impl, `self`, `target`, `include_bom`, `compression`, `check_extension`, `include_header`, `separator`, `line_terminator`, `quote_char`, `batch_size`, `sync_on_close`, `maintain_order`, `mkdir`, `decimal_comma`, `datetime_format`, `date_format`, `time_format`, `float_scientific`, `float_precision`, `null_value`, `quote_style`, `storage_options`, `compression_level`))
   }
 }
 
