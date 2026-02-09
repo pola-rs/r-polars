@@ -13,15 +13,15 @@
 #' @inheritParams lazyframe__sink_parquet
 #' @inheritParams lazyframe__collect
 #' @inheritParams pl__scan_parquet
-#' @param compression What compression format to use. Must be one of
-#' `uncompressed` (default), `gzip`, or `zstd`.
-#' @param compression_level The compression level to use, typically 0-9 or `NULL`
-#' to let the engine choose.
-#' @param check_extension Whether to check if the filename matches the
-#' compression settings. Will raise an error if compression is set to
-#' `"uncompressed"` and the filename ends in one of `".gz"`, `".zst"`, `".zstd"`,
-#' or if `compression != "uncompressed"` and the file uses a mismatched extension.
-#' Only applies if file is a path.
+#' @param compression `r lifecycle::badge("experimental")` What compression
+#' format to use. Must be one of `uncompressed` (default), `gzip`, or `zstd`.
+#' @param compression_level `r lifecycle::badge("experimental")` The compression
+#' level to use, typically 0-9 or `NULL` to let the engine choose.
+#' @param check_extension `r lifecycle::badge("experimental")` Whether to check
+#' if the filename matches the compression settings. Will raise an error if
+#' compression is set to `"uncompressed"` and the filename ends in one of
+#' `".gz"`, `".zst"`, `".zstd"`, or if `compression != "uncompressed"` and the
+#' file uses a mismatched extension. Only applies if file is a path.
 #'
 #' @examplesIf requireNamespace("jsonlite", quiet = TRUE)
 #' dat <- as_polars_lf(head(mtcars))
