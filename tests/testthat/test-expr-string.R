@@ -1148,7 +1148,7 @@ test_that("$str$extract_many works", {
 
   expect_snapshot(
     pl$select(pl$lit("foo")$str$extract_many(
-      pl$lit("foo"),
+      pl$lit(list("foo")),
       overlapping = TRUE,
       leftmost = TRUE,
     )),
@@ -1231,7 +1231,7 @@ test_that("str$find_many()", {
 
   expect_snapshot(
     pl$select(pl$lit("foo")$str$find_many(
-      pl$lit("foo"),
+      pl$lit(list("foo")),
       overlapping = TRUE,
       leftmost = TRUE,
     )),

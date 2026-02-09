@@ -560,7 +560,7 @@
 ---
 
     Code
-      pl$select(pl$lit("foo")$str$extract_many(pl$lit("foo"), overlapping = TRUE,
+      pl$select(pl$lit("foo")$str$extract_many(pl$lit(list("foo")), overlapping = TRUE,
       leftmost = TRUE, ))
     Condition
       Error:
@@ -669,7 +669,7 @@
 # str$find_many()
 
     Code
-      pl$select(pl$lit("foo")$str$find_many(pl$lit("foo"), overlapping = TRUE,
+      pl$select(pl$lit("foo")$str$find_many(pl$lit(list("foo")), overlapping = TRUE,
       leftmost = TRUE, ))
     Condition
       Error:
