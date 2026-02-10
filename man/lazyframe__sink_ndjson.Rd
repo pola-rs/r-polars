@@ -8,6 +8,9 @@
 lazyframe__sink_ndjson(
   path,
   ...,
+  compression = c("uncompressed", "gzip", "zstd"),
+  compression_level = NULL,
+  check_extension = TRUE,
   maintain_order = TRUE,
   storage_options = NULL,
   retries = deprecated(),
@@ -27,6 +30,9 @@ lazyframe__sink_ndjson(
 lazyframe__lazy_sink_ndjson(
   path,
   ...,
+  compression = c("uncompressed", "gzip", "zstd"),
+  compression_level = NULL,
+  check_extension = TRUE,
   maintain_order = TRUE,
   storage_options = NULL,
   retries = deprecated(),
@@ -38,6 +44,18 @@ lazyframe__lazy_sink_ndjson(
 \item{path}{A character. File path to which the file should be written.}
 
 \item{...}{These dots are for future extensions and must be empty.}
+
+\item{compression}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} What compression
+format to use. Must be one of \code{uncompressed} (default), \code{gzip}, or \code{zstd}.}
+
+\item{compression_level}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} The compression
+level to use, typically 0-9 or \code{NULL} to let the engine choose.}
+
+\item{check_extension}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Whether to check
+if the filename matches the compression settings. Will raise an error if
+compression is set to \code{"uncompressed"} and the filename ends in one of
+\code{".gz"}, \code{".zst"}, \code{".zstd"}, or if \code{compression != "uncompressed"} and the
+file uses a mismatched extension. Only applies if file is a path.}
 
 \item{maintain_order}{Maintain the order in which data is processed. Setting
 this to \code{FALSE} will be slightly faster.}

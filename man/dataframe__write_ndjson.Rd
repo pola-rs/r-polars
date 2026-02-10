@@ -4,10 +4,30 @@
 \alias{dataframe__write_ndjson}
 \title{Serialize to newline delimited JSON representation}
 \usage{
-dataframe__write_ndjson(file)
+dataframe__write_ndjson(
+  file,
+  ...,
+  compression = c("uncompressed", "gzip", "zstd"),
+  compression_level = NULL,
+  check_extension = TRUE
+)
 }
 \arguments{
 \item{file}{File path to which the result will be written.}
+
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{compression}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} What compression
+format to use. Must be one of \code{uncompressed} (default), \code{gzip}, or \code{zstd}.}
+
+\item{compression_level}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} The compression
+level to use, typically 0-9 or \code{NULL} to let the engine choose.}
+
+\item{check_extension}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Whether to check
+if the filename matches the compression settings. Will raise an error if
+compression is set to \code{"uncompressed"} and the filename ends in one of
+\code{".gz"}, \code{".zst"}, \code{".zstd"}, or if \code{compression != "uncompressed"} and the
+file uses a mismatched extension. Only applies if file is a path.}
 }
 \value{
 \code{NULL} invisibly.

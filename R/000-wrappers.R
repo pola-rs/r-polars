@@ -4241,9 +4241,9 @@ class(`PlRExpr`) <- c("polars::PlRExpr__bundle", "savvy_polars__sealed")
   }
 }
 
-`PlRLazyFrame_sink_json` <- function(self) {
-  function(`target`, `sync_on_close`, `maintain_order`, `mkdir`, `storage_options` = NULL) {
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_sink_json__impl, `self`, `target`, `sync_on_close`, `maintain_order`, `mkdir`, `storage_options`))
+`PlRLazyFrame_sink_ndjson` <- function(self) {
+  function(`target`, `compression`, `check_extension`, `sync_on_close`, `maintain_order`, `mkdir`, `compression_level` = NULL, `storage_options` = NULL) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_sink_ndjson__impl, `self`, `target`, `compression`, `check_extension`, `sync_on_close`, `maintain_order`, `mkdir`, `compression_level`, `storage_options`))
   }
 }
 
@@ -4405,7 +4405,7 @@ class(`PlRExpr`) <- c("polars::PlRExpr__bundle", "savvy_polars__sealed")
   e$`sink_batches` <- `PlRLazyFrame_sink_batches`(ptr)
   e$`sink_csv` <- `PlRLazyFrame_sink_csv`(ptr)
   e$`sink_ipc` <- `PlRLazyFrame_sink_ipc`(ptr)
-  e$`sink_json` <- `PlRLazyFrame_sink_json`(ptr)
+  e$`sink_ndjson` <- `PlRLazyFrame_sink_ndjson`(ptr)
   e$`sink_parquet` <- `PlRLazyFrame_sink_parquet`(ptr)
   e$`slice` <- `PlRLazyFrame_slice`(ptr)
   e$`sort` <- `PlRLazyFrame_sort`(ptr)

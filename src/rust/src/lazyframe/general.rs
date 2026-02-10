@@ -1385,12 +1385,15 @@ impl PlRLazyFrame {
         }
     }
 
-    fn sink_json(
+    fn sink_ndjson(
         &self,
         target: Sexp,
+        compression: &str,
+        check_extension: bool,
         sync_on_close: &str,
         maintain_order: bool,
         mkdir: bool,
+        compression_level: Option<NumericScalar>,
         storage_options: Option<StringSexp>,
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
@@ -1410,7 +1413,15 @@ impl PlRLazyFrame {
                 None => None,
             };
 
-            let options = NDJsonWriterOptions::default();
+            let compression_level = match compression_level {
+                Some(x) => Some(<Wrap<u32>>::try_from(x)?.0),
+                None => None,
+            };
+            let options = NDJsonWriterOptions {
+                compression: ExternalCompression::try_from(compression, compression_level)
+                    .map_err(RPolarsErr::from)?,
+                check_extension,
+            };
 
             let cloud_options = parse_cloud_options(target.cloud_scheme(), storage_options)?;
             let unified_sink_args = UnifiedSinkArgs {
