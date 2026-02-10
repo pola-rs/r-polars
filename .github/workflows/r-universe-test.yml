@@ -2,7 +2,39 @@ name: Test R-universe
 
 on:
   push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/r-universe-test.yml
+      - R/**
+      - src/**
+      - tests/**
+      - tools/**
+      - vignettes/*
+      - configure*
+      - DESCRIPTION
+      - NAMESPACE
   pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/r-universe-test.yml
+      - R/**
+      - src/**
+      - tests/**
+      - tools/**
+      - vignettes/*
+      - configure*
+      - DESCRIPTION
+      - NAMESPACE
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   build:
