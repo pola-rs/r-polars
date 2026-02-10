@@ -2,6 +2,7 @@
 
 #' Evaluate the query in streaming mode and write to a CSV file
 #'
+#' @inheritParams lazyframe__sink_ndjson
 #' @inherit lazyframe__sink_parquet description params return
 #' @inheritParams rlang::args_dots_empty
 #' @param include_bom Logical, whether to include UTF-8 BOM in the CSV output.
@@ -62,6 +63,9 @@ lazyframe__sink_csv <- function(
   path,
   ...,
   include_bom = FALSE,
+  compression = c("uncompressed", "gzip", "zstd"),
+  compression_level = NULL,
+  check_extension = TRUE,
   include_header = TRUE,
   separator = ",",
   line_terminator = "\n",
@@ -96,6 +100,9 @@ lazyframe__sink_csv <- function(
     self$lazy_sink_csv(
       path = path,
       include_bom = include_bom,
+      compression = compression,
+      compression_level = compression_level,
+      check_extension = check_extension,
       include_header = include_header,
       separator = separator,
       line_terminator = line_terminator,
@@ -135,6 +142,9 @@ lazyframe__lazy_sink_csv <- function(
   path,
   ...,
   include_bom = FALSE,
+  compression = c("uncompressed", "gzip", "zstd"),
+  compression_level = NULL,
+  check_extension = TRUE,
   include_header = TRUE,
   separator = ",",
   line_terminator = "\n",
@@ -157,6 +167,7 @@ lazyframe__lazy_sink_csv <- function(
   wrap({
     check_dots_empty0(...)
     check_character(storage_options, allow_null = TRUE)
+    compression <- arg_match0(compression, values = c("uncompressed", "gzip", "zstd"))
 
     if (is_present(retries)) {
       deprecate_warn(
@@ -192,6 +203,9 @@ lazyframe__lazy_sink_csv <- function(
     self$`_ldf`$sink_csv(
       target = target,
       include_bom = include_bom,
+      compression = compression,
+      compression_level = compression_level,
+      check_extension = check_extension,
       include_header = include_header,
       separator = separator,
       line_terminator = line_terminator,
@@ -230,6 +244,9 @@ dataframe__write_csv <- function(
   file,
   ...,
   include_bom = FALSE,
+  compression = c("uncompressed", "gzip", "zstd"),
+  compression_level = NULL,
+  check_extension = TRUE,
   include_header = TRUE,
   separator = ",",
   line_terminator = "\n",
@@ -252,6 +269,9 @@ dataframe__write_csv <- function(
     self$lazy()$sink_csv(
       path = file,
       include_bom = include_bom,
+      compression = compression,
+      compression_level = compression_level,
+      check_extension = check_extension,
       include_header = include_header,
       separator = separator,
       line_terminator = line_terminator,

@@ -354,3 +354,63 @@ test_that("write_csv: float_scientific works", {
     c("x", "1e7", "5.6e0")
   )
 })
+
+test_that("write_csv can export compressed data", {
+  dat <- as_polars_df(mtcars[1:5, 1:3])
+
+  tmpf <- withr::local_tempfile(fileext = ".csv.zst")
+  dat$write_csv(tmpf, compression = "zstd")
+  expect_equal(dat, pl$read_csv(tmpf))
+
+  tmpf <- withr::local_tempfile(fileext = ".csv.gz")
+  dat$write_csv(tmpf, compression = "gzip")
+  expect_equal(dat, pl$read_csv(tmpf))
+
+  expect_snapshot(
+    dat$write_csv(tmpf, compression = "foo"),
+    error = TRUE
+  )
+})
+
+test_that("sink_csv can export compressed data", {
+  dat <- as_polars_lf(mtcars[1:5, 1:3])
+
+  tmpf <- withr::local_tempfile(fileext = ".csv.zst")
+  dat$sink_csv(tmpf, compression = "zstd")
+  expect_equal(dat$collect(), pl$read_csv(tmpf))
+
+  tmpf <- withr::local_tempfile(fileext = ".csv.gz")
+  dat$sink_csv(tmpf, compression = "gzip")
+  expect_equal(dat$collect(), pl$read_csv(tmpf))
+})
+
+test_that("error if wrong compression extension", {
+  dat <- as_polars_lf(mtcars[1:5, 1:3])
+  tmpf <- withr::local_tempfile(fileext = ".foo")
+
+  expect_error(
+    dat$sink_csv(tmpf, compression = "zstd"),
+    "does not conform to standard naming"
+  )
+  expect_error(
+    dat$sink_csv(tmpf, compression = "gzip"),
+    "does not conform to standard naming"
+  )
+
+  tmpf <- withr::local_tempfile(fileext = ".gz")
+  expect_snapshot(
+    dat$sink_csv(tmpf),
+    error = TRUE
+  )
+})
+
+test_that("arg check_extension works", {
+  dat <- as_polars_lf(mtcars[1:5, 1:3])
+  tmpf <- withr::local_tempfile(fileext = ".foo")
+
+  dat$sink_csv(tmpf, compression = "zstd", check_extension = FALSE)
+  expect_equal(dat$collect(), pl$read_csv(tmpf))
+
+  dat$sink_csv(tmpf, compression = "gzip", check_extension = FALSE)
+  expect_equal(dat$collect(), pl$read_csv(tmpf))
+})

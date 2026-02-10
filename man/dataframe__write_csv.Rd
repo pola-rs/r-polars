@@ -8,6 +8,9 @@ dataframe__write_csv(
   file,
   ...,
   include_bom = FALSE,
+  compression = c("uncompressed", "gzip", "zstd"),
+  compression_level = NULL,
+  check_extension = TRUE,
   include_header = TRUE,
   separator = ",",
   line_terminator = "\\n",
@@ -31,6 +34,18 @@ dataframe__write_csv(
 \item{...}{These dots are for future extensions and must be empty.}
 
 \item{include_bom}{Logical, whether to include UTF-8 BOM in the CSV output.}
+
+\item{compression}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} What compression
+format to use. Must be one of \code{uncompressed} (default), \code{gzip}, or \code{zstd}.}
+
+\item{compression_level}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} The compression
+level to use, typically 0-9 or \code{NULL} to let the engine choose.}
+
+\item{check_extension}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Whether to check
+if the filename matches the compression settings. Will raise an error if
+compression is set to \code{"uncompressed"} and the filename ends in one of
+\code{".gz"}, \code{".zst"}, \code{".zstd"}, or if \code{compression != "uncompressed"} and the
+file uses a mismatched extension. Only applies if file is a path.}
 
 \item{include_header}{Logical, whether to include header in the CSV output.}
 

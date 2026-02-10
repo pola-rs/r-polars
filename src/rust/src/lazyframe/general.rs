@@ -1290,6 +1290,8 @@ impl PlRLazyFrame {
         &self,
         target: Sexp,
         include_bom: bool,
+        compression: &str,
+        check_extension: bool,
         include_header: bool,
         separator: &str,
         line_terminator: &str,
@@ -1307,6 +1309,7 @@ impl PlRLazyFrame {
         null_value: Option<&str>,
         quote_style: Option<&str>,
         storage_options: Option<StringSexp>,
+        compression_level: Option<NumericScalar>,
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
@@ -1339,6 +1342,10 @@ impl PlRLazyFrame {
                 }
                 None => None,
             };
+            let compression_level = match compression_level {
+                Some(x) => Some(<Wrap<u32>>::try_from(x)?.0),
+                None => None,
+            };
 
             let serialize_options = SerializeOptions {
                 date_format: date_format.map(PlSmallStr::from_str),
@@ -1359,8 +1366,9 @@ impl PlRLazyFrame {
                 include_header,
                 batch_size,
                 serialize_options: serialize_options.into(),
-                compression: Default::default(),
-                check_extension: false,
+                compression: ExternalCompression::try_from(compression, compression_level)
+                    .map_err(RPolarsErr::from)?,
+                check_extension,
             };
 
             let cloud_options = parse_cloud_options(target.cloud_scheme(), storage_options)?;
