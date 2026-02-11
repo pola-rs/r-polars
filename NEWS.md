@@ -2,22 +2,24 @@
 
 ## polars (development version)
 
+## polars 1.9.0
+
 This is an update that corresponds to Python Polars 1.38.1.
 
 ### Deprecations
 
-- The `retries` argument in scan/read and sink/write functions is deprecated.
+- The `retries` argument in scan/read and sink/write functions is deprecated (#1726).
   Use `max_retries` in `storage_options` instead.
 - The `file_cache_ttl` argument in `pl$scan_csv()`, `pl$scan_ipc()`, `pl$scan_ndjson()`,
-  and their `read_*` counterparts is deprecated.
+  and their `read_*` counterparts is deprecated (#1726).
   Use `file_cache_ttl` in `storage_options` instead.
-- `<expr>$flatten()` is deprecated. Use `<expr>$list$explode()` instead.
+- `<expr>$flatten()` is deprecated. Use `<expr>$list$explode()` instead (#1726).
 
 ### New features
 
 - `cs$by_name()` gains the `expand_patterns` argument. When set to `TRUE`, regex patterns
   (`^...$`) and wildcards (`*`) in column names are expanded
-  ([pola-rs/polars#26437](https://github.com/pola-rs/polars/pull/26437)).
+  ([pola-rs/polars#26437](https://github.com/pola-rs/polars/pull/26437), #1726).
 - New `<expr>$bin$get()` to extract a specific byte from a binary value (#1731).
 - `<expr>$str$split()` has two new arguments `literal` and `strict` (#1730).
 - New `pl$scan_lines()` and `pl$read_lines()` to read one or several files into
@@ -28,14 +30,14 @@ This is an update that corresponds to Python Polars 1.38.1.
 
 - `<expr>$rolling_rank_by()` now requires the `closed` argument to be `"right"` or `"both"`.
   Previously, `"left"` and `"none"` were silently accepted but could produce incorrect results
-  ([pola-rs/polars#26287](https://github.com/pola-rs/polars/pull/26287)).
+  ([pola-rs/polars#26287](https://github.com/pola-rs/polars/pull/26287), #1726).
 
 ### Other changes
 
 - The `per_partition_sort_by` argument of the deprecated partition classes
   (`pl$PartitionByKey()`, `pl$PartitionMaxSize()`, `pl$PartitionParted()`) has been removed.
   This feature was removed from upstream Polars
-  ([pola-rs/polars#26130](https://github.com/pola-rs/polars/pull/26130)).
+  ([pola-rs/polars#26130](https://github.com/pola-rs/polars/pull/26130), #1726).
 
 ## polars 1.8.0
 
