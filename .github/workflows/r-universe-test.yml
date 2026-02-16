@@ -40,26 +40,27 @@ env:
   LIB_SUMS_PATH: "tools/lib-sums.tsv"
 
 jobs:
-  build:
+  check:
     runs-on: macos-latest
-    name: R-universe tests
-    strategy:
-      fail-fast: false
-
+    name: Check for pre-built binary
+    outputs:
+      has_binary: ${{ steps.check.outputs.has_binary }}
     steps:
       - uses: actions/checkout@v6
 
       - name: Check for pre-built binary
+        id: check
         run: |
           if [[ -f "${LIB_SUMS_PATH}" ]]; then
-            echo "TEST_BIN_LIB=true" >>"${GITHUB_ENV}"
-            rm -f "$(rustup which cargo)"
+            echo "has_binary=true" >>"${GITHUB_OUTPUT}"
           else
-            echo "TEST_BIN_LIB=false" >>"${GITHUB_ENV}"
+            echo "has_binary=false" >>"${GITHUB_OUTPUT}"
           fi
 
-      - name: R-universe testing
-        if: env.TEST_BIN_LIB == 'true'
-        uses: r-universe-org/workflows/.github/workflows/build.yml@v3
-        with:
-          universe: ${{ github.repository_owner }}
+  build:
+    needs: check
+    if: needs.check.outputs.has_binary == 'true'
+    name: R-universe tests
+    uses: r-universe-org/workflows/.github/workflows/build.yml@v3
+    with:
+      universe: ${{ github.repository_owner }}
