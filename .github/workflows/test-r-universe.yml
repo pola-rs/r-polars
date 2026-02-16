@@ -41,7 +41,7 @@ env:
 
 jobs:
   check:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     name: Check for pre-built binary
     outputs:
       has_binary: ${{ steps.check.outputs.has_binary }}
