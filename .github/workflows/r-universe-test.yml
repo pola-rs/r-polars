@@ -36,6 +36,9 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  LIB_SUMS_PATH: "tools/lib-sums.tsv"
+
 jobs:
   build:
     - uses: actions/checkout@v6
