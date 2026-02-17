@@ -225,7 +225,7 @@ jobs:
           devtools::run_examples(document = FALSE)
 
   check-bin-lib:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     name: Check for pre-built binary
     outputs:
       test-bin-lib: ${{ steps.check.outputs.TEST_BIN_LIB }}
