@@ -225,8 +225,10 @@ jobs:
           devtools::run_examples(document = FALSE)
 
   check-bin-lib:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     name: Check for pre-built binary
+    outputs:
+      test-bin-lib: ${{ steps.check.outputs.TEST_BIN_LIB }}
     steps:
       - uses: actions/checkout@v6
 
@@ -237,13 +239,13 @@ jobs:
             echo "TEST_BIN_LIB=true" >>"${GITHUB_ENV}"
             rm -f "$(rustup which cargo)"
           else
-            echo "TEST_BIN_LIB=false" >>"${GITHUB_ENV}"
+            echo "TEST_BIN_LIB=false" >>"$GITHUB_OUTPUT"
           fi
 
   test-bin-lib:
     runs-on: ${{ matrix.os }}
     needs: check-bin-lib
-    if: env.TEST_BIN_LIB == 'true'
+    if: needs.check-bin-lib.outputs.test-bin-lib == 'true'
     name: ${{ matrix.os }} with pre-built binary (R ${{ matrix.r }})
     strategy:
       fail-fast: false
@@ -293,7 +295,7 @@ jobs:
 
   test-r-universe:
     needs: check-bin-lib
-    if: env.TEST_BIN_LIB == 'true'
+    if: needs.check-bin-lib.outputs.test-bin-lib == 'true'
     name: R-universe tests
     uses: r-universe-org/workflows/.github/workflows/build.yml@v3
     with:
