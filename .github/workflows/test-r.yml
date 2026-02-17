@@ -245,7 +245,6 @@ jobs:
   test-bin-lib:
     runs-on: ${{ matrix.os }}
     needs: check-bin-lib
-    if: needs.check-bin-lib.outputs.test-bin-lib == 'true'
     name: ${{ matrix.os }} with pre-built binary (R ${{ matrix.r }})
     strategy:
       fail-fast: false
@@ -266,16 +265,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        # Put this "if" in each step instead of below "test-bin-lib" so that
+        # the job name is appropriately filled with the OS and R values.
+        if: needs.check-bin-lib.outputs.test-bin-lib == 'true'
 
       - uses: r-lib/actions/setup-pandoc@v2
+        if: needs.check-bin-lib.outputs.test-bin-lib == 'true'
 
       - uses: r-lib/actions/setup-r@v2
+        if: needs.check-bin-lib.outputs.test-bin-lib == 'true'
         with:
           r-version: ${{ matrix.r }}
           use-public-rspm: true
           Ncpus: "2"
 
       - uses: r-lib/actions/setup-r-dependencies@v2
+        if: needs.check-bin-lib.outputs.test-bin-lib == 'true'
         with:
           # Only install minimum dependencies for testing
           dependencies: "'hard'"
@@ -289,6 +294,7 @@ jobs:
             any::hms
 
       - name: Install with pre-built binary
+        if: needs.check-bin-lib.outputs.test-bin-lib == 'true'
         shell: Rscript {0}
         run: |
           testthat::test_local(load_package = "installed")
