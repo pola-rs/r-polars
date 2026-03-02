@@ -2,6 +2,11 @@
 
 ## polars (development version)
 
+### Breaking changes
+
+* `polars` is no longer available on `webR` because the upstream `polars` library
+  doesn't support WASM (#1747).
+
 ## polars 1.9.0
 
 This is an update that corresponds to Python Polars 1.38.1.
