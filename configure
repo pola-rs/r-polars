@@ -71,16 +71,12 @@ EOF
 check_emscripten() {
   if [ "$(uname)" = "Emscripten" ]; then
     cat <<EOF
--------------------- [NIGHTLY TOOLCHAIN NEEDED] --------------------
-It seems that building for Emscripten.
-'polars' requires a very recent Rust nightly toolchain.
-So using the rust-toolchain.toml file to set the toolchain.
---------------------------------------------------------------------
+---------------------- [WASM BUILD DISABLED] ----------------------
+This version of polars does not support building for Emscripten/WASM
+targets at this time. Exiting with an error to avoid confusion.
+-------------------------------------------------------------------
 EOF
-    export TARGET="wasm32-unknown-emscripten"
-    # Set these for to use the project specific nightly toolchain
-    NOT_CRAN="true"
-    FEATURES="${FEATURES:-"nightly"}"
+    exit 1
   fi
 }
 
