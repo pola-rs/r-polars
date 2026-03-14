@@ -16,7 +16,7 @@ options(rmarkdown.html_vignette.check_title = FALSE)
 purrr_parallel_available <- rlang::is_installed(
   c("purrr", "carrier", "mirai"),
   version = c("1.1.0", "0.2.0", "2.4.0")
-)
+) & FALSE
 ```
 
 ## What is Polars?
