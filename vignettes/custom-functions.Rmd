@@ -90,16 +90,38 @@ dat |>
 When running in parallel, we need to create background processes using `mirai::daemons()`
 (see the documentation of `{purrr}` for details).
 
-```{r, eval=purrr_parallel_available}
+```r
 # Set the number of background processes to use
 mirai::daemons(3)
 ```
 
 ```{r, eval=purrr_parallel_available}
 #| include: false
-# Ensure load the package to the daemons
+# Normally, polars registers serialization hooks for mirai via register_serial()
+# in .onLoad (see R/integration-mirai.R), and users only need to call daemons(n).
+# However, register_serial() does not reliably propagate the config to daemons
+# in certain environments (observed in CI with mirai 2.6.0 / nanonext 1.8.0).
+# As a workaround, we pass serial_config() directly to daemons() here.
+# This should be revisited once the upstream issue is resolved.
+polars_serial <- mirai::serial_config(
+  class = c("polars_data_frame", "polars_lazy_frame", "polars_series"),
+  sfunc = list(\(x) x$serialize(), \(x) x$serialize(), \(x) x$serialize()),
+  ufunc = list(
+    \(x) polars::pl$deserialize_df(x),
+    \(x) polars::pl$deserialize_lf(x),
+    \(x) polars::pl$deserialize_series(x)
+  )
+)
+mirai::daemons(3, serial = polars_serial)
+
+# Ensure the package is loaded on each daemon so that polars S3 methods
+# (e.g. arithmetic operators for Series) are available.
 mirai::everywhere({
-  if (!rlang::is_installed("polars")) pkgload::load_all()
+  if (rlang::is_installed("polars")) {
+    library(polars)
+  } else {
+    pkgload::load_all()
+  }
 })
 ```
 
