@@ -96,7 +96,7 @@ mirai::daemons(3)
 ```
 
 ```{r, eval=purrr_parallel_available}
-# Debug: check daemon state
+# Debug: intentionally stop to show daemon state in error output
 m <- mirai::mirai({
   list(
     lib_paths = .libPaths(),
@@ -106,12 +106,16 @@ m <- mirai::mirai({
     r_libs_user = Sys.getenv("R_LIBS_USER")
   )
 })
-message("=== Daemon state ===")
-print(mirai::call_mirai(m)$data)
-message("=== Host .libPaths() ===")
-print(.libPaths())
-message("=== Host R_LIBS ===")
-print(Sys.getenv("R_LIBS"))
+daemon_state <- mirai::call_mirai(m)$data
+host_state <- list(
+  lib_paths = .libPaths(),
+  r_libs = Sys.getenv("R_LIBS"),
+  r_libs_user = Sys.getenv("R_LIBS_USER")
+)
+stop(paste0(
+  "DEBUG DAEMON STATE: ", paste(capture.output(str(daemon_state)), collapse = "\n"),
+  "\nDEBUG HOST STATE: ", paste(capture.output(str(host_state)), collapse = "\n")
+))
 ```
 
 ```{r, eval=purrr_parallel_available}
