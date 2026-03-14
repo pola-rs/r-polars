@@ -90,73 +90,39 @@ dat |>
 When running in parallel, we need to create background processes using `mirai::daemons()`
 (see the documentation of `{purrr}` for details).
 
-```{r, eval=purrr_parallel_available}
+```r
 # Set the number of background processes to use
 mirai::daemons(3)
 ```
 
 ```{r, eval=purrr_parallel_available}
-# Debug: test serial_config directly with daemons()
-results <- list()
-
-s <- polars::as_polars_series(1:3)
-
-# Step 1: Was register_serial skipped because daemons were already set?
-results$daemons_set_now <- mirai::daemons_set()
-
-# Step 2: Reset and use serial_config directly with daemons()
-mirai::daemons(0)
-
-sc <- tryCatch(
-  mirai::serial_config(
-    "polars_series",
-    \(x) x$serialize(),
-    \(x) polars::pl$deserialize_series(x)
-  ),
-  error = \(e) paste("ERROR:", conditionMessage(e))
-)
-results$serial_config <- if (is.list(sc)) "OK" else sc
-
-mirai::daemons(3, serial = sc)
-
-# Step 3: Test with serial_config passed directly
-r3 <- tryCatch({
-  m <- mirai::mirai(s$to_r_vector(), s = s)
-  d <- mirai::call_mirai(m)$data
-  if (inherits(d, "errorValue")) paste("FAIL: errorValue", d) else paste("OK:", d)
-}, error = \(e) paste("ERROR:", conditionMessage(e)))
-results$direct_serial <- r3
-
-# Step 4: Also try register_serial BEFORE daemons
-mirai::daemons(0)
-mirai::register_serial(
-  "polars_series",
-  sfunc = list(\(x) x$serialize()),
-  ufunc = list(\(x) polars::pl$deserialize_series(x))
-)
-mirai::daemons(3)
-
-r4 <- tryCatch({
-  m <- mirai::mirai(s$to_r_vector(), s = s)
-  d <- mirai::call_mirai(m)$data
-  if (inherits(d, "errorValue")) paste("FAIL: errorValue", d) else paste("OK:", d)
-}, error = \(e) paste("ERROR:", conditionMessage(e)))
-results$register_before_daemons <- r4
-
-stop(paste0("DEBUG RESULTS:\n", paste(capture.output(str(results)), collapse = "\n")))
-```
-
-```{r, eval=purrr_parallel_available}
 #| include: false
-# Ensure load the package to the daemons
+# Normally, polars registers serialization hooks for mirai via register_serial()
+# in .onLoad (see R/integration-mirai.R), and users only need to call daemons(n).
+# However, register_serial() does not reliably propagate the config to daemons
+# in certain environments (observed in CI with mirai 2.6.0 / nanonext 1.8.0).
+# As a workaround, we pass serial_config() directly to daemons() here.
+# This should be revisited once the upstream issue is resolved.
+polars_serial <- mirai::serial_config(
+  class = c("polars_data_frame", "polars_lazy_frame", "polars_series"),
+  sfunc = list(\(x) x$serialize(), \(x) x$serialize(), \(x) x$serialize()),
+  ufunc = list(
+    \(x) polars::pl$deserialize_df(x),
+    \(x) polars::pl$deserialize_lf(x),
+    \(x) polars::pl$deserialize_series(x)
+  )
+)
+mirai::daemons(3, serial = polars_serial)
+
+# Ensure the package is loaded on each daemon so that polars S3 methods
+# (e.g. arithmetic operators for Series) are available.
 mirai::everywhere({
   if (rlang::is_installed("polars")) {
-    .libPaths(.lib_paths)
     library(polars)
   } else {
     pkgload::load_all()
   }
-}, .args = list(.lib_paths = .libPaths()))
+})
 ```
 
 After starting the daemons, we can wrap the function passed to `purrr::map()`
