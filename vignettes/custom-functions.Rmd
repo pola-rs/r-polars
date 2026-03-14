@@ -96,50 +96,38 @@ mirai::daemons(3)
 ```
 
 ```{r, eval=purrr_parallel_available}
-# Debug: deep isolation of serialization failure
+# Debug: test explicit register_serial call
 results <- list()
 
 s <- polars::as_polars_series(1:3)
 
-# Step 1: Check Series class
-results$class <- class(s)
-
-# Step 2: Can sfunc run on host? (same as register_serial sfunc)
-r2 <- tryCatch(s$serialize(), error = \(e) paste("ERROR:", conditionMessage(e)))
-results$sfunc_host <- if (is.raw(r2)) paste("OK, raw length", length(r2)) else r2
-
-# Step 3: Can we round-trip serialize/deserialize on host?
-r3 <- tryCatch({
-  raw <- s$serialize()
-  s2 <- polars::pl$deserialize_series(raw)
-  s2$to_r_vector()
+# Step 1: Before fix — is serial registered?
+r1 <- tryCatch({
+  # Check via mirai's internal state
+  m <- mirai::mirai(s$to_r_vector(), s = s)
+  d <- mirai::call_mirai(m)$data
+  if (inherits(d, "errorValue")) paste("FAIL: errorValue", d) else paste("OK:", d)
 }, error = \(e) paste("ERROR:", conditionMessage(e)))
-results$roundtrip_host <- r3
+results$before_register <- r1
 
-# Step 4: Can daemon create Series? (no data transfer)
-m4 <- mirai::mirai({ polars::as_polars_series(1:3)$to_r_vector() })
-r4 <- tryCatch(mirai::call_mirai(m4)$data, error = \(e) paste("ERROR:", conditionMessage(e)))
-results$daemon_create <- r4
-
-# Step 5: Manual serialize on host, send raw, deserialize in daemon
-r5 <- tryCatch({
-  raw <- s$serialize()
-  m <- mirai::mirai(polars::pl$deserialize_series(raw)$to_r_vector(), raw = raw)
-  mirai::call_mirai(m)$data
+# Step 2: Explicitly call register_serial
+r2 <- tryCatch({
+  polars:::register_mirai_serial()
+  "OK"
 }, error = \(e) paste("ERROR:", conditionMessage(e)))
-results$manual_serial <- r5
+results$register_call <- r2
 
-# Step 6: Send Series directly (uses register_serial refhook)
-m6 <- mirai::mirai(s$to_r_vector(), s = s)
-r6 <- tryCatch(mirai::call_mirai(m6)$data, error = \(e) paste("ERROR:", conditionMessage(e)))
-results$refhook_serial <- if (inherits(r6, "errorValue")) paste("errorValue", r6) else r6
+# Step 3: After register — recreate daemons to pick up config
+mirai::daemons(0)
+mirai::daemons(3)
 
-# Step 7: Check if register_serial is actually registered
-r7 <- tryCatch({
-  serial_conf <- get("serial", envir = asNamespace("mirai"), inherits = FALSE)
-  if (is.null(serial_conf)) "NULL (not registered)" else paste("Registered for:", paste(serial_conf[[1]], collapse = ", "))
+# Step 4: After fix — does refhook work now?
+r4 <- tryCatch({
+  m <- mirai::mirai(s$to_r_vector(), s = s)
+  d <- mirai::call_mirai(m)$data
+  if (inherits(d, "errorValue")) paste("FAIL: errorValue", d) else paste("OK:", d)
 }, error = \(e) paste("ERROR:", conditionMessage(e)))
-results$serial_config <- r7
+results$after_register <- r4
 
 stop(paste0("DEBUG RESULTS:\n", paste(capture.output(str(results)), collapse = "\n")))
 ```
