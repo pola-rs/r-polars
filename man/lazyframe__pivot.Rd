@@ -12,7 +12,8 @@ lazyframe__pivot(
   values = NULL,
   aggregate_function = NULL,
   maintain_order = FALSE,
-  separator = "_"
+  separator = "_",
+  column_naming = c("auto", "combine")
 )
 }
 \arguments{
@@ -53,6 +54,11 @@ order.}
 
 \item{separator}{Used as separator/delimiter in generated column names in
 case of multiple values columns.}
+
+\item{column_naming}{How resulting column names will be constructed.
+\code{"auto"} (default) combines with separator if there are multiple \code{values}
+columns, otherwise just uses the \code{on_columns} names. \code{"combine"} always
+combines the \code{values} columns' names with the \code{on_columns} names.}
 }
 \value{
 A polars \link{LazyFrame}

@@ -59,7 +59,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: casting from Utf8View to Boolean not supported
+      ! casting from Utf8View to Boolean not supported
 
 ---
 
@@ -71,7 +71,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: conversion from `i64` to `i32` failed in column 'big' for 1 out of 1 values: [1125899906842624]
+      ! conversion from `i64` to `i32` failed in column 'big' for 1 out of 1 values: [1125899906842624]
 
 # exclude
 
@@ -200,7 +200,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: `by` column in `rolling_*_by` must be the same length as values column
+      ! `by` column in `rolling_*_by` must be the same length as values column
 
 # rolling_*_by: arg 'min_samples'
 
@@ -227,7 +227,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: `rolling_rank_by` window needs to be closed on the right side (i.e., `closed` must be `right` or `both`)
+      ! `rolling_rank_by` window needs to be closed on the right side (i.e., `closed` must be `right` or `both`)
 
 ---
 
@@ -499,7 +499,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: conversion from `f64` to `u64` failed in column 'literal' for 1 out of 1 values: [-1.0]
+      ! conversion from `f64` to `u64` failed in column 'literal' for 1 out of 1 values: [-1.0]
 
 ---
 
@@ -511,7 +511,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: conversion from `f64` to `u64` failed in column 'literal' for 1 out of 1 values: [inf]
+      ! conversion from `f64` to `u64` failed in column 'literal' for 1 out of 1 values: [inf]
 
 # entropy
 
@@ -523,7 +523,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: expected numerical input for 'entropy'
+      ! expected numerical input for 'entropy'
 
 # implode
 
@@ -531,7 +531,12 @@
       pl$lit(42)$implode(42)
     Condition
       Error:
-      ! unused argument (42)
+      ! Evaluation failed in `$implode()`.
+      Caused by error:
+      ! `...` must be empty.
+      x Problematic argument:
+      * ..1 = 42
+      i Did you forget to name an argument?
 
 # rolling: error if period is negative
 
@@ -556,7 +561,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: incomplete mapping specified for `replace_strict`
+      ! incomplete mapping specified for `replace_strict`
       
       Hint: Pass a `default` value to set unmapped values.
 

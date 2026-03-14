@@ -4,6 +4,7 @@ use crate::{
 };
 pub use categorical::PlRCategories;
 use polars::{
+    frame::PivotColumnNaming,
     polars_utils::compression::{BrotliLevel, GzipLevel, ZstdLevel},
     series::ops::NullBehavior,
 };
@@ -14,7 +15,6 @@ use savvy::{
 use search_sorted::SearchSortedSide;
 use std::{num::NonZeroUsize, str::FromStr};
 
-pub mod base_date;
 mod categorical;
 mod chunked_array;
 pub mod clock;
@@ -660,6 +660,19 @@ impl TryFrom<&str> for Wrap<Roll> {
             "raise" => Roll::Raise,
             "forward" => Roll::Forward,
             "backward" => Roll::Backward,
+            _ => return Err("unreachable".to_string()),
+        };
+        Ok(Wrap(parsed))
+    }
+}
+
+impl TryFrom<&str> for Wrap<PivotColumnNaming> {
+    type Error = String;
+
+    fn try_from(naming: &str) -> Result<Self, String> {
+        let parsed = match naming {
+            "auto" => PivotColumnNaming::Auto,
+            "combine" => PivotColumnNaming::Combine,
             _ => return Err("unreachable".to_string()),
         };
         Ok(Wrap(parsed))

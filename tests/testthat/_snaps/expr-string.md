@@ -8,7 +8,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: conversion from `str` to `datetime[μs]` failed in column 'x' for 3 out of 3 values: ["2023-01-01 11:22:33 -0100", "2023-01-01 11:22:33 +0300", "invalid time"]
+      ! conversion from `str` to `datetime[μs]` failed in column 'x' for 3 out of 3 values: ["2023-01-01 11:22:33 -0100", "2023-01-01 11:22:33 +0300", "invalid time"]
       
       You might want to try:
       - setting `strict=False` to set values that cannot be converted to `null`
@@ -38,7 +38,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: conversion from `str` to `date` failed in column 'x' for 3 out of 4 values: ["2023-01-01 11:22:33 -0100", "2023-01-01 11:22:33 +0300", "invalid time"]
+      ! conversion from `str` to `date` failed in column 'x' for 3 out of 4 values: ["2023-01-01 11:22:33 -0100", "2023-01-01 11:22:33 +0300", "invalid time"]
       
       You might want to try:
       - setting `strict=False` to set values that cannot be converted to `null`
@@ -68,7 +68,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: conversion from `str` to `time` failed in column 'x' for 1 out of 3 values: ["invalid time"]
+      ! conversion from `str` to `time` failed in column 'x' for 1 out of 3 values: ["invalid time"]
 
 # $str$to_date
 
@@ -80,7 +80,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: conversion from `str` to `date` failed in column 'x' for 3 out of 3 values: ["2009-01-02", "2009-01-03", "2009-1-4"]
+      ! conversion from `str` to `date` failed in column 'x' for 3 out of 3 values: ["2009-01-02", "2009-01-03", "2009-1-4"]
       
       You might want to try:
       - setting `strict=False` to set values that cannot be converted to `null`
@@ -96,7 +96,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: conversion from `str` to `time` failed in column 'x' for 1 out of 3 values: ["28:00:02"]
+      ! conversion from `str` to `time` failed in column 'x' for 1 out of 3 values: ["28:00:02"]
 
 # $str$to_datetime
 
@@ -108,7 +108,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: conversion from `str` to `datetime[μs]` failed in column 'invalid' for 3 out of 3 values: ["2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4"]
+      ! conversion from `str` to `datetime[μs]` failed in column 'invalid' for 3 out of 3 values: ["2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4"]
       
       You might want to try:
       - setting `strict=False` to set values that cannot be converted to `null`
@@ -479,7 +479,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: expected the same amount of patterns as replacement strings
+      ! expected the same amount of patterns as replacement strings
 
 ---
 
@@ -492,7 +492,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: expected the same amount of patterns as replacement strings
+      ! expected the same amount of patterns as replacement strings
 
 # str$strptime's deprecated operation
 
@@ -568,7 +568,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: can not match overlapping patterns when leftmost == True
+      ! can not match overlapping patterns when leftmost == True
 
 # to_decimal
 
@@ -677,5 +677,5 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: can not match overlapping patterns when leftmost == True
+      ! can not match overlapping patterns when leftmost == True
 

@@ -1524,8 +1524,8 @@ SEXP savvy_PlRExpr_hist__impl(SEXP self__, SEXP c_arg__include_category, SEXP c_
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_implode__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_implode__ffi(self__);
+SEXP savvy_PlRExpr_implode__impl(SEXP self__, SEXP c_arg__maintain_order) {
+    SEXP res = savvy_PlRExpr_implode__ffi(self__, c_arg__maintain_order);
     return handle_result(res);
 }
 
@@ -2254,8 +2254,8 @@ SEXP savvy_PlRExpr_serialize_json__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_set_sorted_flag__impl(SEXP self__, SEXP c_arg__descending) {
-    SEXP res = savvy_PlRExpr_set_sorted_flag__ffi(self__, c_arg__descending);
+SEXP savvy_PlRExpr_set_sorted_flag__impl(SEXP self__, SEXP c_arg__descending, SEXP c_arg__nulls_last) {
+    SEXP res = savvy_PlRExpr_set_sorted_flag__ffi(self__, c_arg__descending, c_arg__nulls_last);
     return handle_result(res);
 }
 
@@ -2844,8 +2844,8 @@ SEXP savvy_PlRLazyFrame_null_count__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_pivot__impl(SEXP self__, SEXP c_arg__on, SEXP c_arg__on_columns, SEXP c_arg__index, SEXP c_arg__values, SEXP c_arg__agg, SEXP c_arg__maintain_order, SEXP c_arg__separator) {
-    SEXP res = savvy_PlRLazyFrame_pivot__ffi(self__, c_arg__on, c_arg__on_columns, c_arg__index, c_arg__values, c_arg__agg, c_arg__maintain_order, c_arg__separator);
+SEXP savvy_PlRLazyFrame_pivot__impl(SEXP self__, SEXP c_arg__on, SEXP c_arg__on_columns, SEXP c_arg__index, SEXP c_arg__values, SEXP c_arg__agg, SEXP c_arg__maintain_order, SEXP c_arg__separator, SEXP c_arg__column_naming) {
+    SEXP res = savvy_PlRLazyFrame_pivot__ffi(self__, c_arg__on, c_arg__on_columns, c_arg__index, c_arg__values, c_arg__agg, c_arg__maintain_order, c_arg__separator, c_arg__column_naming);
     return handle_result(res);
 }
 
@@ -3778,7 +3778,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_gt_eq__impl", (DL_FUNC) &savvy_PlRExpr_gt_eq__impl, 2},
     {"savvy_PlRExpr_hash__impl", (DL_FUNC) &savvy_PlRExpr_hash__impl, 5},
     {"savvy_PlRExpr_hist__impl", (DL_FUNC) &savvy_PlRExpr_hist__impl, 5},
-    {"savvy_PlRExpr_implode__impl", (DL_FUNC) &savvy_PlRExpr_implode__impl, 1},
+    {"savvy_PlRExpr_implode__impl", (DL_FUNC) &savvy_PlRExpr_implode__impl, 2},
     {"savvy_PlRExpr_index_of__impl", (DL_FUNC) &savvy_PlRExpr_index_of__impl, 2},
     {"savvy_PlRExpr_interpolate__impl", (DL_FUNC) &savvy_PlRExpr_interpolate__impl, 2},
     {"savvy_PlRExpr_interpolate_by__impl", (DL_FUNC) &savvy_PlRExpr_interpolate_by__impl, 2},
@@ -3924,7 +3924,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_search_sorted__impl", (DL_FUNC) &savvy_PlRExpr_search_sorted__impl, 4},
     {"savvy_PlRExpr_serialize_binary__impl", (DL_FUNC) &savvy_PlRExpr_serialize_binary__impl, 1},
     {"savvy_PlRExpr_serialize_json__impl", (DL_FUNC) &savvy_PlRExpr_serialize_json__impl, 1},
-    {"savvy_PlRExpr_set_sorted_flag__impl", (DL_FUNC) &savvy_PlRExpr_set_sorted_flag__impl, 2},
+    {"savvy_PlRExpr_set_sorted_flag__impl", (DL_FUNC) &savvy_PlRExpr_set_sorted_flag__impl, 3},
     {"savvy_PlRExpr_shift__impl", (DL_FUNC) &savvy_PlRExpr_shift__impl, 3},
     {"savvy_PlRExpr_shuffle__impl", (DL_FUNC) &savvy_PlRExpr_shuffle__impl, 2},
     {"savvy_PlRExpr_sign__impl", (DL_FUNC) &savvy_PlRExpr_sign__impl, 1},
@@ -4042,7 +4042,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_new_from_parquet__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_parquet__impl, 17},
     {"savvy_PlRLazyFrame_new_from_scan_lines__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_scan_lines__impl, 8},
     {"savvy_PlRLazyFrame_null_count__impl", (DL_FUNC) &savvy_PlRLazyFrame_null_count__impl, 1},
-    {"savvy_PlRLazyFrame_pivot__impl", (DL_FUNC) &savvy_PlRLazyFrame_pivot__impl, 8},
+    {"savvy_PlRLazyFrame_pivot__impl", (DL_FUNC) &savvy_PlRLazyFrame_pivot__impl, 9},
     {"savvy_PlRLazyFrame_profile__impl", (DL_FUNC) &savvy_PlRLazyFrame_profile__impl, 1},
     {"savvy_PlRLazyFrame_quantile__impl", (DL_FUNC) &savvy_PlRLazyFrame_quantile__impl, 3},
     {"savvy_PlRLazyFrame_remove__impl", (DL_FUNC) &savvy_PlRLazyFrame_remove__impl, 2},

@@ -4,7 +4,14 @@
 \alias{expr__implode}
 \title{Aggregate values into a list}
 \usage{
-expr__implode()
+expr__implode(..., maintain_order = TRUE)
+}
+\arguments{
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{maintain_order}{Whether to preserve the order of elements in the list.
+Setting this to \code{FALSE} can improve performance, especially within
+\verb{$group_by()}.}
 }
 \value{
 A polars \link{expression}

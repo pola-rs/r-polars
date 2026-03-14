@@ -1497,13 +1497,19 @@ expr__count <- function() {
 
 #' Aggregate values into a list
 #'
+#' @inheritParams rlang::args_dots_empty
+#' @param maintain_order Whether to preserve the order of elements in the list.
+#'   Setting this to `FALSE` can improve performance, especially within
+#'   `$group_by()`.
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(a = 1:3, b = 4:6)
 #' df$with_columns(pl$col("a")$implode())
-expr__implode <- function() {
-  self$`_rexpr`$implode() |>
-    wrap()
+expr__implode <- function(..., maintain_order = TRUE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$implode(maintain_order)
+  })
 }
 
 #' Return the number of elements in the column
@@ -4744,15 +4750,16 @@ expr__shuffle <- function(seed = NULL) {
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @param descending Whether the Series order is descending.
+#' @param nulls_last Whether the nulls are at the end.
 #'
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(a = 1:3)
 #' df$select(pl$col("a")$set_sorted()$max())
-expr__set_sorted <- function(..., descending = FALSE) {
+expr__set_sorted <- function(..., descending = FALSE, nulls_last = !descending) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$set_sorted_flag(descending)
+    self$`_rexpr`$set_sorted_flag(descending, nulls_last)
   })
 }
 

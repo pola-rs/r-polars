@@ -24,7 +24,8 @@ the week to count. The default is Monday to Friday
 If you wanted to count only Monday to Thursday, you would pass
 \code{c(TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE)}.}
 
-\item{holidays}{A \link{Date} class vector, representing the holidays to exclude from the count.}
+\item{holidays}{A \link{Date} class vector or a \link[=Expr]{polars expression},
+representing the holidays to exclude from the count.}
 
 \item{roll}{What to do when the start date lands on a non-business day.
 Options are:

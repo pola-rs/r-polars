@@ -6,6 +6,7 @@ use crate::{
     prelude::{sync_on_close::SyncOnCloseType, *},
 };
 use polars::{
+    frame::PivotColumnNaming,
     io::{HiveOptions, RowIndex, ndjson::NDJsonWriterOptions},
     polars_utils::slice_enum::Slice,
 };
@@ -120,8 +121,10 @@ impl PlRLazyFrame {
         let ldf = self.ldf.clone();
         let engine = <Wrap<Engine>>::try_from(engine)?.0;
 
+        use polars_core::query_result::QueryResult;
+
         #[cfg(not(target_arch = "wasm32"))]
-        let df = if ThreadCom::try_from_global(&CONFIG).is_ok() {
+        let result = if ThreadCom::try_from_global(&CONFIG).is_ok() {
             ldf.collect_with_engine(engine).map_err(RPolarsErr::from)?
         } else {
             concurrent_handler(
@@ -144,6 +147,14 @@ impl PlRLazyFrame {
             )
             .map_err(|e| e.to_string())?
             .map_err(RPolarsErr::from)?
+        };
+
+        // QueryResult::Multiple is currently unused by Polars (single-query collect
+        // always returns Single). This arm mirrors py-polars' handling.
+        #[cfg(not(target_arch = "wasm32"))]
+        let df = match result {
+            QueryResult::Single(df) => df,
+            QueryResult::Multiple(_) => DataFrame::empty(),
         };
 
         #[cfg(target_arch = "wasm32")]
@@ -663,8 +674,10 @@ impl PlRLazyFrame {
         agg: &PlRExpr,
         maintain_order: bool,
         separator: &str,
+        column_naming: &str,
     ) -> Result<Self> {
         let ldf = self.ldf.clone();
+        let column_naming = <Wrap<PivotColumnNaming>>::try_from(column_naming)?.0;
         Ok(ldf
             .pivot(
                 on.inner.clone(),
@@ -674,6 +687,7 @@ impl PlRLazyFrame {
                 agg.inner.clone(),
                 maintain_order,
                 separator.into(),
+                column_naming,
             )
             .into())
     }

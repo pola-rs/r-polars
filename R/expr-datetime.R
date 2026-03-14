@@ -1128,7 +1128,8 @@ expr_dt_date <- function() {
 #' (`c(TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE)`).
 #' If you wanted to count only Monday to Thursday, you would pass
 #' `c(TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE)`.
-#' @param holidays A [Date] class vector, representing the holidays to exclude from the count.
+#' @param holidays A [Date] class vector or a [polars expression][Expr],
+#'   representing the holidays to exclude from the count.
 #' @param roll What to do when the start date lands on a non-business day.
 #' Options are:
 #' * `"raise"`: raise an error;
@@ -1171,8 +1172,11 @@ expr_dt_add_business_days <- function(
     if (!(is_logical(week_mask, n = 7L) && !anyNA(week_mask))) {
       abort("`week_mask` must be a vector with 7 logical values, without any `NA`.")
     }
-    if (!(inherits(holidays, "Date") && !anyNA(holidays))) {
-      abort("`holidays` must be a Date vector without any `NA`.")
+    if (!is_polars_expr(holidays)) {
+      if (!inherits(holidays, "Date") || anyNA(holidays)) {
+        abort("`holidays` must be a Date vector without any `NA`, or a Polars expression.")
+      }
+      holidays <- as_polars_expr(as_polars_series(list(holidays), dtype = pl$List(pl$Date)))
     }
     roll <- arg_match0(roll, values = c("raise", "backward", "forward"))
 
@@ -1180,7 +1184,7 @@ expr_dt_add_business_days <- function(
       n <- as_polars_expr(n)$cast(pl$Int64)
     }
 
-    self$`_rexpr`$dt_add_business_days(n$`_rexpr`, week_mask, holidays, roll)
+    self$`_rexpr`$dt_add_business_days(n$`_rexpr`, week_mask, holidays$`_rexpr`, roll)
   })
 }
 

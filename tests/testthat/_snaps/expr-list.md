@@ -95,7 +95,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: conversion from `f64` to `u32` failed in column 'literal' for 1 out of 1 values: [-1.0]
+      ! conversion from `f64` to `u32` failed in column 'literal' for 1 out of 1 values: [-1.0]
 
 ---
 
@@ -121,7 +121,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: conversion from `f64` to `u32` failed in column 'literal' for 1 out of 1 values: [-1.0]
+      ! conversion from `f64` to `u32` failed in column 'literal' for 1 out of 1 values: [-1.0]
 
 # join
 

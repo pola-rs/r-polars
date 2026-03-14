@@ -143,7 +143,7 @@ depending on the \code{as_clock_class} argument.
 \item Duration: \link{difftime} or \link[clock:duration-helper]{clock_duration},
 depending on the \code{as_clock_class} argument.
 \item Binary: \link[blob:blob]{blob::blob}.
-\item Null: \link[vctrs:unspecified]{vctrs::unspecified}.
+\item Null: \link[vctrs:vctrs-unspecified]{vctrs::unspecified}.
 \item List, Array: \link[vctrs:list_of]{vctrs::list_of}.
 \item Struct: \link{data.frame} or \link[tibble:tbl_df-class]{tibble}, depending on the \code{struct} argument.
 }
