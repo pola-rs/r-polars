@@ -125,7 +125,7 @@ tibble::as_tibble(q)
 #>   <chr>             <dbl>       <dbl>        <dbl>       <dbl>
 #> 1 setosa             117.        81.7         33.2         6.1
 #> 2 versicolor         282.       132.         203.         63.3
-#> 3 virginica          325.       146.         273.         99.6
+#> 3 virginica          324.       146.         273.         99.6
 ```
 
 The [Get Started

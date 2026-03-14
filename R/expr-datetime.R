@@ -1173,7 +1173,7 @@ expr_dt_add_business_days <- function(
       abort("`week_mask` must be a vector with 7 logical values, without any `NA`.")
     }
     if (!is_polars_expr(holidays)) {
-      if (!(inherits(holidays, "Date") && !anyNA(holidays))) {
+      if (!inherits(holidays, "Date") || anyNA(holidays)) {
         abort("`holidays` must be a Date vector without any `NA`, or a Polars expression.")
       }
       holidays <- as_polars_expr(as_polars_series(list(holidays), dtype = pl$List(pl$Date)))
