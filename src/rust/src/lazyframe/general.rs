@@ -149,6 +149,8 @@ impl PlRLazyFrame {
             .map_err(RPolarsErr::from)?
         };
 
+        // QueryResult::Multiple is currently unused by Polars (single-query collect
+        // always returns Single). This arm mirrors py-polars' handling.
         #[cfg(not(target_arch = "wasm32"))]
         let df = match result {
             QueryResult::Single(df) => df,

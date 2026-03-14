@@ -185,5 +185,6 @@ tikv-jemallocator = { version = "=0.6.0", features = [
 [target.'cfg(all(target_family = "unix", target_os = "macos", not(allocator = "mimalloc")))'.dependencies]
 tikv-jemallocator = { version = "=0.6.0", features = ["disable_initial_exec_tls"] }
 
+# Mirrors upstream polars' [patch.crates-io]
 [patch.crates-io]
 object_store = { git = "https://github.com/kdn36/arrow-rs-object-store", branch = "feat_checksum_crc64" }

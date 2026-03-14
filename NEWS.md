@@ -9,19 +9,19 @@ This is an update that corresponds to Python Polars 1.39.0.
 ### New features
 
 - `<expr>$implode()` gains the `maintain_order` argument to control whether
-  the order of elements within each group is preserved (#XXXX).
+  the order of elements within each group is preserved (#1751).
 - `<expr>$set_sorted()` gains the `nulls_last` argument to specify the
-  position of null values in the sorted order (#XXXX).
+  position of null values in the sorted order (#1751).
 - `<expr>$dt$add_business_days()` now accepts a Polars expression for
-  the `holidays` argument, in addition to R Date vectors (#XXXX).
+  the `holidays` argument, in addition to R Date vectors (#1751).
 - `$pivot()` gains the `column_naming` argument to control how pivoted
-  column names are constructed (#XXXX).
+  column names are constructed (#1751).
 
 ### Bug fixes
 
 - `$unpivot()` now properly checks for duplicate column names when using
   custom `value_name` or `variable_name`
-  ([pola-rs/polars#26606](https://github.com/pola-rs/polars/pull/26606), #XXXX).
+  ([pola-rs/polars#26606](https://github.com/pola-rs/polars/pull/26606), #1751).
 
 ## polars 1.9.0
 
