@@ -16,7 +16,7 @@ options(rmarkdown.html_vignette.check_title = FALSE)
 purrr_parallel_available <- rlang::is_installed(
   c("purrr", "carrier", "mirai"),
   version = c("1.1.0", "0.2.0", "2.4.0")
-) & FALSE
+)
 ```
 
 ## What is Polars?
@@ -533,8 +533,13 @@ mirai::daemons(4)
 #| include: false
 # Ensure load the package to the daemons
 mirai::everywhere({
-  if (!rlang::is_installed("polars")) pkgload::load_all()
-})
+  if (rlang::is_installed("polars")) {
+    .libPaths(.lib_paths)
+    library(polars)
+  } else {
+    pkgload::load_all()
+  }
+}, .args = list(.lib_paths = .libPaths()))
 ```
 
 ```{r, eval=purrr_parallel_available}

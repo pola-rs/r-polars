@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 purrr_parallel_available <- rlang::is_installed(
   c("purrr", "carrier", "mirai"),
   version = c("1.1.0", "0.2.0", "2.4.0")
-) & FALSE
+)
 ```
 
 ```{r setup}
@@ -99,8 +99,13 @@ mirai::daemons(3)
 #| include: false
 # Ensure load the package to the daemons
 mirai::everywhere({
-  if (!rlang::is_installed("polars")) pkgload::load_all()
-})
+  if (rlang::is_installed("polars")) {
+    .libPaths(.lib_paths)
+    library(polars)
+  } else {
+    pkgload::load_all()
+  }
+}, .args = list(.lib_paths = .libPaths()))
 ```
 
 After starting the daemons, we can wrap the function passed to `purrr::map()`
