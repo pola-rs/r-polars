@@ -533,11 +533,7 @@ mirai::daemons(4)
 #| include: false
 # Ensure load the package to the daemons
 mirai::everywhere({
-  if (rlang::is_installed("polars")) {
-    library(polars)
-  } else {
-    pkgload::load_all()
-  }
+  if (!rlang::is_installed("polars")) pkgload::load_all()
 })
 ```
 
