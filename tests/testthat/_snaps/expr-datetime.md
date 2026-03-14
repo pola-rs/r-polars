@@ -251,7 +251,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: expected Int64, Int32, UInt64, or UInt32, got f64
+      ! expected Int64, Int32, UInt64, or UInt32, got f64
 
 ---
 

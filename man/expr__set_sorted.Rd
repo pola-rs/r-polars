@@ -4,12 +4,14 @@
 \alias{expr__set_sorted}
 \title{Flags the expression as "sorted"}
 \usage{
-expr__set_sorted(..., descending = FALSE)
+expr__set_sorted(..., descending = FALSE, nulls_last = !descending)
 }
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
 
 \item{descending}{Whether the Series order is descending.}
+
+\item{nulls_last}{Whether the nulls are at the end.}
 }
 \value{
 A polars \link{expression}

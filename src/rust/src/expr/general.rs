@@ -3,7 +3,7 @@ use crate::{PlRDataType, PlRExpr, RPolarsErr, prelude::*};
 use polars::lazy::dsl;
 use polars::series::ops::NullBehavior;
 use polars_core::chunked_array::cast::CastOptions;
-use polars_core::series::IsSorted;
+use polars_plan::plans::AExprSorted;
 use savvy::{
     FunctionSexp, ListSexp, LogicalSexp, NumericScalar, NumericSexp, Result, Sexp, StringSexp,
     savvy,
@@ -354,8 +354,8 @@ impl PlRExpr {
         Ok(self.inner.clone().unique_stable().into())
     }
 
-    fn implode(&self) -> Result<Self> {
-        Ok(self.inner.clone().implode().into())
+    fn implode(&self, maintain_order: bool) -> Result<Self> {
+        Ok(self.inner.clone().implode(maintain_order).into())
     }
 
     fn len(&self) -> Result<Self> {
@@ -914,7 +914,7 @@ impl PlRExpr {
     }
 
     fn reinterpret(&self, signed: bool) -> Result<Self> {
-        Ok(self.inner.clone().reinterpret(signed).into())
+        Ok(self.inner.clone().reinterpret(Some(signed), None).into())
     }
 
     fn repeat_by(&self, by: &PlRExpr) -> Result<Self> {
@@ -1000,13 +1000,12 @@ impl PlRExpr {
             .into())
     }
 
-    fn set_sorted_flag(&self, descending: bool) -> Result<Self> {
-        let is_sorted = if descending {
-            IsSorted::Descending
-        } else {
-            IsSorted::Ascending
+    fn set_sorted_flag(&self, descending: bool, nulls_last: bool) -> Result<Self> {
+        let sorted = AExprSorted {
+            descending: Some(descending),
+            nulls_last: Some(nulls_last),
         };
-        Ok(self.inner.clone().set_sorted_flag(is_sorted).into())
+        Ok(self.inner.clone().set_sorted_flag(sorted).into())
     }
 
     fn to_physical(&self) -> Result<Self> {

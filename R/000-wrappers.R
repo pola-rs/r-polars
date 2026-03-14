@@ -1625,6 +1625,7 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 `PlRExpr_dt_add_business_days` <- function(self) {
   function(`n`, `week_mask`, `holidays`, `roll`) {
     `n` <- .savvy_extract_ptr(`n`, "polars::PlRExpr")
+    `holidays` <- .savvy_extract_ptr(`holidays`, "polars::PlRExpr")
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_add_business_days__impl, `self`, `n`, `week_mask`, `holidays`, `roll`))
   }
 }
@@ -2059,8 +2060,8 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 }
 
 `PlRExpr_implode` <- function(self) {
-  function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_implode__impl, `self`))
+  function(`maintain_order`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_implode__impl, `self`, `maintain_order`))
   }
 }
 
@@ -2985,8 +2986,8 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 }
 
 `PlRExpr_set_sorted_flag` <- function(self) {
-  function(`descending`) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_set_sorted_flag__impl, `self`, `descending`))
+  function(`descending`, `nulls_last`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_set_sorted_flag__impl, `self`, `descending`, `nulls_last`))
   }
 }
 
@@ -4142,13 +4143,13 @@ class(`PlRExpr`) <- c("polars::PlRExpr__bundle", "savvy_polars__sealed")
 }
 
 `PlRLazyFrame_pivot` <- function(self) {
-  function(`on`, `on_columns`, `index`, `values`, `agg`, `maintain_order`, `separator`) {
+  function(`on`, `on_columns`, `index`, `values`, `agg`, `maintain_order`, `separator`, `column_naming`) {
     `on` <- .savvy_extract_ptr(`on`, "polars::PlRSelector")
     `on_columns` <- .savvy_extract_ptr(`on_columns`, "polars::PlRDataFrame")
     `index` <- .savvy_extract_ptr(`index`, "polars::PlRSelector")
     `values` <- .savvy_extract_ptr(`values`, "polars::PlRSelector")
     `agg` <- .savvy_extract_ptr(`agg`, "polars::PlRExpr")
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_pivot__impl, `self`, `on`, `on_columns`, `index`, `values`, `agg`, `maintain_order`, `separator`))
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_pivot__impl, `self`, `on`, `on_columns`, `index`, `values`, `agg`, `maintain_order`, `separator`, `column_naming`))
   }
 }
 

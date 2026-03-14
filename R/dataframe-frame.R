@@ -1558,11 +1558,13 @@ dataframe__pivot <- function(
   aggregate_function = NULL,
   maintain_order = TRUE,
   sort_columns = FALSE,
-  separator = "_"
+  separator = "_",
+  column_naming = c("auto", "combine")
 ) {
   wrap({
     check_dots_empty0(...)
     check_bool(sort_columns)
+    column_naming <- arg_match0(column_naming, values = c("auto", "combine"))
 
     on_columns <- if (is.null(on_columns)) {
       cols <- self$select(!!!c(on))$unique(maintain_order = TRUE)
@@ -1582,7 +1584,8 @@ dataframe__pivot <- function(
       values = values,
       aggregate_function = aggregate_function,
       maintain_order = maintain_order,
-      separator = separator
+      separator = separator,
+      column_naming = column_naming
     )$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS)
   })
 }

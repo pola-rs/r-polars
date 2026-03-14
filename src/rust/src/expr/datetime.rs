@@ -209,20 +209,19 @@ impl PlRExpr {
         &self,
         n: &PlRExpr,
         week_mask: LogicalSexp,
-        holidays: NumericSexp,
+        holidays: &PlRExpr,
         roll: &str,
     ) -> Result<Self> {
         let week_mask: [bool; 7] = week_mask
             .to_vec()
             .try_into()
             .map_err(|_| savvy::Error::new("invalid week_mask"))?;
-        let holidays = base_date::DateProxy::from(holidays).0;
         let roll = <Wrap<Roll>>::try_from(roll)?.0;
         Ok(self
             .inner
             .clone()
             .dt()
-            .add_business_days(n.inner.clone(), week_mask, holidays, roll)
+            .add_business_days(n.inner.clone(), week_mask, holidays.inner.clone(), roll)
             .into())
     }
 

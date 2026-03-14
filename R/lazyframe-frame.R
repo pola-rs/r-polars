@@ -1578,6 +1578,10 @@ lazyframe__join_where <- function(
 #' order.
 #' @param separator Used as separator/delimiter in generated column names in
 #'   case of multiple values columns.
+#' @param column_naming How resulting column names will be constructed.
+#'   `"auto"` (default) combines with separator if there are multiple `values`
+#'   columns, otherwise just uses the `on_columns` names. `"combine"` always
+#'   combines the `values` columns' names with the `on_columns` names.
 #' @examplesIf exists("penguins", where = asNamespace("datasets"))
 #' df <- pl$DataFrame(
 #'   name = c("Cady", "Cady", "Karen", "Karen"),
@@ -1650,7 +1654,8 @@ lazyframe__pivot <- function(
   values = NULL,
   aggregate_function = NULL,
   maintain_order = FALSE,
-  separator = "_"
+  separator = "_",
+  column_naming = c("auto", "combine")
 ) {
   wrap({
     check_dots_empty0(...)
@@ -1710,6 +1715,8 @@ lazyframe__pivot <- function(
         as_polars_df()
     }
 
+    column_naming <- arg_match0(column_naming, values = c("auto", "combine"))
+
     self$`_ldf`$pivot(
       on = on_selector$`_rselector`,
       on_columns = on_columns$`_df`,
@@ -1717,7 +1724,8 @@ lazyframe__pivot <- function(
       values = values_selector$`_rselector`,
       agg = agg$`_rexpr`,
       maintain_order = maintain_order,
-      separator = separator
+      separator = separator,
+      column_naming = column_naming
     )
   })
 }

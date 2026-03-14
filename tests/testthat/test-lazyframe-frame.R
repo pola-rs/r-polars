@@ -126,7 +126,7 @@ test_that("POLARS_AUTO_STRUCTIFY works for select", {
       expect_query_error(
         .input$select(is_odd = ((pl$col(pl$Int32) %% 2) == 1)$name$suffix("_is_odd")),
         .data,
-        "Duplicated column(s)",
+        "duplicate",
         fixed = TRUE
       )
 
@@ -227,7 +227,7 @@ test_that("with_columns: basic usage", {
   expect_query_error(
     .input$with_columns(y = 1 + pl$col("x"), z = pl$col("y")^2),
     df,
-    "Column(s) not found",
+    "not found",
     fixed = TRUE
   )
 
@@ -268,7 +268,7 @@ test_that("with_columns_seq: basic usage", {
   expect_query_error(
     .input$with_columns_seq(y = 1 + pl$col("x"), z = pl$col("y")^2),
     df,
-    "Column(s) not found",
+    "not found",
     fixed = TRUE
   )
 
@@ -433,7 +433,7 @@ test_that("unique works", {
   expect_query_error(
     .input$unique("foobar", maintain_order = TRUE),
     df,
-    'Column(s) not found: "foobar" not found',
+    "not found",
     fixed = TRUE
   )
   expect_query_error(
@@ -1532,7 +1532,7 @@ test_that("fill_nan() works", {
   expect_query_error(
     .input$fill_nan("foo"),
     df,
-    "Column(s) not found",
+    "not found",
     fixed = TRUE
   )
   # accepts expressions
@@ -1930,15 +1930,20 @@ test_that("unpivot() works", {
       value = c(1, 3, 5, 2, 4, 6)
     )
   )
-  expect_query_equal(
+  # value_name = "c" conflicts with existing column "c" in lazy path
+  # (upstream fix pola-rs/polars#26606: proper duplicate name check for unpivot)
+  # Eager path succeeds because the column is consumed before value_name is applied
+  expect_eager_equal_lazy_error(
     .input$unpivot(index = c("a", "b"), value_name = "c"),
-    .input = df,
-    pl$DataFrame(
+    input = df,
+    expected = pl$DataFrame(
       a = c("x", "y", "z"),
       b = c(1, 3, 5),
       variable = rep("c", 3),
       c = c(2, 4, 6)
-    )
+    ),
+    "duplicate",
+    fixed = TRUE
   )
   expect_query_equal(
     .input$unpivot(
