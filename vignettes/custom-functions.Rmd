@@ -96,6 +96,25 @@ mirai::daemons(3)
 ```
 
 ```{r, eval=purrr_parallel_available}
+# Debug: check daemon state
+m <- mirai::mirai({
+  list(
+    lib_paths = .libPaths(),
+    polars_installed = rlang::is_installed("polars"),
+    polars_loaded = "polars" %in% loadedNamespaces(),
+    r_libs = Sys.getenv("R_LIBS"),
+    r_libs_user = Sys.getenv("R_LIBS_USER")
+  )
+})
+message("=== Daemon state ===")
+print(mirai::call_mirai(m)$data)
+message("=== Host .libPaths() ===")
+print(.libPaths())
+message("=== Host R_LIBS ===")
+print(Sys.getenv("R_LIBS"))
+```
+
+```{r, eval=purrr_parallel_available}
 #| include: false
 # Ensure load the package to the daemons
 mirai::everywhere({
