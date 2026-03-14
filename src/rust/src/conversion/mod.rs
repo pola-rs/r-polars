@@ -15,7 +15,6 @@ use savvy::{
 use search_sorted::SearchSortedSide;
 use std::{num::NonZeroUsize, str::FromStr};
 
-pub mod base_date;
 mod categorical;
 mod chunked_array;
 pub mod clock;

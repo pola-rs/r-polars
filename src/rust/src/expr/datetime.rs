@@ -1,5 +1,5 @@
 use crate::{PlRExpr, prelude::*};
-use savvy::{LogicalSexp, NumericSexp, Result, savvy};
+use savvy::{LogicalSexp, Result, savvy};
 
 #[savvy]
 impl PlRExpr {
