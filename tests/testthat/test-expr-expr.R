@@ -813,14 +813,14 @@ test_that("floor ceil round", {
       ceil = pl$col("a")$ceil(),
       round = pl$col("a")$round(),
       round_half_away_from_zero = pl$col("a")$round(mode = "half_away_from_zero"),
-      round_half_away_to_zero = pl$col("a")$round(mode = "to_zero"),
+      to_zero = pl$col("a")$round(mode = "to_zero"),
     ),
     pl$DataFrame(
       floor = floor(l_input$a),
       ceil = ceiling(l_input$a),
       round = round(l_input$a),
       round_half_away_from_zero = floor(abs(l_input$a) + 0.5) * sign(l_input$a),
-      round_half_away_to_zero = trunc(l_input$a),
+      to_zero = trunc(l_input$a),
     )
   )
 })

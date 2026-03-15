@@ -21,7 +21,7 @@ For example, when truncating to 0 decimals, 0.25, -0.25, 0.99, and -0.99 will
 all round to 0. When truncating to 1 decimal 1.9999 rounds to 1.9 and -1.9999
 rounds to -1.9. There is no tiebreak behaviour at midpoint values as there is
 with \code{\link[=expr__round]{$round()}} so 0.5 and -0.5 will also round to 0 when
-\code{decimals = 1}.
+\code{decimals = 0}.
 }
 \examples{
 df <- pl$DataFrame(n = c(-9.9999, 0.12345, 1.0251, 8.8765))

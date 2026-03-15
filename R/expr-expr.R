@@ -4702,7 +4702,7 @@ expr__round_sig_figs <- function(digits) {
 #' all round to 0. When truncating to 1 decimal 1.9999 rounds to 1.9 and -1.9999
 #' rounds to -1.9. There is no tiebreak behaviour at midpoint values as there is
 #' with [`$round()`][expr__round] so 0.5 and -0.5 will also round to 0 when
-#' `decimals = 1`.
+#' `decimals = 0`.
 #'
 #' @inherit as_polars_expr return
 #' @examples
