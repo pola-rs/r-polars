@@ -904,6 +904,7 @@ impl PlRLazyFrame {
         decimal_comma: bool,
         glob: bool,
         row_index_offset: NumericScalar,
+        missing_columns: &str,
         comment_prefix: Option<&str>,
         quote_char: Option<&str>,
         null_values: Option<StringSexp>,
@@ -925,6 +926,7 @@ impl PlRLazyFrame {
                 Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
                 None => None,
             };
+            let missing_columns_policy = <Wrap<MissingColumnsPolicy>>::try_from(missing_columns)?.0;
             let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
             let n_rows = match n_rows {
                 Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
@@ -1013,6 +1015,7 @@ impl PlRLazyFrame {
                 .with_glob(glob)
                 .with_raise_if_empty(raise_if_empty)
                 .with_include_file_paths(include_file_paths.map(|x| x.into()))
+                .with_missing_columns_policy(Some(missing_columns_policy))
                 .finish()
                 .map_err(RPolarsErr::from)
                 .map(PlRLazyFrame::from)

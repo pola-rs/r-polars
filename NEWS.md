@@ -16,6 +16,9 @@ This is an update that corresponds to Python Polars 1.39.0.
   the `holidays` argument, in addition to R Date vectors (#1751).
 - `$pivot()` gains the `column_naming` argument to control how pivoted
   column names are constructed (#1751).
+- `pl$scan_csv()` and `pl$read_csv()` gain the `missing_columns` argument to
+  control behavior when some CSV files have missing columns compared to the
+  expected schema (#1754).
 
 ### Bug fixes
 

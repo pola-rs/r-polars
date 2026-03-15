@@ -137,3 +137,22 @@ test_that("scan_parquet can include file path", {
     c(8L, 1L)
   )
 })
+
+test_that("arg 'missing_columns' works", {
+  tmpf <- withr::local_tempfile(fileext = ".parquet")
+  tmpf2 <- withr::local_tempfile(fileext = ".parquet")
+  arrow::write_parquet(data.frame(a = 1, b = 2, c = 3), tmpf)
+  arrow::write_parquet(data.frame(a = 1, b = 2), tmpf2)
+
+  # default with different schemas is to error
+  expect_snapshot(
+    pl$read_parquet(c(tmpf, tmpf2)),
+    error = TRUE
+  )
+
+  # can combine schemas
+  expect_equal(
+    pl$read_parquet(c(tmpf, tmpf2), missing_columns = "insert"),
+    pl$DataFrame(a = c(1, 1), b = c(2, 2), c = c(3, NA))
+  )
+})
