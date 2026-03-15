@@ -16,6 +16,8 @@ This is an update that corresponds to Python Polars 1.39.0.
   the `holidays` argument, in addition to R Date vectors (#1751).
 - `$pivot()` gains the `column_naming` argument to control how pivoted
   column names are constructed (#1751).
+- New `<expr>$truncate()` (#1755).
+- `<expr>$round()` can now take `mode = "to_zero"` (#1755).
 
 ### Bug fixes
 
