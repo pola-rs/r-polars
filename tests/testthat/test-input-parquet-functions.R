@@ -139,6 +139,7 @@ test_that("scan_parquet can include file path", {
 })
 
 test_that("arg 'missing_columns' works", {
+  skip_if_not_installed("arrow")
   tmpf <- withr::local_tempfile(fileext = ".parquet")
   tmpf2 <- withr::local_tempfile(fileext = ".parquet")
   arrow::write_parquet(data.frame(a = 1, b = 2, c = 3), tmpf)
