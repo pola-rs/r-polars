@@ -814,6 +814,7 @@ impl TryFrom<&str> for Wrap<RoundMode> {
         let parsed = match round_mode {
             "half_to_even" => RoundMode::HalfToEven,
             "half_away_from_zero" => RoundMode::HalfAwayFromZero,
+            "to_zero" => RoundMode::ToZero,
             _ => return Err("unreachable".to_string().into()),
         };
         Ok(Wrap(parsed))

@@ -120,6 +120,46 @@
       Caused by error:
       ! type Boolean is incompatible with expected type String
 
+# truncate
+
+    Code
+      df$select(pl$col("n")$truncate(-1))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$truncate()`.
+      Caused by error:
+      ! -1.0 is out of range that can be safely converted to u32
+
+---
+
+    Code
+      df$select(pl$col("n")$truncate(1.2))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$truncate()`.
+      Caused by error:
+      ! 1.2 is not integer-ish
+
+---
+
+    Code
+      pl$DataFrame(x = "a")$select(pl$col("x")$truncate(1))
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! truncation ('to_zero') can only be used on numeric types
+
 # gather that
 
     Code

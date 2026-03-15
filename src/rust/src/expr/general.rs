@@ -757,6 +757,11 @@ impl PlRExpr {
         Ok(self.inner.clone().round_sig_figs(digits).into())
     }
 
+    fn truncate(&self, decimals: NumericScalar) -> Result<Self> {
+        let decimals = <Wrap<u32>>::try_from(decimals)?.0;
+        Ok(self.inner.clone().truncate(decimals).into())
+    }
+
     fn floor(&self) -> Result<Self> {
         Ok(self.inner.clone().floor().into())
     }
