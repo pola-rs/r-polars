@@ -3488,6 +3488,12 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   }
 }
 
+`PlRExpr_truncate` <- function(self) {
+  function(`decimals`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_truncate__impl, `self`, `decimals`))
+  }
+}
+
 `PlRExpr_unique` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_unique__impl, `self`))
@@ -3912,6 +3918,7 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   e$`to_physical` <- `PlRExpr_to_physical`(ptr)
   e$`top_k` <- `PlRExpr_top_k`(ptr)
   e$`top_k_by` <- `PlRExpr_top_k_by`(ptr)
+  e$`truncate` <- `PlRExpr_truncate`(ptr)
   e$`unique` <- `PlRExpr_unique`(ptr)
   e$`unique_counts` <- `PlRExpr_unique_counts`(ptr)
   e$`unique_stable` <- `PlRExpr_unique_stable`(ptr)

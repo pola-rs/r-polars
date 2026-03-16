@@ -4632,9 +4632,27 @@ expr__sample <- function(
 #' Round underlying floating point data by decimals digits
 #'
 #' @param decimals Number of decimals to round by.
-#' @param mode Rounding mode. One of the following:
-#' * `"half_to_even"` (default): round to the nearest even number;
-#' * `"half_away_from_zero"`: round to the nearest number away from zero.
+#' @param mode The rounding strategy used. A "rounded value" is a value with at
+#' most `decimals` decimal places (e.g. integers when `decimals=0`, multiples
+#' of 0.1 when `decimals = 1`, 0.01 when `decimals = 2`, and so on).
+#'
+#' Strategies that start with `half_` round all values to the *nearest* rounded
+#' value, only using the strategy to break ties when a value falls exactly
+#' between two rounded values (e.g. 0.5 when `decimals = 0`, 0.05 when
+#' `decimals = 1`). Other rounding strategies specify explicitly which rounded
+#' value is chosen and always apply (not just for tiebreaks).
+#'
+#' * `"half_to_even"` (default): Round to the nearest value; break ties by
+#' choosing the nearest **even** value. For example, 0.5 rounds to 0, 1.5 rounds
+#' to 2, 2.5 rounds to 2. Also known as "banker's rounding"; this is the default
+#' because it tends to minimise cumulative rounding bias.
+#' * `"half_away_from_zero"`: Round to the nearest value; break ties by rounding
+#' **away from zero**. For example, 0.5 rounds to 1, -0.5 rounds to -1, 2.5
+#' rounds to 3. Also known as "commercial rounding".
+#' * `"to_zero"`: Always round (truncate) **towards zero**, discarding the
+#' fractional part beyond `decimals`. For example, 0.9 rounds to 0, -0.9 rounds
+#' to 0, 1.29 rounds to 1.2 (with `decimals = 1`). Equivalent to
+#' [`$truncate()`][expr__truncate].
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -4650,9 +4668,9 @@ expr__sample <- function(
 #'   pl$all()$round(mode = "half_away_from_zero")$name$suffix("_away"),
 #'   pl$all()$round(mode = "half_to_even")$name$suffix("_to_even"),
 #' )
-expr__round <- function(decimals = 0L, mode = c("half_to_even", "half_away_from_zero")) {
+expr__round <- function(decimals = 0L, mode = c("half_to_even", "half_away_from_zero", "to_zero")) {
   wrap({
-    mode <- arg_match0(mode, values = c("half_to_even", "half_away_from_zero"))
+    mode <- arg_match0(mode, values = c("half_to_even", "half_away_from_zero", "to_zero"))
     self$`_rexpr`$round(decimals, mode)
   })
 }
@@ -4672,6 +4690,33 @@ expr__round_sig_figs <- function(digits) {
   wrap({
     self$`_rexpr`$round_sig_figs(digits)
   })
+}
+
+#' Truncate numeric data toward zero to `decimals` number of decimal places
+#'
+#' @param decimals Number of decimal places to truncate to.
+#'
+#' @details
+#' Truncation discards the fractional part beyond the given number of decimals.
+#' For example, when truncating to 0 decimals, 0.25, -0.25, 0.99, and -0.99 will
+#' all round to 0. When truncating to 1 decimal 1.9999 rounds to 1.9 and -1.9999
+#' rounds to -1.9. There is no tiebreak behaviour at midpoint values as there is
+#' with [`$round()`][expr__round] so 0.5 and -0.5 will also round to 0 when
+#' `decimals = 0`.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(n = c(-9.9999, 0.12345, 1.0251, 8.8765))
+#' df$with_columns(
+#'   t0 = pl$col("n")$truncate(0),
+#'   t1 = pl$col("n")$truncate(1),
+#'   t2 = pl$col("n")$truncate(2),
+#'   t3 = pl$col("n")$truncate(3),
+#'   t4 = pl$col("n")$truncate(4),
+#' )
+expr__truncate <- function(decimals = 0L) {
+  self$`_rexpr`$truncate(decimals) |>
+    wrap()
 }
 
 #' Shift values by the given number of indices
