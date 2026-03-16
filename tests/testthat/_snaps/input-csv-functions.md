@@ -107,3 +107,15 @@
       Caused by error:
       ! `storage_options` must be a character vector or `NULL`, not a list.
 
+# arg 'missing_columns' works
+
+    Code
+      pl$read_csv(c(tmpf, tmpf2))
+    Condition
+      Error in `pl$read_csv()`:
+      ! Evaluation failed in `$read_csv()`.
+      Caused by error in `do.call(pl$scan_csv, .args)$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! schema lengths differ
+

@@ -18,6 +18,9 @@ This is an update that corresponds to Python Polars 1.39.0.
   column names are constructed (#1751).
 - New `<expr>$truncate()` (#1755).
 - `<expr>$round()` can now take `mode = "to_zero"` (#1755).
+- `pl$scan_csv()` and `pl$read_csv()` gain the `missing_columns` argument to
+  control behavior when some CSV files have missing columns compared to the
+  expected schema (#1754).
 
 ### Bug fixes
 

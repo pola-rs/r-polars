@@ -36,7 +36,8 @@ pl__scan_csv(
   storage_options = NULL,
   retries = deprecated(),
   file_cache_ttl = deprecated(),
-  include_file_paths = NULL
+  include_file_paths = NULL,
+  missing_columns = c("raise", "insert")
 )
 }
 \arguments{
@@ -155,6 +156,13 @@ Specify \code{file_cache_ttl} in \code{storage_options} instead.}
 
 \item{include_file_paths}{Include the path of the source file(s) as a column
 with this name.}
+
+\item{missing_columns}{Configuration for behavior when columns defined in the schema
+are missing from the data:
+\itemize{
+\item \code{"raise"} (default): Raises an error.
+\item \code{"insert"}:  Inserts the missing columns using NULLs as the row values.
+}}
 }
 \value{
 A polars \link{LazyFrame}

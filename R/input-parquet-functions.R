@@ -70,7 +70,7 @@ pl__scan_parquet <- function(
   storage_options = NULL,
   retries = deprecated(),
   include_file_paths = NULL,
-  missing_columns = c("insert", "raise"),
+  missing_columns = c("raise", "insert"),
   allow_missing_columns = deprecated()
 ) {
   check_dots_empty0(...)
@@ -193,7 +193,7 @@ pl__read_parquet <- function(
   storage_options = NULL,
   retries = deprecated(),
   include_file_paths = NULL,
-  missing_columns = c("insert", "raise"),
+  missing_columns = c("raise", "insert"),
   allow_missing_columns = deprecated()
 ) {
   check_dots_empty0(...)

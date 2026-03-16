@@ -316,3 +316,22 @@ test_that("can read compressed CSV files", {
     df_pl
   )
 })
+
+test_that("arg 'missing_columns' works", {
+  tmpf <- withr::local_tempfile()
+  tmpf2 <- withr::local_tempfile()
+  writeLines("a,b,c\n1,2,3", tmpf)
+  writeLines("a,b\n1,2", tmpf2)
+
+  # default with different schemas is to error
+  expect_snapshot(
+    pl$read_csv(c(tmpf, tmpf2)),
+    error = TRUE
+  )
+
+  # can combine schemas
+  expect_equal(
+    pl$read_csv(c(tmpf, tmpf2), missing_columns = "insert"),
+    pl$DataFrame(a = c(1L, 1L), b = c(2L, 2L), c = c(3L, NA))$cast(pl$Int64)
+  )
+})

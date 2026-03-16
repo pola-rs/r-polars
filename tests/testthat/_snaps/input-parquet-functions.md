@@ -34,3 +34,15 @@
       Error in `pl$scan_parquet()`:
       ! `hive_schema` must be a list of polars data types or `NULL`, not a list.
 
+# arg 'missing_columns' works
+
+    Code
+      pl$read_parquet(c(tmpf, tmpf2))
+    Condition
+      Error in `pl$read_parquet()`:
+      ! Evaluation failed in `$read_parquet()`.
+      Caused by error in `do.call(pl__scan_parquet, .args)$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Column(s) not found: did not find column c, consider passing `missing_columns='insert'`
+
