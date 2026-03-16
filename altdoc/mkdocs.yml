@@ -428,6 +428,7 @@ nav:
             - top_k_by: man/expr__top_k_by.md
             - top_k: man/expr__top_k.md
             - true_div: man/expr__true_div.md
+            - truncate: man/expr__truncate.md
             - unique_counts: man/expr__unique_counts.md
             - unique: man/expr__unique.md
             - upper_bound: man/expr__upper_bound.md

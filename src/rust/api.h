@@ -531,6 +531,7 @@ SEXP savvy_PlRExpr_tanh__ffi(SEXP self__);
 SEXP savvy_PlRExpr_to_physical__ffi(SEXP self__);
 SEXP savvy_PlRExpr_top_k__ffi(SEXP self__, SEXP c_arg__k);
 SEXP savvy_PlRExpr_top_k_by__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__k, SEXP c_arg__reverse);
+SEXP savvy_PlRExpr_truncate__ffi(SEXP self__, SEXP c_arg__decimals);
 SEXP savvy_PlRExpr_unique__ffi(SEXP self__);
 SEXP savvy_PlRExpr_unique_counts__ffi(SEXP self__);
 SEXP savvy_PlRExpr_unique_stable__ffi(SEXP self__);

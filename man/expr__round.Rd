@@ -4,15 +4,35 @@
 \alias{expr__round}
 \title{Round underlying floating point data by decimals digits}
 \usage{
-expr__round(decimals = 0L, mode = c("half_to_even", "half_away_from_zero"))
+expr__round(
+  decimals = 0L,
+  mode = c("half_to_even", "half_away_from_zero", "to_zero")
+)
 }
 \arguments{
 \item{decimals}{Number of decimals to round by.}
 
-\item{mode}{Rounding mode. One of the following:
+\item{mode}{The rounding strategy used. A "rounded value" is a value with at
+most \code{decimals} decimal places (e.g. integers when \code{decimals=0}, multiples
+of 0.1 when \code{decimals = 1}, 0.01 when \code{decimals = 2}, and so on).
+
+Strategies that start with \code{half_} round all values to the \emph{nearest} rounded
+value, only using the strategy to break ties when a value falls exactly
+between two rounded values (e.g. 0.5 when \code{decimals = 0}, 0.05 when
+\code{decimals = 1}). Other rounding strategies specify explicitly which rounded
+value is chosen and always apply (not just for tiebreaks).
 \itemize{
-\item \code{"half_to_even"} (default): round to the nearest even number;
-\item \code{"half_away_from_zero"}: round to the nearest number away from zero.
+\item \code{"half_to_even"} (default): Round to the nearest value; break ties by
+choosing the nearest \strong{even} value. For example, 0.5 rounds to 0, 1.5 rounds
+to 2, 2.5 rounds to 2. Also known as "banker's rounding"; this is the default
+because it tends to minimise cumulative rounding bias.
+\item \code{"half_away_from_zero"}: Round to the nearest value; break ties by rounding
+\strong{away from zero}. For example, 0.5 rounds to 1, -0.5 rounds to -1, 2.5
+rounds to 3. Also known as "commercial rounding".
+\item \code{"to_zero"}: Always round (truncate) \strong{towards zero}, discarding the
+fractional part beyond \code{decimals}. For example, 0.9 rounds to 0, -0.9 rounds
+to 0, 1.29 rounds to 1.2 (with \code{decimals = 1}). Equivalent to
+\code{\link[=expr__truncate]{$truncate()}}.
 }}
 }
 \value{
