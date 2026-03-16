@@ -231,7 +231,7 @@ jobs:
           echo "TAG_NAME=lib-v${new_version}" >>"$GITHUB_ENV"
 
       - name: create release
-        uses: ncipollo/release-action@v1.20.0
+        uses: ncipollo/release-action@v1.21.0
         with:
           draft: true
           immutableCreate: true
