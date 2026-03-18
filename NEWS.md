@@ -4,7 +4,7 @@
 
 ## polars 1.10.0
 
-This is an update that corresponds to Python Polars 1.39.0.
+This is an update that corresponds to Python Polars 1.39.2.
 
 ### New features
 
