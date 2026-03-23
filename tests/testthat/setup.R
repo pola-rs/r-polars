@@ -11,7 +11,7 @@ if (
 }
 
 # Set up for mirai tests
-if (rlang::is_installed("mirai")) {
+if (rlang::is_installed("mirai") && identical(Sys.getenv("NOT_CRAN"), "true")) {
   mirai::daemons(0)
   mirai::daemons(1, output = TRUE)
   withr::defer(mirai::daemons(0), teardown_env())
