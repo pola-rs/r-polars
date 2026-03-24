@@ -1,7 +1,7 @@
 [lint]
 select = ["ALL"]
 fixable = ["ALL"]
-ignore = ["sample_int"]
+ignore = ["sample_int", "DPLYR"]
 default-exclude = true
 exclude = ["R/000-wrappers.R"]
 
