@@ -37,7 +37,7 @@ jobs:
           cache: "always"
 
       - name: Install Task
-        uses: go-task/setup-task@v1
+        uses: go-task/setup-task@v2
 
       - name: Set up Air
         uses: posit-dev/setup-air@v1
