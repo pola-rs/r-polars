@@ -1,5 +1,37 @@
 [lint]
 select = ["ALL"]
 fixable = ["ALL"]
-assignment = "<-"
+ignore = [
+  # Don't think they help for readability
+  "sample_int", "nzchar",
+  # No need here, and it would require installing R in Jarl's CI workflow
+  "DPLYR"
+]
 default-exclude = true
+exclude = ["R/000-wrappers.R"]
+
+fix-roxygen = true
+
+[lint.assignment]
+operator = "<-"
+
+[lint.unused_function]
+skipped-functions = [
+  "^chained",
+  "^cs_",
+  "^dataframe_",
+  "^datatype_",
+  "^expr_",
+  "^groupby_",
+  "^group_by_dynamic_",
+  "^lazyframe_",
+  "^namespace_",
+  "^pl_",
+  "^QueryOptFlags_",
+  "^rolling_",
+  "^selector_",
+  "^series_",
+  "^sql_",
+  "^then_",
+]
+
