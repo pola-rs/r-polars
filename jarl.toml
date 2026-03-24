@@ -1,5 +1,32 @@
 [lint]
 select = ["ALL"]
 fixable = ["ALL"]
-assignment = "<-"
+ignore = ["sample_int"]
 default-exclude = true
+exclude = ["R/000-wrappers.R"]
+
+fix-roxygen = true
+
+[lint.assignment]
+operator = "<-"
+
+[lint.unused_function]
+skipped-functions = [
+  "^chained",
+  "^cs_",
+  "^dataframe_",
+  "^datatype_",
+  "^expr_",
+  "^groupby_",
+  "^group_by_dynamic_",
+  "^lazyframe_",
+  "^namespace_",
+  "^pl_",
+  "^QueryOptFlags_",
+  "^rolling_",
+  "^selector_",
+  "^series_",
+  "^sql_",
+  "^then_",
+]
+

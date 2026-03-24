@@ -46,7 +46,7 @@ pl$lit(5) + pl$lit(10)
 +pl$lit(1)
 
 # This will not raise an error as it is not actually evaluated.
-expr = pl$lit(5) + "10"
+expr <- pl$lit(5) + "10"
 expr
 
 # Will raise an error as it is evaluated.

@@ -228,14 +228,14 @@ lazyframe__lazy_sink_parquet <- function(
 #'
 #' @return `NULL` invisibly.
 #' @examplesIf requireNamespace("withr", quietly = TRUE)
-#' dat = as_polars_df(mtcars)
+#' dat <- as_polars_df(mtcars)
 #'
 #' # write data to a single parquet file
-#' destination = withr::local_tempfile(fileext = ".parquet")
+#' destination <- withr::local_tempfile(fileext = ".parquet")
 #' dat$write_parquet(destination)
 #'
 #' # write data to folder with a hive-partitioned structure
-#' dest_folder = withr::local_tempdir()
+#' dest_folder <- withr::local_tempdir()
 #' dat$write_parquet(dest_folder, partition_by = c("gear", "cyl"))
 #' list.files(dest_folder, recursive = TRUE)
 dataframe__write_parquet <- function(

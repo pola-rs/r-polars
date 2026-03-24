@@ -1202,7 +1202,7 @@ expr_dt_add_business_days <- function(
 #'
 #' @inherit as_polars_expr return
 #' @examples
-#' df = pl$DataFrame(
+#' df <- pl$DataFrame(
 #'   date = as.Date(c("2024-04-01", "2025-03-16")),
 #'   new_day = c(10, 15)
 #' )
