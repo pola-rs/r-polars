@@ -236,7 +236,7 @@ jobs:
         id: check
         run: |
           if [[ -f "${LIB_SUMS_PATH}" ]]; then
-            echo "TEST_BIN_LIB=true" >>"${GITHUB_ENV}"
+            echo "TEST_BIN_LIB=true" >>"$GITHUB_OUTPUT"
             rm -f "$(rustup which cargo)"
           else
             echo "TEST_BIN_LIB=false" >>"$GITHUB_OUTPUT"
