@@ -105,7 +105,7 @@ jobs:
           task setup-python-tools
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - id: rust-target
         if: env.LIBR_POLARS_BUILD == 'true'
