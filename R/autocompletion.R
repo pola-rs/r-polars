@@ -127,31 +127,63 @@ native_completion <- function(activate = TRUE) {
       lb <- CE$linebuffer
 
       # skip custom completion if token completion already yielded suggestions.
+      CE$comps <- CE$comps[
+        !CE$comps %in%
+          paste0("$", c("arr", "bin", "cat", "dt", "list", "meta", "name", "str", "struct"), "$")
+      ]
       if (length(CE$comps) >= 1L) {
         return(NULL)
       }
 
       ### your custom part###
       # generate a new completion or multiple...
-      lb_wo_token <- sub(paste0("\\Q", CE_frozen$token, "\\E", "$"), replacement = "", lb)
+      lb_wo_token <- sub("\\$$", "", lb)
       first_token_char <- substr(CE_frozen$token, 1L, 1L)
       if (first_token_char == "$" && nchar(lb_wo_token) > 1L) {
         # eval last expression prior to token
-        res <- result(eval(tail(parse(text = lb_wo_token), 1)))
+        res <- try(eval(tail(parse(text = lb_wo_token), 1)), silent = TRUE)
 
-        if (is_err(res)) {
+        if (inherits(res, "try-error")) {
           message(
             "\nfailed to code complete because...\n",
             as.character(res$err),
             "\n"
           )
           return(NULL)
-        } else {
-          x <- res$ok
         }
-        if (inherits(x, c(pl_class_names, "method_environment", "pl_polars_env"))) {
+
+        if (
+          inherits(
+            res,
+            c(
+              "polars_data_frame",
+              "polars_lazy_frame",
+              "polars_group_by",
+              "polars_lazy_group_by",
+              "polars_series",
+              "polars_datatype",
+              "polars_rolling_group_by",
+              "polars_dynamic_group_by",
+              "polars_expr",
+              "polars_namespace_expr",
+              "polars_then",
+              "polars_chained_then",
+              "polars_sql_context"
+            )
+          )
+        ) {
           token <- substr(CE_frozen$token, 2, .Machine$integer.max)
-          your_comps <- paste0("$", .DollarNames(x, token))
+          if (
+            token %in%
+              paste0(c("arr", "bin", "cat", "dt", "list", "meta", "name", "str", "struct"), "$")
+          ) {
+            your_comps <- paste0("$", token, .DollarNames(res, ""))
+          } else {
+            your_comps <- paste0("$", .DollarNames(res, token))
+          }
+
+          your_comps <- sort(your_comps)
+
           # append your suggestions to the vanilla suggestions/completions
           CE$comps <- c(your_comps, CE$comps)
         }
@@ -315,12 +347,12 @@ native_completion <- function(activate = TRUE) {
 
           if (polars:::.rs_complete$has_columns(object_self)) {
             res <- if (length(args) > 0) {
-              paste0("pl$col('", object_self$columns, "')")
-            } else {
               c(
                 paste0(args, " = "),
                 paste0("pl$col('", object_self$columns, "')")
               )
+            } else {
+              paste0("pl$col('", object_self$columns, "')")
             }
             col_results <- .rs.makeCompletions(
               token = token,
