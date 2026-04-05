@@ -314,19 +314,27 @@ native_completion <- function(activate = TRUE) {
           args <- args[args != "..."]
 
           if (polars:::.rs_complete$has_columns(object_self)) {
+            res <- if (length(args) > 0) {
+              paste0("pl$col('", object_self$columns, "')")
+            } else {
+              c(
+                paste0(args, " = "),
+                paste0("pl$col('", object_self$columns, "')")
+              )
+            }
             col_results <- .rs.makeCompletions(
               token = token,
-              results = c(paste0(args, "= "), paste0("pl$col('", object_self$columns, "')")),
+              results = res,
               excludeOtherCompletions = FALSE,
               quote = FALSE,
               helpHandler = FALSE,
               context = .rs.acContextTypes$FUNCTION,
               type = .rs.acCompletionTypes$KEYWORD,
             )
-          } else {
+          } else if (length(args) > 0) {
             col_results <- .rs.makeCompletions(
               token = token,
-              results = paste0(args, "= "),
+              results = paste0(args, " = "),
               excludeOtherCompletions = FALSE,
               quote = FALSE,
               helpHandler = FALSE,
