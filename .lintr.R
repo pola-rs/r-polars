@@ -11,7 +11,8 @@ exclusions <- as.list(
     "R/000-wrappers.R",
     "R/001-wrappers.R",
     fs::dir_ls("R", glob = "**/import-standalone-*.R") |>
-      rlang::set_names(NULL)
+      rlang::set_names(NULL),
+    "R/autocompletion.R",
   )
 )
 cache_directory <- ".cache/R/lintr"
