@@ -2,6 +2,9 @@
 
 ## polars (development version)
 
+* `polars_code_completion_activate()` and `polars_code_completion_deactivate()` to 
+  enable Polars-specific code completion. This only works in RStudio for now (#1758).
+
 ## polars 1.10.0
 
 This is an update that corresponds to Python Polars 1.39.3.
