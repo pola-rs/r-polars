@@ -1,5 +1,3 @@
-.polars_autocompletion <- new.env(parent = emptyenv())
-
 #' Polars code completion
 #'
 #' This only works in RStudio.
@@ -198,7 +196,7 @@ polars_code_completion_deactivate <- function() {
       results <- .rs.getCompletionsFunction_polars_orig(
         token,
         string,
-        functionCall = NULL,
+        functionCall = functionCall,
         numCommas,
         envir = envir
       )
@@ -220,7 +218,7 @@ polars_code_completion_deactivate <- function() {
         return(.rs.emptyCompletions())
       }
       if (!polars:::.rs_complete$is_polars_related_type(lhs)) {
-        results <- .rs.getCompletionsFunction_polars_orig(
+        results <- .rs.getCompletionsDollar_polars_orig(
           token,
           string,
           functionCall,

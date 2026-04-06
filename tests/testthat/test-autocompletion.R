@@ -4,6 +4,7 @@ test_that("verbose arg works", {
     "Polars code completion"
   )
   expect_silent(polars_code_completion_activate(verbose = FALSE))
+  polars_code_completion_deactivate()
 })
 
 test_that("deactivating when it was not activated is silent", {
