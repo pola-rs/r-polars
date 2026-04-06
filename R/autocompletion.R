@@ -244,7 +244,7 @@ polars_code_completion_deactivate <- function() {
       if (identical(results, "")) {
         return(.rs.emptyCompletions())
       }
-      
+
       # decide if type attribute getter, or setter (<-) or regular method
       # used for icons in drop-down-list
       types <- sapply(
