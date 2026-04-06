@@ -213,7 +213,7 @@ polars_code_completion_deactivate <- function() {
     #   - the code before the last "$" must be valid, e.g. "pl$col('x')$cast()$<TAB>"
     #     wouldn't trigger because "pl$col('x')$cast()" throws an error.
 
-    .rs.getCompletionsFunction_polars_orig <- .rs.getCompletionsDollar
+    .rs.getCompletionsDollar_polars_orig <- .rs.getCompletionsDollar
     .rs.getCompletionsDollar <- function(token, string, functionCall, envir, isAt) {
       lhs <- polars:::.rs_complete$eval_lhs_string(string, envir)
       if (is.null(lhs)) {
@@ -249,7 +249,17 @@ polars_code_completion_deactivate <- function() {
           if (endsWith(x, "<-")) {
             return(.rs.acCompletionTypes$KEYWORD)
           }
-          .rs.getCompletionType(eval(substitute(`$`(lhs, x), list(x = x))))
+          fallback_type <- .rs.acCompletionTypes$UNKNOWN
+          if (is.null(fallback_type)) {
+            fallback_type <- .rs.acCompletionTypes$VALUE
+          }
+          if (is.null(fallback_type)) {
+            fallback_type <- .rs.acCompletionTypes$FUNCTION
+          }
+          tryCatch(
+            .rs.getCompletionType(eval(substitute(`$`(lhs, x), list(x = x)))),
+            error = function(e) fallback_type
+          )
         }
       )
 
@@ -277,9 +287,9 @@ polars_code_completion_deactivate <- function() {
     rs$.rs.getCompletionsFunction_polars_orig <- NULL
   }
 
-  if (!is.null(rs$.rs.getCompletionsFunction_polars_orig)) {
-    rs$.rs.getCompletionsDollar <- rs$.rs.getCompletionsFunction_polars_orig
-    rs$.rs.getCompletionsFunction_polars_orig <- NULL
+  if (!is.null(rs$.rs.getCompletionsDollar_polars_orig)) {
+    rs$.rs.getCompletionsDollar <- rs$.rs.getCompletionsDollar_polars_orig
+    rs$.rs.getCompletionsDollar_polars_orig <- NULL
   }
 }
 

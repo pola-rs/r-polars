@@ -3,7 +3,7 @@
 ## polars (development version)
 
 * `polars_code_completion_activate()` and `polars_code_completion_deactivate()` to 
-  enable Polars-specific code completion. This only works in RStudio for now (#1758).
+  enable Polars-specific code completion. This only works in RStudio for now (#1768).
 
 ## polars 1.10.0
 
