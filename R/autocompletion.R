@@ -244,6 +244,18 @@ polars_code_completion_deactivate <- function() {
       if (identical(results, "")) {
         return(.rs.emptyCompletions())
       }
+      
+      # decide if type attribute getter, or setter (<-) or regular method
+      # used for icons in drop-down-list
+      types <- sapply(
+        results,
+        function(x) {
+          if (endsWith(x, "<-")) {
+            return(.rs.acCompletionTypes$KEYWORD)
+          }
+          .rs.getCompletionType(eval(substitute(`$`(lhs, x), list(x = x))))
+        }
+      )
 
       .rs.makeCompletions(
         token = token,
@@ -253,7 +265,7 @@ polars_code_completion_deactivate <- function() {
         quote = FALSE,
         helpHandler = FALSE,
         context = .rs.acContextTypes$DOLLAR,
-        type = .rs.acCompletionTypes$KEYWORD,
+        type = types,
         meta = "",
         cacheable = FALSE
       )
