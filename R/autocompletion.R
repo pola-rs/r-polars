@@ -1,4 +1,3 @@
-# Internal bookkeeping of the autocompletion mode ("rstudio" or "native")
 .polars_autocompletion <- new.env(parent = emptyenv())
 
 #' Polars code completion
@@ -77,7 +76,7 @@ polars_code_completion_activate <- function(
 polars_code_completion_deactivate <- function() {
   mode <- .polars_autocompletion$mode
   if (is.null(mode)) {
-    message("Autocompletion wasn't already enabled")
+    return(invisible(NULL))
   }
 
   if (mode == "rstudio") {
