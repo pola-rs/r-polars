@@ -5,3 +5,12 @@ test_that("verbose arg works", {
   )
   expect_silent(polars_code_completion_activate(verbose = FALSE))
 })
+
+test_that("deactivating when it was not activated is silent", {
+  # Once to deactivate in case the session was somehow polluted, second time
+  # to ensure we can deactivate again.
+  expect_silent({
+    polars_code_completion_deactivate()
+    polars_code_completion_deactivate()
+  })
+})

@@ -191,7 +191,7 @@ polars_code_completion_deactivate <- function() {
               quote = FALSE,
               helpHandler = FALSE,
               context = .rs.acContextTypes$FUNCTION,
-              type = .rs.acCompletionTypes$KEYWORD,
+              type = .rs.acCompletionTypes$KEYWORD
             )
           }
           string <- ""
