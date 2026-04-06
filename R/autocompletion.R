@@ -96,21 +96,6 @@ polars_code_completion_deactivate <- function() {
   )
 }
 
-# classes that have the method $columns() and implement names()
-.rs_complete$has_columns <- function(x) {
-  inherits(
-    x,
-    c(
-      "polars_data_frame",
-      "polars_lazy_frame",
-      "polars_group_by",
-      "polars_lazy_group_by",
-      "polars_rolling_group_by",
-      "polars_dynamic_group_by"
-    )
-  )
-}
-
 # decide if some function/method recursively has the polars namespace as parent
 # environment.
 .rs_complete$is_polars_function <- function(x, limit_search = 256) {
