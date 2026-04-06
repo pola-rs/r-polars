@@ -34,11 +34,13 @@
 #'   polars_code_completion_deactivate()
 #' }
 polars_code_completion_activate <- function(verbose = TRUE) {
-  if (verbose) {
-    if (is_rstudio()) {
+  if (is_rstudio()) {
+    if (verbose) {
       message("Activated Polars code completion.")
-      .rs_complete$activate()
-    } else {
+    }
+    .rs_complete$activate()
+  } else {
+    if (verbose) {
       message("Polars code completion is only available in RStudio.")
     }
   }
@@ -52,13 +54,7 @@ polars_code_completion_deactivate <- function() {
   if (!is_rstudio()) {
     return(invisible(NULL))
   }
-  mode <- .polars_autocompletion$mode
-  if (is.null(mode)) {
-    return(invisible(NULL))
-  }
   .rs_complete$deactivate()
-  .polars_autocompletion$mode <- NULL
-
   invisible(NULL)
 }
 
