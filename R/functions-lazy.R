@@ -201,3 +201,28 @@ pl__explain_all <- function(
     explain_all(lfs, optimizations)
   })
 }
+
+#' Generate a sequence of integers
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' The length of the returned sequence will match the context length. If you
+#' would like to generate sequences with custom offsets / length / step size /
+#' datatypes, it is recommended to use [`$int_range()`][pl__int_range] instead.
+#'
+#' @param name Name of the returned column.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(x = c("A", "A", "B", "B", "B"))
+#' df$with_columns(pl$row_index(), pl$row_index("another_index"))
+#'
+#' df$group_by("x")$agg(pl$row_index())$sort("x")
+#'
+#' df$select(pl$row_index())
+pl__row_index <- function(name = "index") {
+  wrap({
+    check_string(name)
+    pl$int_range(pl$len())$alias(name)
+  })
+}

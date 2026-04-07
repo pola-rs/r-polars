@@ -2,6 +2,10 @@
 
 ## polars (development version)
 
+### New features
+
+* `pl$row_index()`, a shortcut for `pl$int_range(pl$len())` (#1770).
+
 ## polars 1.10.0
 
 This is an update that corresponds to Python Polars 1.39.3.
