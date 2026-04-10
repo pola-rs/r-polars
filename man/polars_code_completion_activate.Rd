@@ -13,6 +13,7 @@ polars_code_completion_deactivate()
 \item{verbose}{Inform whether code completion is active or not.}
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 This only works in RStudio.
 }
 \details{

@@ -1,5 +1,7 @@
 #' Polars code completion
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
 #' This only works in RStudio.
 #'
 #' @param verbose Inform whether code completion is active or not.
