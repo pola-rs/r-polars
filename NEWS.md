@@ -6,6 +6,10 @@
 
 * `pl$row_index()`, a shortcut for `pl$int_range(pl$len())` (#1770).
 
+### Other changes
+
+* Bumped `rlang` dependency to be >= 1.2.0.
+
 ## polars 1.10.0
 
 This is an update that corresponds to Python Polars 1.39.3.
