@@ -202,13 +202,13 @@ pl__explain_all <- function(
   })
 }
 
-#' Generate a sequence of integers
+#' Generate a row index
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`
 #' The length of the returned sequence will match the context length. If you
 #' would like to generate sequences with custom offsets / length / step size /
-#' datatypes, it is recommended to use [`$int_range()`][pl__int_range] instead.
+#' datatypes, it is recommended to use [`pl$int_range()`][pl__int_range] instead.
 #'
 #' @param name Name of the returned column.
 #'
@@ -223,6 +223,6 @@ pl__explain_all <- function(
 pl__row_index <- function(name = "index") {
   wrap({
     check_string(name)
-    pl$int_range(pl$len())$alias(name)
+    pl$int_range(pl$len(), dtype = pl$Int64)$alias(name)
   })
 }

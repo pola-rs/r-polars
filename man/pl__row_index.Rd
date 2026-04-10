@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions-lazy.R
 \name{pl__row_index}
 \alias{pl__row_index}
-\title{Generate a sequence of integers}
+\title{Generate a row index}
 \usage{
 pl__row_index(name = "index")
 }
@@ -16,7 +16,7 @@ A polars \link{expression}
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 The length of the returned sequence will match the context length. If you
 would like to generate sequences with custom offsets / length / step size /
-datatypes, it is recommended to use \code{\link[=pl__int_range]{$int_range()}} instead.
+datatypes, it is recommended to use \code{\link[=pl__int_range]{pl$int_range()}} instead.
 }
 \examples{
 df <- pl$DataFrame(x = c("A", "A", "B", "B", "B"))
