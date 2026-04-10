@@ -26,14 +26,16 @@ is_list_of_string <- function(
     allow_null = FALSE
   ) {
     for (i in seq_along(x)) {
-      if (
-        !.rlang_check_is_string(
+      tr <- try(
+        check_string(
           x[[i]],
           allow_empty = allow_empty,
           allow_na = allow_na,
           allow_null = allow_null
-        )
-      ) {
+        ),
+        silent = TRUE
+      )
+      if (inherits(tr, "try-error")) {
         return(FALSE)
       }
     }
