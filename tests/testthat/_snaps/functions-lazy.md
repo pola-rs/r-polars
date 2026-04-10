@@ -71,3 +71,17 @@
       Caused by error:
       ! `optimizations` must be a <polars::QueryOptFlags>, not a <double>
 
+# pl$row_index() works
+
+    Code
+      df$select(pl$row_index(1))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error in `pl$row_index()`:
+      ! Evaluation failed in `$row_index()`.
+      Caused by error in `pl$row_index()`:
+      ! `name` must be a single string, not the number 1.
+
