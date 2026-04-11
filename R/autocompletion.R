@@ -4,6 +4,7 @@
 #' `r lifecycle::badge("experimental")`
 #' This only works in RStudio.
 #'
+#' @inheritParams rlang::args_dots_empty
 #' @param verbose Inform whether code completion is active or not.
 #'
 #' @details
@@ -33,15 +34,18 @@
 #'   # Deactivate (restarting the R session also deactivates code completion)
 #'   polars_code_completion_deactivate()
 #' }
-polars_code_completion_activate <- function(verbose = TRUE) {
-  if (is_rstudio()) {
+polars_code_completion_activate <- function(..., verbose = TRUE) {
+  check_dots_empty0(...)
+  check_bool(verbose)
+
+  if (inside_rstudio()) {
     if (verbose) {
-      message("Activated Polars code completion.")
+      inform("Activated Polars code completion.")
     }
     .rs_complete$activate()
   } else {
     if (verbose) {
-      message("Polars code completion is only available in RStudio.")
+      inform("Polars code completion is only available in RStudio.")
     }
   }
 
@@ -50,11 +54,20 @@ polars_code_completion_activate <- function(verbose = TRUE) {
 
 #' @export
 #' @rdname polars_code_completion_activate
-polars_code_completion_deactivate <- function() {
-  if (!is_rstudio()) {
-    return(invisible(NULL))
+polars_code_completion_deactivate <- function(..., verbose = TRUE) {
+  check_dots_empty0(...)
+  check_bool(verbose)
+
+  if (inside_rstudio()) {
+    if (verbose) {
+      inform("Deactivated Polars code completion.")
+    }
+    .rs_complete$deactivate()
+  } else {
+    if (verbose) {
+      inform("Polars code completion is only available in RStudio, so nothing to deactivate.")
+    }
   }
-  .rs_complete$deactivate()
   invisible(NULL)
 }
 
@@ -100,22 +113,8 @@ polars_code_completion_deactivate <- function() {
 
 # decide if some function/method recursively has the polars namespace as parent
 # environment.
-.rs_complete$is_polars_function <- function(x, limit_search = 256) {
-  pl_env <- asNamespace("polars")
-  if (!is.function(x)) {
-    return(FALSE)
-  }
-  f_env <- environment(x)
-  for (i in seq_len(limit_search)) {
-    if (identical(pl_env, f_env)) {
-      return(TRUE)
-    }
-    if (identical(emptyenv(), f_env)) {
-      return(FALSE)
-    }
-    f_env <- parent.env(f_env)
-  }
-  return(FALSE)
+.rs_complete$is_polars_function <- function(x) {
+  is_function(x) && env_inherits(environment(x), ns_env("polars"))
 }
 
 #' Activate_polars_rstudio_completion
@@ -132,7 +131,7 @@ polars_code_completion_deactivate <- function() {
   rs <- as.environment("tools:rstudio")
 
   # custom completion already activated
-  if (!is.null(rs$.rs.getCompletionsFunction_polars_orig)) {
+  if (!is.null(rs$.rs.getCompletionsFunction.bk.polars)) {
     return(invisible())
   }
 
@@ -142,7 +141,7 @@ polars_code_completion_deactivate <- function() {
     # two args of str$count_matches().
 
     # save original function here
-    .rs.getCompletionsFunction_polars_orig <- .rs.getCompletionsFunction
+    .rs.getCompletionsFunction.bk.polars <- .rs.getCompletionsFunction
     .rs.getCompletionsFunction <- function(
       token,
       string,
@@ -180,7 +179,7 @@ polars_code_completion_deactivate <- function() {
       }
 
       # pass on to normal Rstudio completion
-      results <- .rs.getCompletionsFunction_polars_orig(
+      results <- .rs.getCompletionsFunction.bk.polars(
         token,
         string,
         functionCall = functionCall,
@@ -198,14 +197,14 @@ polars_code_completion_deactivate <- function() {
     #   - the code before the last "$" must be valid, e.g. "pl$col('x')$cast()$<TAB>"
     #     wouldn't trigger because "pl$col('x')$cast()" throws an error.
 
-    .rs.getCompletionsDollar_polars_orig <- .rs.getCompletionsDollar
+    .rs.getCompletionsDollar.bk.polars <- .rs.getCompletionsDollar
     .rs.getCompletionsDollar <- function(token, string, functionCall, envir, isAt) {
       lhs <- polars:::.rs_complete$eval_lhs_string(string, envir)
       if (is.null(lhs)) {
         return(.rs.emptyCompletions())
       }
       if (!polars:::.rs_complete$is_polars_related_type(lhs)) {
-        results <- .rs.getCompletionsDollar_polars_orig(
+        results <- .rs.getCompletionsDollar.bk.polars(
           token,
           string,
           functionCall,
@@ -234,13 +233,9 @@ polars_code_completion_deactivate <- function() {
           if (endsWith(x, "<-")) {
             return(.rs.acCompletionTypes$KEYWORD)
           }
-          fallback_type <- .rs.acCompletionTypes$UNKNOWN
-          if (is.null(fallback_type)) {
-            fallback_type <- .rs.acCompletionTypes$VALUE
-          }
-          if (is.null(fallback_type)) {
-            fallback_type <- .rs.acCompletionTypes$FUNCTION
-          }
+          fallback_type <- .rs.acCompletionTypes$UNKNOWN %||%
+            .rs.acCompletionTypes$VALUE %||%
+            .rs.acCompletionTypes$FUNCTION
           tryCatch(
             .rs.getCompletionType(eval(substitute(`$`(lhs, x), list(x = x)))),
             error = function(e) fallback_type
@@ -267,17 +262,17 @@ polars_code_completion_deactivate <- function() {
 .rs_complete$deactivate <- function() {
   rs <- as.environment("tools:rstudio")
 
-  if (!is.null(rs$.rs.getCompletionsFunction_polars_orig)) {
-    rs$.rs.getCompletionsFunction <- rs$.rs.getCompletionsFunction_polars_orig
-    rs$.rs.getCompletionsFunction_polars_orig <- NULL
+  if (!is.null(rs$.rs.getCompletionsFunction.bk.polars)) {
+    rs$.rs.getCompletionsFunction <- rs$.rs.getCompletionsFunction.bk.polars
+    rs$.rs.getCompletionsFunction.bk.polars <- NULL
   }
 
-  if (!is.null(rs$.rs.getCompletionsDollar_polars_orig)) {
-    rs$.rs.getCompletionsDollar <- rs$.rs.getCompletionsDollar_polars_orig
-    rs$.rs.getCompletionsDollar_polars_orig <- NULL
+  if (!is.null(rs$.rs.getCompletionsDollar.bk.polars)) {
+    rs$.rs.getCompletionsDollar <- rs$.rs.getCompletionsDollar.bk.polars
+    rs$.rs.getCompletionsDollar.bk.polars <- NULL
   }
 }
 
-is_rstudio <- function() {
+inside_rstudio <- function() {
   identical(.Platform$GUI, "RStudio")
 }

@@ -5,11 +5,13 @@
 \alias{polars_code_completion_deactivate}
 \title{Polars code completion}
 \usage{
-polars_code_completion_activate(verbose = TRUE)
+polars_code_completion_activate(..., verbose = TRUE)
 
-polars_code_completion_deactivate()
+polars_code_completion_deactivate(..., verbose = TRUE)
 }
 \arguments{
+\item{...}{These dots are for future extensions and must be empty.}
+
 \item{verbose}{Inform whether code completion is active or not.}
 }
 \description{
