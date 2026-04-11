@@ -117,7 +117,7 @@ polars_code_completion_deactivate <- function(..., verbose = TRUE) {
 
 .rs_complete$is_activated <- function() {
   rs <- as.environment("tools:rstudio")
-  !is.null(rs$.rs.getCompletionsFunction.bk.polars)
+  !is.null(rs$.rs.getCompletionsFunction.backup.polars)
 }
 
 #' Activate_polars_rstudio_completion
@@ -134,7 +134,7 @@ polars_code_completion_deactivate <- function(..., verbose = TRUE) {
   rs <- as.environment("tools:rstudio")
 
   # custom completion already activated
-  if (!is.null(rs$.rs.getCompletionsFunction.bk.polars)) {
+  if (!is.null(rs$.rs.getCompletionsFunction.backup.polars)) {
     return(invisible())
   }
 
@@ -144,7 +144,7 @@ polars_code_completion_deactivate <- function(..., verbose = TRUE) {
     # two args of str$count_matches().
 
     # save original function here
-    .rs.getCompletionsFunction.bk.polars <- .rs.getCompletionsFunction
+    .rs.getCompletionsFunction.backup.polars <- .rs.getCompletionsFunction
     .rs.getCompletionsFunction <- function(
       token,
       string,
@@ -182,7 +182,7 @@ polars_code_completion_deactivate <- function(..., verbose = TRUE) {
       }
 
       # pass on to normal Rstudio completion
-      results <- .rs.getCompletionsFunction.bk.polars(
+      results <- .rs.getCompletionsFunction.backup.polars(
         token,
         string,
         functionCall = functionCall,
@@ -200,14 +200,14 @@ polars_code_completion_deactivate <- function(..., verbose = TRUE) {
     #   - the code before the last "$" must be valid, e.g. "pl$col('x')$cast()$<TAB>"
     #     wouldn't trigger because "pl$col('x')$cast()" throws an error.
 
-    .rs.getCompletionsDollar.bk.polars <- .rs.getCompletionsDollar
+    .rs.getCompletionsDollar.backup.polars <- .rs.getCompletionsDollar
     .rs.getCompletionsDollar <- function(token, string, functionCall, envir, isAt) {
       lhs <- polars:::.rs_complete$eval_lhs_string(string, envir)
       if (is.null(lhs)) {
         return(.rs.emptyCompletions())
       }
       if (!polars:::.rs_complete$is_polars_related_type(lhs)) {
-        results <- .rs.getCompletionsDollar.bk.polars(
+        results <- .rs.getCompletionsDollar.backup.polars(
           token,
           string,
           functionCall,
@@ -271,14 +271,14 @@ polars_code_completion_deactivate <- function(..., verbose = TRUE) {
 .rs_complete$deactivate <- function() {
   rs <- as.environment("tools:rstudio")
 
-  if (!is.null(rs$.rs.getCompletionsFunction.bk.polars)) {
-    rs$.rs.getCompletionsFunction <- rs$.rs.getCompletionsFunction.bk.polars
-    rs$.rs.getCompletionsFunction.bk.polars <- NULL
+  if (!is.null(rs$.rs.getCompletionsFunction.backup.polars)) {
+    rs$.rs.getCompletionsFunction <- rs$.rs.getCompletionsFunction.backup.polars
+    rs$.rs.getCompletionsFunction.backup.polars <- NULL
   }
 
-  if (!is.null(rs$.rs.getCompletionsDollar.bk.polars)) {
-    rs$.rs.getCompletionsDollar <- rs$.rs.getCompletionsDollar.bk.polars
-    rs$.rs.getCompletionsDollar.bk.polars <- NULL
+  if (!is.null(rs$.rs.getCompletionsDollar.backup.polars)) {
+    rs$.rs.getCompletionsDollar <- rs$.rs.getCompletionsDollar.backup.polars
+    rs$.rs.getCompletionsDollar.backup.polars <- NULL
   }
 }
 
