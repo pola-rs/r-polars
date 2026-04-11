@@ -239,6 +239,12 @@ polars_code_completion_deactivate <- function(..., verbose = TRUE) {
           fallback_type <- .rs.acCompletionTypes$UNKNOWN %||%
             .rs.acCompletionTypes$VALUE %||%
             .rs.acCompletionTypes$FUNCTION
+          
+          # Those cases trigger the "Potentially expensive operation" warning
+          # if evaluated on LazyFrame.
+          if (x %in% c("columns", "width")) {
+            return(fallback_type)
+          }
           tryCatch(
             .rs.getCompletionType(eval(substitute(`$`(lhs, x), list(x = x)))),
             error = function(e) fallback_type
