@@ -6,7 +6,10 @@
   method_names <- names(polars_dataframe__methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_dataframe__methods[[name]]
     self <- x # nolint: object_usage_linter
@@ -34,7 +37,10 @@
   method_names <- names(polars_groupby__methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_groupby__methods[[name]]
     self <- x # nolint: object_usage_linter
@@ -62,7 +68,10 @@
   method_names <- names(polars_group_by_dynamic__methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_group_by_dynamic__methods[[name]]
     self <- x # nolint: object_usage_linter
@@ -90,7 +99,10 @@
   method_names <- names(polars_rolling_groupby__methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_rolling_groupby__methods[[name]]
     self <- x # nolint: object_usage_linter
@@ -118,7 +130,10 @@
   method_names <- names(polars_datatype__methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_datatype__methods[[name]]
     self <- x # nolint: object_usage_linter
@@ -146,7 +161,10 @@
   method_names <- names(polars_datatype_expr__methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_datatype_expr__methods[[name]]
     self <- x # nolint: object_usage_linter
@@ -174,7 +192,10 @@
   method_names <- names(polars_expr__methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_expr__methods[[name]]
     self <- x # nolint: object_usage_linter
@@ -202,7 +223,10 @@
   method_names <- names(polars_lazyframe__methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_lazyframe__methods[[name]]
     self <- x # nolint: object_usage_linter
@@ -230,7 +254,10 @@
   method_names <- names(polars_lazygroupby__methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_lazygroupby__methods[[name]]
     self <- x # nolint: object_usage_linter
@@ -258,7 +285,10 @@
   method_names <- names(polars_sql_context__methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_sql_context__methods[[name]]
     self <- x # nolint: object_usage_linter
@@ -286,7 +316,10 @@
   method_names <- names(polars_expr_arr_methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_expr_arr_methods[[name]]
     self <- x # nolint: object_usage_linter
@@ -314,7 +347,10 @@
   method_names <- names(polars_expr_bin_methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_expr_bin_methods[[name]]
     self <- x # nolint: object_usage_linter
@@ -342,7 +378,10 @@
   method_names <- names(polars_expr_cat_methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_expr_cat_methods[[name]]
     self <- x # nolint: object_usage_linter
@@ -370,7 +409,10 @@
   method_names <- names(polars_expr_dt_methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_expr_dt_methods[[name]]
     self <- x # nolint: object_usage_linter
@@ -398,7 +440,10 @@
   method_names <- names(polars_expr_list_methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_expr_list_methods[[name]]
     self <- x # nolint: object_usage_linter
@@ -426,7 +471,10 @@
   method_names <- names(polars_expr_meta_methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_expr_meta_methods[[name]]
     self <- x # nolint: object_usage_linter
@@ -454,7 +502,10 @@
   method_names <- names(polars_expr_name_methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_expr_name_methods[[name]]
     self <- x # nolint: object_usage_linter
@@ -482,7 +533,10 @@
   method_names <- names(polars_expr_str_methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_expr_str_methods[[name]]
     self <- x # nolint: object_usage_linter
@@ -510,7 +564,10 @@
   method_names <- names(polars_expr_struct_methods)
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- polars_expr_struct_methods[[name]]
     self <- x # nolint: object_usage_linter

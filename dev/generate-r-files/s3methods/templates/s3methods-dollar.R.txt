@@ -4,7 +4,10 @@
   method_names <- names({{env_name}})
 
   if (name %in% member_names) {
-    env_get(x, name)
+    # env_get() can lead to a double evaluation, leading to duplicated warnings
+    # with rlang >= 1.2.0 and R 4.3.
+    # See https://github.com/pola-rs/r-polars/issues/1772
+    get(name, envir = x, inherits = FALSE)
   } else if (name %in% method_names) {
     fn <- {{env_name}}[[name]]
     self <- x # nolint: object_usage_linter
