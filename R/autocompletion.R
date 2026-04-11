@@ -59,15 +59,15 @@ polars_code_completion_deactivate <- function(..., verbose = TRUE) {
   check_bool(verbose)
 
   if (inside_rstudio()) {
-    if (verbose) {
+    if (.rs_complete$is_activated() && verbose) {
       inform("Deactivated Polars code completion.")
     }
     .rs_complete$deactivate()
-  } else {
-    if (verbose) {
-      inform("Polars code completion is only available in RStudio, so nothing to deactivate.")
-    }
-  }
+  } 
+  # If we're not inside RStudio, then code completion couldn't be activated in
+  # the first place, so there's no point showing a message when we deactivate
+  # it.
+  
   invisible(NULL)
 }
 
@@ -113,6 +113,11 @@ polars_code_completion_deactivate <- function(..., verbose = TRUE) {
 # environment.
 .rs_complete$is_polars_function <- function(x) {
   is_closure(x) && env_inherits(environment(x), ns_env("polars"))
+}
+
+.rs_complete$is_activated <- function() {
+  rs <- as.environment("tools:rstudio")
+  !is.null(rs$.rs.getCompletionsFunction.bk.polars)
 }
 
 #' Activate_polars_rstudio_completion
