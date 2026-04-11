@@ -82,12 +82,10 @@ polars_code_completion_deactivate <- function(..., verbose = TRUE) {
 # of time is spent in Rust without those checks, this was effectively erroring
 # on timeout only after the operation was complete, which is useless.
 .rs_complete$eval_lhs_string <- function(string, envir) {
-  lhs <- NULL
-  lhs <- try(eval(parse(text = string), envir = envir), silent = TRUE)
-  if (inherits(lhs, "try-error")) {
-    return(NULL)
-  }
-  lhs
+  tryCatch(
+    eval(parse(text = string), envir = envir),
+    error = function(e) NULL
+  )
 }
 
 .rs_complete$is_polars_related_type <- function(x) {
