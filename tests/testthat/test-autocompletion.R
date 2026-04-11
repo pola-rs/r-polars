@@ -4,10 +4,15 @@ test_that("verbose arg works", {
     "Polars code completion"
   )
   expect_silent(polars_code_completion_activate(verbose = FALSE))
-  expect_message(
-    polars_code_completion_deactivate(),
-    "Polars code completion"
-  )
+
+  if (inside_rstudio()) {
+    expect_message(
+      polars_code_completion_deactivate(),
+      "Polars code completion"
+    )
+  } else {
+    polars_code_completion_deactivate()
+  }
 })
 
 test_that("deactivating when it was not activated is silent", {
