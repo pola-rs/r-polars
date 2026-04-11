@@ -96,3 +96,33 @@ test_that("pl$explain_all() works", {
     error = TRUE
   )
 })
+
+test_that("pl$row_index() works", {
+  df <- pl$DataFrame(x = c("A", "A", "B", "B", "B"))
+  expect_query_equal(
+    .input$with_columns(pl$row_index(), pl$row_index("another_index")),
+    .input = df,
+    pl$DataFrame(x = c("A", "A", "B", "B", "B"), index = 0:4, another_index = 0:4)$cast(
+      index = pl$Int64,
+      another_index = pl$Int64
+    )
+  )
+  expect_query_equal(
+    .input$group_by("x")$agg(pl$row_index())$sort("x"),
+    .input = df,
+    pl$DataFrame(x = c("A", "B"), index = list(c(0, 1), c(0, 1, 2)))$cast(
+      index = pl$List(pl$Int64)
+    )
+  )
+  expect_query_equal(
+    .input$select(pl$row_index()),
+    .input = df,
+    pl$DataFrame(index = 0:4)$cast(
+      index = pl$Int64
+    )
+  )
+  expect_snapshot(
+    df$select(pl$row_index(1)),
+    error = TRUE
+  )
+})
