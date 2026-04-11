@@ -2725,6 +2725,7 @@ test_that("group_by() warns with arg maintain_order", {
 test_that("active bindings", {
   # TODO: remove if https://github.com/pola-rs/r-polars/issues/1772 is fixed
   skip_if(getRversion() < "4.5.0")
+
   expect_snapshot(as_polars_lf(mtcars)$width)
   expect_snapshot(as_polars_lf(mtcars)$columns)
 })
