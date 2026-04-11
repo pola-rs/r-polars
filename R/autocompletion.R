@@ -63,11 +63,11 @@ polars_code_completion_deactivate <- function(..., verbose = TRUE) {
       inform("Deactivated Polars code completion.")
     }
     .rs_complete$deactivate()
-  } 
+  }
   # If we're not inside RStudio, then code completion couldn't be activated in
   # the first place, so there's no point showing a message when we deactivate
   # it.
-  
+
   invisible(NULL)
 }
 
@@ -239,7 +239,7 @@ polars_code_completion_deactivate <- function(..., verbose = TRUE) {
           fallback_type <- .rs.acCompletionTypes$UNKNOWN %||%
             .rs.acCompletionTypes$VALUE %||%
             .rs.acCompletionTypes$FUNCTION
-          
+
           # Those cases trigger the "Potentially expensive operation" warning
           # if evaluated on LazyFrame.
           if (x %in% c("columns", "width")) {
