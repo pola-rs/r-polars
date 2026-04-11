@@ -5,6 +5,8 @@
 ### New features
 
 * `pl$row_index()`, a shortcut for `pl$int_range(pl$len())` (#1770).
+* `polars_code_completion_activate()` and `polars_code_completion_deactivate()` to 
+  enable Polars-specific code completion. This only works in RStudio for now (#1768).
 
 ### Other changes
 
