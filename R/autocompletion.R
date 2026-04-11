@@ -112,7 +112,7 @@ polars_code_completion_deactivate <- function(..., verbose = TRUE) {
 # decide if some function/method recursively has the polars namespace as parent
 # environment.
 .rs_complete$is_polars_function <- function(x) {
-  is_function(x) && env_inherits(environment(x), ns_env("polars"))
+  is_closure(x) && env_inherits(environment(x), ns_env("polars"))
 }
 
 #' Activate_polars_rstudio_completion
