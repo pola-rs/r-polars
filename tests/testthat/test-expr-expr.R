@@ -748,10 +748,11 @@ test_that("Expr_append", {
     pl$DataFrame(literal = c("Bob", "false"))
   )
 
-  expect_snapshot(
-    pl$select(pl$lit("Bob")$append(FALSE, upcast = FALSE)),
-    error = TRUE
-  )
+  # TODO: uncomment when https://github.com/pola-rs/polars/issues/27345 is fixed
+  # expect_snapshot(
+  #   pl$select(pl$lit("Bob")$append(FALSE, upcast = FALSE)),
+  #   error = TRUE
+  # )
 })
 
 test_that("rechunk() works", {
@@ -2811,14 +2812,14 @@ test_that("cut works", {
     df$select(
       cut = pl$col("foo")$cut(c(-1, 1), labels = c("a", "b", "c"))
     ),
-    pl$DataFrame(cut = factor(c("a", "a", "b", "b", "c")))
+    pl$DataFrame(cut = factor(c("a", "a", "b", "b", "c")))$cast(pl$Enum(c("a", "b", "c")))
   )
 
   expect_equal(
     df$select(
       cut = pl$col("foo")$cut(c(-1, 1), labels = c("a", "b", "c"), left_closed = TRUE)
     ),
-    pl$DataFrame(cut = factor(c("a", "b", "b", "c", "c")))
+    pl$DataFrame(cut = factor(c("a", "b", "b", "c", "c")))$cast(pl$Enum(c("a", "b", "c")))
   )
 
   expect_equal(
@@ -2828,7 +2829,7 @@ test_that("cut works", {
     pl$DataFrame(
       breakpoint = c(-1, -1, 1, 1, Inf),
       category = factor(c("(-inf, -1]", "(-inf, -1]", "(-1, 1]", "(-1, 1]", "(1, inf]"))
-    )
+    )$cast(category = pl$Enum(c("(-inf, -1]", "(-1, 1]", "(1, inf]")))
   )
 
   expect_equal(
@@ -2838,7 +2839,7 @@ test_that("cut works", {
     pl$DataFrame(
       breakpoint = c(-1, 1, 1, Inf, Inf),
       category = factor(c("[-inf, -1)", "[-1, 1)", "[-1, 1)", "[1, inf)", "[1, inf)"))
-    )
+    )$cast(category = pl$Enum(c("[-inf, -1)", "[-1, 1)", "[1, inf)")))
   )
 })
 

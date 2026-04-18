@@ -176,7 +176,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: cannot take a larger sample than the total population when `with_replacement=false`
+      ! fraction must be between 0.0 and 1.0, got: 2
 
 # list$to_struct with field = NULL, upper_bound = 1
 

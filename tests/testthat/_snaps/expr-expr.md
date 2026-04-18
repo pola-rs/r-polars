@@ -108,18 +108,6 @@
       x Problematic argument:
       * foo = "Species"
 
-# Expr_append
-
-    Code
-      pl$select(pl$lit("Bob")$append(FALSE, upcast = FALSE))
-    Condition
-      Error:
-      ! Evaluation failed in `$select()`.
-      Caused by error:
-      ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! type Boolean is incompatible with expected type String
-
 # truncate
 
     Code
