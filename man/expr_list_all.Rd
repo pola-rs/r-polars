@@ -4,7 +4,15 @@
 \alias{expr_list_all}
 \title{Evaluate whether all boolean values in a sub-list are true}
 \usage{
-expr_list_all()
+expr_list_all(..., ignore_nulls = TRUE)
+}
+\arguments{
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{ignore_nulls}{If \code{TRUE} (default), ignore null values. If \code{FALSE},
+\href{https://en.wikipedia.org/wiki/Three-valued_logic}{Kleene logic} is used to
+deal with nulls: if the column contains any null values and no \code{TRUE} values,
+the output is null.}
 }
 \value{
 A polars \link{expression}

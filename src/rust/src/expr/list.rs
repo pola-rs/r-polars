@@ -146,14 +146,6 @@ impl PlRExpr {
         Ok(self.inner.clone().list().to_struct(names).into())
     }
 
-    fn list_all(&self) -> Result<Self> {
-        Ok(self.inner.clone().list().all().into())
-    }
-
-    fn list_any(&self) -> Result<Self> {
-        Ok(self.inner.clone().list().any().into())
-    }
-
     fn list_set_operation(&self, other: &PlRExpr, operation: &str) -> Result<Self> {
         let operation = <Wrap<SetOperation>>::try_from(operation)?.0;
         let e = self.inner.clone().list();

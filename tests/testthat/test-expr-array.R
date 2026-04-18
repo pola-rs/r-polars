@@ -169,21 +169,29 @@ test_that("arr$contains", {
 
 test_that("$arr$all() works", {
   df <- pl$DataFrame(
-    a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), c(NA, NA))
+    a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), c(NA, NA), c(NA, TRUE), c(NA, FALSE))
   )$cast(a = pl$Array(pl$Boolean, 2))
   expect_equal(
     df$select(all = pl$col("a")$arr$all()),
-    pl$DataFrame(all = c(TRUE, FALSE, FALSE, TRUE))
+    pl$DataFrame(all = c(TRUE, FALSE, FALSE, TRUE, TRUE, FALSE))
+  )
+  expect_equal(
+    df$select(all = pl$col("a")$arr$all(ignore_nulls = FALSE)),
+    pl$DataFrame(all = c(TRUE, FALSE, FALSE, NA, NA, FALSE))
   )
 })
 
 test_that("$arr$any() works", {
   df <- pl$DataFrame(
-    a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), c(NA, NA)),
+    a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), c(NA, NA), c(NA, TRUE), c(NA, FALSE)),
   )$cast(a = pl$Array(pl$Boolean, 2))
   expect_equal(
     df$select(any = pl$col("a")$arr$any()),
-    pl$DataFrame(any = c(TRUE, TRUE, FALSE, FALSE))
+    pl$DataFrame(any = c(TRUE, TRUE, FALSE, FALSE, TRUE, FALSE))
+  )
+  expect_equal(
+    df$select(any = pl$col("a")$arr$any(ignore_nulls = FALSE)),
+    pl$DataFrame(any = c(TRUE, TRUE, FALSE, NA, TRUE, NA))
   )
 })
 

@@ -171,8 +171,6 @@ SEXP savvy_PlRExpr_arg_min__ffi(SEXP self__);
 SEXP savvy_PlRExpr_arg_sort__ffi(SEXP self__, SEXP c_arg__descending, SEXP c_arg__nulls_last);
 SEXP savvy_PlRExpr_arg_unique__ffi(SEXP self__);
 SEXP savvy_PlRExpr_arr_agg__ffi(SEXP self__, SEXP c_arg__expr);
-SEXP savvy_PlRExpr_arr_all__ffi(SEXP self__);
-SEXP savvy_PlRExpr_arr_any__ffi(SEXP self__);
 SEXP savvy_PlRExpr_arr_arg_max__ffi(SEXP self__);
 SEXP savvy_PlRExpr_arr_arg_min__ffi(SEXP self__);
 SEXP savvy_PlRExpr_arr_contains__ffi(SEXP self__, SEXP c_arg__other, SEXP c_arg__nulls_equal);
@@ -332,8 +330,6 @@ SEXP savvy_PlRExpr_kurtosis__ffi(SEXP self__, SEXP c_arg__fisher, SEXP c_arg__bi
 SEXP savvy_PlRExpr_last__ffi(SEXP self__);
 SEXP savvy_PlRExpr_len__ffi(SEXP self__);
 SEXP savvy_PlRExpr_list_agg__ffi(SEXP self__, SEXP c_arg__expr);
-SEXP savvy_PlRExpr_list_all__ffi(SEXP self__);
-SEXP savvy_PlRExpr_list_any__ffi(SEXP self__);
 SEXP savvy_PlRExpr_list_arg_max__ffi(SEXP self__);
 SEXP savvy_PlRExpr_list_arg_min__ffi(SEXP self__);
 SEXP savvy_PlRExpr_list_contains__ffi(SEXP self__, SEXP c_arg__other, SEXP c_arg__nulls_equal);

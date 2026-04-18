@@ -41,14 +41,6 @@ impl PlRExpr {
         Ok(self.inner.clone().arr().to_list().into())
     }
 
-    fn arr_all(&self) -> Result<Self> {
-        Ok(self.inner.clone().arr().all().into())
-    }
-
-    fn arr_any(&self) -> Result<Self> {
-        Ok(self.inner.clone().arr().any().into())
-    }
-
     fn arr_sort(&self, descending: bool, nulls_last: bool) -> Result<Self> {
         Ok(self
             .inner
