@@ -535,12 +535,7 @@ expr_list_eval <- function(expr) {
 #'   a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c())
 #' )
 #' df$with_columns(all = pl$col("a")$list$all())
-expr_list_all <- function(..., ignore_nulls = TRUE) {
-  wrap({
-    check_dots_empty0(...)
-    self$agg(pl$element()$all(ignore_nulls = ignore_nulls))
-  })
-}
+expr_list_all <- expr_arr_all
 
 #' Evaluate whether any boolean value in a sub-list is true
 #'
@@ -553,12 +548,7 @@ expr_list_all <- function(..., ignore_nulls = TRUE) {
 #'   a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c())
 #' )
 #' df$with_columns(any = pl$col("a")$list$any())
-expr_list_any <- function(..., ignore_nulls = TRUE) {
-  wrap({
-    check_dots_empty0(...)
-    self$agg(pl$element()$any(ignore_nulls = ignore_nulls))
-  })
-}
+expr_list_any <- expr_arr_any
 
 #' Compute the union of elements of a list and other elements
 #'
