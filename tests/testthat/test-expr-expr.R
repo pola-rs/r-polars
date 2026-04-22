@@ -748,11 +748,12 @@ test_that("Expr_append", {
     pl$DataFrame(literal = c("Bob", "false"))
   )
 
-  # TODO: uncomment when https://github.com/pola-rs/polars/issues/27345 is fixed
-  # expect_snapshot(
-  #   pl$select(pl$lit("Bob")$append(FALSE, upcast = FALSE)),
-  #   error = TRUE
-  # )
+  # TODO: unskip when https://github.com/pola-rs/polars/issues/27345 is fixed
+  skip("Due to https://github.com/pola-rs/polars/issues/27345")
+  expect_snapshot(
+    pl$select(pl$lit("Bob")$append(FALSE, upcast = FALSE)),
+    error = TRUE
+  )
 })
 
 test_that("rechunk() works", {

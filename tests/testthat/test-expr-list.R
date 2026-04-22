@@ -647,20 +647,21 @@ test_that("$list$sample() works", {
 
   expect_snapshot(df$select(pl$col("values")$list$sample(fraction = 2)), error = TRUE)
 
-  # TODO: uncomment when https://github.com/pola-rs/polars/issues/27344 is fixed
-  # expect_equal(
-  #   df$select(
-  #     sample = pl$col("values")$list$sample(fraction = 2, with_replacement = TRUE, seed = 1)
-  #   ),
-  #   pl$DataFrame(
-  #     sample = list(
-  #       c(3L, 3L, 1L, 3L, 1L, 2L),
-  #       c(NA, NA),
-  #       c(3L, 3L, NA, 3L),
-  #       c(7L, 7L, 5L, 7L, 5L, 6L)
-  #     )
-  #   )
-  # )
+  # TODO: unskip when https://github.com/pola-rs/polars/issues/27344 is fixed
+  skip("Due to https://github.com/pola-rs/polars/issues/27344")
+  expect_equal(
+    df$select(
+      sample = pl$col("values")$list$sample(fraction = 2, with_replacement = TRUE, seed = 1)
+    ),
+    pl$DataFrame(
+      sample = list(
+        c(3L, 3L, 1L, 3L, 1L, 2L),
+        c(NA, NA),
+        c(3L, 3L, NA, 3L),
+        c(7L, 7L, 5L, 7L, 5L, 6L)
+      )
+    )
+  )
 })
 
 test_that("list$std", {
