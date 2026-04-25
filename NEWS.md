@@ -2,7 +2,7 @@
 
 ## polars (development version)
 
-This is an update that corresponds to Python Polars 1.40.0.
+This is an update that corresponds to Python Polars 1.40.1.
 
 ### New features
 

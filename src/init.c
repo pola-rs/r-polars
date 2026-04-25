@@ -2789,8 +2789,8 @@ SEXP savvy_PlRLazyFrame_median__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_merge_sorted__impl(SEXP self__, SEXP c_arg__other, SEXP c_arg__key) {
-    SEXP res = savvy_PlRLazyFrame_merge_sorted__ffi(self__, c_arg__other, c_arg__key);
+SEXP savvy_PlRLazyFrame_merge_sorted__impl(SEXP self__, SEXP c_arg__other, SEXP c_arg__key, SEXP c_arg__maintain_order) {
+    SEXP res = savvy_PlRLazyFrame_merge_sorted__ffi(self__, c_arg__other, c_arg__key, c_arg__maintain_order);
     return handle_result(res);
 }
 
@@ -4016,7 +4016,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_max__impl", (DL_FUNC) &savvy_PlRLazyFrame_max__impl, 1},
     {"savvy_PlRLazyFrame_mean__impl", (DL_FUNC) &savvy_PlRLazyFrame_mean__impl, 1},
     {"savvy_PlRLazyFrame_median__impl", (DL_FUNC) &savvy_PlRLazyFrame_median__impl, 1},
-    {"savvy_PlRLazyFrame_merge_sorted__impl", (DL_FUNC) &savvy_PlRLazyFrame_merge_sorted__impl, 3},
+    {"savvy_PlRLazyFrame_merge_sorted__impl", (DL_FUNC) &savvy_PlRLazyFrame_merge_sorted__impl, 4},
     {"savvy_PlRLazyFrame_min__impl", (DL_FUNC) &savvy_PlRLazyFrame_min__impl, 1},
     {"savvy_PlRLazyFrame_new_from_csv__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_csv__impl, 29},
     {"savvy_PlRLazyFrame_new_from_ipc__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_ipc__impl, 11},

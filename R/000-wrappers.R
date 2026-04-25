@@ -4103,9 +4103,9 @@ class(`PlRExpr`) <- c("polars::PlRExpr__bundle", "savvy_polars__sealed")
 }
 
 `PlRLazyFrame_merge_sorted` <- function(self) {
-  function(`other`, `key`) {
+  function(`other`, `key`, `maintain_order`) {
     `other` <- .savvy_extract_ptr(`other`, "polars::PlRLazyFrame")
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_merge_sorted__impl, `self`, `other`, `key`))
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_merge_sorted__impl, `self`, `other`, `key`, `maintain_order`))
   }
 }
 

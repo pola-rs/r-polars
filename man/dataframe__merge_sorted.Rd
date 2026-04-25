@@ -4,12 +4,18 @@
 \alias{dataframe__merge_sorted}
 \title{Take two sorted DataFrames and merge them by the sorted key}
 \usage{
-dataframe__merge_sorted(other, key)
+dataframe__merge_sorted(other, key, ..., maintain_order = FALSE)
 }
 \arguments{
 \item{other}{Other DataFrame that must be merged.}
 
 \item{key}{Key that is sorted.}
+
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{maintain_order}{If \code{TRUE}, the output is guaranteed to have left-biased
+ordering for equal keys: rows from the left frame appear before rows from
+the right frame when their keys are equal.}
 }
 \value{
 A polars \link{DataFrame}

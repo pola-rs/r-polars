@@ -647,8 +647,6 @@ test_that("$list$sample() works", {
 
   expect_snapshot(df$select(pl$col("values")$list$sample(fraction = 2)), error = TRUE)
 
-  # TODO: unskip when https://github.com/pola-rs/polars/issues/27344 is fixed
-  skip("Due to https://github.com/pola-rs/polars/issues/27344")
   expect_equal(
     df$select(
       sample = pl$col("values")$list$sample(fraction = 2, with_replacement = TRUE, seed = 1)

@@ -810,8 +810,10 @@ dataframe__top_k <- function(k, ..., by, reverse = FALSE) {
 #' )$sort("age")
 #'
 #' df1$merge_sorted(df2, key = "age")
-dataframe__merge_sorted <- function(other, key) {
-  self$lazy()$merge_sorted(other$lazy(), key)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
+dataframe__merge_sorted <- function(other, key, ..., maintain_order = FALSE) {
+  self$lazy()$merge_sorted(other$lazy(), key, ..., maintain_order = FALSE)$collect(
+    optimizations = DEFAULT_EAGER_OPT_FLAGS
+  ) |>
     wrap()
 }
 

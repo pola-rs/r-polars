@@ -2412,8 +2412,12 @@ lazyframe__interpolate <- function() {
 #' responsibility that the frames are sorted by that key, otherwise the output
 #' will not make sense. The schemas of both LazyFrames must be equal.
 #'
+#' @inheritParams rlang::args_dots_empty
 #' @param other Other LazyFrame that must be merged.
 #' @param key Key that is sorted.
+#' @param maintain_order If `TRUE`, the output is guaranteed to have left-biased
+#' ordering for equal keys: rows from the left frame appear before rows from
+#' the right frame when their keys are equal.
 #'
 #' @inherit as_polars_lf return
 #'
@@ -2429,9 +2433,11 @@ lazyframe__interpolate <- function() {
 #' )$sort("age")
 #'
 #' lf1$merge_sorted(lf2, key = "age")$collect()
-lazyframe__merge_sorted <- function(other, key) {
-  self$`_ldf`$merge_sorted(other$`_ldf`, key) |>
-    wrap()
+lazyframe__merge_sorted <- function(other, key, ..., maintain_order = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_ldf`$merge_sorted(other$`_ldf`, key, maintain_order = maintain_order)
+  })
 }
 
 #' Indicate that one or multiple columns are sorted
