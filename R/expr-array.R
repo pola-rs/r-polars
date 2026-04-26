@@ -249,18 +249,26 @@ expr_arr_arg_max <- function() {
 
 #' Evaluate whether all boolean values are true for every sub-array
 #'
+#' @inheritParams rlang::args_dots_empty
+#' @inheritParams expr__all
+#'
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(
 #'   values = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), c(NA, NA)),
 #' )$cast(pl$Array(pl$Boolean, 2))
 #' df$with_columns(all = pl$col("values")$arr$all())
-expr_arr_all <- function() {
-  self$`_rexpr`$arr_all() |>
-    wrap()
+expr_arr_all <- function(..., ignore_nulls = TRUE) {
+  wrap({
+    check_dots_empty0(...)
+    self$agg(pl$element()$all(ignore_nulls = ignore_nulls))
+  })
 }
 
 #' Evaluate whether any boolean value is true for every sub-array
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @inheritParams expr__any
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -268,9 +276,11 @@ expr_arr_all <- function() {
 #'   values = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), c(NA, NA)),
 #' )$cast(pl$Array(pl$Boolean, 2))
 #' df$with_columns(any = pl$col("values")$arr$any())
-expr_arr_any <- function() {
-  self$`_rexpr`$arr_any() |>
-    wrap()
+expr_arr_any <- function(..., ignore_nulls = TRUE) {
+  wrap({
+    check_dots_empty0(...)
+    self$agg(pl$element()$any(ignore_nulls = ignore_nulls))
+  })
 }
 
 #' Shift values in every sub-array by the given number of indices

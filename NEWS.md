@@ -2,11 +2,17 @@
 
 ## polars (development version)
 
+This is an update that corresponds to Python Polars 1.40.1.
+
 ### New features
 
 * `pl$row_index()`, a shortcut for `pl$int_range(pl$len())` (#1770).
-* `polars_code_completion_activate()` and `polars_code_completion_deactivate()` to 
+* `polars_code_completion_activate()` and `polars_code_completion_deactivate()` to
   enable Polars-specific code completion. This only works in RStudio for now (#1768).
+* `<expr>$arr$any()`, `<expr>$arr$all()`, `<expr>$list$any()`, and `<expr>$list$all()`
+  gain an argument `ignore_nulls` (#1778).
+* `<dataframe>$merge_sorted()` and `<lazyframe>$merge_sorted()` gain an argument
+  `maintain_order` (#1778).
 
 ### Other changes
 

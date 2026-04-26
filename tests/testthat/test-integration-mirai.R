@@ -3,6 +3,9 @@ test_that("mirai serialization works", {
   # Daemons should be set by the setup.R file
   skip_if_not(mirai::daemons_set())
 
+  # FIXME: On GitHub Actions CI with Windows, this test hangs
+  skip_on_os("windows")
+
   series <- as_polars_series(1)$cast(pl$Int128)
   df <- pl$DataFrame(foo = series)
   lf <- df$lazy()
@@ -28,6 +31,9 @@ test_that("Warn if daemons already exist when registering mirai serialization co
   skip_if_not_installed("mirai", minimum_version = "2.3.0")
   # Daemons should be set by the setup.R file
   skip_if_not(mirai::daemons_set())
+
+  # FIXME: On GitHub Actions CI with Windows, this test hangs
+  skip_on_os("windows")
 
   expect_snapshot(register_mirai_serial(), cnd_class = TRUE)
 })

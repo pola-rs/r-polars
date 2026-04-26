@@ -118,7 +118,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! type Boolean is incompatible with expected type String
+      ! type bool is incompatible with expected type str
 
 # truncate
 

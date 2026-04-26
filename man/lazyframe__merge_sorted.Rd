@@ -4,12 +4,18 @@
 \alias{lazyframe__merge_sorted}
 \title{Take two sorted LazyFrames and merge them by the sorted key}
 \usage{
-lazyframe__merge_sorted(other, key)
+lazyframe__merge_sorted(other, key, ..., maintain_order = FALSE)
 }
 \arguments{
 \item{other}{Other LazyFrame that must be merged.}
 
 \item{key}{Key that is sorted.}
+
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{maintain_order}{If \code{TRUE}, the output is guaranteed to have left-biased
+ordering for equal keys: rows from the left frame appear before rows from
+the right frame when their keys are equal.}
 }
 \value{
 A polars \link{LazyFrame}

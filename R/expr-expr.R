@@ -1244,7 +1244,11 @@ expr__reshape <- function(dimensions) {
 
 #' Check if any boolean value in a column is true
 #'
-#' @inheritParams expr__all
+#' @inheritParams rlang::args_dots_empty
+#' @param ignore_nulls If `TRUE` (default), ignore null values. If `FALSE`,
+#' [Kleene logic](https://en.wikipedia.org/wiki/Three-valued_logic) is used to
+#' deal with nulls: if the column contains any null values and no `TRUE` values,
+#' the output is null.
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(
@@ -1273,7 +1277,7 @@ expr__any <- function(..., ignore_nulls = TRUE) {
 #' @inheritParams rlang::args_dots_empty
 #' @param ignore_nulls If `TRUE` (default), ignore null values. If `FALSE`,
 #' [Kleene logic](https://en.wikipedia.org/wiki/Three-valued_logic) is used to
-#' deal with nulls: if the column contains any null values and no `TRUE` values,
+#' deal with nulls: if the column contains any null values and no `FALSE` values,
 #' the output is null.
 #'
 #' @inherit as_polars_expr return

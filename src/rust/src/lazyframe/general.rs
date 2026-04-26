@@ -736,11 +736,11 @@ impl PlRLazyFrame {
         Ok(ldf.count().into())
     }
 
-    fn merge_sorted(&self, other: &PlRLazyFrame, key: &str) -> Result<Self> {
+    fn merge_sorted(&self, other: &PlRLazyFrame, key: &str, maintain_order: bool) -> Result<Self> {
         let out = self
             .ldf
             .clone()
-            .merge_sorted(other.ldf.clone(), key)
+            .merge_sorted(other.ldf.clone(), key, maintain_order)
             .map_err(RPolarsErr::from)?;
         Ok(out.into())
     }
@@ -1239,6 +1239,7 @@ impl PlRLazyFrame {
                 max_value: stat_max,
                 null_count: stat_null_count,
                 distinct_count: stat_distinct_count,
+                binary_statistics_truncate_length: None,
             };
             let compression_level: Option<i32> = match compression_level {
                 Some(x) => Some(x.as_i32()?),
@@ -1284,6 +1285,7 @@ impl PlRLazyFrame {
                 maintain_order,
                 sync_on_close: <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0,
                 cloud_options: cloud_options.map(Arc::new),
+                sinked_paths_callback: None,
             };
 
             self.ldf
@@ -1395,6 +1397,7 @@ impl PlRLazyFrame {
                 maintain_order,
                 sync_on_close: <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0,
                 cloud_options: cloud_options.map(Arc::new),
+                sinked_paths_callback: None,
             };
 
             self.ldf
@@ -1454,6 +1457,7 @@ impl PlRLazyFrame {
                 maintain_order,
                 sync_on_close: <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0,
                 cloud_options: cloud_options.map(Arc::new),
+                sinked_paths_callback: None,
             };
 
             self.ldf
@@ -1512,6 +1516,7 @@ impl PlRLazyFrame {
                 maintain_order,
                 sync_on_close: <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0,
                 cloud_options: cloud_options.map(Arc::new),
+                sinked_paths_callback: None,
             };
 
             self.ldf

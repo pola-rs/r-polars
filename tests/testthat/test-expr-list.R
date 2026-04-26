@@ -504,21 +504,47 @@ test_that("eval", {
 
 test_that("$list$all() works", {
   df <- pl$DataFrame(
-    a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c(), logical())
+    a = list(
+      c(TRUE, TRUE),
+      c(FALSE, TRUE),
+      c(FALSE, FALSE),
+      c(NA, TRUE),
+      c(NA, FALSE),
+      NA,
+      c(),
+      logical()
+    )
   )
   expect_equal(
     df$select(all = pl$col("a")$list$all()),
-    pl$DataFrame(all = c(TRUE, FALSE, FALSE, TRUE, NA, TRUE))
+    pl$DataFrame(all = c(TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, NA, TRUE))
+  )
+  expect_equal(
+    df$select(all = pl$col("a")$list$all(ignore_nulls = FALSE)),
+    pl$DataFrame(all = c(TRUE, FALSE, FALSE, NA, FALSE, NA, NA, TRUE))
   )
 })
 
 test_that("$list$any() works", {
   df <- pl$DataFrame(
-    a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c(), logical())
+    a = list(
+      c(TRUE, TRUE),
+      c(FALSE, TRUE),
+      c(FALSE, FALSE),
+      c(NA, TRUE),
+      c(NA, FALSE),
+      NA,
+      c(),
+      logical()
+    )
   )
   expect_equal(
     df$select(any = pl$col("a")$list$any()),
-    pl$DataFrame(any = c(TRUE, TRUE, FALSE, FALSE, NA, FALSE))
+    pl$DataFrame(any = c(TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, NA, FALSE))
+  )
+  expect_equal(
+    df$select(any = pl$col("a")$list$any(ignore_nulls = FALSE)),
+    pl$DataFrame(any = c(TRUE, TRUE, FALSE, TRUE, NA, NA, NA, FALSE))
   )
 })
 

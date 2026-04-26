@@ -526,18 +526,21 @@ expr_list_eval <- function(expr) {
 
 #' Evaluate whether all boolean values in a sub-list are true
 #'
+#' @inheritParams rlang::args_dots_empty
+#' @inheritParams expr__all
+#'
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(
 #'   a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c())
 #' )
 #' df$with_columns(all = pl$col("a")$list$all())
-expr_list_all <- function() {
-  self$`_rexpr`$list_all() |>
-    wrap()
-}
+expr_list_all <- expr_arr_all
 
 #' Evaluate whether any boolean value in a sub-list is true
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @inheritParams expr__any
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -545,10 +548,7 @@ expr_list_all <- function() {
 #'   a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c())
 #' )
 #' df$with_columns(any = pl$col("a")$list$any())
-expr_list_any <- function() {
-  self$`_rexpr`$list_any() |>
-    wrap()
-}
+expr_list_any <- expr_arr_any
 
 #' Compute the union of elements of a list and other elements
 #'
