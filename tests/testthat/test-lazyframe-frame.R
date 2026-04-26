@@ -362,7 +362,10 @@ test_that("merge_sorted works", {
   )
   # Use distinguishable names at the tie key (age=42) to verify left-biased ordering
   df1_tie <- pl$DataFrame(name = c("steve_left", "elise", "bob"), age = c(42, 44, 18))$sort("age")
-  df2_tie <- pl$DataFrame(name = c("anna", "megan", "steve_right", "thomas"), age = c(21, 33, 42, 20))$sort("age")
+  df2_tie <- pl$DataFrame(
+    name = c("anna", "megan", "steve_right", "thomas"),
+    age = c(21, 33, 42, 20)
+  )$sort("age")
   expect_query_equal(
     .input$merge_sorted(.input2, key = "age", maintain_order = TRUE),
     .input = df1_tie,
