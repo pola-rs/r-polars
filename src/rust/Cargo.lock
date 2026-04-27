@@ -1429,9 +1429,9 @@ dependencies = [
 
 [[package]]
 name = "mimalloc"
-version = "0.1.49"
+version = "0.1.50"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aca3c01a711f395b4257b81674c0e90e8dd1f1e62c4b7db45f684cc7a4fcb18a"
+checksum = "b3627c4272df786b9260cabaa46aec1d59c93ede723d4c3ef646c503816b0640"
 dependencies = [
  "libmimalloc-sys",
 ]
@@ -2746,9 +2746,9 @@ dependencies = [
 
 [[package]]
 name = "savvy"
-version = "0.10.1"
+version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d18f4e149d58c121ce69c462764f799bdb0a52b7fbac0723acec2364a1617106"
+checksum = "d75d7761a922244efc6b461a329fbc96c281d97b808ce9e04eec122d3fd8d133"
 dependencies = [
  "cc",
  "savvy-ffi",
@@ -2757,9 +2757,9 @@ dependencies = [
 
 [[package]]
 name = "savvy-bindgen"
-version = "0.10.1"
+version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8b9e536aa13c2a7b25b3344afe4984e4401222ac5738cd2be8e30426a7ca85f8"
+checksum = "be049f6999b662c96a85ae9ba32db870d6fb9f27f6bb974c59f35cd223117133"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2768,18 +2768,18 @@ dependencies = [
 
 [[package]]
 name = "savvy-ffi"
-version = "0.10.1"
+version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d627117d4943ccd38aae4722e987c36902f8636df410ac0ba47a0deb76186ad3"
+checksum = "00baf88f4e36b33e0bdebd0eecdb656abc9e77177fd75c427825697b01dc43bb"
 dependencies = [
  "cc",
 ]
 
 [[package]]
 name = "savvy-macro"
-version = "0.10.1"
+version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "86370245d4f200a154594b9b8b4eb32b6266bec82b63294dd6189bb2ca7994a0"
+checksum = "165df2b1d139e955017f1e19530d7b01c44d960b6c93d5eb44671cb889505ef3"
 dependencies = [
  "proc-macro2",
  "quote",
