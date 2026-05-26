@@ -21,7 +21,7 @@ impl From<&Float64Chunked> for ITime {
     fn from(ca: &Float64Chunked) -> Self {
         let mut sexp = unsafe { OwnedIntegerSexp::new_without_init(ca.len()).unwrap() };
         let _ = sexp.set_class(["ITime"]);
-        for (i, v) in ca.into_iter().enumerate() {
+        for (i, v) in ca.iter().enumerate() {
             if let Some(v) = v {
                 let _ = sexp.set_elt(i, (v / 1_000_000_000.0) as i32);
             } else {

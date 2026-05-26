@@ -13,7 +13,7 @@ fn rust_polars_version() -> Result<Sexp> {
 
 #[savvy]
 fn thread_pool_size() -> Result<Sexp> {
-    (polars_core::POOL.current_num_threads() as i32).try_into()
+    (polars_core::runtime::RAYON.current_num_threads() as i32).try_into()
 }
 
 #[savvy]

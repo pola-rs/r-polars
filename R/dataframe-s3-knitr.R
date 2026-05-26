@@ -29,7 +29,7 @@
 #'   knitr::knit_print(as_polars_df(mtcars))
 #' )
 #' @rdname s3-knit_print
-# exported in zzz.R
+#' @export
 knit_print.polars_data_frame <- function(x, ...) {
   knit_print_impl(x, ..., from_series = FALSE)
 }

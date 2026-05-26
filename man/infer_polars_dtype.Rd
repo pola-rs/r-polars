@@ -76,7 +76,7 @@ corresponding to an R object, in order words, it infers the type of the Polars \
 that would be constructed from the object.
 In many cases, this function simply performs something like \code{head(x, 0) |> as_polars_series()}.
 It is much faster than actually constructing a \link{Series} using the entire object.
-This function is similar to \code{\link[nanoarrow:as_nanoarrow_schema]{nanoarrow::infer_nanoarrow_schema()}}.
+This function is similar to \code{\link[nanoarrow:infer_nanoarrow_schema]{nanoarrow::infer_nanoarrow_schema()}}.
 
 \code{\link[=is_convertible_to_polars_series]{is_convertible_to_polars_series()}} and \code{\link[=is_convertible_to_polars_expr]{is_convertible_to_polars_expr()}} are helper functions
 that check if the object can be converted to a \link{Series} or \link{Expr} respectively.

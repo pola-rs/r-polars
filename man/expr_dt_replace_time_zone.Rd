@@ -12,7 +12,7 @@ expr_dt_replace_time_zone(
 )
 }
 \arguments{
-\item{time_zone}{\code{NULL} or a character time zone from \code{\link[base:timezones]{base::OlsonNames()}}.
+\item{time_zone}{\code{NULL} or a character time zone from \code{\link[base:OlsonNames]{base::OlsonNames()}}.
 Pass \code{NULL} to unset time zone.}
 
 \item{...}{These dots are for future extensions and must be empty.}

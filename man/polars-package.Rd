@@ -23,6 +23,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Tatsuya Shima \email{ts1s1andn@gmail.com}
   \item Etienne Bacher \email{etienne.bacher@protonmail.com} (\href{https://orcid.org/0000-0002-9271-5075}{ORCID})
   \item Authors of the dependency Rust crates
 }

@@ -113,7 +113,7 @@ impl std::fmt::Display for PlRDataType {
                     f,
                     "Enum(categories=c({}))",
                     categories
-                        .into_iter()
+                        .iter()
                         .filter_map(|opt_v| format!("'{}'", opt_v.unwrap()).into())
                         .collect::<Vec<String>>()
                         .join(", ")

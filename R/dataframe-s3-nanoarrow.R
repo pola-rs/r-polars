@@ -1,7 +1,7 @@
 # nolint start: object_name_linter
 
-# exported in zzz.R
 #' @rdname s3-as_nanoarrow_array_stream
+#' @export
 as_nanoarrow_array_stream.polars_data_frame <- function(
   x,
   ...,

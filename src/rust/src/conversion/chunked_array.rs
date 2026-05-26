@@ -8,7 +8,7 @@ impl From<Wrap<&BooleanChunked>> for Sexp {
     fn from(ca: Wrap<&BooleanChunked>) -> Self {
         let ca = ca.0;
         let mut sexp = unsafe { OwnedLogicalSexp::new_without_init(ca.len()).unwrap() };
-        for (i, v) in ca.into_iter().enumerate() {
+        for (i, v) in ca.iter().enumerate() {
             if let Some(v) = v {
                 let _ = sexp.set_elt(i, v);
             } else {
@@ -25,7 +25,7 @@ impl From<Wrap<&BinaryChunked>> for Sexp {
         let mut sexp = OwnedListSexp::new(ca.len(), false).unwrap();
         let _ = sexp.set_class(["blob", "vctrs_list_of", "vctrs_vctr", "list"]);
         let _ = sexp.set_attrib("ptype", OwnedRawSexp::new(0).unwrap().into());
-        for (i, v) in ca.into_iter().enumerate() {
+        for (i, v) in ca.iter().enumerate() {
             unsafe {
                 if let Some(v) = v {
                     sexp.set_value_unchecked(i, OwnedRawSexp::try_from_slice(v).unwrap().inner());
@@ -42,7 +42,7 @@ impl From<Wrap<&UInt8Chunked>> for Sexp {
     fn from(value: Wrap<&UInt8Chunked>) -> Self {
         let ca = value.0;
         let mut sexp = unsafe { OwnedRawSexp::new_without_init(ca.len()).unwrap() };
-        for (i, v) in ca.into_iter().enumerate() {
+        for (i, v) in ca.iter().enumerate() {
             if let Some(v) = v {
                 let _ = sexp.set_elt(i, v);
             } else {
@@ -57,7 +57,7 @@ impl From<Wrap<&Int32Chunked>> for Sexp {
     fn from(ca: Wrap<&Int32Chunked>) -> Self {
         let ca = ca.0;
         let mut sexp = unsafe { OwnedIntegerSexp::new_without_init(ca.len()).unwrap() };
-        for (i, v) in ca.into_iter().enumerate() {
+        for (i, v) in ca.iter().enumerate() {
             if let Some(v) = v {
                 let _ = sexp.set_elt(i, v);
             } else {
@@ -73,7 +73,7 @@ impl From<Wrap<&Int64Chunked>> for Sexp {
         let ca = ca.0;
         let mut sexp = unsafe { OwnedRealSexp::new_without_init(ca.len()).unwrap() };
         let _ = sexp.set_class(["integer64"]);
-        for (i, v) in ca.into_iter().enumerate() {
+        for (i, v) in ca.iter().enumerate() {
             if let Some(v) = v {
                 let _ = sexp.set_elt(i, f64::from_bits(v as u64));
             } else {
@@ -88,7 +88,7 @@ impl From<Wrap<&Float64Chunked>> for Sexp {
     fn from(ca: Wrap<&Float64Chunked>) -> Self {
         let ca = ca.0;
         let mut sexp = unsafe { OwnedRealSexp::new_without_init(ca.len()).unwrap() };
-        for (i, v) in ca.into_iter().enumerate() {
+        for (i, v) in ca.iter().enumerate() {
             if let Some(v) = v {
                 let _ = sexp.set_elt(i, v);
             } else {
@@ -103,7 +103,7 @@ impl From<Wrap<&StringChunked>> for Sexp {
     fn from(ca: Wrap<&StringChunked>) -> Self {
         let ca = ca.0;
         let mut sexp = OwnedStringSexp::new(ca.len()).unwrap();
-        for (i, v) in ca.into_iter().enumerate() {
+        for (i, v) in ca.iter().enumerate() {
             if let Some(v) = v {
                 let _ = sexp.set_elt(i, v);
             } else {
@@ -119,7 +119,7 @@ impl From<Wrap<&StringChunked>> for Sexp {
 pub(super) fn date32_export_impl(ca: &DateChunked, classes: &[&str]) -> OwnedIntegerSexp {
     let mut sexp = unsafe { OwnedIntegerSexp::new_without_init(ca.len()).unwrap() };
     let _ = sexp.set_class(classes);
-    for (i, v) in ca.physical().into_iter().enumerate() {
+    for (i, v) in ca.physical().iter().enumerate() {
         if let Some(v) = v {
             let _ = sexp.set_elt(i, v);
         } else {
@@ -148,7 +148,7 @@ impl From<Wrap<&DurationChunked>> for Sexp {
         let _ = sexp.set_class(["difftime"]);
         sexp.set_attrib("units", <OwnedStringSexp>::try_from("secs").unwrap().into())
             .unwrap();
-        for (i, v) in ca.physical().into_iter().enumerate() {
+        for (i, v) in ca.physical().iter().enumerate() {
             if let Some(v) = v {
                 let _ = sexp.set_elt(i, v as f64 / div_value);
             } else {
@@ -181,7 +181,7 @@ impl From<Wrap<&DatetimeChunked>> for Sexp {
             <OwnedStringSexp>::try_from(tzone_attr).unwrap().into(),
         )
         .unwrap();
-        for (i, v) in ca.physical().into_iter().enumerate() {
+        for (i, v) in ca.physical().iter().enumerate() {
             if let Some(v) = v {
                 let _ = sexp.set_elt(i, v as f64 / div_value);
             } else {
@@ -199,7 +199,7 @@ impl From<Wrap<&TimeChunked>> for Sexp {
         let _ = sexp.set_class(["hms", "difftime"]);
         sexp.set_attrib("units", <OwnedStringSexp>::try_from("secs").unwrap().into())
             .unwrap();
-        for (i, v) in ca.physical().into_iter().enumerate() {
+        for (i, v) in ca.physical().iter().enumerate() {
             if let Some(v) = v {
                 let _ = sexp.set_elt(i, v as f64 / 1_000_000_000.0);
             } else {

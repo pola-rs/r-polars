@@ -12,7 +12,7 @@ pub fn concat_df(dfs: ListSexp) -> Result<PlRDataFrame> {
 
     let identity = || Ok(identity_df.clone());
 
-    let df = polars_core::POOL
+    let df = polars_core::runtime::RAYON
         .install(|| {
             rdfs.into_par_iter()
                 .fold(identity, |acc: PolarsResult<DataFrame>, df| {

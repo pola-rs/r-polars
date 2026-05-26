@@ -7,7 +7,7 @@
 expr_dt_convert_time_zone(time_zone)
 }
 \arguments{
-\item{time_zone}{A character time zone from \code{\link[base:timezones]{base::OlsonNames()}}.}
+\item{time_zone}{A character time zone from \code{\link[base:OlsonNames]{base::OlsonNames()}}.}
 }
 \value{
 A polars \link{expression}

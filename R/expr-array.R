@@ -119,7 +119,7 @@ expr_arr_sort <- function(..., descending = FALSE, nulls_last = FALSE) {
 #' )$cast(pl$Array(pl$Float64, 2))
 #' df$with_columns(reverse = pl$col("values")$arr$reverse())
 expr_arr_reverse <- function() {
-  self$`_rexpr`$arr_reverse() |>
+  self$eval(pl$element()$reverse()) |>
     wrap()
 }
 
@@ -136,7 +136,10 @@ expr_arr_reverse <- function() {
 expr_arr_unique <- function(..., maintain_order = FALSE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$arr_unique(maintain_order)
+    self$eval(
+      pl$element()$unique(maintain_order = maintain_order),
+      as_list = TRUE
+    )
   })
 }
 
@@ -425,7 +428,7 @@ expr_arr_last <- function() {
 #' )$cast(pl$Array(pl$Int64, 3))
 #' df$with_columns(n_unique = pl$col("a")$arr$n_unique())
 expr_arr_n_unique <- function() {
-  self$`_rexpr`$arr_n_unique() |>
+  self$agg(pl$element()$n_unique()) |>
     wrap()
 }
 

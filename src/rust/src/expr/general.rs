@@ -712,8 +712,12 @@ impl PlRExpr {
             .into())
     }
 
-    fn gather(&self, idx: &PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().gather(idx.inner.clone()).into())
+    fn gather(&self, idx: &PlRExpr, null_on_oob: bool) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .gather(idx.inner.clone(), null_on_oob)
+            .into())
     }
 
     fn get(&self, idx: &PlRExpr, null_on_oob: bool) -> Result<Self> {

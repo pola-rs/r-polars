@@ -1,6 +1,5 @@
 # nolint start: object_name_linter
 
-# exported in zzz.R
 #' Export the polars object as a tibble data frame
 #'
 #' This S3 method is basically a shortcut of
@@ -27,6 +26,7 @@
 #' tibble::as_tibble(df, .name_repair = "unique")
 #' tibble::as_tibble(df$lazy(), .name_repair = "unique")
 #' @rdname s3-as_tibble
+#' @export
 as_tibble.polars_data_frame <- function(
   x,
   ...,
