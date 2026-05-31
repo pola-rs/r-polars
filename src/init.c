@@ -889,16 +889,6 @@ SEXP savvy_PlRExpr_arr_min__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_arr_n_unique__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_arr_n_unique__ffi(self__);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRExpr_arr_reverse__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_arr_reverse__ffi(self__);
-    return handle_result(res);
-}
-
 SEXP savvy_PlRExpr_arr_shift__impl(SEXP self__, SEXP c_arg__n) {
     SEXP res = savvy_PlRExpr_arr_shift__ffi(self__, c_arg__n);
     return handle_result(res);
@@ -926,11 +916,6 @@ SEXP savvy_PlRExpr_arr_to_list__impl(SEXP self__) {
 
 SEXP savvy_PlRExpr_arr_to_struct__impl(SEXP self__, SEXP c_arg__name_gen) {
     SEXP res = savvy_PlRExpr_arr_to_struct__ffi(self__, c_arg__name_gen);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRExpr_arr_unique__impl(SEXP self__, SEXP c_arg__maintain_order) {
-    SEXP res = savvy_PlRExpr_arr_unique__ffi(self__, c_arg__maintain_order);
     return handle_result(res);
 }
 
@@ -1479,8 +1464,8 @@ SEXP savvy_PlRExpr_floor_div__impl(SEXP self__, SEXP c_arg__rhs) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_gather__impl(SEXP self__, SEXP c_arg__idx) {
-    SEXP res = savvy_PlRExpr_gather__ffi(self__, c_arg__idx);
+SEXP savvy_PlRExpr_gather__impl(SEXP self__, SEXP c_arg__idx, SEXP c_arg__null_on_oob) {
+    SEXP res = savvy_PlRExpr_gather__ffi(self__, c_arg__idx, c_arg__null_on_oob);
     return handle_result(res);
 }
 
@@ -1709,16 +1694,6 @@ SEXP savvy_PlRExpr_list_min__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_list_n_unique__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_list_n_unique__ffi(self__);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRExpr_list_reverse__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_list_reverse__ffi(self__);
-    return handle_result(res);
-}
-
 SEXP savvy_PlRExpr_list_sample_frac__impl(SEXP self__, SEXP c_arg__frac, SEXP c_arg__with_replacement, SEXP c_arg__shuffle, SEXP c_arg__seed) {
     SEXP res = savvy_PlRExpr_list_sample_frac__ffi(self__, c_arg__frac, c_arg__with_replacement, c_arg__shuffle, c_arg__seed);
     return handle_result(res);
@@ -1766,11 +1741,6 @@ SEXP savvy_PlRExpr_list_to_array__impl(SEXP self__, SEXP c_arg__width) {
 
 SEXP savvy_PlRExpr_list_to_struct__impl(SEXP self__, SEXP c_arg__names) {
     SEXP res = savvy_PlRExpr_list_to_struct__ffi(self__, c_arg__names);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRExpr_list_unique__impl(SEXP self__, SEXP c_arg__maintain_order) {
-    SEXP res = savvy_PlRExpr_list_unique__ffi(self__, c_arg__maintain_order);
     return handle_result(res);
 }
 
@@ -3636,15 +3606,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_arr_max__impl", (DL_FUNC) &savvy_PlRExpr_arr_max__impl, 1},
     {"savvy_PlRExpr_arr_median__impl", (DL_FUNC) &savvy_PlRExpr_arr_median__impl, 1},
     {"savvy_PlRExpr_arr_min__impl", (DL_FUNC) &savvy_PlRExpr_arr_min__impl, 1},
-    {"savvy_PlRExpr_arr_n_unique__impl", (DL_FUNC) &savvy_PlRExpr_arr_n_unique__impl, 1},
-    {"savvy_PlRExpr_arr_reverse__impl", (DL_FUNC) &savvy_PlRExpr_arr_reverse__impl, 1},
     {"savvy_PlRExpr_arr_shift__impl", (DL_FUNC) &savvy_PlRExpr_arr_shift__impl, 2},
     {"savvy_PlRExpr_arr_sort__impl", (DL_FUNC) &savvy_PlRExpr_arr_sort__impl, 3},
     {"savvy_PlRExpr_arr_std__impl", (DL_FUNC) &savvy_PlRExpr_arr_std__impl, 2},
     {"savvy_PlRExpr_arr_sum__impl", (DL_FUNC) &savvy_PlRExpr_arr_sum__impl, 1},
     {"savvy_PlRExpr_arr_to_list__impl", (DL_FUNC) &savvy_PlRExpr_arr_to_list__impl, 1},
     {"savvy_PlRExpr_arr_to_struct__impl", (DL_FUNC) &savvy_PlRExpr_arr_to_struct__impl, 2},
-    {"savvy_PlRExpr_arr_unique__impl", (DL_FUNC) &savvy_PlRExpr_arr_unique__impl, 2},
     {"savvy_PlRExpr_arr_var__impl", (DL_FUNC) &savvy_PlRExpr_arr_var__impl, 2},
     {"savvy_PlRExpr_as_str__impl", (DL_FUNC) &savvy_PlRExpr_as_str__impl, 1},
     {"savvy_PlRExpr_bin_base64_decode__impl", (DL_FUNC) &savvy_PlRExpr_bin_base64_decode__impl, 2},
@@ -3754,7 +3721,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_first__impl", (DL_FUNC) &savvy_PlRExpr_first__impl, 1},
     {"savvy_PlRExpr_floor__impl", (DL_FUNC) &savvy_PlRExpr_floor__impl, 1},
     {"savvy_PlRExpr_floor_div__impl", (DL_FUNC) &savvy_PlRExpr_floor_div__impl, 2},
-    {"savvy_PlRExpr_gather__impl", (DL_FUNC) &savvy_PlRExpr_gather__impl, 2},
+    {"savvy_PlRExpr_gather__impl", (DL_FUNC) &savvy_PlRExpr_gather__impl, 3},
     {"savvy_PlRExpr_gather_every__impl", (DL_FUNC) &savvy_PlRExpr_gather_every__impl, 3},
     {"savvy_PlRExpr_get__impl", (DL_FUNC) &savvy_PlRExpr_get__impl, 3},
     {"savvy_PlRExpr_gt__impl", (DL_FUNC) &savvy_PlRExpr_gt__impl, 2},
@@ -3800,8 +3767,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_list_mean__impl", (DL_FUNC) &savvy_PlRExpr_list_mean__impl, 1},
     {"savvy_PlRExpr_list_median__impl", (DL_FUNC) &savvy_PlRExpr_list_median__impl, 1},
     {"savvy_PlRExpr_list_min__impl", (DL_FUNC) &savvy_PlRExpr_list_min__impl, 1},
-    {"savvy_PlRExpr_list_n_unique__impl", (DL_FUNC) &savvy_PlRExpr_list_n_unique__impl, 1},
-    {"savvy_PlRExpr_list_reverse__impl", (DL_FUNC) &savvy_PlRExpr_list_reverse__impl, 1},
     {"savvy_PlRExpr_list_sample_frac__impl", (DL_FUNC) &savvy_PlRExpr_list_sample_frac__impl, 5},
     {"savvy_PlRExpr_list_sample_n__impl", (DL_FUNC) &savvy_PlRExpr_list_sample_n__impl, 5},
     {"savvy_PlRExpr_list_set_operation__impl", (DL_FUNC) &savvy_PlRExpr_list_set_operation__impl, 3},
@@ -3812,7 +3777,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_list_sum__impl", (DL_FUNC) &savvy_PlRExpr_list_sum__impl, 1},
     {"savvy_PlRExpr_list_to_array__impl", (DL_FUNC) &savvy_PlRExpr_list_to_array__impl, 2},
     {"savvy_PlRExpr_list_to_struct__impl", (DL_FUNC) &savvy_PlRExpr_list_to_struct__impl, 2},
-    {"savvy_PlRExpr_list_unique__impl", (DL_FUNC) &savvy_PlRExpr_list_unique__impl, 2},
     {"savvy_PlRExpr_list_var__impl", (DL_FUNC) &savvy_PlRExpr_list_var__impl, 2},
     {"savvy_PlRExpr_log__impl", (DL_FUNC) &savvy_PlRExpr_log__impl, 2},
     {"savvy_PlRExpr_log1p__impl", (DL_FUNC) &savvy_PlRExpr_log1p__impl, 1},

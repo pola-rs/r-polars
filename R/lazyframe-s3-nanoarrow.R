@@ -8,7 +8,7 @@
 #'   being sent to the Arrow C stream.
 #'   If `NULL`, Polars tries to compute an optimal chunk size automatically.
 #' @rdname s3-as_nanoarrow_array_stream
-#' @export
+#' @exportS3Method NULL
 as_nanoarrow_array_stream.polars_lazy_frame <- function(
   x,
   ...,

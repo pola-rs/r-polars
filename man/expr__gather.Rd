@@ -4,10 +4,15 @@
 \alias{expr__gather}
 \title{Take values by index}
 \usage{
-expr__gather(indices)
+expr__gather(indices, ..., null_on_oob = FALSE)
 }
 \arguments{
 \item{indices}{An expression that leads to a UInt32 dtyped Series.}
+
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{null_on_oob}{If \code{TRUE}, return \code{null} if an index is out of bounds.
+Otherwise, raise an error.}
 }
 \value{
 A polars \link{expression}

@@ -473,7 +473,7 @@ as_polars_series.nanoarrow_array_stream <- function(x, name = NULL, ...) {
 }
 
 #' @rdname as_polars_series
-#' @export
+#' @exportS3Method NULL
 as_polars_series.nanoarrow_array <- function(x, name = NULL, ...) {
   nanoarrow::as_nanoarrow_array_stream(x) |>
     as_polars_series(name = name, ...)
