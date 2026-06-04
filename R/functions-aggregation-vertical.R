@@ -31,7 +31,7 @@ pl__all <- function(..., ignore_nulls = TRUE) {
 #'
 #' This function is syntactic sugar for `col(names)$any()`.
 #'
-#' @inheritDotParams pl__all
+#' @inheritParams pl__all
 #' @inheritParams expr__any
 #'
 #' @inherit as_polars_expr return
