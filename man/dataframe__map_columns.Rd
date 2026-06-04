@@ -18,7 +18,7 @@ A polars \link{DataFrame}
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 A higher-order function to apply functions to selected columns of a \link{DataFrame},
-similar to \link[purrr:map_if]{purrr::map_at}. The selected columns will be materialized as
+similar to \link[purrr:map_at]{purrr::map_at}. The selected columns will be materialized as
 \link{Series} before the function is applied, and the return value of the function
 will be converted back to a \link{Series} by \link{as_polars_series}.
 
