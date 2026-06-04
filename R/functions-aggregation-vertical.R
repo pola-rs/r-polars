@@ -31,7 +31,7 @@ pl__all <- function(..., ignore_nulls = TRUE) {
 #'
 #' This function is syntactic sugar for `col(names)$any()`.
 #'
-#' @inheritParams pl__all
+#' @param ... Name(s) of the columns to use in the aggregation.
 #' @inheritParams expr__any
 #'
 #' @inherit as_polars_expr return
