@@ -1,6 +1,5 @@
 # nolint start: object_name_linter
 
-# exported in zzz.R
 #' Export the polars object as a tibble data frame
 #'
 #' This S3 method is basically a shortcut of

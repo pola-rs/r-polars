@@ -2,7 +2,6 @@
 
 # nolint start: object_name_linter
 
-# exported in zzz.R
 #' Create a nanoarrow_array_stream from a Polars object
 #'
 #' @param x A polars object
