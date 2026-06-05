@@ -22,7 +22,7 @@ See \code{\link[=series__to_r_vector]{<Series>$to_r_vector()}} for details.
 \item \link[bit64:bit64-package]{bit64}
 \item \link[blob:blob]{blob}
 \item \link[clock:clock-package]{clock}
-\item \link[data.table:data.table]{data.table}
+\item \link[data.table:data.table-package]{data.table}
 \item \link[hms:hms-package]{hms}
 \item \link[tibble:tibble-package]{tibble}
 \item \link[vctrs:vctrs-package]{vctrs}

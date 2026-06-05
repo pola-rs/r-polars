@@ -38,9 +38,9 @@ Accuracy may be degraded.
 \item \code{"character"}: Convert to the R's \link{character} type.
 \item \code{"integer"}: Convert to the R's \link{integer} type.
 If the value is out of the range of R's integer type, export as \link{NA_integer_}.
-\item \code{"integer64"}: Convert to the \link[bit64:bit64-package]{bit64::integer64} class.
+\item \code{"integer64"}: Convert to the \link[bit64:integer64]{bit64::integer64} class.
 The \link[bit64:bit64-package]{bit64} package must be installed.
-If the value is out of the range of \link[bit64:bit64-package]{bit64::integer64}, export as \link[bit64:as.integer64.character]{bit64::NA_integer64_}.
+If the value is out of the range of \link[bit64:integer64]{bit64::integer64}, export as \link[bit64:NA_integer64_]{bit64::NA_integer64_}.
 }}
 
 \item{date}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -58,7 +58,7 @@ One of the followings:
 \item \code{"hms"} (default): Convert to the \link[hms:hms]{hms::hms} class.
 If the \link[hms:hms-package]{hms} package is not installed, a warning will be shown.
 \item \code{"ITime"}: Convert to the \link[data.table:IDateTime]{data.table::ITime} class.
-The \link[data.table:data.table]{data.table} package must be installed.
+The \link[data.table:data.table-package]{data.table} package must be installed.
 }}
 
 \item{struct}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -66,7 +66,7 @@ Determine how to convert Polars' Struct type values to R class.
 One of the followings:
 \itemize{
 \item \code{"dataframe"} (default): Convert to the R's \link{data.frame} class.
-\item \code{"tibble"}: Convert to the \link[tibble:tbl_df-class]{tibble} class.
+\item \code{"tibble"}: Convert to the \link[tibble:tbl_df]{tibble} class.
 If the \link[tibble:tibble-package]{tibble} package is not installed, a warning will be shown.
 }}
 
@@ -80,7 +80,7 @@ One of the followings:
 
 \item{as_clock_class}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 A logical value indicating whether to export datetimes and duration as
-the \link[clock:clock-package]{clock} package's classes.
+the \link[clock:clock]{clock} package's classes.
 \itemize{
 \item \code{FALSE} (default): Duration values are exported as \link{difftime}
 and datetime values are exported as \link{POSIXct}.
@@ -88,7 +88,7 @@ Accuracy may be degraded.
 \item \code{TRUE}: Duration values are exported as \link[clock:duration-helper]{clock_duration},
 datetime without timezone values are exported as \link[clock:as_naive_time]{clock_naive_time},
 and datetime with timezone values are exported as \link[clock:as_zoned_time]{clock_zoned_time}.
-For this case, the \link[clock:clock-package]{clock} package must be installed.
+For this case, the \link[clock:clock]{clock} package must be installed.
 Accuracy will be maintained.
 }}
 
@@ -126,7 +126,7 @@ The class/type of the exported object depends on the \link{DataType} of the \lin
 \item Boolean: \link{logical}.
 \item UInt8: \link{integer} or \link{raw}, depending on the \code{uint8} argument.
 \item UInt16, Int8, Int16, Int32: \link{integer}.
-\item Int64, UInt32, UInt64: \link{double}, \link{character}, \link{integer}, or \link[bit64:bit64-package]{bit64::integer64},
+\item Int64, UInt32, UInt64: \link{double}, \link{character}, \link{integer}, or \link[bit64:integer64]{bit64::integer64},
 depending on the \code{int64} argument.
 \item Float32, Float64: \link{double}.
 \item Decimal: \link{double}.
@@ -143,9 +143,9 @@ depending on the \code{as_clock_class} argument.
 \item Duration: \link{difftime} or \link[clock:duration-helper]{clock_duration},
 depending on the \code{as_clock_class} argument.
 \item Binary: \link[blob:blob]{blob::blob}.
-\item Null: \link[vctrs:vctrs-unspecified]{vctrs::unspecified}.
+\item Null: \link[vctrs:unspecified]{vctrs::unspecified}.
 \item List, Array: \link[vctrs:list_of]{vctrs::list_of}.
-\item Struct: \link{data.frame} or \link[tibble:tbl_df-class]{tibble}, depending on the \code{struct} argument.
+\item Struct: \link{data.frame} or \link[tibble:tbl_df]{tibble}, depending on the \code{struct} argument.
 }
 }
 \examples{
