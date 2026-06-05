@@ -46,24 +46,6 @@ impl PlRExpr {
             .into())
     }
 
-    fn list_reverse(&self) -> Result<Self> {
-        Ok(self.inner.clone().list().reverse().into())
-    }
-
-    fn list_unique(&self, maintain_order: bool) -> Result<Self> {
-        let e = self.inner.clone();
-        let out = if maintain_order {
-            e.list().unique_stable().into()
-        } else {
-            e.list().unique().into()
-        };
-        Ok(out)
-    }
-
-    fn list_n_unique(&self) -> Result<Self> {
-        Ok(self.inner.clone().list().n_unique().into())
-    }
-
     fn list_gather(&self, indices: &PlRExpr, null_on_oob: bool) -> Result<Self> {
         Ok(self
             .inner

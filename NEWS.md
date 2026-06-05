@@ -2,6 +2,12 @@
 
 ## polars (development version)
 
+This is an update that corresponds to Python Polars 1.41.2.
+
+### New features
+
+* `<expr>$gather()` gains an argument `null_on_oob` (#1789).
+
 ## polars 1.11.0
 
 This is an update that corresponds to Python Polars 1.40.1.

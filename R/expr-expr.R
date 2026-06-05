@@ -4090,6 +4090,8 @@ expr__fill_null <- function(value = NULL, strategy = NULL, limit = NULL) {
 
 #' Take values by index
 #'
+#' @inheritParams rlang::args_dots_empty
+#' @inheritParams expr__get
 #' @param indices An expression that leads to a UInt32 dtyped Series.
 #'
 #' @inherit as_polars_expr return
@@ -4101,9 +4103,13 @@ expr__fill_null <- function(value = NULL, strategy = NULL, limit = NULL) {
 #' df$group_by("group", maintain_order = TRUE)$agg(
 #'   pl$col("value")$gather(c(2, 1))
 #' )
-expr__gather <- function(indices) {
+expr__gather <- function(indices, ..., null_on_oob = FALSE) {
   wrap({
-    self$`_rexpr`$gather(as_polars_expr(indices)$cast(pl$Int64, strict = TRUE)$`_rexpr`)
+    check_dots_empty0(...)
+    self$`_rexpr`$gather(
+      as_polars_expr(indices)$cast(pl$Int64, strict = TRUE)$`_rexpr`,
+      null_on_oob = null_on_oob
+    )
   })
 }
 

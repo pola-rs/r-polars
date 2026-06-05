@@ -101,7 +101,7 @@ expr_list_sort <- function(..., descending = FALSE, nulls_last = FALSE) {
 #' df <- pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA))
 #' df$with_columns(reverse = pl$col("values")$list$reverse())
 expr_list_reverse <- function() {
-  self$`_rexpr`$list_reverse() |>
+  self$eval(pl$element()$reverse()) |>
     wrap()
 }
 
@@ -118,7 +118,7 @@ expr_list_reverse <- function() {
 expr_list_unique <- function(..., maintain_order = FALSE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$list_unique(maintain_order)
+    self$eval(pl$element()$unique(maintain_order = maintain_order))
   })
 }
 
@@ -130,7 +130,7 @@ expr_list_unique <- function(..., maintain_order = FALSE) {
 #' df <- pl$DataFrame(values = list(c(2, 2, NA), c(1, 2, 3), NA))
 #' df$with_columns(unique = pl$col("values")$list$n_unique())
 expr_list_n_unique <- function() {
-  self$`_rexpr`$list_n_unique() |>
+  self$agg(pl$element()$n_unique()) |>
     wrap()
 }
 

@@ -26,7 +26,7 @@ impl From<&Int64Chunked> for Float64Pair {
     fn from(ca: &Int64Chunked) -> Self {
         let mut left = unsafe { OwnedRealSexp::new_without_init(ca.len()).unwrap() };
         let mut right = unsafe { OwnedRealSexp::new_without_init(ca.len()).unwrap() };
-        for (i, v) in ca.into_iter().enumerate() {
+        for (i, v) in ca.iter().enumerate() {
             if let Some(v) = v {
                 let x_u64 =
                     u64::from_ne_bytes(v.to_ne_bytes()).wrapping_add(9_223_372_036_854_775_808u64);

@@ -29,14 +29,6 @@ impl PlRExpr {
         Ok(self.inner.clone().arr().median().into())
     }
 
-    fn arr_unique(&self, maintain_order: bool) -> Result<Self> {
-        if maintain_order {
-            Ok(self.inner.clone().arr().unique_stable().into())
-        } else {
-            Ok(self.inner.clone().arr().unique().into())
-        }
-    }
-
     fn arr_to_list(&self) -> Result<Self> {
         Ok(self.inner.clone().arr().to_list().into())
     }
@@ -52,10 +44,6 @@ impl PlRExpr {
                 ..Default::default()
             })
             .into())
-    }
-
-    fn arr_reverse(&self) -> Result<Self> {
-        Ok(self.inner.clone().arr().reverse().into())
     }
 
     fn arr_arg_min(&self) -> Result<Self> {
@@ -124,10 +112,6 @@ impl PlRExpr {
 
     fn arr_shift(&self, n: &PlRExpr) -> Result<Self> {
         Ok(self.inner.clone().arr().shift(n.inner.clone()).into())
-    }
-
-    fn arr_n_unique(&self) -> Result<Self> {
-        Ok(self.inner.clone().arr().n_unique().into())
     }
 
     fn arr_len(&self) -> Result<Self> {

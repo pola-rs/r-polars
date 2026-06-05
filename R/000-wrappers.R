@@ -1265,18 +1265,6 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   }
 }
 
-`PlRExpr_arr_n_unique` <- function(self) {
-  function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arr_n_unique__impl, `self`))
-  }
-}
-
-`PlRExpr_arr_reverse` <- function(self) {
-  function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arr_reverse__impl, `self`))
-  }
-}
-
 `PlRExpr_arr_shift` <- function(self) {
   function(`n`) {
     `n` <- .savvy_extract_ptr(`n`, "polars::PlRExpr")
@@ -1311,12 +1299,6 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 `PlRExpr_arr_to_struct` <- function(self) {
   function(`name_gen` = NULL) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arr_to_struct__impl, `self`, `name_gen`))
-  }
-}
-
-`PlRExpr_arr_unique` <- function(self) {
-  function(`maintain_order`) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arr_unique__impl, `self`, `maintain_order`))
   }
 }
 
@@ -2001,9 +1983,9 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 }
 
 `PlRExpr_gather` <- function(self) {
-  function(`idx`) {
+  function(`idx`, `null_on_oob`) {
     `idx` <- .savvy_extract_ptr(`idx`, "polars::PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_gather__impl, `self`, `idx`))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_gather__impl, `self`, `idx`, `null_on_oob`))
   }
 }
 
@@ -2296,18 +2278,6 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   }
 }
 
-`PlRExpr_list_n_unique` <- function(self) {
-  function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_n_unique__impl, `self`))
-  }
-}
-
-`PlRExpr_list_reverse` <- function(self) {
-  function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_reverse__impl, `self`))
-  }
-}
-
 `PlRExpr_list_sample_frac` <- function(self) {
   function(`frac`, `with_replacement`, `shuffle`, `seed` = NULL) {
     `frac` <- .savvy_extract_ptr(`frac`, "polars::PlRExpr")
@@ -2371,12 +2341,6 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 `PlRExpr_list_to_struct` <- function(self) {
   function(`names`) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_to_struct__impl, `self`, `names`))
-  }
-}
-
-`PlRExpr_list_unique` <- function(self) {
-  function(`maintain_order`) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_unique__impl, `self`, `maintain_order`))
   }
 }
 
@@ -3548,15 +3512,12 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   e$`arr_max` <- `PlRExpr_arr_max`(ptr)
   e$`arr_median` <- `PlRExpr_arr_median`(ptr)
   e$`arr_min` <- `PlRExpr_arr_min`(ptr)
-  e$`arr_n_unique` <- `PlRExpr_arr_n_unique`(ptr)
-  e$`arr_reverse` <- `PlRExpr_arr_reverse`(ptr)
   e$`arr_shift` <- `PlRExpr_arr_shift`(ptr)
   e$`arr_sort` <- `PlRExpr_arr_sort`(ptr)
   e$`arr_std` <- `PlRExpr_arr_std`(ptr)
   e$`arr_sum` <- `PlRExpr_arr_sum`(ptr)
   e$`arr_to_list` <- `PlRExpr_arr_to_list`(ptr)
   e$`arr_to_struct` <- `PlRExpr_arr_to_struct`(ptr)
-  e$`arr_unique` <- `PlRExpr_arr_unique`(ptr)
   e$`arr_var` <- `PlRExpr_arr_var`(ptr)
   e$`as_str` <- `PlRExpr_as_str`(ptr)
   e$`bin_base64_decode` <- `PlRExpr_bin_base64_decode`(ptr)
@@ -3710,8 +3671,6 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   e$`list_mean` <- `PlRExpr_list_mean`(ptr)
   e$`list_median` <- `PlRExpr_list_median`(ptr)
   e$`list_min` <- `PlRExpr_list_min`(ptr)
-  e$`list_n_unique` <- `PlRExpr_list_n_unique`(ptr)
-  e$`list_reverse` <- `PlRExpr_list_reverse`(ptr)
   e$`list_sample_frac` <- `PlRExpr_list_sample_frac`(ptr)
   e$`list_sample_n` <- `PlRExpr_list_sample_n`(ptr)
   e$`list_set_operation` <- `PlRExpr_list_set_operation`(ptr)
@@ -3722,7 +3681,6 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   e$`list_sum` <- `PlRExpr_list_sum`(ptr)
   e$`list_to_array` <- `PlRExpr_list_to_array`(ptr)
   e$`list_to_struct` <- `PlRExpr_list_to_struct`(ptr)
-  e$`list_unique` <- `PlRExpr_list_unique`(ptr)
   e$`list_var` <- `PlRExpr_list_var`(ptr)
   e$`log` <- `PlRExpr_log`(ptr)
   e$`log1p` <- `PlRExpr_log1p`(ptr)

@@ -37,5 +37,5 @@ flag_setters! {
     (FAST_PROJECTION, set_fast_projection)
 
     (EAGER, set_eager)
-    (NEW_STREAMING, set_streaming)
+    (STREAMING, set_streaming)
 }
