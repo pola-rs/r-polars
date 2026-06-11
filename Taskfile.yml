@@ -4,7 +4,7 @@ env:
   NOT_CRAN: "true"
   LIBR_POLARS_BUILD: "true"
   LIBR_POLARS_FEATURES: "nightly"
-  DEBUG: "true"
+  LIBR_POLARS_PROFILE: "release"
   VIRTUAL_ENV: "{{.VENV_DIR}}"
 
 vars:
@@ -178,6 +178,8 @@ tasks:
   test-source:
     desc: Run all tests for source.
     internal: true
+    deps:
+      - install-package
     sources:
       - tests/**/*
       - "{{.R_SOURCE}}"
@@ -188,7 +190,12 @@ tasks:
       - "{{.RUST_SOURCE}}"
       - "{{.RUST_TOOLCHAIN_CONFIG}}"
     cmds:
-      - Rscript -e 'devtools::test()'
+      - Rscript -e
+        'testthat::test_dir(
+          "tests/testthat",
+          package = "polars",
+          load_package = "installed"
+        )'
 
   build-readme:
     desc: Build README.md
