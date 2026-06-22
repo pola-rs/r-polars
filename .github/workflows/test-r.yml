@@ -58,7 +58,7 @@ jobs:
           - devel
           - "4.3"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Check for pre-built binary
         run: |
@@ -166,7 +166,7 @@ jobs:
           sudo rm -rf /usr/share/dotnet || true
           sudo rm -rf /usr/share/swift || true
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -230,7 +230,7 @@ jobs:
     outputs:
       test-bin-lib: ${{ steps.check.outputs.TEST_BIN_LIB }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Check for pre-built binary
         id: check
@@ -264,7 +264,7 @@ jobs:
             r: release
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         # Put this "if" in each step instead of below "test-bin-lib" so that
         # the job name is appropriately filled with the OS and R values.
         if: needs.check-bin-lib.outputs.test-bin-lib == 'true'
