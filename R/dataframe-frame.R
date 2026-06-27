@@ -1109,7 +1109,7 @@ dataframe__fill_null <- function(
 #' )
 #'
 #' df$explode("numbers")
-dataframe__explode <- function(..., empty_as_null = TRUE, keep_nulls = TRUE) {
+dataframe__explode <- function(..., empty_as_null = NULL, keep_nulls = TRUE) {
   self$lazy()$explode(..., empty_as_null = empty_as_null, keep_nulls = keep_nulls)$collect(
     optimizations = DEFAULT_EAGER_OPT_FLAGS
   ) |>

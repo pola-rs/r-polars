@@ -623,11 +623,13 @@ test_that("$list$set_*() casts to common supertype", {
 test_that("$list$explode() works", {
   df <- pl$DataFrame(a = list(c(1, 2, 3), c(4, 5, 6)))
   expect_equal(
-    df$select(pl$col("a")$list$explode()),
+    df$select(pl$col("a")$list$explode(empty_as_null = TRUE)),
     pl$DataFrame(a = c(1, 2, 3, 4, 5, 6))
   )
+  # default warns that empty_as_null will change to FALSE in 2.0
+  expect_warning(df$select(pl$col("a")$list$explode()), "will change")
   expect_snapshot(
-    df$with_columns(pl$col("a")$list$explode()),
+    df$with_columns(pl$col("a")$list$explode(empty_as_null = TRUE)),
     error = TRUE
   )
 })

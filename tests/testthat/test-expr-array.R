@@ -329,7 +329,7 @@ test_that("arr$explode", {
   )$cast(pl$Array(pl$Int64, 3))
 
   expect_equal(
-    df$select(pl$col("x")$arr$explode()),
+    df$select(pl$col("x")$arr$explode(empty_as_null = TRUE)),
     pl$DataFrame(x = 1:6)$cast(pl$Int64)
   )
 })
