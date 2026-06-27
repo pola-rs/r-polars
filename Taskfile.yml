@@ -23,10 +23,10 @@ vars:
   RUST_TOOLCHAIN_CONFIG: src/rust/rust-toolchain.toml
   RUST_TARGET:
     sh: >-
-      echo ${TARGET:-
+      echo "${TARGET:-
       {{- if eq OS "windows"}}$(Rscript tools/get-win-triple.R)
       {{- else}}$(rustc -vV | sed -n "s/^host: //p")
-      {{- end}}}
+      {{- end}}}"
   RUST_RELEASE_LIB: src/rust/target/{{.RUST_TARGET}}/release/libr_polars.a
   MAKEVARS_IN: src/Makevars{{if eq OS "windows"}}.win{{end}}.in
 
@@ -199,9 +199,7 @@ tasks:
       - "{{.RUST_TOOLCHAIN_CONFIG}}"
     cmds:
       - Rscript -e
-        'testthat::test_dir(
-          "tests/testthat",
-          package = "polars",
+        'testthat::test_local(
           load_package = "installed"
         )'
 
@@ -233,10 +231,8 @@ tasks:
       - install-package
     cmds:
       - Rscript -e
-        'testthat::test_dir(
-          "tests/testthat",
+        'testthat::test_local(
           filter = Sys.getenv("TEST_FILTER"),
-          package = "polars",
           load_package = "installed"
         )'
 
