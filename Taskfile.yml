@@ -250,11 +250,10 @@ tasks:
     generates:
       - README.md
     deps:
-      - build-rust
+      - install-package
     cmds:
       - Rscript -e
-        'devtools::load_all();
-        rmarkdown::render(input = "README.Rmd", output_file = "README.md")'
+        'rmarkdown::render(input = "README.Rmd", output_file = "README.md")'
 
   install-package:
     desc: Install the R package.
