@@ -2,11 +2,14 @@ use crate::{lazyframe::PlROptFlags, prelude::*};
 use savvy::{ObjSexp, Sexp, savvy_err};
 
 // Get the S7 class name from an object.
-// In R: `attr(obj, "S7_class") |> attr("name")`
+// In R: `attr(obj, "_S7_class") |> attr("name")`
+// S7 >= 0.3.0 uses "_S7_class"; older versions use "S7_class".
+// TODO: Remove "S7_class" fallback after S7 0.3.0 is released.
 fn get_s7_class_name(obj: &ObjSexp) -> Option<String> {
-    obj.get_attrib("S7_class")
+    obj.get_attrib("_S7_class")
         .ok()
         .flatten()
+        .or_else(|| obj.get_attrib("S7_class").ok().flatten())
         .and_then(|s7_class| {
             s7_class
                 .get_attrib("name")
