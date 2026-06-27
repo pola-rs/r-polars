@@ -2,6 +2,17 @@
 
 ## polars (development version)
 
+This is an update that corresponds to Python Polars 1.42.0.
+
+### Deprecations
+
+* The default value of the `empty_as_null` argument in `$explode()` will
+  change from `TRUE` to `FALSE` in Polars 2.0. Affected functions:
+  `<expr>$explode()`, `<expr>$list$explode()`, `<expr>$arr$explode()`,
+  `<lazyframe>$explode()`, `<dataframe>$explode()`. A deprecation warning is
+  now emitted when `empty_as_null` is not explicitly set
+  ([pola-rs/polars#28040](https://github.com/pola-rs/polars/pull/28040)).
+
 ## polars 1.12.0
 
 This is an update that corresponds to Python Polars 1.41.2.

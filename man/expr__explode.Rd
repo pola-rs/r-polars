@@ -4,12 +4,13 @@
 \alias{expr__explode}
 \title{Explode a list expression}
 \usage{
-expr__explode(..., empty_as_null = TRUE, keep_nulls = TRUE)
+expr__explode(..., empty_as_null = NULL, keep_nulls = TRUE)
 }
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{empty_as_null}{Indicates to explode an empty list/array into a \code{null}.}
+\item{empty_as_null}{Indicates to explode an empty list/array into a \code{null}.
+Defaults to \code{TRUE}. In Polars 2.0, the default will change to \code{FALSE}.}
 
 \item{keep_nulls}{Indicates to explode a \code{null} list/array into a \code{null}.}
 }

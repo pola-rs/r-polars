@@ -4,14 +4,15 @@
 \alias{lazyframe__explode}
 \title{Explode the frame to long format by exploding the given columns}
 \usage{
-lazyframe__explode(..., empty_as_null = TRUE, keep_nulls = TRUE)
+lazyframe__explode(..., empty_as_null = NULL, keep_nulls = TRUE)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column names or \link[=polars_selector]{selectors}
 defining them. The underlying columns being exploded must be of
 the \code{List} or \code{Array} data type.}
 
-\item{empty_as_null}{Indicates to explode an empty list/array into a \code{null}.}
+\item{empty_as_null}{Indicates to explode an empty list/array into a \code{null}.
+Defaults to \code{TRUE}. In Polars 2.0, the default will change to \code{FALSE}.}
 
 \item{keep_nulls}{Indicates to explode a \code{null} list/array into a \code{null}.}
 }
