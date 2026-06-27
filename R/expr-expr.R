@@ -4033,7 +4033,7 @@ expr__flatten <- function() {
     )
   )
   wrap({
-    self$explode()
+    self$explode(empty_as_null = TRUE)
   })
 }
 
