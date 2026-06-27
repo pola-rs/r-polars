@@ -4,7 +4,7 @@ env:
   NOT_CRAN: "true"
   LIBR_POLARS_BUILD: "true"
   LIBR_POLARS_FEATURES: "nightly"
-  DEBUG: "true"
+  LIBR_POLARS_PROFILE: "release"
   VIRTUAL_ENV: "{{.VENV_DIR}}"
 
 vars:
@@ -21,6 +21,13 @@ vars:
   VIGNETTES: vignettes/**/*.Rmd
   RUST_SOURCE: src/rust/src/**/*.rs
   RUST_TOOLCHAIN_CONFIG: src/rust/rust-toolchain.toml
+  RUST_TARGET:
+    sh: >-
+      echo "${TARGET:-
+      {{- if eq OS "windows"}}$(Rscript tools/get-win-triple.R)
+      {{- else}}$(rustc -vV | sed -n "s/^host: //p")
+      {{- end}}}"
+  RUST_RELEASE_LIB: src/rust/target/{{.RUST_TARGET}}/release/libr_polars.a
   MAKEVARS_IN: src/Makevars{{if eq OS "windows"}}.win{{end}}.in
 
   R_FUNC_LOAD_REQUIRED_PKGS:
@@ -76,11 +83,12 @@ tasks:
       - "{{.RUST_TOOLCHAIN_CONFIG}}"
     generates:
       - R/000-wrappers.R
+      - "{{.RUST_RELEASE_LIB}}"
     deps:
       - format-rust
     cmds:
       - savvy-cli update .
-      - Rscript -e 'pkgbuild::compile_dll()'
+      - Rscript -e 'pkgbuild::compile_dll(debug = FALSE)'
 
   build-standalone-files:
     desc: Update "standalone" R files by `usethis::use_standalone()`
@@ -173,11 +181,13 @@ tasks:
   test-all:
     desc: Run all tests.
     cmds:
-      - task: test-source
+      - task: test-installed
 
-  test-source:
-    desc: Run all tests for source.
+  test-installed:
+    desc: Run all tests against the installed package.
     internal: true
+    deps:
+      - install-package
     sources:
       - tests/**/*
       - "{{.R_SOURCE}}"
@@ -188,7 +198,43 @@ tasks:
       - "{{.RUST_SOURCE}}"
       - "{{.RUST_TOOLCHAIN_CONFIG}}"
     cmds:
-      - Rscript -e 'devtools::test()'
+      - Rscript -e
+        'testthat::test_local(
+          load_package = "installed"
+        )'
+
+  test-file:
+    desc: Run one test file against the installed package.
+    requires:
+      vars:
+        - FILE
+    env:
+      TEST_FILE: "{{.FILE}}"
+    deps:
+      - install-package
+    cmds:
+      - Rscript -e
+        'testthat::test_file(
+          Sys.getenv("TEST_FILE"),
+          package = "polars",
+          load_package = "installed"
+        )'
+
+  test-filter:
+    desc: Run filtered tests against the installed package.
+    requires:
+      vars:
+        - FILTER
+    env:
+      TEST_FILTER: "{{.FILTER}}"
+    deps:
+      - install-package
+    cmds:
+      - Rscript -e
+        'testthat::test_local(
+          filter = Sys.getenv("TEST_FILTER"),
+          load_package = "installed"
+        )'
 
   build-readme:
     desc: Build README.md
@@ -212,6 +258,9 @@ tasks:
 
   install-package:
     desc: Install the R package.
+    env:
+      LIBR_POLARS_BUILD: "false"
+      LIBR_POLARS_PATH: "{{.RUST_RELEASE_LIB}}"
     sources:
       - DESCRIPTION
       - "{{.R_SOURCE}}"

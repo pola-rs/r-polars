@@ -53,7 +53,8 @@ export DEBUG=true  # for debug builds, false for release builds
 **Option 1: Using Task (Recommended)**
 
 - `task test-all` -- Runs full test suite with proper environment
-- `task test-source` -- Runs all tests for source code
+- `task test-file FILE=tests/testthat/test-foo.R` -- Runs one test file
+- `task test-filter FILTER=foo` -- Runs test files matching a regular expression
 
 **Option 2: Manual Commands**
 
