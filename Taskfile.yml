@@ -22,7 +22,7 @@ vars:
   RUST_SOURCE: src/rust/src/**/*.rs
   RUST_TOOLCHAIN_CONFIG: src/rust/rust-toolchain.toml
   RUST_TARGET:
-    sh: "rustc -vV | sed -n 's/^host: //p'"
+    sh: '{{if eq OS "windows"}}Rscript tools/get-win-triple.R{{else}}rustc -vV | sed -n "s/^host: //p"{{end}}'
   RUST_RELEASE_LIB: src/rust/target/{{.RUST_TARGET}}/release/libr_polars.a
   MAKEVARS_IN: src/Makevars{{if eq OS "windows"}}.win{{end}}.in
 
