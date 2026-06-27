@@ -73,6 +73,37 @@
       Caused by error:
       ! conversion from `i64` to `i32` failed in column 'big' for 1 out of 1 values: [1125899906842624]
 
+---
+
+    Code
+      as_polars_series(c("2020-01-01", "2021-06-15"))$cast(pl$Date)
+    Condition <PolarsDeprecationWarning>
+      Warning:
+      Casting from String to Date is deprecated and will be removed in Polars 2.0. Use `str.to_date()` instead.
+    Output
+      shape: (2,)
+      Series: '' [date]
+      [
+      	2020-01-01
+      	2021-06-15
+      ]
+
+---
+
+    Code
+      as_polars_series(c("2020-01-01T12:00:00", "2021-06-15T08:30:00"))$cast(pl$
+        Datetime("us"))
+    Condition <PolarsDeprecationWarning>
+      Warning:
+      Casting from String to DateTime is deprecated and will be removed in Polars 2.0. Use `str.to_datetime()` instead.
+    Output
+      shape: (2,)
+      Series: '' [datetime[μs]]
+      [
+      	2020-01-01 12:00:00
+      	2021-06-15 08:30:00
+      ]
+
 # exclude
 
     Code

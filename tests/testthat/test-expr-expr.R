@@ -569,6 +569,16 @@ test_that("cast", {
     pl$DataFrame(big = NA_integer_)
   )
 
+  # casting String to Date/Datetime emits a Polars deprecation warning routed to R
+  expect_snapshot(
+    as_polars_series(c("2020-01-01", "2021-06-15"))$cast(pl$Date),
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    as_polars_series(c("2020-01-01T12:00:00", "2021-06-15T08:30:00"))$cast(pl$Datetime("us")),
+    cnd_class = TRUE
+  )
+
   # no overflow to Int64
   skip_if_not_installed("bit64")
   expect_equal(
@@ -2146,7 +2156,7 @@ test_that("clip", {
   # clip() works with temporal
   df <- pl$DataFrame(foo = as.Date(c("2020-01-01", "2020-01-02")))
   expect_equal(
-    df$select(clipped = pl$col("foo")$clip(lower_bound = pl$lit("2020-01-02"))),
+    df$select(clipped = pl$col("foo")$clip(lower_bound = pl$lit(as.Date("2020-01-02")))),
     pl$DataFrame(clipped = as.Date(c("2020-01-02", "2020-01-02")))
   )
 })

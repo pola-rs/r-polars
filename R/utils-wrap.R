@@ -23,9 +23,7 @@ wrap <- function(x, ...) {
   if (!is.null(warns)) {
     mapply(
       function(msg, cat) {
-        w <- simpleWarning(msg)
-        class(w) <- c(cat, "polars_warning", class(w))
-        warning(w)
+        warn(msg, class = c(cat, "polars_warning"))
       },
       warns$message,
       warns$category,
