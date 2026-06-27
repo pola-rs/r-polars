@@ -77,7 +77,7 @@
 
     Code
       as_polars_series(c("2020-01-01", "2021-06-15"))$cast(pl$Date)
-    Condition <PolarsDeprecationWarning>
+    Condition <polars_deprecation_warning>
       Warning:
       Casting from String to Date is deprecated and will be removed in Polars 2.0. Use `str.to_date()` instead.
     Output
@@ -93,7 +93,7 @@
     Code
       as_polars_series(c("2020-01-01T12:00:00", "2021-06-15T08:30:00"))$cast(pl$
         Datetime("us"))
-    Condition <PolarsDeprecationWarning>
+    Condition <polars_deprecation_warning>
       Warning:
       Casting from String to DateTime is deprecated and will be removed in Polars 2.0. Use `str.to_datetime()` instead.
     Output

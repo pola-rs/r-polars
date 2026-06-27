@@ -164,6 +164,11 @@ SEXP savvy_datetime_ranges__impl(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg_
     return handle_result(res);
 }
 
+SEXP savvy_drain_warnings__impl(void) {
+    SEXP res = savvy_drain_warnings__ffi();
+    return handle_result(res);
+}
+
 SEXP savvy_duration__impl(SEXP c_arg__time_unit, SEXP c_arg__weeks, SEXP c_arg__days, SEXP c_arg__hours, SEXP c_arg__minutes, SEXP c_arg__seconds, SEXP c_arg__milliseconds, SEXP c_arg__microseconds, SEXP c_arg__nanoseconds) {
     SEXP res = savvy_duration__ffi(c_arg__time_unit, c_arg__weeks, c_arg__days, c_arg__hours, c_arg__minutes, c_arg__seconds, c_arg__milliseconds, c_arg__microseconds, c_arg__nanoseconds);
     return handle_result(res);
@@ -246,11 +251,6 @@ SEXP savvy_mean_horizontal__impl(SEXP c_arg__exprs, SEXP c_arg__ignore_nulls) {
 
 SEXP savvy_min_horizontal__impl(SEXP c_arg__exprs) {
     SEXP res = savvy_min_horizontal__ffi(c_arg__exprs);
-    return handle_result(res);
-}
-
-SEXP savvy_polars_drain_warnings__impl(void) {
-    SEXP res = savvy_polars_drain_warnings__ffi();
     return handle_result(res);
 }
 
@@ -3471,6 +3471,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_datetime__impl", (DL_FUNC) &savvy_datetime__impl, 10},
     {"savvy_datetime_range__impl", (DL_FUNC) &savvy_datetime_range__impl, 6},
     {"savvy_datetime_ranges__impl", (DL_FUNC) &savvy_datetime_ranges__impl, 6},
+    {"savvy_drain_warnings__impl", (DL_FUNC) &savvy_drain_warnings__impl, 0},
     {"savvy_duration__impl", (DL_FUNC) &savvy_duration__impl, 9},
     {"savvy_element__impl", (DL_FUNC) &savvy_element__impl, 0},
     {"savvy_explain_all__impl", (DL_FUNC) &savvy_explain_all__impl, 2},
@@ -3487,7 +3488,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_max_horizontal__impl", (DL_FUNC) &savvy_max_horizontal__impl, 1},
     {"savvy_mean_horizontal__impl", (DL_FUNC) &savvy_mean_horizontal__impl, 2},
     {"savvy_min_horizontal__impl", (DL_FUNC) &savvy_min_horizontal__impl, 1},
-    {"savvy_polars_drain_warnings__impl", (DL_FUNC) &savvy_polars_drain_warnings__impl, 0},
     {"savvy_repeat___impl", (DL_FUNC) &savvy_repeat___impl, 3},
     {"savvy_rust_polars_version__impl", (DL_FUNC) &savvy_rust_polars_version__impl, 0},
     {"savvy_sum_horizontal__impl", (DL_FUNC) &savvy_sum_horizontal__impl, 2},

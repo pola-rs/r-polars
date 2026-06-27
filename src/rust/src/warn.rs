@@ -4,22 +4,21 @@ use savvy::{NullSexp, OwnedListSexp, OwnedStringSexp, Result, Sexp, savvy, savvy
 
 struct QueuedWarning {
     message: String,
-    // Stable string representation of the PolarsWarning variant,
-    // used as an R condition class (e.g. "PolarsDeprecationWarning").
+    // Stable string representation of the PolarsWarning variant, used as an R condition class.
     category: &'static str,
 }
 
-static POLARS_WARNING_QUEUE: Mutex<Vec<QueuedWarning>> = Mutex::new(Vec::new());
+static WARNING_QUEUE: Mutex<Vec<QueuedWarning>> = Mutex::new(Vec::new());
 
-fn polars_warning_function(msg: &str, variant: PolarsWarning) {
+fn warning_function(msg: &str, variant: PolarsWarning) {
     let category = match variant {
-        PolarsWarning::Deprecation => "PolarsDeprecationWarning",
-        PolarsWarning::UserWarning => "PolarsUserWarning",
-        PolarsWarning::CategoricalRemappingWarning => "PolarsCategoricalRemappingWarning",
-        PolarsWarning::MapWithoutReturnDtypeWarning => "PolarsMapWithoutReturnDtypeWarning",
+        PolarsWarning::Deprecation => "polars_deprecation_warning",
+        PolarsWarning::UserWarning => "polars_user_warning",
+        PolarsWarning::CategoricalRemappingWarning => "polars_categorical_remapping_warning",
+        PolarsWarning::MapWithoutReturnDtypeWarning => "polars_map_without_return_dtype_warning",
     };
     // Safe to call from any thread: only pushes to the queue, never calls R APIs.
-    POLARS_WARNING_QUEUE.lock().push(QueuedWarning {
+    WARNING_QUEUE.lock().push(QueuedWarning {
         message: msg.to_string(),
         category,
     });
@@ -27,7 +26,7 @@ fn polars_warning_function(msg: &str, variant: PolarsWarning) {
 
 #[savvy_init]
 fn init_polars_warning_handler(_dll_info: *mut savvy::ffi::DllInfo) -> savvy::Result<()> {
-    polars_error::set_warning_function(polars_warning_function);
+    polars_error::set_warning_function(warning_function);
     Ok(())
 }
 
@@ -36,8 +35,8 @@ fn init_polars_warning_handler(_dll_info: *mut savvy::ffi::DllInfo) -> savvy::Re
 // Otherwise returns a named list with `message` and `category` character vectors.
 // Must be called from the main R thread.
 #[savvy]
-fn polars_drain_warnings() -> Result<Sexp> {
-    let mut queue = POLARS_WARNING_QUEUE.lock();
+fn drain_warnings() -> Result<Sexp> {
+    let mut queue = WARNING_QUEUE.lock();
     if queue.is_empty() {
         return Ok(NullSexp.into());
     }

@@ -180,6 +180,11 @@ NULL
 }
 
 
+`drain_warnings` <- function() {
+  .Call(savvy_drain_warnings__impl)
+}
+
+
 `duration` <- function(`time_unit`, `weeks` = NULL, `days` = NULL, `hours` = NULL, `minutes` = NULL, `seconds` = NULL, `milliseconds` = NULL, `microseconds` = NULL, `nanoseconds` = NULL) {
   `weeks` <- .savvy_extract_ptr(`weeks`, "polars::PlRExpr")
   `days` <- .savvy_extract_ptr(`days`, "polars::PlRExpr")
@@ -279,11 +284,6 @@ NULL
 
 `min_horizontal` <- function(`exprs`) {
   .savvy_wrap_PlRExpr(.Call(savvy_min_horizontal__impl, `exprs`))
-}
-
-
-`polars_drain_warnings` <- function() {
-  .Call(savvy_polars_drain_warnings__impl)
 }
 
 
