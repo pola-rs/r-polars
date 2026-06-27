@@ -157,7 +157,7 @@
 # $list$explode() works
 
     Code
-      df$with_columns(pl$col("a")$list$explode())
+      df$with_columns(pl$col("a")$list$explode(empty_as_null = TRUE))
     Condition
       Error in `df$with_columns()`:
       ! Evaluation failed in `$with_columns()`.
