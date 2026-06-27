@@ -131,7 +131,7 @@ depending on the \code{int64} argument.
 \item Float32, Float64: \link{double}.
 \item Decimal: \link{double}.
 \item String: \link{character}.
-\item Categorical: \link{factor}.
+\item Categorical: \link[base:factor]{factor}.
 \item Date: \link{Date} or \link[data.table:IDateTime]{data.table::IDate},
 depending on the \code{date} argument.
 \item Time: \link[hms:hms]{hms::hms} or \link[data.table:IDateTime]{data.table::ITime},

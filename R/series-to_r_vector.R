@@ -14,7 +14,7 @@
 #' - Float32, Float64: [double].
 #' - Decimal: [double].
 #' - String: [character].
-#' - Categorical: [factor].
+#' - Categorical: [factor][base::factor].
 #' - Date: [Date] or [data.table::IDate][data.table::IDateTime],
 #'   depending on the `date` argument.
 #' - Time: [hms::hms] or [data.table::ITime][data.table::IDateTime],
