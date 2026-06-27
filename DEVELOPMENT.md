@@ -600,8 +600,15 @@ Alternatively, you can run the steps individually:
 task build-lib-sums    # update DESCRIPTION lib-version and checksum metadata
 task build-documents   # regenerate Rd files and auto-generated R files
 task test-all          # run the full test suite
+task test-file FILE=tests/testthat/test-dataframe-frame.R
+task test-filter FILTER=dataframe
 task build-readme      # rebuild README
 ```
+
+The test tasks build and install the package, then run tests against the installed
+package. Installation reuses the release Rust library produced while building the
+documentation, so it does not compile the Rust library a second time. Use `test-file`
+for a single test file and `test-filter` to select test files by a regular expression.
 
 Categorize test failures into:
 
