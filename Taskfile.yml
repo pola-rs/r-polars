@@ -92,9 +92,18 @@ tasks:
 
   build-standalone-files:
     desc: Update "standalone" R files by `usethis::use_standalone()`
-    ignore_error: true # GitHub API rate limit
     generates:
       - R/import-standalone-*.R
+    cmds:
+      - task: _fetch-standalone-files
+      # TODO: Remove once https://github.com/r-lib/usethis/pull/2255 is merged and
+      # released. use_standalone() can inadvertently downgrade version constraints in
+      # DESCRIPTION; restore the rlang version we actually require as a workaround.
+      - Rscript -e 'usethis::use_package("rlang", min_version = "1.2.0")'
+
+  _fetch-standalone-files:
+    internal: true
+    ignore_error: true # GitHub API rate limit
     vars:
       RLANG_STANDALONE_FILES:
         - lifecycle
