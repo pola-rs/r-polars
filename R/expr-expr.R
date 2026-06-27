@@ -3984,7 +3984,10 @@ expr__explode <- function(..., empty_as_null = NULL, keep_nulls = TRUE) {
         c(
           `!` = sprintf(
             "The default value of %s in %s will change from %s to %s in Polars 2.0.",
-            format_arg("empty_as_null"), format_fn("explode"), "TRUE", "FALSE"
+            format_arg("empty_as_null"),
+            format_fn("explode"),
+            "TRUE",
+            "FALSE"
           ),
           `i` = sprintf(
             "Explicitly set %s to suppress this warning.",
