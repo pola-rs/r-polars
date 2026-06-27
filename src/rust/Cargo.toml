@@ -2,7 +2,7 @@
 name = "r-polars"
 version = "1.13.0-rc.1"
 edition = "2024"
-rust-version = "1.93.0"
+rust-version = "1.95.0"
 publish = false
 
 [lib]
