@@ -282,6 +282,11 @@ NULL
 }
 
 
+`polars_drain_warnings` <- function() {
+  .Call(savvy_polars_drain_warnings__impl)
+}
+
+
 `repeat_` <- function(`value`, `n`, `dtype` = NULL) {
   `value` <- .savvy_extract_ptr(`value`, "polars::PlRExpr")
   `n` <- .savvy_extract_ptr(`n`, "polars::PlRExpr")
