@@ -3967,6 +3967,7 @@ expr__drop_nulls <- function() {
 #' @inherit as_polars_expr return
 #' @inheritParams rlang::args_dots_empty
 #' @param empty_as_null Indicates to explode an empty list/array into a `null`.
+#'   Defaults to `TRUE`. In Polars 2.0, the default will change to `FALSE`.
 #' @param keep_nulls Indicates to explode a `null` list/array into a `null`.
 #' @examples
 #' df <- pl$DataFrame(
@@ -3975,9 +3976,25 @@ expr__drop_nulls <- function() {
 #' )
 #'
 #' df$select(pl$col("values")$explode())
-expr__explode <- function(..., empty_as_null = TRUE, keep_nulls = TRUE) {
+expr__explode <- function(..., empty_as_null = NULL, keep_nulls = TRUE) {
   wrap({
     check_dots_empty0(...)
+    if (is.null(empty_as_null)) {
+      deprecate_warn(
+        c(
+          `!` = sprintf(
+            "The default value of %s in %s will change from %s to %s in Polars 2.0.",
+            format_arg("empty_as_null"), format_fn("explode"), "TRUE", "FALSE"
+          ),
+          `i` = sprintf(
+            "Explicitly set %s to suppress this warning.",
+            format_arg("empty_as_null")
+          )
+        ),
+        always = TRUE
+      )
+      empty_as_null <- TRUE
+    }
     self$`_rexpr`$explode(empty_as_null = empty_as_null, keep_nulls = keep_nulls)
   })
 }

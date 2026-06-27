@@ -1044,20 +1044,23 @@ test_that("explode() works", {
   )
 
   expect_query_equal(
-    .input$explode(c("numbers", "jumpers")),
+    .input$explode(c("numbers", "jumpers"), empty_as_null = TRUE),
     df,
     expected_df
   )
   expect_query_equal(
-    .input$explode("numbers", pl$col("jumpers")),
+    .input$explode("numbers", pl$col("jumpers"), empty_as_null = TRUE),
     df,
     expected_df
   )
   expect_query_equal(
-    .input$explode(cs$exclude("letters")),
+    .input$explode(cs$exclude("letters"), empty_as_null = TRUE),
     df,
     expected_df
   )
+
+  # default warns that empty_as_null will change to FALSE in 2.0
+  expect_warning(df$lazy()$explode("numbers"), "will change")
 
   # empty and null handlings
   df <- pl$DataFrame(
@@ -1065,7 +1068,7 @@ test_that("explode() works", {
     numbers = list(1, NULL, list(), c(6, 7, 8))
   )
   expect_query_equal(
-    .input$explode("numbers"),
+    .input$explode("numbers", empty_as_null = TRUE),
     df,
     pl$DataFrame(
       letters = c(rep("a", 2), "b", rep("c", 3)),
@@ -1081,7 +1084,7 @@ test_that("explode() works", {
     )
   )
   expect_query_equal(
-    .input$explode("numbers", keep_nulls = FALSE),
+    .input$explode("numbers", empty_as_null = TRUE, keep_nulls = FALSE),
     df,
     pl$DataFrame(
       letters = c("a", "b", rep("c", 3)),
@@ -1096,7 +1099,7 @@ test_that("explode() works", {
     numbers2 = list(1, NULL, c(4, 5), c(6, 7, 8))
   )
   expect_query_equal(
-    .input$explode("numbers", pl$col("numbers2")),
+    .input$explode("numbers", pl$col("numbers2"), empty_as_null = TRUE),
     df,
     pl$DataFrame(
       letters = c(rep("a", 2), "b", "b", rep("c", 3)),

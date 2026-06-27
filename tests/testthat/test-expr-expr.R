@@ -1427,7 +1427,7 @@ test_that("filter", {
 
 test_that("explode/flatten", {
   expect_equal(
-    pl$DataFrame(a = list(letters))$select(pl$col("a")$explode()),
+    pl$DataFrame(a = list(letters))$select(pl$col("a")$explode(empty_as_null = TRUE)),
     pl$DataFrame(a = letters)
   )
   expect_warning(
@@ -1438,10 +1438,16 @@ test_that("explode/flatten", {
     "is deprecated"
   )
 
+  # default warns that empty_as_null will change to FALSE in 2.0
+  expect_warning(
+    pl$DataFrame(a = list(letters))$select(pl$col("a")$explode()),
+    "will change"
+  )
+
   # empty and null handling
   df <- pl$DataFrame(a = list(NULL, list(NA), list()))
   expect_equal(
-    df$select(pl$col("a")$explode()),
+    df$select(pl$col("a")$explode(empty_as_null = TRUE)),
     pl$DataFrame(a = list(NULL, NA, NULL))
   )
   expect_equal(
@@ -1449,7 +1455,7 @@ test_that("explode/flatten", {
     pl$DataFrame(a = list(NULL, NA))
   )
   expect_equal(
-    df$select(pl$col("a")$explode(keep_nulls = FALSE)),
+    df$select(pl$col("a")$explode(empty_as_null = TRUE, keep_nulls = FALSE)),
     pl$DataFrame(a = list(NA, NULL))
   )
   expect_equal(
@@ -2496,7 +2502,7 @@ test_that("entropy", {
 
 test_that("implode", {
   expect_equal(
-    pl$select(x = 1:4)$select(pl$col("x")$implode()$explode()),
+    pl$select(x = 1:4)$select(pl$col("x")$implode()$explode(empty_as_null = TRUE)),
     pl$DataFrame(x = 1:4)
   )
   expect_equal(

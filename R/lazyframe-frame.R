@@ -1834,7 +1834,23 @@ lazyframe__rename <- function(..., .strict = TRUE) {
 #' )
 #'
 #' lf$explode("numbers")$collect()
-lazyframe__explode <- function(..., empty_as_null = TRUE, keep_nulls = TRUE) {
+lazyframe__explode <- function(..., empty_as_null = NULL, keep_nulls = TRUE) {
+  if (is.null(empty_as_null)) {
+    deprecate_warn(
+      c(
+        `!` = sprintf(
+          "The default value of %s in %s will change from %s to %s in Polars 2.0.",
+          format_arg("empty_as_null"), format_fn("explode"), "TRUE", "FALSE"
+        ),
+        `i` = sprintf(
+          "Explicitly set %s to suppress this warning.",
+          format_arg("empty_as_null")
+        )
+      ),
+      always = TRUE
+    )
+    empty_as_null <- TRUE
+  }
   parse_into_selector(...)$`_rselector` |>
     self$`_ldf`$explode(empty_as_null = empty_as_null, keep_nulls = keep_nulls) |>
     wrap()
