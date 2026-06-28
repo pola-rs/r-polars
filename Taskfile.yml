@@ -269,6 +269,7 @@ tasks:
     env:
       LIBR_POLARS_BUILD: "false"
       LIBR_POLARS_PATH: "{{.RUST_RELEASE_LIB}}"
+      TARGET: "{{.RUST_TARGET}}"
     sources:
       - DESCRIPTION
       - "{{.R_SOURCE}}"
