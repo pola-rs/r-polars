@@ -197,6 +197,13 @@ where
     use polars_error::polars_err;
     use polars_error::signals::{KeyboardInterrupt, catch_keyboard_interrupt};
     use std::sync::atomic::Ordering;
+
+    // savvy installs its own panic hook (which prints "panic occured!") at the
+    // start of every savvy wrapper, pushing our on_startup hook below it. Re-register
+    // the polars suppression hook here so it sits on top during computation and
+    // silences __POLARS_KEYBOARD_INTERRUPT panics from the streaming executor.
+    polars_error::signals::register_polars_keyboard_interrupt_hook();
+
     match catch_keyboard_interrupt(operation) {
         Ok(result) => result,
         Err(KeyboardInterrupt) => {
