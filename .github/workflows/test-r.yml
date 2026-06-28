@@ -97,7 +97,9 @@ jobs:
 
       - uses: rui314/setup-mold@v1
 
-      - uses: Swatinem/rust-cache@v2
+      # TODO: Switch back to @v2 once a new version is released that includes the fixes for
+      # cdylib/rlib crate caching (Swatinem/rust-cache#317, Swatinem/rust-cache#320).
+      - uses: Swatinem/rust-cache@baf1a810e98b6a3001d0d7234864ed75a17c42fb
         if: env.LIBR_POLARS_BUILD == 'true'
         with:
           workspaces: "src/rust -> target"
@@ -196,7 +198,9 @@ jobs:
 
       - uses: rui314/setup-mold@v1
 
-      - uses: Swatinem/rust-cache@v2
+      # TODO: Switch back to @v2 once a new version is released that includes the fixes for
+      # cdylib/rlib crate caching (Swatinem/rust-cache#317, Swatinem/rust-cache#320).
+      - uses: Swatinem/rust-cache@baf1a810e98b6a3001d0d7234864ed75a17c42fb
         with:
           workspaces: "src/rust -> target"
           # On Windows, DEBUG build seems buggy <https://github.com/eitsupi/neo-r-polars/issues/218>
