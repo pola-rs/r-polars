@@ -164,6 +164,11 @@ SEXP savvy_datetime_ranges__impl(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg_
     return handle_result(res);
 }
 
+SEXP savvy_drain_warnings__impl(void) {
+    SEXP res = savvy_drain_warnings__ffi();
+    return handle_result(res);
+}
+
 SEXP savvy_duration__impl(SEXP c_arg__time_unit, SEXP c_arg__weeks, SEXP c_arg__days, SEXP c_arg__hours, SEXP c_arg__minutes, SEXP c_arg__seconds, SEXP c_arg__milliseconds, SEXP c_arg__microseconds, SEXP c_arg__nanoseconds) {
     SEXP res = savvy_duration__ffi(c_arg__time_unit, c_arg__weeks, c_arg__days, c_arg__hours, c_arg__minutes, c_arg__seconds, c_arg__milliseconds, c_arg__microseconds, c_arg__nanoseconds);
     return handle_result(res);
@@ -186,6 +191,11 @@ SEXP savvy_feature_nightly_enabled__impl(void) {
 
 SEXP savvy_field__impl(SEXP c_arg__names) {
     SEXP res = savvy_field__ffi(c_arg__names);
+    return handle_result(res);
+}
+
+SEXP savvy_init_polars_warning_handler__impl(DllInfo* c_arg___dll_info) {
+    SEXP res = savvy_init_polars_warning_handler__ffi(c_arg___dll_info);
     return handle_result(res);
 }
 
@@ -3461,6 +3471,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_datetime__impl", (DL_FUNC) &savvy_datetime__impl, 10},
     {"savvy_datetime_range__impl", (DL_FUNC) &savvy_datetime_range__impl, 6},
     {"savvy_datetime_ranges__impl", (DL_FUNC) &savvy_datetime_ranges__impl, 6},
+    {"savvy_drain_warnings__impl", (DL_FUNC) &savvy_drain_warnings__impl, 0},
     {"savvy_duration__impl", (DL_FUNC) &savvy_duration__impl, 9},
     {"savvy_element__impl", (DL_FUNC) &savvy_element__impl, 0},
     {"savvy_explain_all__impl", (DL_FUNC) &savvy_explain_all__impl, 2},
@@ -4123,5 +4134,5 @@ void R_init_polars(DllInfo *dll) {
     R_useDynamicSymbols(dll, FALSE);
 
     // Functions for initialization, if any.
-
+    savvy_init_polars_warning_handler__impl(dll);
 }

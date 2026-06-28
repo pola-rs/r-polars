@@ -13,6 +13,10 @@ This is an update that corresponds to Python Polars 1.42.0.
   now emitted when `empty_as_null` is not explicitly set
   ([pola-rs/polars#28040](https://github.com/pola-rs/polars/pull/28040)).
 
+### New features
+
+* Warnings from the Rust side, which were previously output to stderr, are now treated as R warnings (#1805).
+
 ## polars 1.12.0
 
 This is an update that corresponds to Python Polars 1.41.2.

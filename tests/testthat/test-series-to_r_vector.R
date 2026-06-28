@@ -295,7 +295,10 @@ patrick::with_parameters_test_that(
       "2212-01-01T12:34:56.123456789"
     )
 
-    series_naive_time <- as_polars_series(chr_vec)$cast(pl$Datetime(time_unit))
+    series_naive_time <- as_polars_series(chr_vec)$str$to_datetime(
+      time_unit = time_unit,
+      format = "%Y-%m-%dT%H:%M:%S%.f"
+    )
     series_zoned_time <- series_naive_time$dt$replace_time_zone("America/New_York")
     naive_time_vec <- clock::naive_time_parse(chr_vec, precision = precision)
     zoned_time_vec <- clock::as_zoned_time(naive_time_vec, "America/New_York")
