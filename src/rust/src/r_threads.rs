@@ -7,6 +7,11 @@ use savvy::r_println;
 use state::InitCell;
 use std::{sync::RwLock, thread};
 
+#[cfg(not(target_family = "wasm"))]
+unsafe extern "C" {
+    pub(crate) fn Rf_onintr();
+}
+
 #[derive(Debug)]
 pub struct ThreadCom<S, R> {
     mains_tx: Sender<(S, Sender<R>)>,
@@ -156,15 +161,6 @@ where
 
                 // waking up with no now requests since last
                 flume::RecvTimeoutError::Timeout => {
-                    // check user interrupts flags in R in a fast high-level way with Sys.sleep(0)
-
-                    // TODO: uncomment this block
-                    // let res_res = extendr_api::eval_string("Sys.sleep(0)");
-                    // if res_res.is_err() {
-                    //     r_println!("R user interrupt");
-                    //     return Err("interupt by user".into());
-                    // }
-
                     // check if spawned thread has ended, first child thread should have
                     // dropped the last ThreadComs, so more likely waking up to a disconnect
                     if handle.is_finished() {
@@ -185,4 +181,27 @@ where
     })?;
 
     Ok(thread_return_value)
+}
+
+/// Run `operation` in the worker thread, catching polars keyboard interrupts.
+/// On SIGINT, sets `cancelled` to true and returns a PolarsError.
+/// Never calls R APIs — safe to call from any thread.
+#[cfg(not(target_family = "wasm"))]
+pub fn wrap_with_cancel<T, F>(
+    cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
+    operation: F,
+) -> polars_core::error::PolarsResult<T>
+where
+    F: FnOnce() -> polars_core::error::PolarsResult<T> + std::panic::UnwindSafe,
+{
+    use polars_error::signals::{KeyboardInterrupt, catch_keyboard_interrupt};
+    use polars_error::polars_err;
+    use std::sync::atomic::Ordering;
+    match catch_keyboard_interrupt(operation) {
+        Ok(result) => result,
+        Err(KeyboardInterrupt) => {
+            cancelled.store(true, Ordering::Release);
+            Err(polars_err!(ComputeError: "operation cancelled by user interrupt"))
+        }
+    }
 }

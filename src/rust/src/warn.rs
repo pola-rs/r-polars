@@ -1,6 +1,6 @@
 use parking_lot::Mutex;
 use polars_error::PolarsWarning;
-use savvy::{NullSexp, OwnedListSexp, OwnedStringSexp, Result, Sexp, savvy, savvy_init};
+use savvy::{NullSexp, OwnedListSexp, OwnedStringSexp, Result, Sexp, savvy};
 
 struct QueuedWarning {
     message: String,
@@ -10,7 +10,7 @@ struct QueuedWarning {
 
 static WARNING_QUEUE: Mutex<Vec<QueuedWarning>> = Mutex::new(Vec::new());
 
-fn warning_function(msg: &str, variant: PolarsWarning) {
+pub(crate) fn warning_function(msg: &str, variant: PolarsWarning) {
     let category = match variant {
         PolarsWarning::Deprecation => "polars_deprecation_warning",
         PolarsWarning::UserWarning => "polars_user_warning",
@@ -22,12 +22,6 @@ fn warning_function(msg: &str, variant: PolarsWarning) {
         message: msg.to_string(),
         category,
     });
-}
-
-#[savvy_init]
-fn init_polars_warning_handler(_dll_info: *mut savvy::ffi::DllInfo) -> savvy::Result<()> {
-    polars_error::set_warning_function(warning_function);
-    Ok(())
 }
 
 // Drain all pending Polars warnings.

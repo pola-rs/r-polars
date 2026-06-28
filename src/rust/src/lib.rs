@@ -15,6 +15,7 @@ mod r_threads;
 mod r_udf;
 mod series;
 mod sql;
+mod on_startup;
 mod warn;
 
 use crate::conversion::PlRCategories;
