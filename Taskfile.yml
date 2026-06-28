@@ -155,7 +155,7 @@ tasks:
     generates:
       - man/*.Rd
     status:
-      - Rscript -e 'if (desc::desc_get("RoxygenNote") < packageVersion("roxygen2")) quit(status = 1)'
+      - Rscript -e 'if (desc::desc_get("Config/roxygen2/version") < packageVersion("roxygen2")) quit(status = 1)'
     deps:
       - build-rust
       - build-standalone-files
@@ -269,6 +269,7 @@ tasks:
     env:
       LIBR_POLARS_BUILD: "false"
       LIBR_POLARS_PATH: "{{.RUST_RELEASE_LIB}}"
+      TARGET: "{{.RUST_TARGET}}"
     sources:
       - DESCRIPTION
       - "{{.R_SOURCE}}"
