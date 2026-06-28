@@ -16,6 +16,7 @@ This is an update that corresponds to Python Polars 1.42.0.
 ### New features
 
 * Warnings from the Rust side, which were previously output to stderr, are now treated as R warnings (#1805).
+* Deprecation warnings from the R side gain the `polars_warning` class and `polars_deprecation_warning` class.
 
 ## polars 1.12.0
 
