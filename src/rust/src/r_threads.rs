@@ -198,11 +198,27 @@ where
     use polars_error::signals::{KeyboardInterrupt, catch_keyboard_interrupt};
     use std::sync::atomic::Ordering;
 
-    // savvy installs its own panic hook (which prints "panic occured!") at the
-    // start of every savvy wrapper, pushing our on_startup hook below it. Re-register
-    // the polars suppression hook here so it sits on top during computation and
-    // silences __POLARS_KEYBOARD_INTERRUPT panics from the streaming executor.
-    polars_error::signals::register_polars_keyboard_interrupt_hook();
+    // savvy installs its own panic hook at the start of every savvy wrapper,
+    // pushing our on_startup hook below it. Install a scoped suppression hook
+    // here so __POLARS_KEYBOARD_INTERRUPT panics from the streaming executor
+    // are silenced. We do this manually (not via register_polars_keyboard_interrupt_hook)
+    // to avoid accumulating another SIGINT handler on every call.
+    // savvy restores its orig_hook when the outer #[savvy] function returns,
+    // so no explicit cleanup is needed here.
+    let prev_hook = std::panic::take_hook();
+    std::panic::set_hook(Box::new(move |info| {
+        let is_kbi = info
+            .payload()
+            .downcast_ref::<&str>()
+            .is_some_and(|s| s.contains("__POLARS_KEYBOARD_INTERRUPT"))
+            || info
+                .payload()
+                .downcast_ref::<String>()
+                .is_some_and(|s| s.contains("__POLARS_KEYBOARD_INTERRUPT"));
+        if !is_kbi {
+            prev_hook(info);
+        }
+    }));
 
     match catch_keyboard_interrupt(operation) {
         Ok(result) => result,
