@@ -194,8 +194,8 @@ pub fn wrap_with_cancel<T, F>(
 where
     F: FnOnce() -> polars_core::error::PolarsResult<T> + std::panic::UnwindSafe,
 {
-    use polars_error::signals::{KeyboardInterrupt, catch_keyboard_interrupt};
     use polars_error::polars_err;
+    use polars_error::signals::{KeyboardInterrupt, catch_keyboard_interrupt};
     use std::sync::atomic::Ordering;
     match catch_keyboard_interrupt(operation) {
         Ok(result) => result,
