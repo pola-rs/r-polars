@@ -1,3 +1,5 @@
+# nolint start
+
 # Override the standalone lifecycle's internal warn function to add polars-specific
 # condition classes. `lifecycle_warning_deprecated` is listed first so that lifecycle
 # tooling (e.g. `expect_deprecated()`) continues to match on that class, while
@@ -23,3 +25,5 @@
     .frequency_id = id
   )
 }
+
+# nolint end
