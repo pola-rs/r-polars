@@ -126,6 +126,14 @@
       Error in `pl$concat()`:
       ! Series only supports `how = "vertical"`.
 
+---
+
+    Code
+      pl$concat(as_polars_series(1:2, "a"), how = "horizontal_extend")
+    Condition
+      Error in `pl$concat()`:
+      ! Series only supports `how = "vertical"`.
+
 # how = 'diagonal' works
 
     Code

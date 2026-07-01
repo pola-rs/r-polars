@@ -131,6 +131,9 @@ pl__concat <- function(
   if (
     length(dots) == 1 && (is_polars_df(first) || is_polars_series(first) || is_polars_lf(first))
   ) {
+    if (is_polars_series(first) && how != "vertical") {
+      abort('Series only supports `how = "vertical"`.')
+    }
     return(first)
   }
 

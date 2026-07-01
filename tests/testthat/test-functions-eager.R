@@ -204,6 +204,12 @@ test_that("how = 'horizontal_extend' works", {
     pl$concat(as_polars_series(1:2, "a"), as_polars_series(5:1, "b"), how = "horizontal_extend"),
     error = TRUE
   )
+
+  # single Series with non-vertical strategy also errors (singleton shortcut must not bypass validation)
+  expect_snapshot(
+    pl$concat(as_polars_series(1:2, "a"), how = "horizontal_extend"),
+    error = TRUE
+  )
 })
 
 test_that("how = 'diagonal' works", {
