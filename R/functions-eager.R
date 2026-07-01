@@ -12,9 +12,13 @@
 #' * `"diagonal_relaxed"`: same as `"diagonal"`, but additionally coerces
 #'   columns to their common supertype if they are mismatched (eg: Int32 to
 #'   Int64);
-#' * `"horizontal"`: stacks Series from DataFrames horizontally and fills with
-#'   `null` if the lengths don’t match;
-#' * `"align"`, `"align_full"`, `"align_left"`, `"align_right"`: Combines
+#’ * `"horizontal"`: stacks Series from DataFrames horizontally. All input
+#’   frames must have the same height; raises a `ShapeError` otherwise. Using
+#’   `how = "horizontal"` without setting `strict = TRUE` is deprecated; use
+#’   `how = "horizontal_extend"` to pad shorter frames with `null`;
+#’ * `"horizontal_extend"`: stacks Series from DataFrames horizontally and
+#’   fills with `null` if the lengths don’t match;
+#’ * `"align"`, `"align_full"`, `"align_left"`, `"align_right"`: Combines
 #'   frames horizontally, auto-determining the common key columns and aligning
 #'   rows using the same logic as `align_frames` (note that `"align"` is an
 #'   alias for `"align_full"`). The "align" strategy determines the type of
@@ -27,8 +31,8 @@
 #' @param rechunk Make sure that the result data is in contiguous memory.
 #' @param parallel Only relevant for [LazyFrames][LazyFrame]. This determines if the
 #' concatenated lazy computations may be executed in parallel.
-#' @param strict When `how = "horizontal"`, whether to require all DataFrames to be
-#'   the same height, raising an error if not.
+#' @param strict `r lifecycle::badge("deprecated")` Use `how = "horizontal"`
+#'   (equal heights) or `how = "horizontal_extend"` (pad with null) instead.
 #' @return The same class (`polars_data_frame`, `polars_lazy_frame` or
 #' `polars_series`) as the input.
 #' @examples
@@ -44,7 +48,7 @@
 #'
 #' df_h1 <- pl$DataFrame(l1 = 1:2, l2 = 3:4)
 #' df_h2 <- pl$DataFrame(r1 = 5:6, r2 = 7:8, r3 = 9:10)
-#' pl$concat(df_h1, df_h2, how = "horizontal")
+#' pl$concat(df_h1, df_h2, how = "horizontal_extend")
 #'
 #' # use 'diagonal' strategy to fill empty column values with nulls
 #' df1 <- pl$DataFrame(a = 1L, b = 3L)
@@ -62,7 +66,7 @@ pl__concat <- function(
   how = "vertical",
   rechunk = FALSE,
   parallel = TRUE,
-  strict = FALSE
+  strict = deprecated()
 ) {
   check_dots_unnamed()
   dots <- list2(...)
@@ -74,12 +78,46 @@ pl__concat <- function(
       "diagonal",
       "diagonal_relaxed",
       "horizontal",
+      "horizontal_extend",
       "align",
       "align_full",
       "align_left",
       "align_right"
     )
   )
+
+  if (how == "horizontal") {
+    if (is_present(strict)) {
+      if (isFALSE(strict)) {
+        deprecate_warn(
+          c(
+            `!` = sprintf(
+              "The argument %s of %s is deprecated.",
+              format_arg("strict"),
+              format_fn("pl$concat")
+            ),
+            i = sprintf("Use %s instead.", format_code('how = "horizontal_extend"'))
+          )
+        )
+        how <- "horizontal_extend"
+      }
+    } else {
+      deprecate_warn(
+        c(
+          `!` = sprintf(
+            "The default behavior of %s for %s is deprecated and will require equal heights in the next breaking release.", # nolint: line_length_linter
+            format_code('how = "horizontal"'),
+            format_fn("pl$concat")
+          ),
+          i = sprintf(
+            "Use %s to keep the current behavior.",
+            format_code('how = "horizontal_extend"')
+          )
+        )
+      )
+      how <- "horizontal_extend"
+    }
+  }
 
   if (length(dots) == 0L) {
     abort("`...` must not be empty.")
@@ -189,7 +227,13 @@ pl__concat <- function(
       horizontal = {
         dots |>
           lapply(\(x) x$`_df`) |>
-          concat_df_horizontal(strict = strict) |>
+          concat_df_horizontal(strict = TRUE) |>
+          wrap()
+      },
+      horizontal_extend = {
+        dots |>
+          lapply(\(x) x$`_df`) |>
+          concat_df_horizontal(strict = FALSE) |>
           wrap()
       },
       abort("Unreachable")
@@ -220,7 +264,12 @@ pl__concat <- function(
       horizontal = {
         dots |>
           lapply(\(x) x$`_ldf`) |>
-          concat_lf_horizontal(parallel = parallel, strict = strict)
+          concat_lf_horizontal(parallel = parallel, strict = TRUE)
+      },
+      horizontal_extend = {
+        dots |>
+          lapply(\(x) x$`_ldf`) |>
+          concat_lf_horizontal(parallel = parallel, strict = FALSE)
       },
       abort("Unreachable")
     ) |>

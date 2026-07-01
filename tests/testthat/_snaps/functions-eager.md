@@ -51,7 +51,7 @@
 ---
 
     Code
-      pl$concat(df, df, how = "horizontal")
+      pl$concat(df, df, how = "horizontal", strict = TRUE)
     Condition
       Error in `pl$concat()`:
       ! Evaluation failed in `$concat()`.
@@ -71,7 +71,25 @@
 ---
 
     Code
-      pl$concat(as_polars_series(1:2, "a"), as_polars_series(5:1, "b"), how = "horizontal")
+      pl$concat(as_polars_series(1:2, "a"), as_polars_series(5:1, "b"), how = "horizontal_extend")
+    Condition
+      Error in `pl$concat()`:
+      ! Series only supports `how = "vertical"`.
+
+# how = 'horizontal_extend' works
+
+    Code
+      pl$concat(df, df, how = "horizontal_extend")
+    Condition
+      Error in `pl$concat()`:
+      ! Evaluation failed in `$concat()`.
+      Caused by error:
+      ! Duplicated column(s): could not create a new DataFrame: column with name 'a' has more than one occurrence
+
+---
+
+    Code
+      pl$concat(as_polars_series(1:2, "a"), as_polars_series(5:1, "b"), how = "horizontal_extend")
     Condition
       Error in `pl$concat()`:
       ! Series only supports `how = "vertical"`.
