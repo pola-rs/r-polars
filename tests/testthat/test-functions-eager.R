@@ -205,7 +205,8 @@ test_that("how = 'horizontal_extend' works", {
     error = TRUE
   )
 
-  # single Series with non-vertical strategy also errors (singleton shortcut must not bypass validation)
+  # single Series with non-vertical strategy also errors
+  # (singleton shortcut must not bypass validation)
   expect_snapshot(
     pl$concat(as_polars_series(1:2, "a"), how = "horizontal_extend"),
     error = TRUE
