@@ -13,8 +13,9 @@ This is an update that corresponds to Python Polars 1.42.1.
   now emitted when `empty_as_null` is not explicitly set
   ([pola-rs/polars#28040](https://github.com/pola-rs/polars/pull/28040)).
 * The `strict` argument of `pl$concat()` is deprecated. Use `how =
-  "horizontal"` (require equal heights) or `how = "horizontal_extend"` (pad
-  with null) instead
+  "horizontal_extend"` (pad with null) to keep the current behavior, or pass
+  `strict = TRUE` to opt in early to requiring equal heights (which will
+  become the default for `how = "horizontal"` in the next breaking release)
   ([pola-rs/polars#27965](https://github.com/pola-rs/polars/pull/27965)).
 
 ### New features

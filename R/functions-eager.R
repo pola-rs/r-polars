@@ -29,8 +29,10 @@
 #' @param rechunk Make sure that the result data is in contiguous memory.
 #' @param parallel Only relevant for [LazyFrames][LazyFrame]. This determines if the
 #' concatenated lazy computations may be executed in parallel.
-#' @param strict `r lifecycle::badge("deprecated")` Use `how = "horizontal"`
-#'   (equal heights) or `how = "horizontal_extend"` (pad with null) instead.
+#' @param strict `r lifecycle::badge("deprecated")` Use `how =
+#'   "horizontal_extend"` (pad with null) instead of `strict = FALSE`. To opt
+#'   into requiring equal heights (the future default of `how = "horizontal"`),
+#'   pass `strict = TRUE`.
 #' @return The same class (`polars_data_frame`, `polars_lazy_frame` or
 #' `polars_series`) as the input.
 #' @examples
@@ -86,6 +88,7 @@ pl__concat <- function(
 
   if (how == "horizontal") {
     if (is_present(strict)) {
+      check_bool(strict)
       if (isFALSE(strict)) {
         deprecate_warn(
           c(
