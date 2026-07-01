@@ -141,6 +141,12 @@ test_that("how = 'horizontal' works", {
   expect_deprecated(pl$concat(df, df2, df3, how = "horizontal"))
   expect_deprecated(pl$concat(df, df2, df3, how = "horizontal", strict = FALSE))
 
+  # invalid strict values produce type errors
+  expect_snapshot(pl$concat(df, df2, how = "horizontal", strict = NULL), error = TRUE)
+  expect_snapshot(pl$concat(df, df2, how = "horizontal", strict = NA), error = TRUE)
+  expect_snapshot(pl$concat(df, df2, how = "horizontal", strict = "true"), error = TRUE)
+  expect_snapshot(pl$concat(df, df2, how = "horizontal", strict = c(TRUE, FALSE)), error = TRUE)
+
   # works with lazy
   lf <- df$lazy()
   lf2 <- df2$lazy()

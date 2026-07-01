@@ -61,6 +61,38 @@
 ---
 
     Code
+      pl$concat(df, df2, how = "horizontal", strict = NULL)
+    Condition
+      Error in `pl$concat()`:
+      ! `strict` must be `TRUE` or `FALSE`, not `NULL`.
+
+---
+
+    Code
+      pl$concat(df, df2, how = "horizontal", strict = NA)
+    Condition
+      Error in `pl$concat()`:
+      ! `strict` must be `TRUE` or `FALSE`, not `NA`.
+
+---
+
+    Code
+      pl$concat(df, df2, how = "horizontal", strict = "true")
+    Condition
+      Error in `pl$concat()`:
+      ! `strict` must be `TRUE` or `FALSE`, not the string "true".
+
+---
+
+    Code
+      pl$concat(df, df2, how = "horizontal", strict = c(TRUE, FALSE))
+    Condition
+      Error in `pl$concat()`:
+      ! `strict` must be `TRUE` or `FALSE`, not a logical vector.
+
+---
+
+    Code
       pl$concat(lf, lf2, lf3, how = "horizontal", strict = TRUE)$collect()
     Condition
       Error:

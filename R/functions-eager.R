@@ -13,7 +13,9 @@
 #'   columns to their common supertype if they are mismatched (eg: Int32 to
 #'   Int64);
 #' * `"horizontal"`: stacks Series from DataFrames horizontally. All input
-#'   frames must have the same height; raises a `ShapeError` otherwise;
+#'   frames must have the same height; raises a `ShapeError` otherwise
+#'   (currently, omitting the deprecated `strict` argument warns and redirects
+#'   to `"horizontal_extend"` instead; pass `strict = TRUE` to opt in early);
 #' * `"horizontal_extend"`: stacks Series from DataFrames horizontally and
 #'   fills with `null` if the lengths don't match;
 #' * `"align"`, `"align_full"`, `"align_left"`, `"align_right"`: Combines
