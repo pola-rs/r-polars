@@ -29,10 +29,10 @@ patrick::with_parameters_test_that(
   },
   patrick::cases(
     list(fun = pl$DataFrame, how = "vertical"),
-    list(fun = pl$DataFrame, how = "horizontal"),
+    list(fun = pl$DataFrame, how = "horizontal_extend"),
     list(fun = pl$DataFrame, how = "diagonal"),
     list(fun = pl$LazyFrame, how = "vertical"),
-    list(fun = pl$LazyFrame, how = "horizontal"),
+    list(fun = pl$LazyFrame, how = "horizontal_extend"),
     list(fun = pl$LazyFrame, how = "diagonal")
   ),
   .interpret_glue = FALSE
@@ -125,19 +125,67 @@ test_that("how = 'horizontal' works", {
     b3 = c(letters[1], NA)
   )
 
-  expect_equal(
-    pl$concat(df, df2, df3, how = "horizontal"),
-    df4
-  )
-
+  # strict = TRUE raises an error when heights differ
   expect_snapshot(
     pl$concat(df, df2, df3, how = "horizontal", strict = TRUE),
     error = TRUE
   )
 
+  # Duplicated columns error
+  expect_snapshot(
+    pl$concat(df, df, how = "horizontal", strict = TRUE),
+    error = TRUE
+  )
+
+  # how = "horizontal" without strict is deprecated
+  expect_deprecated(pl$concat(df, df2, df3, how = "horizontal"))
+  expect_deprecated(pl$concat(df, df2, df3, how = "horizontal", strict = FALSE))
+
+  # invalid strict values produce type errors
+  expect_snapshot(pl$concat(df, df2, how = "horizontal", strict = NULL), error = TRUE)
+  expect_snapshot(pl$concat(df, df2, how = "horizontal", strict = NA), error = TRUE)
+  expect_snapshot(pl$concat(df, df2, how = "horizontal", strict = "true"), error = TRUE)
+  expect_snapshot(pl$concat(df, df2, how = "horizontal", strict = c(TRUE, FALSE)), error = TRUE)
+
+  # works with lazy
+  lf <- df$lazy()
+  lf2 <- df2$lazy()
+  lf3 <- df3$lazy()
+
+  expect_snapshot(
+    pl$concat(lf, lf2, lf3, how = "horizontal", strict = TRUE)$collect(),
+    error = TRUE
+  )
+
+  # doesn't work with Series
+  expect_snapshot(
+    pl$concat(as_polars_series(1:2, "a"), as_polars_series(5:1, "b"), how = "horizontal_extend"),
+    error = TRUE
+  )
+})
+
+test_that("how = 'horizontal_extend' works", {
+  df <- pl$DataFrame(a = 1:2, b = letters[1:2])
+  df2 <- pl$DataFrame(a2 = 1:2, b2 = letters[1:2])
+  df3 <- pl$DataFrame(a3 = 1, b3 = letters[1])
+  df4 <- pl$DataFrame(
+    a = 1:2,
+    b = letters[1:2],
+    a2 = 1:2,
+    b2 = letters[1:2],
+    a3 = c(1, NA),
+    b3 = c(letters[1], NA)
+  )
+
+  # pads with null when heights differ
+  expect_equal(
+    pl$concat(df, df2, df3, how = "horizontal_extend"),
+    df4
+  )
+
   # Duplicated columns
   expect_snapshot(
-    pl$concat(df, df, how = "horizontal"),
+    pl$concat(df, df, how = "horizontal_extend"),
     error = TRUE
   )
 
@@ -147,18 +195,20 @@ test_that("how = 'horizontal' works", {
   lf3 <- df3$lazy()
 
   expect_equal(
-    pl$concat(lf, lf2, lf3, how = "horizontal")$collect(),
+    pl$concat(lf, lf2, lf3, how = "horizontal_extend")$collect(),
     df4
-  )
-
-  expect_snapshot(
-    pl$concat(lf, lf2, lf3, how = "horizontal", strict = TRUE)$collect(),
-    error = TRUE
   )
 
   # doesn't work with Series
   expect_snapshot(
-    pl$concat(as_polars_series(1:2, "a"), as_polars_series(5:1, "b"), how = "horizontal"),
+    pl$concat(as_polars_series(1:2, "a"), as_polars_series(5:1, "b"), how = "horizontal_extend"),
+    error = TRUE
+  )
+
+  # single Series with non-vertical strategy also errors
+  # (singleton shortcut must not bypass validation)
+  expect_snapshot(
+    pl$concat(as_polars_series(1:2, "a"), how = "horizontal_extend"),
     error = TRUE
   )
 })

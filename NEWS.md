@@ -2,7 +2,7 @@
 
 ## polars (development version)
 
-This is an update that corresponds to Python Polars 1.42.0.
+This is an update that corresponds to Python Polars 1.42.1.
 
 ### Deprecations
 
@@ -12,11 +12,19 @@ This is an update that corresponds to Python Polars 1.42.0.
   `<lazyframe>$explode()`, `<dataframe>$explode()`. A deprecation warning is
   now emitted when `empty_as_null` is not explicitly set
   ([pola-rs/polars#28040](https://github.com/pola-rs/polars/pull/28040)).
+* The `strict` argument of `pl$concat()` is deprecated. Use `how =
+  "horizontal_extend"` (pad with null) to keep the current behavior, or pass
+  `strict = TRUE` to opt in early to requiring equal heights (which will
+  become the default for `how = "horizontal"` in the next breaking release)
+  ([pola-rs/polars#27965](https://github.com/pola-rs/polars/pull/27965)).
 
 ### New features
 
 * Warnings from the Rust side, which were previously output to stderr, are now treated as R warnings (#1805).
 * Deprecation warnings from the R side gain the `polars_warning` class and `polars_deprecation_warning` class.
+* `pl$concat()` gains `how = "horizontal_extend"`, which stacks DataFrames
+  horizontally and pads shorter frames with `null`
+  ([pola-rs/polars#27965](https://github.com/pola-rs/polars/pull/27965)).
 
 ## polars 1.12.0
 
