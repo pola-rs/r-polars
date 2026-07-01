@@ -28,7 +28,7 @@ column values with \code{null};
 columns to their common supertype if they are mismatched (eg: Int32 to
 Int64);
 \item \code{"horizontal"}: stacks Series from DataFrames horizontally. All input
-frames must have the same height; raises a \code{ShapeError} otherwise
+frames must have the same height; raises an error otherwise
 (currently, omitting the deprecated \code{strict} argument warns and redirects
 to \code{"horizontal_extend"} instead; pass \code{strict = TRUE} to opt in early);
 \item \code{"horizontal_extend"}: stacks Series from DataFrames horizontally and
