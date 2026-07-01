@@ -12,13 +12,11 @@
 #' * `"diagonal_relaxed"`: same as `"diagonal"`, but additionally coerces
 #'   columns to their common supertype if they are mismatched (eg: Int32 to
 #'   Int64);
-#’ * `"horizontal"`: stacks Series from DataFrames horizontally. All input
-#’   frames must have the same height; raises a `ShapeError` otherwise. Using
-#’   `how = "horizontal"` without setting `strict = TRUE` is deprecated; use
-#’   `how = "horizontal_extend"` to pad shorter frames with `null`;
-#’ * `"horizontal_extend"`: stacks Series from DataFrames horizontally and
-#’   fills with `null` if the lengths don’t match;
-#’ * `"align"`, `"align_full"`, `"align_left"`, `"align_right"`: Combines
+#' * `"horizontal"`: stacks Series from DataFrames horizontally. All input
+#'   frames must have the same height; raises a `ShapeError` otherwise;
+#' * `"horizontal_extend"`: stacks Series from DataFrames horizontally and
+#'   fills with `null` if the lengths don't match;
+#' * `"align"`, `"align_full"`, `"align_left"`, `"align_right"`: Combines
 #'   frames horizontally, auto-determining the common key columns and aligning
 #'   rows using the same logic as `align_frames` (note that `"align"` is an
 #'   alias for `"align_full"`). The "align" strategy determines the type of
