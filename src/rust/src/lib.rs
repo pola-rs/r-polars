@@ -10,6 +10,7 @@ mod info;
 mod lazyframe;
 mod lazygroupby;
 mod map;
+mod on_startup;
 mod prelude;
 mod r_threads;
 mod r_udf;

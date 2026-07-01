@@ -3,6 +3,9 @@ use polars_core::series::IsSorted;
 use savvy::{NullSexp, NumericScalar, NumericSexp, OwnedRawSexp, RawSexp, Result, Sexp, savvy};
 use std::io::Cursor;
 
+#[cfg(not(target_family = "wasm"))]
+use crate::r_threads::Rf_onintr;
+
 #[savvy]
 impl PlRSeries {
     fn as_str(&self) -> Result<Sexp> {
@@ -267,33 +270,84 @@ impl PlRSeries {
         let list_chunked = self.series.list().map_err(RPolarsErr::from)?;
 
         #[cfg(not(target_arch = "wasm32"))]
-        let struct_chunked =
-            if get_index_name.is_some() || ThreadCom::try_from_global(&CONFIG).is_ok() {
-                let list_chunked = list_chunked.clone();
-                // Same as PlRLazyFrame::collect
-                concurrent_handler(
-                    move |tc| {
-                        let retval = list_chunked.to_struct(&ListToStructArgs::InferWidth {
-                            infer_field_strategy,
-                            get_index_name,
-                            max_fields: None,
-                        });
-                        ThreadCom::kill_global(&CONFIG);
-                        drop(tc);
-                        retval
-                    },
-                    |udf_sig: RUdfSignature| udf_sig.eval(),
-                    &CONFIG,
-                )
+        let struct_chunked = if ThreadCom::try_from_global(&CONFIG).is_ok() {
+            // Nested path: already inside concurrent_handler; run as before
+            let list_chunked = list_chunked.clone();
+            concurrent_handler(
+                move |tc| {
+                    let retval = list_chunked.to_struct(&ListToStructArgs::InferWidth {
+                        infer_field_strategy,
+                        get_index_name,
+                        max_fields: None,
+                    });
+                    ThreadCom::kill_global(&CONFIG);
+                    drop(tc);
+                    retval
+                },
+                |udf_sig: RUdfSignature| udf_sig.eval(),
+                &CONFIG,
+            )
+            .map_err(|e| e.to_string())?
+            .map_err(RPolarsErr::from)?
+        } else if get_index_name.is_some() {
+            // Top-level with UDF: add cancellation support
+            use crate::r_threads::wrap_with_cancel;
+            use std::panic::AssertUnwindSafe;
+            use std::sync::{
+                Arc,
+                atomic::{AtomicBool, Ordering},
+            };
+
+            let cancelled = Arc::new(AtomicBool::new(false));
+            let worker_cancelled = Arc::clone(&cancelled);
+            let list_chunked = list_chunked.clone();
+
+            let concurrent_result = concurrent_handler(
+                move |tc| {
+                    let retval = wrap_with_cancel(
+                        &worker_cancelled,
+                        AssertUnwindSafe(|| {
+                            list_chunked.to_struct(&ListToStructArgs::InferWidth {
+                                infer_field_strategy,
+                                get_index_name,
+                                max_fields: None,
+                            })
+                        }),
+                    );
+                    ThreadCom::kill_global(&CONFIG);
+                    drop(tc);
+                    retval
+                },
+                |udf_sig: RUdfSignature| udf_sig.eval(),
+                &CONFIG,
+            );
+
+            if cancelled.load(Ordering::Acquire) {
+                drop(concurrent_result);
+                return match unsafe {
+                    savvy::unwind_protect(|| {
+                        Rf_onintr();
+                        std::ptr::null_mut()
+                    })
+                } {
+                    Err(e) => Err(e),
+                    Ok(_) => Err(savvy::Error::from("operation cancelled by user interrupt")),
+                };
+            }
+
+            concurrent_result
                 .map_err(|e| e.to_string())?
-            } else {
-                list_chunked.to_struct(&ListToStructArgs::InferWidth {
+                .map_err(RPolarsErr::from)?
+        } else {
+            // No UDF, no nesting: direct call
+            list_chunked
+                .to_struct(&ListToStructArgs::InferWidth {
                     infer_field_strategy,
                     get_index_name,
                     max_fields: None,
                 })
-            }
-            .map_err(RPolarsErr::from)?;
+                .map_err(RPolarsErr::from)?
+        };
 
         #[cfg(target_arch = "wasm32")]
         let struct_chunked = list_chunked

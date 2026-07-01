@@ -16,6 +16,9 @@ use savvy::{
 };
 use std::num::NonZeroUsize;
 
+#[cfg(not(target_family = "wasm"))]
+use crate::r_threads::Rf_onintr;
+
 #[savvy]
 impl PlRLazyFrame {
     fn describe_plan(&self) -> Result<Sexp> {
@@ -124,43 +127,73 @@ impl PlRLazyFrame {
         use polars_core::query_result::QueryResult;
 
         #[cfg(not(target_arch = "wasm32"))]
-        let result = if ThreadCom::try_from_global(&CONFIG).is_ok() {
-            ldf.collect_with_engine(engine).map_err(RPolarsErr::from)?
-        } else {
-            concurrent_handler(
-                // closure 1: spawned by main thread
-                // tc is a ThreadCom which any child thread can use to submit R jobs to main thread
-                move |tc| {
-                    // get return value
-                    let retval = ldf.collect_with_engine(engine);
+        {
+            use crate::r_threads::wrap_with_cancel;
+            use std::panic::AssertUnwindSafe;
+            use std::sync::{
+                Arc,
+                atomic::{AtomicBool, Ordering},
+            };
 
-                    // drop the last two ThreadCom clones, signals to main/R-serving thread to shut down.
+            // Nested path (called from within a UDF): run directly, no cancellation.
+            if ThreadCom::try_from_global(&CONFIG).is_ok() {
+                let result = ldf.collect_with_engine(engine).map_err(RPolarsErr::from)?;
+                let df = match result {
+                    QueryResult::Single(df) => df,
+                    QueryResult::Multiple(_) => DataFrame::empty(),
+                };
+                return Ok(df.into());
+            }
+
+            // Top-level path: cancellation support via polars SIGINT hook.
+            let cancelled = Arc::new(AtomicBool::new(false));
+            let worker_cancelled = Arc::clone(&cancelled);
+
+            let concurrent_result = concurrent_handler(
+                move |tc| {
+                    let retval = wrap_with_cancel(
+                        &worker_cancelled,
+                        AssertUnwindSafe(|| ldf.collect_with_engine(engine)),
+                    );
                     ThreadCom::kill_global(&CONFIG);
                     drop(tc);
-
                     retval
                 },
-                // closure 2: how to serve polars worker R job request in main thread
                 serve_r,
-                // CONFIG is "global variable" where any new thread can request a clone of ThreadCom to establish contact with main thread
                 &CONFIG,
-            )
-            .map_err(|e| e.to_string())?
-            .map_err(RPolarsErr::from)?
-        };
+            );
 
-        // QueryResult::Multiple is currently unused by Polars (single-query collect
-        // always returns Single). This arm mirrors py-polars' handling.
-        #[cfg(not(target_arch = "wasm32"))]
-        let df = match result {
-            QueryResult::Single(df) => df,
-            QueryResult::Multiple(_) => DataFrame::empty(),
-        };
+            // Check cancellation BEFORE converting errors.
+            if cancelled.load(Ordering::Acquire) {
+                drop(concurrent_result);
+                // savvy::unwind_protect converts the R longjmp to a Rust Err so Rust
+                // destructors run normally; savvy's entry point re-raises via R_ContinueUnwind.
+                // If R_interrupts_suspended, Rf_onintr() returns without longjmping.
+                return match unsafe {
+                    savvy::unwind_protect(|| {
+                        Rf_onintr();
+                        std::ptr::null_mut()
+                    })
+                } {
+                    Err(e) => Err(e),
+                    Ok(_) => Err(savvy::Error::from("operation cancelled by user interrupt")),
+                };
+            }
+
+            // QueryResult::Multiple is currently unused by Polars (single-query collect
+            // always returns Single). This arm mirrors py-polars' handling.
+            let result = concurrent_result
+                .map_err(|e| e.to_string())?
+                .map_err(RPolarsErr::from)?;
+            let df = match result {
+                QueryResult::Single(df) => df,
+                QueryResult::Multiple(_) => DataFrame::empty(),
+            };
+            return Ok(df.into());
+        }
 
         #[cfg(target_arch = "wasm32")]
-        let df = ldf.collect().map_err(RPolarsErr::from)?;
-
-        Ok(df.into())
+        Ok(ldf.collect().map_err(RPolarsErr::from)?.into())
     }
 
     fn slice(&self, offset: NumericScalar, len: Option<NumericScalar>) -> Result<Self> {
@@ -315,42 +348,88 @@ impl PlRLazyFrame {
             udf_sig.eval()
         }
 
-        let ldf = self.ldf.clone();
-        let (data, timings) = if ThreadCom::try_from_global(&CONFIG).is_ok() {
-            let ldf = self.ldf.clone();
-            ldf.profile().map_err(RPolarsErr::from)?
-        } else {
-            concurrent_handler(
-                // closure 1: spawned by main thread
-                // tc is a ThreadCom which any child thread can use to submit R jobs to main thread
-                move |tc| {
-                    // get return value
-                    let retval = ldf.profile();
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            use crate::r_threads::wrap_with_cancel;
+            use std::panic::AssertUnwindSafe;
+            use std::sync::{
+                Arc,
+                atomic::{AtomicBool, Ordering},
+            };
 
-                    // drop the last two ThreadCom clones, signals to main/R-serving thread to shut down.
+            let ldf = self.ldf.clone();
+
+            // Nested path (called from within a UDF): run directly, no cancellation.
+            if ThreadCom::try_from_global(&CONFIG).is_ok() {
+                let ldf = self.ldf.clone();
+                let (data, timings) = ldf.profile().map_err(RPolarsErr::from)?;
+                let data = <PlRDataFrame>::from(data);
+                let timings = <PlRDataFrame>::from(timings);
+                let mut out = OwnedListSexp::new(2, true)?;
+                unsafe {
+                    out.set_value_unchecked(0, Sexp::try_from(data)?.0);
+                    out.set_value_unchecked(1, Sexp::try_from(timings)?.0);
+                };
+                return Ok(out.into());
+            }
+
+            // Top-level path: cancellation support via polars SIGINT hook.
+            let cancelled = Arc::new(AtomicBool::new(false));
+            let worker_cancelled = Arc::clone(&cancelled);
+
+            let concurrent_result = concurrent_handler(
+                move |tc| {
+                    let retval =
+                        wrap_with_cancel(&worker_cancelled, AssertUnwindSafe(|| ldf.profile()));
                     ThreadCom::kill_global(&CONFIG);
                     drop(tc);
-
                     retval
                 },
-                // closure 2: how to serve polars worker R job request in main thread
                 serve_r,
-                // CONFIG is "global variable" where any new thread can request a clone of ThreadCom to establish contact with main thread
                 &CONFIG,
-            )
-            .map_err(|e| e.to_string())?
-            .map_err(RPolarsErr::from)?
-        };
+            );
 
-        let data = <PlRDataFrame>::from(data);
-        let timings = <PlRDataFrame>::from(timings);
+            if cancelled.load(Ordering::Acquire) {
+                drop(concurrent_result);
+                return match unsafe {
+                    savvy::unwind_protect(|| {
+                        Rf_onintr();
+                        std::ptr::null_mut()
+                    })
+                } {
+                    Err(e) => Err(e),
+                    Ok(_) => Err(savvy::Error::from("operation cancelled by user interrupt")),
+                };
+            }
 
-        let mut out = OwnedListSexp::new(2, true)?;
-        unsafe {
-            out.set_value_unchecked(0, Sexp::try_from(data)?.0);
-            out.set_value_unchecked(1, Sexp::try_from(timings)?.0);
-        };
-        Ok(out.into())
+            let (data, timings) = concurrent_result
+                .map_err(|e| e.to_string())?
+                .map_err(RPolarsErr::from)?;
+
+            let data = <PlRDataFrame>::from(data);
+            let timings = <PlRDataFrame>::from(timings);
+
+            let mut out = OwnedListSexp::new(2, true)?;
+            unsafe {
+                out.set_value_unchecked(0, Sexp::try_from(data)?.0);
+                out.set_value_unchecked(1, Sexp::try_from(timings)?.0);
+            };
+            return Ok(out.into());
+        }
+
+        #[cfg(target_arch = "wasm32")]
+        {
+            let ldf = self.ldf.clone();
+            let (data, timings) = ldf.profile().map_err(RPolarsErr::from)?;
+            let data = <PlRDataFrame>::from(data);
+            let timings = <PlRDataFrame>::from(timings);
+            let mut out = OwnedListSexp::new(2, true)?;
+            unsafe {
+                out.set_value_unchecked(0, Sexp::try_from(data)?.0);
+                out.set_value_unchecked(1, Sexp::try_from(timings)?.0);
+            };
+            Ok(out.into())
+        }
     }
 
     fn select_seq(&mut self, exprs: ListSexp) -> Result<Self> {

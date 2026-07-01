@@ -194,11 +194,6 @@ SEXP savvy_field__impl(SEXP c_arg__names) {
     return handle_result(res);
 }
 
-SEXP savvy_init_polars_warning_handler__impl(DllInfo* c_arg___dll_info) {
-    SEXP res = savvy_init_polars_warning_handler__ffi(c_arg___dll_info);
-    return handle_result(res);
-}
-
 SEXP savvy_int_range__impl(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__step, SEXP c_arg__dtype) {
     SEXP res = savvy_int_range__ffi(c_arg__start, c_arg__end, c_arg__step, c_arg__dtype);
     return handle_result(res);
@@ -251,6 +246,11 @@ SEXP savvy_mean_horizontal__impl(SEXP c_arg__exprs, SEXP c_arg__ignore_nulls) {
 
 SEXP savvy_min_horizontal__impl(SEXP c_arg__exprs) {
     SEXP res = savvy_min_horizontal__ffi(c_arg__exprs);
+    return handle_result(res);
+}
+
+SEXP savvy_on_startup__impl(DllInfo* c_arg___dll_info) {
+    SEXP res = savvy_on_startup__ffi(c_arg___dll_info);
     return handle_result(res);
 }
 
@@ -4134,5 +4134,5 @@ void R_init_polars(DllInfo *dll) {
     R_useDynamicSymbols(dll, FALSE);
 
     // Functions for initialization, if any.
-    savvy_init_polars_warning_handler__impl(dll);
+    savvy_on_startup__impl(dll);
 }
