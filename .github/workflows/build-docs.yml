@@ -117,7 +117,7 @@ jobs:
 
       # TODO: Switch back to @v2 once a new version is released that includes the fixes for
       # cdylib/rlib crate caching (Swatinem/rust-cache#317, Swatinem/rust-cache#320).
-      - uses: Swatinem/rust-cache@b57030f2122925cb90e22399eed75c2c3be0a46f
+      - uses: Swatinem/rust-cache@0aa9ab6c7bd3ac99d3eeed430a1f3e3d0fd5ba59
         if: env.LIBR_POLARS_BUILD == 'true'
         with:
           workspaces: "src/rust -> target"
