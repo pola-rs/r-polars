@@ -1,6 +1,6 @@
 # NEWS
 
-## polars (development version)
+## polars 1.13.0
 
 This is an update that corresponds to Python Polars 1.42.1.
 
@@ -11,12 +11,12 @@ This is an update that corresponds to Python Polars 1.42.1.
   `<expr>$explode()`, `<expr>$list$explode()`, `<expr>$arr$explode()`,
   `<lazyframe>$explode()`, `<dataframe>$explode()`. A deprecation warning is
   now emitted when `empty_as_null` is not explicitly set
-  ([pola-rs/polars#28040](https://github.com/pola-rs/polars/pull/28040)).
+  ([pola-rs/polars#28040](https://github.com/pola-rs/polars/pull/28040), #1804).
 * The `strict` argument of `pl$concat()` is deprecated. Use `how =
   "horizontal_extend"` (pad with null) to keep the current behavior.
   `how = "horizontal"` will require equal heights by default in the next
   breaking release
-  ([pola-rs/polars#27965](https://github.com/pola-rs/polars/pull/27965)).
+  ([pola-rs/polars#27965](https://github.com/pola-rs/polars/pull/27965), #1812).
 
 ### New features
 
