@@ -51,12 +51,44 @@
 ---
 
     Code
-      pl$concat(df, df, how = "horizontal")
+      pl$concat(df, df, how = "horizontal", strict = TRUE)
     Condition
       Error in `pl$concat()`:
       ! Evaluation failed in `$concat()`.
       Caused by error:
       ! Duplicated column(s): could not create a new DataFrame: column with name 'a' has more than one occurrence
+
+---
+
+    Code
+      pl$concat(df, df2, how = "horizontal", strict = NULL)
+    Condition
+      Error in `pl$concat()`:
+      ! `strict` must be `TRUE` or `FALSE`, not `NULL`.
+
+---
+
+    Code
+      pl$concat(df, df2, how = "horizontal", strict = NA)
+    Condition
+      Error in `pl$concat()`:
+      ! `strict` must be `TRUE` or `FALSE`, not `NA`.
+
+---
+
+    Code
+      pl$concat(df, df2, how = "horizontal", strict = "true")
+    Condition
+      Error in `pl$concat()`:
+      ! `strict` must be `TRUE` or `FALSE`, not the string "true".
+
+---
+
+    Code
+      pl$concat(df, df2, how = "horizontal", strict = c(TRUE, FALSE))
+    Condition
+      Error in `pl$concat()`:
+      ! `strict` must be `TRUE` or `FALSE`, not a logical vector.
 
 ---
 
@@ -71,7 +103,33 @@
 ---
 
     Code
-      pl$concat(as_polars_series(1:2, "a"), as_polars_series(5:1, "b"), how = "horizontal")
+      pl$concat(as_polars_series(1:2, "a"), as_polars_series(5:1, "b"), how = "horizontal_extend")
+    Condition
+      Error in `pl$concat()`:
+      ! Series only supports `how = "vertical"`.
+
+# how = 'horizontal_extend' works
+
+    Code
+      pl$concat(df, df, how = "horizontal_extend")
+    Condition
+      Error in `pl$concat()`:
+      ! Evaluation failed in `$concat()`.
+      Caused by error:
+      ! Duplicated column(s): could not create a new DataFrame: column with name 'a' has more than one occurrence
+
+---
+
+    Code
+      pl$concat(as_polars_series(1:2, "a"), as_polars_series(5:1, "b"), how = "horizontal_extend")
+    Condition
+      Error in `pl$concat()`:
+      ! Series only supports `how = "vertical"`.
+
+---
+
+    Code
+      pl$concat(as_polars_series(1:2, "a"), how = "horizontal_extend")
     Condition
       Error in `pl$concat()`:
       ! Series only supports `how = "vertical"`.

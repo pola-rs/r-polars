@@ -9,7 +9,7 @@ pl__concat(
   how = "vertical",
   rechunk = FALSE,
   parallel = TRUE,
-  strict = FALSE
+  strict = deprecated()
 )
 }
 \arguments{
@@ -27,8 +27,12 @@ column values with \code{null};
 \item \code{"diagonal_relaxed"}: same as \code{"diagonal"}, but additionally coerces
 columns to their common supertype if they are mismatched (eg: Int32 to
 Int64);
-\item \code{"horizontal"}: stacks Series from DataFrames horizontally and fills with
-\code{null} if the lengths don’t match;
+\item \code{"horizontal"}: stacks Series from DataFrames horizontally. All input
+frames must have the same height; raises an error otherwise
+(currently, omitting the deprecated \code{strict} argument warns and redirects
+to \code{"horizontal_extend"} instead; pass \code{strict = TRUE} to opt in early);
+\item \code{"horizontal_extend"}: stacks Series from DataFrames horizontally and
+fills with \code{null} if the lengths don't match;
 \item \code{"align"}, \code{"align_full"}, \code{"align_left"}, \code{"align_right"}: Combines
 frames horizontally, auto-determining the common key columns and aligning
 rows using the same logic as \code{align_frames} (note that \code{"align"} is an
@@ -46,8 +50,9 @@ more control over this you should use a suitable \code{join} method directly).
 \item{parallel}{Only relevant for \link[=LazyFrame]{LazyFrames}. This determines if the
 concatenated lazy computations may be executed in parallel.}
 
-\item{strict}{When \code{how = "horizontal"}, whether to require all DataFrames to be
-the same height, raising an error if not.}
+\item{strict}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{how = "horizontal_extend"} (pad with null) instead of \code{strict = FALSE}. To opt
+into requiring equal heights (the future default of \code{how = "horizontal"}),
+pass \code{strict = TRUE}.}
 }
 \value{
 The same class (\code{polars_data_frame}, \code{polars_lazy_frame} or
@@ -69,7 +74,7 @@ pl$concat(df1, df2, how = "vertical_relaxed")
 
 df_h1 <- pl$DataFrame(l1 = 1:2, l2 = 3:4)
 df_h2 <- pl$DataFrame(r1 = 5:6, r2 = 7:8, r3 = 9:10)
-pl$concat(df_h1, df_h2, how = "horizontal")
+pl$concat(df_h1, df_h2, how = "horizontal_extend")
 
 # use 'diagonal' strategy to fill empty column values with nulls
 df1 <- pl$DataFrame(a = 1L, b = 3L)
