@@ -83,7 +83,7 @@ jobs:
           use-public-rspm: true
           Ncpus: 2
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: 3.x
 
