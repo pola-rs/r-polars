@@ -194,37 +194,40 @@ pub fn wrap_with_cancel<T, F>(
 where
     F: FnOnce() -> polars_core::error::PolarsResult<T> + std::panic::UnwindSafe,
 {
+    use polars_error::abort::{QueryAborted, catch_polars_abort};
     use polars_error::polars_err;
-    use polars_error::signals::{KeyboardInterrupt, catch_keyboard_interrupt};
     use std::sync::atomic::Ordering;
 
     // savvy installs its own panic hook at the start of every savvy wrapper,
     // pushing our on_startup hook below it. Install a scoped suppression hook
-    // here so __POLARS_KEYBOARD_INTERRUPT panics from the streaming executor
-    // are silenced. We do this manually (not via register_polars_keyboard_interrupt_hook)
+    // here so __POLARS_ABORT_* panics from the streaming executor
+    // are silenced. We do this manually (not via register_polars_abort_mechanism)
     // to avoid accumulating another SIGINT handler on every call.
     // savvy restores its orig_hook when the outer #[savvy] function returns,
     // so no explicit cleanup is needed here.
     let prev_hook = std::panic::take_hook();
     std::panic::set_hook(Box::new(move |info| {
-        let is_kbi = info
+        let is_abort = info
             .payload()
             .downcast_ref::<&str>()
-            .is_some_and(|s| s.contains("__POLARS_KEYBOARD_INTERRUPT"))
+            .is_some_and(|s| s.contains("__POLARS_ABORT_"))
             || info
                 .payload()
                 .downcast_ref::<String>()
-                .is_some_and(|s| s.contains("__POLARS_KEYBOARD_INTERRUPT"));
-        if !is_kbi {
+                .is_some_and(|s| s.contains("__POLARS_ABORT_"));
+        if !is_abort {
             prev_hook(info);
         }
     }));
 
-    match catch_keyboard_interrupt(operation) {
+    match catch_polars_abort(operation) {
         Ok(result) => result,
-        Err(KeyboardInterrupt) => {
+        Err(QueryAborted::KeyboardInterrupt) => {
             cancelled.store(true, Ordering::Release);
             Err(polars_err!(ComputeError: "operation cancelled by user interrupt"))
+        }
+        Err(QueryAborted::OocOutOfDisk) => {
+            Err(polars_err!(ComputeError: "query aborted: out of disk space while spilling"))
         }
     }
 }

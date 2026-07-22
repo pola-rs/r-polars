@@ -325,7 +325,7 @@ impl PlRDataFrame {
         };
         Ok(self
             .df
-            .sample_n(&n.series, with_replacement, shuffle, seed)
+            .sample_n(&n.series, with_replacement, Some(shuffle), seed)
             .map_err(RPolarsErr::from)?
             .into())
     }
@@ -343,7 +343,7 @@ impl PlRDataFrame {
         };
         Ok(self
             .df
-            .sample_frac(&frac.series, with_replacement, shuffle, seed)
+            .sample_frac(&frac.series, with_replacement, Some(shuffle), seed)
             .map_err(RPolarsErr::from)?
             .into())
     }

@@ -75,7 +75,7 @@ as_nanoarrow_array_stream.polars_series <- function(
       polars_compat_level <- arg_match_compat_level(polars_compat_level)
 
       pl_r_series <- if (!is.null(schema)) {
-        # Sinse polars does not support all Arrow types,
+        # Since polars does not support all Arrow types,
         # we cannot fully control the output schema
         # TODO: needs warnings? needs fallback to the default method (use `arrow` to cast)?
         target_dtype <- nanoarrow::basic_array_stream(list(), schema) |>
