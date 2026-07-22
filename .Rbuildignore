@@ -25,5 +25,3 @@
 ^altdoc$
 ^docs$
 ^jarl\.toml$
-^.*\.Rproj$
-^\.Rproj\.user$
