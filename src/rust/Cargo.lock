@@ -1384,6 +1384,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b5b646652bf6661599e1da8901b3b9522896f01e736bad5f723fe7a3a27f899d"
 
 [[package]]
+name = "libloading"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "754ca22de805bb5744484a5b151a9e1a8e837d5dc232c2d7d8c2e3492edc8b60"
+dependencies = [
+ "cfg-if",
+ "windows-link",
+]
+
+[[package]]
 name = "libm"
 version = "0.2.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1967,6 +1977,7 @@ dependencies = [
  "bitflags",
  "chrono-tz",
  "hashbrown 0.17.1",
+ "libloading",
  "num-traits",
  "polars-arrow",
  "polars-buffer",
@@ -1984,6 +1995,15 @@ dependencies = [
  "recursive",
  "regex",
  "version_check",
+]
+
+[[package]]
+name = "polars-ffi"
+version = "0.54.4"
+source = "git+https://github.com/pola-rs/polars.git?rev=0df0c25d4db895ec8cad773bedc4e98400e3135e#0df0c25d4db895ec8cad773bedc4e98400e3135e"
+dependencies = [
+ "polars-arrow",
+ "polars-core",
 ]
 
 [[package]]
@@ -2225,6 +2245,7 @@ dependencies = [
  "hashbrown 0.17.1",
  "hex",
  "indexmap",
+ "libloading",
  "memmap2",
  "num-traits",
  "percent-encoding",
@@ -2234,6 +2255,7 @@ dependencies = [
  "polars-config",
  "polars-core",
  "polars-error",
+ "polars-ffi",
  "polars-io",
  "polars-json",
  "polars-ops",

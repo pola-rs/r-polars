@@ -41,6 +41,7 @@ SEXP savvy_max_horizontal__ffi(SEXP c_arg__exprs);
 SEXP savvy_mean_horizontal__ffi(SEXP c_arg__exprs, SEXP c_arg__ignore_nulls);
 SEXP savvy_min_horizontal__ffi(SEXP c_arg__exprs);
 SEXP savvy_on_startup__ffi(DllInfo* c_arg___dll_info);
+SEXP savvy_register_plugin_function__ffi(SEXP c_arg__plugin_path, SEXP c_arg__function_name, SEXP c_arg__args, SEXP c_arg__kwargs_raw, SEXP c_arg__is_elementwise, SEXP c_arg__input_wildcard_expansion, SEXP c_arg__returns_scalar, SEXP c_arg__cast_to_supertype, SEXP c_arg__pass_name_to_apply, SEXP c_arg__changes_length);
 SEXP savvy_repeat___ffi(SEXP c_arg__value, SEXP c_arg__n, SEXP c_arg__dtype);
 SEXP savvy_rust_polars_version__ffi(void);
 SEXP savvy_sum_horizontal__ffi(SEXP c_arg__exprs, SEXP c_arg__ignore_nulls);

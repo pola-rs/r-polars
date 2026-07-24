@@ -63,7 +63,7 @@ features = [
 git = "https://github.com/pola-rs/polars.git"
 rev = "0df0c25d4db895ec8cad773bedc4e98400e3135e"
 default-features = false
-features = ["streaming"]
+features = ["streaming", "ffi_plugin"]
 
 [target.'cfg(not(target_os = "emscripten"))'.dependencies.polars-mem-engine]
 git = "https://github.com/pola-rs/polars.git"
