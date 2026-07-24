@@ -736,6 +736,7 @@ nav:
         - collect_all: man/pl__collect_all.md
         - concat: man/pl__concat.md
         - explain_all: man/pl__explain_all.md
+        - register_plugin_function: man/pl__register_plugin_function.md
         - row_index: man/pl__row_index.md
         - Expr: man/polars_expr.md
         - DataFrame: man/pl__DataFrame.md
