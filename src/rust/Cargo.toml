@@ -32,6 +32,7 @@ polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "0df0c25d4d
 polars-error = { git = "https://github.com/pola-rs/polars.git", rev = "0df0c25d4db895ec8cad773bedc4e98400e3135e", default-features = false }
 polars-plan = { git = "https://github.com/pola-rs/polars.git", rev = "0df0c25d4db895ec8cad773bedc4e98400e3135e", default-features = false }
 savvy = { version = "0.10", features = ["use-custom-error"] }
+serde-pickle = "1"
 serde_json = "1"
 state = "0.6"
 strum = "0.28"

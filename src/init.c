@@ -254,6 +254,11 @@ SEXP savvy_on_startup__impl(DllInfo* c_arg___dll_info) {
     return handle_result(res);
 }
 
+SEXP savvy_pickle_kwargs__impl(SEXP c_arg__kwargs) {
+    SEXP res = savvy_pickle_kwargs__ffi(c_arg__kwargs);
+    return handle_result(res);
+}
+
 SEXP savvy_register_plugin_function__impl(SEXP c_arg__plugin_path, SEXP c_arg__function_name, SEXP c_arg__args, SEXP c_arg__kwargs_raw, SEXP c_arg__is_elementwise, SEXP c_arg__input_wildcard_expansion, SEXP c_arg__returns_scalar, SEXP c_arg__cast_to_supertype, SEXP c_arg__pass_name_to_apply, SEXP c_arg__changes_length) {
     SEXP res = savvy_register_plugin_function__ffi(c_arg__plugin_path, c_arg__function_name, c_arg__args, c_arg__kwargs_raw, c_arg__is_elementwise, c_arg__input_wildcard_expansion, c_arg__returns_scalar, c_arg__cast_to_supertype, c_arg__pass_name_to_apply, c_arg__changes_length);
     return handle_result(res);
@@ -3493,6 +3498,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_max_horizontal__impl", (DL_FUNC) &savvy_max_horizontal__impl, 1},
     {"savvy_mean_horizontal__impl", (DL_FUNC) &savvy_mean_horizontal__impl, 2},
     {"savvy_min_horizontal__impl", (DL_FUNC) &savvy_min_horizontal__impl, 1},
+    {"savvy_pickle_kwargs__impl", (DL_FUNC) &savvy_pickle_kwargs__impl, 1},
     {"savvy_register_plugin_function__impl", (DL_FUNC) &savvy_register_plugin_function__impl, 10},
     {"savvy_repeat___impl", (DL_FUNC) &savvy_repeat___impl, 3},
     {"savvy_rust_polars_version__impl", (DL_FUNC) &savvy_rust_polars_version__impl, 0},

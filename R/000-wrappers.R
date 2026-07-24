@@ -287,6 +287,11 @@ NULL
 }
 
 
+`pickle_kwargs` <- function(`kwargs`) {
+  .Call(savvy_pickle_kwargs__impl, `kwargs`)
+}
+
+
 `register_plugin_function` <- function(`plugin_path`, `function_name`, `args`, `kwargs_raw`, `is_elementwise`, `input_wildcard_expansion`, `returns_scalar`, `cast_to_supertype`, `pass_name_to_apply`, `changes_length`) {
   .savvy_wrap_PlRExpr(.Call(savvy_register_plugin_function__impl, `plugin_path`, `function_name`, `args`, `kwargs_raw`, `is_elementwise`, `input_wildcard_expansion`, `returns_scalar`, `cast_to_supertype`, `pass_name_to_apply`, `changes_length`))
 }

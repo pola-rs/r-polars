@@ -8,6 +8,7 @@ pl__register_plugin_function(
   plugin_path,
   function_name,
   args,
+  kwargs = list(),
   kwargs_raw = NULL,
   is_elementwise = FALSE,
   changes_length = FALSE,
@@ -18,18 +19,22 @@ pl__register_plugin_function(
 )
 }
 \arguments{
-\item{plugin_path}{Path to the dynamic library file, or the directory
-containing it.}
+\item{plugin_path}{Path to the compiled dynamic library file, or a directory
+containing exactly one.}
 
 \item{function_name}{Name of the Rust function to register.}
 
 \item{args}{Expressions passed to the plugin (or values convertible to
 expressions).}
 
-\item{kwargs_raw}{Raw bytes passed to the plugin as its keyword-argument
-payload. The encoding is defined by the plugin. Unlike Python Polars'
-\code{kwargs}, this does not serialize an R list; package authors should normally
-wrap it in a typed function rather than exposing \code{kwargs_raw} directly.}
+\item{kwargs}{Named list of non-expression arguments to the plugin, encoded
+as the pickle-compatible bytes the standard plugin toolchain expects (as
+Python Polars does). Values must be JSON-like: scalars, raw vectors, or
+nested lists of these; names must be present and unique at the top level.}
+
+\item{kwargs_raw}{Escape hatch for plugins with a custom payload format: raw
+bytes used directly, without encoding. Supply either \code{kwargs} or
+\code{kwargs_raw}, not both.}
 
 \item{is_elementwise}{Indicate that the function operates on scalars only.}
 
@@ -55,11 +60,19 @@ Register a Polars expression plugin from a compiled dynamic library. See the
 \href{https://docs.pola.rs/user-guide/plugins/expr_plugins}{plugin user guide} for
 more information about plugins.
 }
+\details{
+This function is unsafe: it loads and runs native code. The library must be
+compiled against a compatible Polars plugin ABI, and incorrect flags (such as
+\code{is_elementwise}) can cause undefined behavior.
+}
 \examples{
 # `plugin_path` points at a compiled plugin library exporting `function_name`.
-expr <- pl$register_plugin_function(
+\dontrun{
+pl$register_plugin_function(
   plugin_path = "libmyplugin.so",
   function_name = "my_function",
-  args = pl$col("a")
+  args = pl$col("a"),
+  kwargs = list(scale = 2L, wrap = TRUE)
 )
+}
 }

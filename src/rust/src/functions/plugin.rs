@@ -1,6 +1,8 @@
 use crate::{PlRExpr, prelude::*};
 use polars_plan::prelude::{CastingRules, FunctionExpr, FunctionFlags, FunctionOptions};
-use savvy::{ListSexp, RawSexp, Result, savvy};
+use savvy::{ListSexp, RawSexp, Result, Sexp, TypedSexp, savvy, savvy_err};
+use serde_pickle::{HashableValue, SerOptions, Value, value_to_vec};
+use std::collections::BTreeMap;
 
 // Build an FFI plugin expression. Exposed to R as `pl$register_plugin_function()`.
 #[savvy]
@@ -53,4 +55,54 @@ pub fn register_plugin_function(
         },
     }
     .into())
+}
+
+// Encode a named R list as pickle bytes, the payload format that the standard
+// Polars plugin toolchain (serde-pickle in pyo3-polars) expects. The R wrapper
+// validates the input (named scalars/raw/nested lists, no NA), so this is a
+// near-total Sexp -> Value conversion. Exposed to R via `pl$register_plugin_function()`.
+#[savvy]
+pub fn pickle_kwargs(kwargs: ListSexp) -> Result<Sexp> {
+    let value = list_to_value(kwargs)?;
+    let bytes = value_to_vec(&value, SerOptions::new())
+        .map_err(|err| savvy_err!("failed to encode kwargs as pickle: {}", err))?;
+    bytes.try_into()
+}
+
+fn sexp_to_value(x: Sexp) -> Result<Value> {
+    Ok(match x.into_typed() {
+        TypedSexp::Null(_) => Value::None,
+        TypedSexp::Logical(l) => Value::Bool(l.as_slice_raw()[0] == 1),
+        TypedSexp::Integer(i) => Value::I64(i.as_slice()[0] as i64),
+        TypedSexp::Real(r) => Value::F64(r.as_slice()[0]),
+        TypedSexp::String(s) => Value::String(
+            s.iter()
+                .next()
+                .ok_or(savvy_err!("empty string in kwargs"))?
+                .to_string(),
+        ),
+        TypedSexp::Raw(b) => Value::Bytes(b.as_slice().to_vec()),
+        TypedSexp::List(list) => list_to_value(list)?,
+        _ => return Err(savvy_err!("unsupported value type in kwargs")),
+    })
+}
+
+// A fully named list becomes a dict; a fully unnamed list becomes a list. The R
+// wrapper rejects partially named lists before this is reached.
+fn list_to_value(list: ListSexp) -> Result<Value> {
+    let items: Vec<(&str, Sexp)> = list.iter().collect();
+    let any_named = items.iter().any(|(name, _)| !name.is_empty());
+    if any_named {
+        let mut dict = BTreeMap::new();
+        for (name, value) in items {
+            dict.insert(HashableValue::String(name.to_string()), sexp_to_value(value)?);
+        }
+        Ok(Value::Dict(dict))
+    } else {
+        let mut values = Vec::with_capacity(items.len());
+        for (_, value) in items {
+            values.push(sexp_to_value(value)?);
+        }
+        Ok(Value::List(values))
+    }
 }
