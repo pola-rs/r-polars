@@ -4,6 +4,24 @@
 
 This is an update that corresponds to Python Polars 1.43.0.
 
+### Deprecations
+
+* The `missing_utf8_is_empty_string` argument of `pl$read_csv()` and
+  `pl$scan_csv()` is deprecated in favor of `empty_string_is_null`, whose
+  meaning is inverted
+  ([pola-rs/polars#28173](https://github.com/pola-rs/polars/pull/28173)).
+* `<expr>$cat$get_categories()` is deprecated. To get the distinct values
+  present in a Categorical column, use `$unique()`. For the fixed category
+  list of an Enum, use its `dtype$categories`
+  ([pola-rs/polars#28299](https://github.com/pola-rs/polars/pull/28299)).
+* `<series>$cat$to_local()` is deprecated; Categoricals no longer have a local
+  scope
+  ([pola-rs/polars#28299](https://github.com/pola-rs/polars/pull/28299)).
+* `<lazyframe>$profile()` is deprecated. It was made for the older in-memory
+  engine, but Polars now uses a streaming engine by default, and the
+  profiling information from this method would be misleading
+  ([pola-rs/polars#28275](https://github.com/pola-rs/polars/pull/28275)).
+
 ## polars 1.13.0
 
 This is an update that corresponds to Python Polars 1.42.1.
