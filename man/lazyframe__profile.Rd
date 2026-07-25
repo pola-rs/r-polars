@@ -88,6 +88,13 @@ with the timings of each step. If \code{show_plot = TRUE}, then the plot is
 also stored in the list.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\verb{$profile()} is deprecated. It was made for the older in-memory engine, but
+Polars now uses a streaming engine by default. Due to the concurrent nature
+of the streaming engine, the profiling information from this method would
+be misleading.
+
 This will run the query and return a list containing the
 materialized DataFrame and a DataFrame that contains profiling information
 of each node that is executed.

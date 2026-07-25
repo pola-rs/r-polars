@@ -155,7 +155,7 @@ impl PlRExpr {
             .inner
             .clone()
             .list()
-            .sample_n(n.inner.clone(), with_replacement, shuffle, seed)
+            .sample_n(n.inner.clone(), with_replacement, Some(shuffle), seed)
             .into())
     }
 
@@ -174,7 +174,7 @@ impl PlRExpr {
             .inner
             .clone()
             .list()
-            .sample_fraction(frac.inner.clone(), with_replacement, shuffle, seed)
+            .sample_fraction(frac.inner.clone(), with_replacement, Some(shuffle), seed)
             .into())
     }
 

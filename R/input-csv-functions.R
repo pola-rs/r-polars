@@ -29,9 +29,11 @@
 #' @param null_values Character vector specifying the values to interpret as
 #' `NA` values. It can be named, in which case names specify the columns in
 #' which this replacement must be made (e.g. `c(col1 = "a")`).
-#' @param missing_utf8_is_empty_string By default, a missing value is considered
-#' to be `NA`. Setting this parameter to `TRUE` will consider missing UTF8
-#' values as an empty character.
+#' @param empty_string_is_null By default, a missing string value is
+#' considered to be `NA`. Setting this parameter to `FALSE` will consider
+#' missing string values as an empty character instead.
+#' @param missing_utf8_is_empty_string `r lifecycle::badge("deprecated")` Use
+#' `empty_string_is_null` instead (note that the meaning is inverted).
 #' @param ignore_errors Keep reading the file even if some lines yield errors.
 #' You can also use `infer_schema = FALSE` to read all columns as UTF8 to
 #' check which values might cause an issue.
@@ -87,7 +89,7 @@ pl__scan_csv <- function(
   schema = NULL,
   schema_overrides = NULL,
   null_values = NULL,
-  missing_utf8_is_empty_string = FALSE,
+  empty_string_is_null = TRUE,
   ignore_errors = FALSE,
   cache = FALSE,
   infer_schema = TRUE,
@@ -109,7 +111,8 @@ pl__scan_csv <- function(
   retries = deprecated(),
   file_cache_ttl = deprecated(),
   include_file_paths = NULL,
-  missing_columns = c("raise", "insert")
+  missing_columns = c("raise", "insert"),
+  missing_utf8_is_empty_string = deprecated()
 ) {
   check_dots_empty0(...)
   check_character(source, allow_na = FALSE)
@@ -122,6 +125,23 @@ pl__scan_csv <- function(
   check_character(null_values, allow_null = TRUE)
   encoding <- arg_match0(encoding, values = c("utf8", "utf8-lossy"))
   missing_columns <- arg_match0(missing_columns, values = c("insert", "raise"))
+
+  if (is_present(missing_utf8_is_empty_string)) {
+    deprecate_warn(
+      c(
+        `!` = sprintf(
+          "The %s argument is deprecated as of %s 1.14.0.",
+          format_arg("missing_utf8_is_empty_string"),
+          format_pkg("polars")
+        ),
+        i = sprintf(
+          "Use %s instead (note that the meaning is inverted).",
+          format_arg("empty_string_is_null")
+        )
+      )
+    )
+    empty_string_is_null <- !missing_utf8_is_empty_string
+  }
 
   if (is_present(retries)) {
     deprecate_warn(
@@ -178,7 +198,7 @@ pl__scan_csv <- function(
     ignore_errors = ignore_errors,
     skip_rows = skip_rows,
     cache = cache,
-    missing_utf8_is_empty_string = missing_utf8_is_empty_string,
+    missing_utf8_is_empty_string = !empty_string_is_null,
     low_memory = low_memory,
     rechunk = rechunk,
     skip_rows_after_header = skip_rows_after_header,
@@ -224,7 +244,7 @@ pl__read_csv <- function(
   schema = NULL,
   schema_overrides = NULL,
   null_values = NULL,
-  missing_utf8_is_empty_string = FALSE,
+  empty_string_is_null = TRUE,
   ignore_errors = FALSE,
   cache = FALSE,
   infer_schema = TRUE,
@@ -246,7 +266,8 @@ pl__read_csv <- function(
   retries = deprecated(),
   file_cache_ttl = deprecated(),
   include_file_paths = NULL,
-  missing_columns = c("raise", "insert")
+  missing_columns = c("raise", "insert"),
+  missing_utf8_is_empty_string = deprecated()
 ) {
   check_dots_empty0(...)
   .args <- as.list(environment())

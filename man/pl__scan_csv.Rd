@@ -15,7 +15,7 @@ pl__scan_csv(
   schema = NULL,
   schema_overrides = NULL,
   null_values = NULL,
-  missing_utf8_is_empty_string = FALSE,
+  empty_string_is_null = TRUE,
   ignore_errors = FALSE,
   cache = FALSE,
   infer_schema = TRUE,
@@ -37,7 +37,8 @@ pl__scan_csv(
   retries = deprecated(),
   file_cache_ttl = deprecated(),
   include_file_paths = NULL,
-  missing_columns = c("raise", "insert")
+  missing_columns = c("raise", "insert"),
+  missing_utf8_is_empty_string = deprecated()
 )
 }
 \arguments{
@@ -75,9 +76,9 @@ list. Names of list elements are used to match to inferred columns.}
 \code{NA} values. It can be named, in which case names specify the columns in
 which this replacement must be made (e.g. \code{c(col1 = "a")}).}
 
-\item{missing_utf8_is_empty_string}{By default, a missing value is considered
-to be \code{NA}. Setting this parameter to \code{TRUE} will consider missing UTF8
-values as an empty character.}
+\item{empty_string_is_null}{By default, a missing string value is
+considered to be \code{NA}. Setting this parameter to \code{FALSE} will consider
+missing string values as an empty character instead.}
 
 \item{ignore_errors}{Keep reading the file even if some lines yield errors.
 You can also use \code{infer_schema = FALSE} to read all columns as UTF8 to
@@ -163,6 +164,9 @@ are missing from the data:
 \item \code{"raise"} (default): Raises an error.
 \item \code{"insert"}:  Inserts the missing columns using NULLs as the row values.
 }}
+
+\item{missing_utf8_is_empty_string}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use
+\code{empty_string_is_null} instead (note that the meaning is inverted).}
 }
 \value{
 A polars \link{LazyFrame}

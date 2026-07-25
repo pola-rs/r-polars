@@ -819,7 +819,7 @@ impl PlRLazyFrame {
         let out = self
             .ldf
             .clone()
-            .merge_sorted(other.ldf.clone(), key, maintain_order)
+            .merge_sorted(other.ldf.clone(), [key], maintain_order)
             .map_err(RPolarsErr::from)?;
         Ok(out.into())
     }

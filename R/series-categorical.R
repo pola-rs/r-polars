@@ -18,7 +18,18 @@ series_cat_is_local <- function() {
     wrap()
 }
 
+# Deprecated as of polars 1.14.0; Categoricals no longer have a local scope.
 series_cat_to_local <- function() {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "%s is deprecated as of %s 1.14.0.",
+        format_fn("cat$to_local"),
+        format_pkg("polars")
+      ),
+      i = "Categoricals no longer have a local scope."
+    )
+  )
   self$`_s`$cat_to_local() |>
     wrap()
 }

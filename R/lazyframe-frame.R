@@ -333,6 +333,13 @@ lazyframe__collect <- function(
 #' Collect and profile a lazy query
 #'
 #' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' `$profile()` is deprecated. It was made for the older in-memory engine, but
+#' Polars now uses a streaming engine by default. Due to the concurrent nature
+#' of the streaming engine, the profiling information from this method would
+#' be misleading.
+#'
 #' This will run the query and return a list containing the
 #' materialized DataFrame and a DataFrame that contains profiling information
 #' of each node that is executed.
@@ -381,6 +388,16 @@ lazyframe__profile <- function(
 ) {
   wrap({
     check_dots_empty0(...)
+    deprecate_warn(
+      c(
+        `!` = sprintf(
+          "%s is deprecated as of %s 1.14.0.",
+          format_fn("profile"),
+          format_pkg("polars")
+        ),
+        i = "It was made for the older in-memory engine, but Polars now uses a streaming engine by default. Due to the concurrent nature of the streaming engine, the profiling information from this method would be misleading." # nolint: line_length_linter
+      )
+    )
     engine <- arg_match0(engine, c("auto", "in-memory", "streaming"))
     check_is_S7(optimizations, QueryOptFlags)
 

@@ -103,7 +103,7 @@ test_that("read/scan: arg glob works", {
   )
 })
 
-test_that("read/scan: arg missing_utf8_is_empty_string works", {
+test_that("read/scan: arg empty_string_is_null works", {
   tmpf <- withr::local_tempfile()
   writeLines("a,b\n1,a\n2,", tmpf)
 
@@ -113,6 +113,22 @@ test_that("read/scan: arg missing_utf8_is_empty_string works", {
     pl$DataFrame(b = c("a", NA))
   )
 
+  out <- pl$read_csv(tmpf, empty_string_is_null = FALSE)
+  expect_equal(
+    out$select("b"),
+    pl$DataFrame(b = c("a", ""))
+  )
+})
+
+test_that("read/scan: arg missing_utf8_is_empty_string is deprecated", {
+  tmpf <- withr::local_tempfile()
+  writeLines("a,b\n1,a\n2,", tmpf)
+
+  expect_deprecated(
+    pl$read_csv(tmpf, missing_utf8_is_empty_string = TRUE)
+  )
+
+  local_lifecycle_silence()
   out <- pl$read_csv(tmpf, missing_utf8_is_empty_string = TRUE)
   expect_equal(
     out$select("b"),
