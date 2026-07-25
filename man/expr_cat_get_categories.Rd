@@ -10,7 +10,11 @@ expr_cat_get_categories()
 A polars \link{expression}
 }
 \description{
-Get the categories stored in this data type
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\verb{$cat$get_categories()} is deprecated. To get the distinct values present
+in a Categorical column, use \verb{$unique()}. For the fixed category list of
+an Enum, use its \code{dtype$categories}.
 }
 \examples{
 df <- pl$DataFrame(
