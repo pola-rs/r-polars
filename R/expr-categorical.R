@@ -40,7 +40,7 @@ expr_cat_get_categories <- function() {
   deprecate_warn(
     c(
       `!` = sprintf(
-        "%s is deprecated as of %s 1.43.0.",
+        "%s is deprecated as of %s 1.14.0.",
         format_fn("cat$get_categories"),
         format_pkg("polars")
       ),

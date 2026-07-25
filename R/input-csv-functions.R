@@ -130,7 +130,7 @@ pl__scan_csv <- function(
     deprecate_warn(
       c(
         `!` = sprintf(
-          "The %s argument is deprecated as of %s 1.43.0.",
+          "The %s argument is deprecated as of %s 1.14.0.",
           format_arg("missing_utf8_is_empty_string"),
           format_pkg("polars")
         ),
