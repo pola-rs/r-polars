@@ -125,8 +125,11 @@ test_that("read/scan: arg missing_utf8_is_empty_string is deprecated", {
   writeLines("a,b\n1,a\n2,", tmpf)
 
   expect_deprecated(
-    out <- pl$read_csv(tmpf, missing_utf8_is_empty_string = TRUE)
+    pl$read_csv(tmpf, missing_utf8_is_empty_string = TRUE)
   )
+
+  local_lifecycle_silence()
+  out <- pl$read_csv(tmpf, missing_utf8_is_empty_string = TRUE)
   expect_equal(
     out$select("b"),
     pl$DataFrame(b = c("a", ""))
