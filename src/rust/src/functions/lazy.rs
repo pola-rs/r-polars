@@ -158,6 +158,13 @@ pub fn concat_list(s: ListSexp) -> Result<PlRExpr> {
 }
 
 #[savvy]
+pub fn as_list(s: ListSexp) -> Result<PlRExpr> {
+    let s = <Wrap<Vec<Expr>>>::try_from(s)?.0;
+    let expr = dsl::as_list(s).map_err(RPolarsErr::from)?;
+    Ok(expr.into())
+}
+
+#[savvy]
 pub fn concat_arr(s: ListSexp) -> Result<PlRExpr> {
     let s = <Wrap<Vec<Expr>>>::try_from(s)?.0;
     let expr = dsl::concat_arr(s).map_err(RPolarsErr::from)?;
