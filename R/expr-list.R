@@ -51,7 +51,7 @@ expr_list_max <- function() {
     wrap()
 }
 
-#' Compute the miminum value in every sub-list
+#' Compute the minimum value in every sub-list
 #'
 #' @inherit as_polars_expr return
 #'

@@ -168,7 +168,7 @@ html_escape <- function(x) {
 #' @param .elements chr vector
 #' @param .tag single chr
 #' @param .attr named chr vector
-#' @return single charactor
+#' @return single character
 #' @examples
 #' .tag(letters[1:2], "tr")
 #' @noRd

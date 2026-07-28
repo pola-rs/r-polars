@@ -58,11 +58,11 @@ where
             .expect("thread failed send, likely a user interrupt")
     }
 
-    // wait to recieve answer from main thread
+    // wait to receive answer from main thread
     pub fn recv(&self) -> R {
         self.child_rx
             .recv()
-            .expect("thread failed recieve, likely a user interrupt")
+            .expect("thread failed receive, likely a user interrupt")
     }
 
     pub fn update_global(&self, conf: &InitCell<RwLock<Option<ThreadCom<S, R>>>>)

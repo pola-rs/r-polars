@@ -97,7 +97,7 @@ expr__add <- function(other) {
   })
 }
 
-#' Substract two expressions
+#' Subtract two expressions
 #'
 #' Method equivalent of subtraction operator `expr - other`.
 #' @inheritParams expr__true_div
@@ -1306,7 +1306,7 @@ expr__all <- function(..., ignore_nulls = TRUE) {
 #' Return the cumulative sum computed at every element.
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param reverse If `TRUE`, start with the total sum of elements and substract
+#' @param reverse If `TRUE`, start with the total sum of elements and subtract
 #' each row one by one.
 #'
 #' @inherit as_polars_expr return
