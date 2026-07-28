@@ -505,6 +505,7 @@ nav:
             - len: man/pl__len.md
             - linear_space: man/pl__linear_space.md
             - linear_spaces: man/pl__linear_spaces.md
+            - list: man/pl__list.md
             - lit: man/pl__lit.md
             - max: man/pl__max.md
             - max_horizontal: man/pl__max_horizontal.md

@@ -21,6 +21,49 @@ test_that("pl$concat_list()", {
   )
 })
 
+test_that("pl$list()", {
+  df <- pl$DataFrame(
+    a = c(1, 2, NA),
+    b = c(4, 5, 6),
+    c = list(1L, 2:3, NULL),
+    d = list(3:4, 5L, 6L)
+  )
+
+  res <- df$with_columns(a_b = pl$list("a", "b"), c_d = pl$list("c", "d"))
+  expect_equal(
+    res,
+    pl$DataFrame(
+      a = c(1, 2, NA),
+      b = c(4, 5, 6),
+      c = list(1L, 2:3, NULL),
+      d = list(3:4, 5L, 6L),
+      a_b = list(c(1, 4), c(2, 5), c(NA, 6)),
+      c_d = list(
+        list(1L, 3:4),
+        list(2:3, 5L),
+        list(NULL, 6L)
+      )
+    )
+  )
+
+  # literals are broadcasted
+  res <- df$select(a_b_lit = pl$list("a", "b", pl$lit(3)))
+  expect_equal(
+    res,
+    pl$DataFrame(a_b_lit = list(c(1, 4, 3), c(2, 5, 3), c(NA, 6, 3)))
+  )
+
+  # only literals
+  res <- df$select(literals = pl$list(pl$lit(1L), pl$lit(2L)))
+  expect_equal(
+    res,
+    pl$DataFrame(literals = list(1:2))
+  )
+
+  expect_snapshot(pl$list(), error = TRUE)
+  expect_snapshot(pl$list(a = "a"), error = TRUE)
+})
+
 test_that("pl$concat_arr()", {
   # Concatenate two existing array columns.
   df <- pl$DataFrame(a = list(1:2, 3:4, 5:6), b = list(4, 1, NA))$cast(
