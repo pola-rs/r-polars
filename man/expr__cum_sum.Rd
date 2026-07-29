@@ -9,7 +9,7 @@ expr__cum_sum(..., reverse = FALSE)
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{reverse}{If \code{TRUE}, start with the total sum of elements and substract
+\item{reverse}{If \code{TRUE}, start with the total sum of elements and subtract
 each row one by one.}
 }
 \value{

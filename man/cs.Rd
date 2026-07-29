@@ -25,7 +25,7 @@ There are 4 supported operators for selectors:
 \code{"oo"} \emph{and} end with \code{"t"} with \code{cs$contains("oo") & cs$ends_with("t")};
 \item \code{|} to combine conditions with OR, e.g. select columns that contain
 \code{"oo"} \emph{or} end with \code{"t"} with \code{cs$contains("oo") | cs$ends_with("t")};
-\item \code{-} to substract conditions, e.g. select all columns that have alphanumeric
+\item \code{-} to subtract conditions, e.g. select all columns that have alphanumeric
 names except those that contain \code{"a"} with
 \code{cs$alphanumeric() - cs$contains("a")};
 \item \code{!} to invert the selection, e.g. select all columns that \emph{are not} of data

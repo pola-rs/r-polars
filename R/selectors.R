@@ -12,7 +12,7 @@
 #'   `"oo"` *and* end with `"t"` with `cs$contains("oo") & cs$ends_with("t")`;
 #' * `|` to combine conditions with OR, e.g. select columns that contain
 #'   `"oo"` *or* end with `"t"` with `cs$contains("oo") | cs$ends_with("t")`;
-#' * `-` to substract conditions, e.g. select all columns that have alphanumeric
+#' * `-` to subtract conditions, e.g. select all columns that have alphanumeric
 #'   names except those that contain `"a"` with
 #'   `cs$alphanumeric() - cs$contains("a")`;
 #' * `!` to invert the selection, e.g. select all columns that *are not* of data

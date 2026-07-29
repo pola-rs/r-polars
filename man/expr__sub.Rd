@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-expr.R
 \name{expr__sub}
 \alias{expr__sub}
-\title{Substract two expressions}
+\title{Subtract two expressions}
 \usage{
 expr__sub(other)
 }
