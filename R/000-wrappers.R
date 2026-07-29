@@ -59,6 +59,11 @@ NULL
 }
 
 
+`as_list` <- function(`s`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_as_list__impl, `s`))
+}
+
+
 `as_struct` <- function(`exprs`) {
   .savvy_wrap_PlRExpr(.Call(savvy_as_struct__impl, `exprs`))
 }

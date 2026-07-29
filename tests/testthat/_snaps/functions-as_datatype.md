@@ -10,6 +10,28 @@
       Caused by error:
       ! failed to determine supertype of f64 and cat
 
+# pl$list()
+
+    Code
+      pl$list()
+    Condition
+      Error in `pl$list()`:
+      ! Evaluation failed in `$list()`.
+      Caused by error:
+      ! `as_list` needs one or more expressions
+
+---
+
+    Code
+      pl$list(a = "a")
+    Condition
+      Error in `pl$list()`:
+      ! Evaluation failed in `$list()`.
+      Caused by error in `pl$list()`:
+      ! Arguments in `...` must be passed by position, not name.
+      x Problematic argument:
+      * a = "a"
+
 # concat_str
 
     Code

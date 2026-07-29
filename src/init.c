@@ -59,6 +59,11 @@ SEXP savvy_arg_where__impl(SEXP c_arg__condition) {
     return handle_result(res);
 }
 
+SEXP savvy_as_list__impl(SEXP c_arg__s) {
+    SEXP res = savvy_as_list__ffi(c_arg__s);
+    return handle_result(res);
+}
+
 SEXP savvy_as_struct__impl(SEXP c_arg__exprs) {
     SEXP res = savvy_as_struct__ffi(c_arg__exprs);
     return handle_result(res);
@@ -3460,6 +3465,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_any_horizontal__impl", (DL_FUNC) &savvy_any_horizontal__impl, 1},
     {"savvy_arg_sort_by__impl", (DL_FUNC) &savvy_arg_sort_by__impl, 5},
     {"savvy_arg_where__impl", (DL_FUNC) &savvy_arg_where__impl, 1},
+    {"savvy_as_list__impl", (DL_FUNC) &savvy_as_list__impl, 1},
     {"savvy_as_struct__impl", (DL_FUNC) &savvy_as_struct__impl, 1},
     {"savvy_coalesce__impl", (DL_FUNC) &savvy_coalesce__impl, 1},
     {"savvy_col__impl", (DL_FUNC) &savvy_col__impl, 1},
