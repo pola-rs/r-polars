@@ -1059,6 +1059,16 @@ SEXP savvy_PlRExpr_cat_get_categories__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_cat_physical__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_cat_physical__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_cat_to__impl(SEXP self__, SEXP c_arg__dtype, SEXP c_arg__strict) {
+    SEXP res = savvy_PlRExpr_cat_to__ffi(self__, c_arg__dtype, c_arg__strict);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_cbrt__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_cbrt__ffi(self__);
     return handle_result(res);
@@ -3654,6 +3664,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_bottom_k_by__impl", (DL_FUNC) &savvy_PlRExpr_bottom_k_by__impl, 4},
     {"savvy_PlRExpr_cast__impl", (DL_FUNC) &savvy_PlRExpr_cast__impl, 4},
     {"savvy_PlRExpr_cat_get_categories__impl", (DL_FUNC) &savvy_PlRExpr_cat_get_categories__impl, 1},
+    {"savvy_PlRExpr_cat_physical__impl", (DL_FUNC) &savvy_PlRExpr_cat_physical__impl, 1},
+    {"savvy_PlRExpr_cat_to__impl", (DL_FUNC) &savvy_PlRExpr_cat_to__impl, 3},
     {"savvy_PlRExpr_cbrt__impl", (DL_FUNC) &savvy_PlRExpr_cbrt__impl, 1},
     {"savvy_PlRExpr_ceil__impl", (DL_FUNC) &savvy_PlRExpr_ceil__impl, 1},
     {"savvy_PlRExpr_clip__impl", (DL_FUNC) &savvy_PlRExpr_clip__impl, 3},

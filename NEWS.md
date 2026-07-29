@@ -28,6 +28,8 @@ This is an update that corresponds to Python Polars 1.43.1.
   `pl$concat_list()`, `pl$list()` doesn't merge elements into a single list,
   i.e. merging a `List(Float64)` and a `String` will give
   `List(List(Float64), String)`. (#1825)
+* `<expr>$cat$to()` and `<expr>$cat$physical()` to convert between a Categorical
+  or Enum column and its physical representation (#1826).
 
 ## polars 1.13.0
 

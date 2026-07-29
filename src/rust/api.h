@@ -216,6 +216,8 @@ SEXP savvy_PlRExpr_bottom_k__ffi(SEXP self__, SEXP c_arg__k);
 SEXP savvy_PlRExpr_bottom_k_by__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__k, SEXP c_arg__reverse);
 SEXP savvy_PlRExpr_cast__ffi(SEXP self__, SEXP c_arg__dtype, SEXP c_arg__strict, SEXP c_arg__wrap_numerical);
 SEXP savvy_PlRExpr_cat_get_categories__ffi(SEXP self__);
+SEXP savvy_PlRExpr_cat_physical__ffi(SEXP self__);
+SEXP savvy_PlRExpr_cat_to__ffi(SEXP self__, SEXP c_arg__dtype, SEXP c_arg__strict);
 SEXP savvy_PlRExpr_cbrt__ffi(SEXP self__);
 SEXP savvy_PlRExpr_ceil__ffi(SEXP self__);
 SEXP savvy_PlRExpr_clip__ffi(SEXP self__, SEXP c_arg__min, SEXP c_arg__max);
