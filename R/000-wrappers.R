@@ -59,6 +59,11 @@ NULL
 }
 
 
+`as_list` <- function(`s`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_as_list__impl, `s`))
+}
+
+
 `as_struct` <- function(`exprs`) {
   .savvy_wrap_PlRExpr(.Call(savvy_as_struct__impl, `exprs`))
 }
@@ -1462,6 +1467,19 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 `PlRExpr_cat_get_categories` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cat_get_categories__impl, `self`))
+  }
+}
+
+`PlRExpr_cat_physical` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cat_physical__impl, `self`))
+  }
+}
+
+`PlRExpr_cat_to` <- function(self) {
+  function(`dtype`, `strict`) {
+    `dtype` <- .savvy_extract_ptr(`dtype`, "polars::PlRDataTypeExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cat_to__impl, `self`, `dtype`, `strict`))
   }
 }
 
@@ -3548,6 +3566,8 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   e$`bottom_k_by` <- `PlRExpr_bottom_k_by`(ptr)
   e$`cast` <- `PlRExpr_cast`(ptr)
   e$`cat_get_categories` <- `PlRExpr_cat_get_categories`(ptr)
+  e$`cat_physical` <- `PlRExpr_cat_physical`(ptr)
+  e$`cat_to` <- `PlRExpr_cat_to`(ptr)
   e$`cbrt` <- `PlRExpr_cbrt`(ptr)
   e$`ceil` <- `PlRExpr_ceil`(ptr)
   e$`clip` <- `PlRExpr_clip`(ptr)

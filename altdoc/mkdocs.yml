@@ -474,6 +474,8 @@ nav:
             - bin_starts_with: man/expr_bin_starts_with.md
         - Categories:
             - cat_get_categories: man/expr_cat_get_categories.md
+            - cat_physical: man/expr_cat_physical.md
+            - cat_to: man/expr_cat_to.md
         - Columns / names:
             - alias: man/expr__alias.md
             - exclude: man/expr__exclude.md
@@ -505,6 +507,7 @@ nav:
             - len: man/pl__len.md
             - linear_space: man/pl__linear_space.md
             - linear_spaces: man/pl__linear_spaces.md
+            - list: man/pl__list.md
             - lit: man/pl__lit.md
             - max: man/pl__max.md
             - max_horizontal: man/pl__max_horizontal.md

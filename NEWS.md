@@ -22,6 +22,15 @@ This is an update that corresponds to Python Polars 1.43.1.
   profiling information from this method would be misleading
   ([pola-rs/polars#28275](https://github.com/pola-rs/polars/pull/28275)).
 
+### New features
+
+* `pl$list()` to gather several elements into a list column. Contrary to
+  `pl$concat_list()`, `pl$list()` doesn't merge elements into a single list,
+  i.e. merging a `List(Float64)` and a `String` will give
+  `List(List(Float64), String)`. (#1825)
+* `<expr>$cat$to()` and `<expr>$cat$physical()` to convert between a Categorical
+  or Enum column and its physical representation (#1826).
+
 ## polars 1.13.0
 
 This is an update that corresponds to Python Polars 1.42.1.

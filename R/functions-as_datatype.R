@@ -316,6 +316,37 @@ pl__concat_list <- function(...) {
   })
 }
 
+#' Collect columns into a list column
+#'
+#' Unlike [`pl$concat_list()`][pl__concat_list], list-typed inputs are not
+#' extended: the value of each input becomes a single element of the output
+#' list. This means that `List(T)` inputs produce a `List(List(T))` output.
+#'
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Columns to collect into a
+#' list column. Accepts expression input. Strings are parsed as column names,
+#' other non-expression inputs are parsed as literals.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' # Wrap non-list columns into a list (same as pl$concat_list() in this case).
+#' df <- pl$DataFrame(a = c(1, 2, 3), b = c(4, 5, 6))
+#' df$with_columns(a_b = pl$list("a", "b"))
+#'
+#' # Collect list columns into a list of lists. pl$concat_list() would instead
+#' # concatenate them into a single list.
+#' df <- pl$DataFrame(a = list(1:2, 3L, 4:5), b = list(6L, 7:8, 9L))
+#' df$with_columns(
+#'   list = pl$list("a", "b"),
+#'   concat_list = pl$concat_list("a", "b")
+#' )
+pl__list <- function(...) {
+  wrap({
+    check_dots_unnamed()
+    parse_into_list_of_expressions(...) |>
+      as_list()
+  })
+}
+
 #' Horizontally concatenate columns into a single array column
 #'
 #' `r lifecycle::badge("experimental")`

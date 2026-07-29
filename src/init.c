@@ -59,6 +59,11 @@ SEXP savvy_arg_where__impl(SEXP c_arg__condition) {
     return handle_result(res);
 }
 
+SEXP savvy_as_list__impl(SEXP c_arg__s) {
+    SEXP res = savvy_as_list__ffi(c_arg__s);
+    return handle_result(res);
+}
+
 SEXP savvy_as_struct__impl(SEXP c_arg__exprs) {
     SEXP res = savvy_as_struct__ffi(c_arg__exprs);
     return handle_result(res);
@@ -1051,6 +1056,16 @@ SEXP savvy_PlRExpr_cast__impl(SEXP self__, SEXP c_arg__dtype, SEXP c_arg__strict
 
 SEXP savvy_PlRExpr_cat_get_categories__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_cat_get_categories__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_cat_physical__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_cat_physical__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_cat_to__impl(SEXP self__, SEXP c_arg__dtype, SEXP c_arg__strict) {
+    SEXP res = savvy_PlRExpr_cat_to__ffi(self__, c_arg__dtype, c_arg__strict);
     return handle_result(res);
 }
 
@@ -3450,6 +3465,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_any_horizontal__impl", (DL_FUNC) &savvy_any_horizontal__impl, 1},
     {"savvy_arg_sort_by__impl", (DL_FUNC) &savvy_arg_sort_by__impl, 5},
     {"savvy_arg_where__impl", (DL_FUNC) &savvy_arg_where__impl, 1},
+    {"savvy_as_list__impl", (DL_FUNC) &savvy_as_list__impl, 1},
     {"savvy_as_struct__impl", (DL_FUNC) &savvy_as_struct__impl, 1},
     {"savvy_coalesce__impl", (DL_FUNC) &savvy_coalesce__impl, 1},
     {"savvy_col__impl", (DL_FUNC) &savvy_col__impl, 1},
@@ -3648,6 +3664,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_bottom_k_by__impl", (DL_FUNC) &savvy_PlRExpr_bottom_k_by__impl, 4},
     {"savvy_PlRExpr_cast__impl", (DL_FUNC) &savvy_PlRExpr_cast__impl, 4},
     {"savvy_PlRExpr_cat_get_categories__impl", (DL_FUNC) &savvy_PlRExpr_cat_get_categories__impl, 1},
+    {"savvy_PlRExpr_cat_physical__impl", (DL_FUNC) &savvy_PlRExpr_cat_physical__impl, 1},
+    {"savvy_PlRExpr_cat_to__impl", (DL_FUNC) &savvy_PlRExpr_cat_to__impl, 3},
     {"savvy_PlRExpr_cbrt__impl", (DL_FUNC) &savvy_PlRExpr_cbrt__impl, 1},
     {"savvy_PlRExpr_ceil__impl", (DL_FUNC) &savvy_PlRExpr_ceil__impl, 1},
     {"savvy_PlRExpr_clip__impl", (DL_FUNC) &savvy_PlRExpr_clip__impl, 3},
