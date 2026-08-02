@@ -100,6 +100,18 @@ jobs:
           packages: any::pkgbuild, deps::.
           dependencies: "'hard'"
 
+      # Diagnostics for the aarch64 Linux build failures, where the runner itself
+      # dies mid-build ("lost communication with the server" / exit code 143).
+      # The public specs are identical for x86_64 and arm64 runners, so measure
+      # the real machines instead of guessing.
+      - name: log runner resources
+        if: runner.os == 'Linux'
+        run: |
+          nproc
+          free -h
+          swapon --show || echo '(no swap configured)'
+          df -h
+
       - name: build lib
         env:
           NOT_CRAN: "true"
@@ -108,6 +120,20 @@ jobs:
           LIBR_POLARS_FEATURES: nightly
           LIBR_POLARS_PROFILE: dist-release
         run: |
+          # Sample memory usage into this step's live log. A separate step cannot
+          # report it, because when the runner is killed the remaining steps are
+          # skipped even with `if: always()`.
+          if command -v free >/dev/null; then
+            (
+              while true; do
+                echo "[mem] $(date -Is) $(free -m | awk '/^Mem:/ {printf "used=%sMi avail=%sMi", $3, $7} /^Swap:/ {printf " swap=%sMi", $3}')"
+                sleep 15
+              done
+            ) &
+            MEM_SAMPLER_PID=$!
+            trap 'kill "${MEM_SAMPLER_PID}" 2>/dev/null || true' EXIT
+          fi
+
           # make sure savvy is built from source because rust-cache doesn't work well.
           (find ~/.cargo/registry/ src/rust/target -name 'savvy-*' -print0 | xargs -0 rm -rf) || true
 
