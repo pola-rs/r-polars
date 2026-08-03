@@ -82,7 +82,7 @@ jobs:
           echo 'CC=aarch64-linux-gnu-gcc' >>"$GITHUB_ENV"
 
       - name: limit rust build jobs on aarch64 linux
-        if: startsWith(matrix.target, 'aarch64-unknown-linux-')
+        if: runner.os == 'Linux' && runner.arch == 'ARM64'
         run: |
           # Serialize rustc on ARM Linux targets. With two jobs the runner runs out
           # of memory while polars-plan and polars-expr compile at the same time:
