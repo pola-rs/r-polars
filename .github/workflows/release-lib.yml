@@ -84,8 +84,11 @@ jobs:
       - name: limit rust build jobs on aarch64 linux
         if: startsWith(matrix.target, 'aarch64-unknown-linux-')
         run: |
-          # First step: reduce parallel rustc processes only on ARM Linux targets.
-          echo 'CARGO_BUILD_JOBS=2' >>"$GITHUB_ENV"
+          # Serialize rustc on ARM Linux targets. With two jobs the runner runs out
+          # of memory while polars-plan and polars-expr compile at the same time:
+          # 16 GiB of RAM and the whole 3 GiB of swap are consumed, and the box
+          # thrashes until the runner agent loses its heartbeat.
+          echo 'CARGO_BUILD_JOBS=1' >>"$GITHUB_ENV"
           # Reduce LTO memory pressure on ARM Linux while keeping release optimizations.
           echo 'CARGO_PROFILE_DIST_RELEASE_LTO=thin' >>"$GITHUB_ENV"
 
