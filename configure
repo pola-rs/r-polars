@@ -23,6 +23,10 @@ USE_MOLD=${R_POLARS_USE_MOLD:-"true"}
 # Space-separated list of additional linker flags to insert into Makevars
 ADDITIONAL_LIBS_LIST=""
 
+# Extra "export FOO=bar &&" snippets to run just before "cargo build" in
+# src/Makevars, inserted via @BEFORE_CARGO_BUILD@.
+BEFORE_CARGO_BUILD=""
+
 check_cargo() {
   if [ ! "$(command -v cargo)" ]; then
     cat <<EOF
@@ -146,6 +150,7 @@ generate_makevars() {
       -e "s|@PROFILE@|${PROFILE}|" \
       -e "s|@FEATURES@|${FEATURES}|" \
       -e "s|@ADDITIONAL_LIBS@|${ADDITIONAL_LIBS_LIST}|" \
+      -e "s|@BEFORE_CARGO_BUILD@|${BEFORE_CARGO_BUILD}|" \
       "$makefile.in" >"$makefile"
   done
 
@@ -224,6 +229,31 @@ EOF
   fi
 }
 
+# Set macOS deployment target for the Rust cc crate.
+#
+# The cc crate (used by the build scripts of dependency crates that compile C
+# code, e.g. blake3, ring, zstd-sys) does not derive the deployment target
+# from CC/CFLAGS. Instead, it looks up MACOSX_DEPLOYMENT_TARGET, falling back
+# to `xcrun --show-sdk-version`, and passes the result as
+# -mmacosx-version-min=<value>. When the env var is unset, the fallback SDK
+# version (e.g. 26.5) can be newer than the version R's compiler targets,
+# producing an ld warning about version mismatch.
+#
+# We default to 11.0, the minimum deployment target for arm64 macOS. This
+# should be safe because the C code compiled by these crates is fairly simple
+# and uses no version-specific APIs.
+check_macos_deployment_target() {
+  if [ "$(uname)" = "Darwin" ]; then
+    MACOSX_DEPLOYMENT_TARGET="${MACOSX_DEPLOYMENT_TARGET:-11.0}"
+    cat <<EOF
+--------------------- [MACOS DEPLOYMENT TARGET] ---------------------
+using macOS deployment target: ${MACOSX_DEPLOYMENT_TARGET}
+--------------------------------------------------------------------
+EOF
+    BEFORE_CARGO_BUILD="${BEFORE_CARGO_BUILD}"' export MACOSX_DEPLOYMENT_TARGET="'"${MACOSX_DEPLOYMENT_TARGET}"'" \&\&'
+  fi
+}
+
 # Helper to build a space-separated list of additional libs/flags (POSIX-safe)
 add_additional_lib() {
   lib="$1"
@@ -254,6 +284,7 @@ fi
 check_env
 check_mold
 check_emscripten
+check_macos_deployment_target
 check_bin_lib
 check_cargo
 

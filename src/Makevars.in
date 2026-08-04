@@ -30,6 +30,7 @@ $(STATLIB): remove-prev
 		exit 0; \
 	fi && \
 	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
+	  @BEFORE_CARGO_BUILD@ \
 	  if [ "$(TARGET)" != "wasm32-unknown-emscripten" ]; then \
 	    cargo build $(CARGO_BUILD_ARGS); \
 	  else \
