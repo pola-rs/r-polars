@@ -32,6 +32,7 @@ polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "ae588a9f2c
 polars-error = { git = "https://github.com/pola-rs/polars.git", rev = "ae588a9f2c91171f45bace43a99fb7b80b90847b", default-features = false }
 polars-plan = { git = "https://github.com/pola-rs/polars.git", rev = "ae588a9f2c91171f45bace43a99fb7b80b90847b", default-features = false }
 savvy = { version = "0.10", features = ["use-custom-error"] }
+serde-pickle = "1"
 serde_json = "1"
 state = "0.6"
 strum = "0.28"
@@ -63,7 +64,7 @@ features = [
 git = "https://github.com/pola-rs/polars.git"
 rev = "ae588a9f2c91171f45bace43a99fb7b80b90847b"
 default-features = false
-features = ["streaming"]
+features = ["streaming", "ffi_plugin"]
 
 [target.'cfg(not(target_os = "emscripten"))'.dependencies.polars-mem-engine]
 git = "https://github.com/pola-rs/polars.git"
