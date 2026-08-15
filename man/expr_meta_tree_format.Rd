@@ -27,9 +27,9 @@ Format the expression as a tree
 my_expr <- (pl$col("foo") * pl$col("bar"))$sum()$over(pl$col("ham")) / 2
 cat(my_expr$meta$tree_format())
 
-\\dontrun\{
+\dontrun{
 # This output can be displayed with DiagrammeR for instance
 graph <- my_expr$meta$tree_format(as_dot = TRUE)
 DiagrammeR::grViz(graph)
-\}
+}
 }
