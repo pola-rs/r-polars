@@ -41,6 +41,7 @@
 #' df$select(!cs$boolean()$as_expr())
 #' @aliases polars_selector Selector
 #' @export
+#' @usage cs
 cs <- new.env(parent = emptyenv())
 
 # The env for storing selector methods

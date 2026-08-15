@@ -146,14 +146,6 @@ PartitionBy <- new_class(
 
 #' @rdname polars_partitioning_scheme
 #' @aliases PartitionBy
-#' @param key Something can be coerced to a list of [expressions][polars_expr],
-#'   or `NULL` (default). Expressions to partition by.
-#' @param max_rows_per_file An integer-ish value indicating the maximum number of rows
-#'   to write for each file. Note that files may have less than this amount of rows.
-#' @param approximate_bytes_per_file An integer-ish value indicating the approximate
-#'   number of bytes to write to each file. This is measured as the estimated size of
-#'   the DataFrame in memory. If `NULL`, defaults to approximately 4GB when `key` is
-#'   specified without `max_rows_per_file`; otherwise unlimited.
 #' @order 0
 pl__PartitionBy <- PartitionBy
 
