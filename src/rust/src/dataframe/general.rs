@@ -43,11 +43,12 @@ impl PlRDataFrame {
             .collect();
         let mut list = OwnedListSexp::new(cols.len(), true)?;
         for (i, col) in cols.iter().enumerate() {
-            let _ = list.set_name_and_value(
-                i,
-                col.name(),
-                Sexp::try_from(PlRSeries::from(col.clone()))?,
-            );
+            // Set names first to avoid https://github.com/pola-rs/r-polars/issues/1411
+            list.set_name(i, col.name())?;
+            let series = Sexp::try_from(PlRSeries::from(col.clone()))?;
+            unsafe {
+                list.set_value_unchecked(i, series.0);
+            }
         }
         Ok(list.into())
     }
