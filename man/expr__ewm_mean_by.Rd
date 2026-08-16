@@ -39,8 +39,8 @@ By "calendar day", we mean the corresponding time on the next day
 A polars \link{expression}
 }
 \description{
-Given observations \eqn{x_0}, \eqn{x_1}, \\ldots, \eqn{x_{n-1}} at times
-\eqn{t_0}, \eqn{t_1}, \\ldots, \eqn{t_{n-1}}, the EWMA is calculated as
+Given observations \eqn{x_0}, \eqn{x_1}, \ldots, \eqn{x_{n-1}} at times
+\eqn{t_0}, \eqn{t_1}, \ldots, \eqn{t_{n-1}}, the EWMA is calculated as
 \deqn{y_0 = x_0}
 \deqn{\alpha_i = 1 - \exp \left\{ \frac{ -\ln(2)(t_i-t_{i-1}) } { \tau } \right\}}
 \deqn{y_i = \alpha_i x_i + (1 - \alpha_i) y_{i-1}; \quad i > 0}
