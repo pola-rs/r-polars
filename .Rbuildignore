@@ -25,3 +25,4 @@
 ^altdoc$
 ^docs$
 ^jarl\.toml$
+^mini-roxygen\.toml$

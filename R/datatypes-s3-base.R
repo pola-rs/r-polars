@@ -49,6 +49,7 @@ print.polars_dtype <- function(x, ...) {
 
 #' Format a data type
 #'
+#' @param x A [polars_dtype] object.
 #' @param ... Ignored.
 #' @param abbreviated `r lifecycle::badge("experimental")`
 #'   A boolean. If `TRUE`, use the abbreviated form of the dtype name,

@@ -15,6 +15,7 @@ To develop new features, you must install some tools outside of R.
 
 - [rustup](https://rustup.rs/)
 - [savvy-cli](https://github.com/yutannihilation/savvy/)
+- [mini-roxygen-cli](https://github.com/eitsupi/mini-roxygen/)
 
 Note that the `Taskfile.yml` used by [Task](https://taskfile.dev/) in the root directory of the repository
 provides some useful commands (e.g. `task build-documents` to build all R documents).
