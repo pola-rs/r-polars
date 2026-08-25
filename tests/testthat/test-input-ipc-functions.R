@@ -169,3 +169,32 @@ test_that("read_ipc_stream works", {
     as_polars_df(mtcars)$select(foo = pl$lit(1:32, pl$UInt32), "cyl")
   )
 })
+
+test_that("read/scan: arg rechunk is deprecated", {
+  tmpf <- withr::local_tempfile(fileext = ".arrow")
+  pl$DataFrame(a = 1:3)$write_ipc(tmpf)
+
+  expect_deprecated(pl$read_ipc(tmpf, rechunk = TRUE))
+  expect_deprecated(pl$scan_ipc(tmpf, rechunk = TRUE))
+
+  expect_no_condition(pl$read_ipc(tmpf))
+
+  local_lifecycle_silence()
+  expect_equal(pl$read_ipc(tmpf, rechunk = TRUE), pl$DataFrame(a = 1:3))
+})
+
+test_that("read_ipc_stream: arg rechunk is deprecated", {
+  skip_if_not_installed("nanoarrow")
+  tmpf <- withr::local_tempfile(fileext = ".arrows")
+  nanoarrow::write_nanoarrow(data.frame(a = 1:3), tmpf)
+
+  expect_deprecated(pl$read_ipc_stream(tmpf, rechunk = TRUE))
+
+  expect_no_condition(pl$read_ipc_stream(tmpf))
+
+  local_lifecycle_silence()
+  expect_equal(
+    pl$read_ipc_stream(tmpf, rechunk = TRUE),
+    pl$DataFrame(a = 1:3)
+  )
+})

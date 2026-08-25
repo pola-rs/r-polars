@@ -110,6 +110,35 @@ expr_arr_sort <- function(..., descending = FALSE, nulls_last = FALSE) {
   })
 }
 
+#' Compute the row-wise dot product with another Array expression
+#'
+#' Both inputs must contain arrays of the same width. Their inner data types
+#' are cast to a common supertype, which must be `Float32` or `Float64`. An
+#' input with one row is broadcast against the other input. If either input
+#' array is `null` for a row, the result for that row is `null`.
+#'
+#' @param other Array expression or query vector to compute the dot product
+#' with. A one-row input is broadcast against the other input.
+#'
+#' @details
+#' Elements are paired by position. Pairs where either element is `null` do not
+#' contribute to the sum. If a non-null row has no pairs where both elements
+#' are valid, the result is `0`.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(
+#'   a = list(c(1, 2), c(3, 4)),
+#'   b = list(c(5, 6), c(7, 8))
+#' )$cast(pl$Array(pl$Float64, 2))
+#'
+#' df$with_columns(dot = pl$col("a")$arr$dot("b"))
+expr_arr_dot <- function(other) {
+  wrap({
+    self$`_rexpr`$arr_dot(as_polars_expr(other)$`_rexpr`)
+  })
+}
+
 #' Reverse values in every sub-array
 #'
 #' @inherit as_polars_expr return

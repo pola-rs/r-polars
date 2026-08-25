@@ -89,3 +89,19 @@ test_that("scan_ndjson/read_ndjson error", {
   expect_error(pl$read_ndjson("foobar"), "os error 2")
   expect_snapshot(pl$scan_ndjson("foo", batch_size = 0), error = TRUE)
 })
+
+test_that("read/scan: arg rechunk is deprecated", {
+  tmpf <- withr::local_tempfile(fileext = ".ndjson")
+  pl$DataFrame(a = 1:3)$write_ndjson(tmpf)
+
+  expect_deprecated(pl$read_ndjson(tmpf, rechunk = TRUE))
+  expect_deprecated(pl$scan_ndjson(tmpf, rechunk = TRUE))
+
+  expect_no_condition(pl$read_ndjson(tmpf))
+
+  local_lifecycle_silence()
+  expect_equal(
+    pl$read_ndjson(tmpf, rechunk = TRUE),
+    pl$DataFrame(a = 1:3, .schema_overrides = list(a = pl$Int64))
+  )
+})

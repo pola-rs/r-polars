@@ -378,7 +378,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: unable to add a column of length 2 to a DataFrame of height 3
+      ! lengths don't match: can't broadcast Series 'col1' of length 2 to length 3
 
 # $map_columns() works non-existing column should error
 

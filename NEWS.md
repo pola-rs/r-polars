@@ -2,6 +2,41 @@
 
 ## polars (development version)
 
+This is an update that corresponds to Python Polars 1.44.0.
+
+### Deprecations
+
+* The `rechunk` argument of `pl$read_csv()`, `pl$scan_csv()`,
+  `pl$read_parquet()`, `pl$scan_parquet()`, `pl$read_ndjson()`,
+  `pl$scan_ndjson()`, `pl$read_ipc()`, `pl$scan_ipc()` and
+  `pl$read_ipc_stream()` is deprecated. Call `$rechunk()` on the output
+  instead
+  (#1842, [pola-rs/polars#28063](https://github.com/pola-rs/polars/pull/28063)).
+* `<expr>$rechunk()` is deprecated. Rechunking within a query is not
+  well-defined; call `$rechunk()` on the DataFrame after collecting the
+  results instead
+  (#1842, [pola-rs/polars#28692](https://github.com/pola-rs/polars/pull/28692)).
+* `<expr>$struct$rename_fields()` now warns when the number of names passed
+  doesn't match the number of fields of the struct. This will become an error
+  in Polars 2.0. Use the new `<expr>$struct$drop()` to drop the trailing
+  fields first
+  (#1842, [pola-rs/polars#28672](https://github.com/pola-rs/polars/pull/28672)).
+
+### New features
+
+* `<expr>$struct$drop()` to drop one or more fields from a struct
+  (#1842, [pola-rs/polars#28666](https://github.com/pola-rs/polars/pull/28666)).
+* `<expr>$arr$dot()` to compute the row-wise dot product of two `Array`
+  columns
+  (#1842, [pola-rs/polars#28504](https://github.com/pola-rs/polars/pull/28504)).
+* `<lazyframe>$join_where()` and `<dataframe>$join_where()` gain a `how`
+  argument, which accepts `"inner"` (default), `"left"` and `"right"`
+  (#1842, [pola-rs/polars#28880](https://github.com/pola-rs/polars/pull/28880)).
+* `pl$read_csv()` and `pl$scan_csv()` gain the experimental
+  `infer_schema_files` argument to control how many files are used to infer
+  the schema when reading several files at once
+  (#1842, [pola-rs/polars#28809](https://github.com/pola-rs/polars/pull/28809)).
+
 ## polars 1.14.0
 
 This is an update that corresponds to Python Polars 1.43.2.

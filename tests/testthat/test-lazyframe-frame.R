@@ -1820,6 +1820,67 @@ test_that("inequality joins work", {
   )
 })
 
+test_that("inequality joins support `how`", {
+  east <- pl$DataFrame(
+    id = c(100, 101, 102),
+    dur = c(120, 140, 160),
+    rev = c(12, 14, 16),
+    cores = c(2, 8, 4)
+  )
+  west <- pl$DataFrame(
+    t_id = c(404, 498, 676, 742),
+    time = c(90, 130, 150, 170),
+    cost = c(9, 13, 15, 16),
+    cores = c(4, 2, 1, 4)
+  )
+
+  # `how = "left"` keeps the unmatched row of the left frame
+  expect_query_equal(
+    .input$join_where(
+      .input2,
+      pl$col("dur") < pl$col("time"),
+      pl$col("rev") < pl$col("cost"),
+      how = "left"
+    )$sort("id", "t_id"),
+    .input = east,
+    .input2 = west,
+    pl$DataFrame(
+      id = rep(c(100, 101, 102), c(3, 2, 1)),
+      dur = rep(c(120, 140, 160), c(3, 2, 1)),
+      rev = rep(c(12, 14, 16), c(3, 2, 1)),
+      cores = rep(c(2, 8, 4), c(3, 2, 1)),
+      t_id = c(498, 676, 742, 676, 742, NA),
+      time = c(130, 150, 170, 150, 170, NA),
+      cost = c(13, 15, 16, 15, 16, NA),
+      cores_right = c(2, 1, 4, 1, 4, NA)
+    )
+  )
+
+  # `how = "right"` keeps the unmatched rows of the right frame
+  expect_query_equal(
+    .input$join_where(
+      .input2,
+      pl$col("dur") < pl$col("time"),
+      pl$col("rev") < pl$col("cost"),
+      how = "right"
+    )$select("t_id")$sort("t_id")$unique(maintain_order = TRUE),
+    .input = east,
+    .input2 = west,
+    pl$DataFrame(t_id = c(404, 498, 676, 742))
+  )
+
+  expect_query_error(
+    .input$join_where(
+      .input2,
+      pl$col("dur") < pl$col("time"),
+      how = "cross"
+    ),
+    .input = east,
+    .input2 = west,
+    "`how` must be one of"
+  )
+})
+
 test_that("inequality joins require suffix when identical column names", {
   east <- pl$DataFrame(
     id = c(100, 101, 102),

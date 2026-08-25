@@ -764,7 +764,10 @@ test_that("Expr_append", {
   )
 })
 
-test_that("rechunk() works", {
+test_that("rechunk() works but is deprecated", {
+  expect_deprecated(pl$col("a")$rechunk())
+
+  local_lifecycle_silence()
   series_list <- pl$DataFrame(a = 1:3, b = 4:6)$select(
     a_chunked = pl$col("a")$append(pl$col("b")),
     a_rechunked = pl$col("a")$append(pl$col("b"))$rechunk()

@@ -443,6 +443,7 @@ nav:
             - arr_arg_min: man/expr_arr_arg_min.md
             - arr_contains: man/expr_arr_contains.md
             - arr_count_matches: man/expr_arr_count_matches.md
+            - arr_dot: man/expr_arr_dot.md
             - arr_eval: man/expr_arr_eval.md
             - arr_explode: man/expr_arr_explode.md
             - arr_first: man/expr_arr_first.md
@@ -635,6 +636,7 @@ nav:
             - str_to_uppercase: man/expr_str_to_uppercase.md
             - str_zfill: man/expr_str_zfill.md
         - Struct:
+            - struct_drop: man/expr_struct_drop.md
             - struct_field: man/expr_struct_field.md
             - struct_json_encode: man/expr_struct_json_encode.md
             - struct_rename_fields: man/expr_struct_rename_fields.md

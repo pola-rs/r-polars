@@ -88,6 +88,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! cannot compare string with numeric type (i64)
+      
+      This error occurred in the following expression:
+      	col("x").arr.count_matches(["foo"])
 
 # arr$to_struct with fields = NULL
 
@@ -113,6 +116,11 @@
       pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(
         values = pl$Array(pl$Int64, 2)))$select(pl$col("values")$arr$to_struct(
         fields = fields))$unnest("values")
+    Condition
+      Warning:
+      struct.rename_fields() argument has a different number of fields than the struct it operates on (1 vs 2). This silently drops the last field of the struct, and it will become an error in Polars 2.0. To replicate the old behavior and suppress this warning, use struct.drop() to drop the trailing struct fields first (if any) and then call struct.rename_fields() normally.
+      Warning:
+      struct.rename_fields() argument has a different number of fields than the struct it operates on (1 vs 2). This silently drops the last field of the struct, and it will become an error in Polars 2.0. To replicate the old behavior and suppress this warning, use struct.drop() to drop the trailing struct fields first (if any) and then call struct.rename_fields() normally.
     Output
       shape: (3, 1)
       ┌─────┐
@@ -131,6 +139,11 @@
       pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(
         values = pl$Array(pl$Int64, 2)))$select(pl$col("values")$arr$to_struct(
         fields = fields))$unnest("values")
+    Condition
+      Warning:
+      struct.rename_fields() argument has a different number of fields than the struct it operates on (4 vs 2). This silently drops the last -2 names of the argument, and it will become an error in Polars 2.0. To replicate the old behavior and suppress this warning, use struct.drop() to drop the trailing struct fields first (if any) and then call struct.rename_fields() normally.
+      Warning:
+      struct.rename_fields() argument has a different number of fields than the struct it operates on (4 vs 2). This silently drops the last -2 names of the argument, and it will become an error in Polars 2.0. To replicate the old behavior and suppress this warning, use struct.drop() to drop the trailing struct fields first (if any) and then call struct.rename_fields() normally.
     Output
       shape: (3, 2)
       ┌─────┬─────┐

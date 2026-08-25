@@ -351,3 +351,44 @@ test_that("arg 'missing_columns' works", {
     pl$DataFrame(a = c(1L, 1L), b = c(2L, 2L), c = c(3L, NA))$cast(pl$Int64)
   )
 })
+
+test_that("read/scan: arg rechunk is deprecated", {
+  tmpf <- withr::local_tempfile()
+  writeLines("a,b\n1,a\n2,b", tmpf)
+
+  expect_deprecated(pl$read_csv(tmpf, rechunk = TRUE))
+  expect_deprecated(pl$scan_csv(tmpf, rechunk = TRUE))
+
+  # not deprecated when not passed
+  expect_no_condition(pl$read_csv(tmpf))
+
+  local_lifecycle_silence()
+  expect_equal(
+    pl$read_csv(tmpf, rechunk = TRUE),
+    pl$DataFrame(a = 1:2, b = c("a", "b"), .schema_overrides = list(a = pl$Int64))
+  )
+})
+
+test_that("read/scan: arg infer_schema_files works", {
+  tmpdir <- withr::local_tempdir()
+  writeLines("a\n1\n2", file.path(tmpdir, "1.csv"))
+  writeLines("a\nx\ny", file.path(tmpdir, "2.csv"))
+  glob <- file.path(tmpdir, "*.csv")
+
+  # by default all files are used for inference, so the common type is String
+  expect_equal(
+    pl$scan_csv(glob)$collect_schema(),
+    list(a = pl$String)
+  )
+
+  # only using the first file infers Int64
+  expect_equal(
+    pl$scan_csv(glob, infer_schema_files = 1)$collect_schema(),
+    list(a = pl$Int64)
+  )
+
+  expect_error(
+    pl$scan_csv(glob, infer_schema_files = 0),
+    "must be a whole number larger than or equal to 1"
+  )
+})

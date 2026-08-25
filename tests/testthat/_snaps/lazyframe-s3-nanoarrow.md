@@ -21,6 +21,7 @@
       
       You might want to try:
       - increasing `infer_schema_length` (e.g. `infer_schema_length=10000`),
+      - increasing `infer_schema_files` (e.g. `infer_schema_files=50`),
       - specifying correct dtype with the `schema_overrides` argument
       - setting `ignore_errors` to `True`,
       - adding `foo` to the `null_values` list.

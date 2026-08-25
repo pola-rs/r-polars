@@ -19,7 +19,7 @@ pl__scan_ndjson <- function(
   batch_size = 1024,
   n_rows = NULL,
   low_memory = FALSE,
-  rechunk = FALSE,
+  rechunk = deprecated(),
   row_index_name = NULL,
   row_index_offset = 0L,
   ignore_errors = FALSE,
@@ -80,6 +80,12 @@ pl__scan_ndjson <- function(
   }
   schema_overrides <- parse_into_list_of_datatypes(!!!schema_overrides)
 
+  if (is_present(rechunk)) {
+    warn_deprecated_rechunk()
+  } else {
+    rechunk <- FALSE
+  }
+
   PlRLazyFrame$new_from_ndjson(
     source = source,
     schema = schema,
@@ -115,7 +121,7 @@ pl__read_ndjson <- function(
   batch_size = 1024,
   n_rows = NULL,
   low_memory = FALSE,
-  rechunk = FALSE,
+  rechunk = deprecated(),
   row_index_name = NULL,
   row_index_offset = 0L,
   ignore_errors = FALSE,

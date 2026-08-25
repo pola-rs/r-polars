@@ -46,8 +46,12 @@
 #' not inferred and will be `pl$String` if not specified in `schema` or
 #' `schema_overrides`.
 #' @param infer_schema_length The maximum number of rows to scan for schema
-#' inference. If `NULL`, the full data may be scanned (this is slow). Set
-#' `infer_schema = FALSE` to read all columns as `pl$String`.
+#' inference. This applies individually to each file included according to
+#' `infer_schema_files`. If `NULL`, the full data may be scanned (this is
+#' slow). Set `infer_schema = FALSE` to read all columns as `pl$String`.
+#' @param infer_schema_files `r lifecycle::badge("experimental")` How many
+#' files to use when inferring the schema. If `NULL` (default), all files are
+#' used.
 #' @param encoding Either `"utf8"` or `"utf8-lossy"`. Lossy means that invalid
 #' UTF8 values are replaced with "?" characters.
 #' @param low_memory Reduce memory pressure at the expense of performance.
@@ -94,10 +98,11 @@ pl__scan_csv <- function(
   cache = FALSE,
   infer_schema = TRUE,
   infer_schema_length = 100,
+  infer_schema_files = NULL,
   n_rows = NULL,
   encoding = c("utf8", "utf8-lossy"),
   low_memory = FALSE,
-  rechunk = FALSE,
+  rechunk = deprecated(),
   skip_rows_after_header = 0,
   row_index_name = NULL,
   row_index_offset = 0,
@@ -123,6 +128,7 @@ pl__scan_csv <- function(
   check_list_of_polars_dtype(schema, allow_null = TRUE)
   check_character(storage_options, allow_null = TRUE)
   check_character(null_values, allow_null = TRUE)
+  check_number_whole(infer_schema_files, min = 1, allow_null = TRUE)
   encoding <- arg_match0(encoding, values = c("utf8", "utf8-lossy"))
   missing_columns <- arg_match0(missing_columns, values = c("insert", "raise"))
 
@@ -191,6 +197,12 @@ pl__scan_csv <- function(
     schema <- parse_into_list_of_datatypes(!!!schema)
   }
 
+  if (is_present(rechunk)) {
+    warn_deprecated_rechunk()
+  } else {
+    rechunk <- FALSE
+  }
+
   PlRLazyFrame$new_from_csv(
     source = source,
     separator = separator,
@@ -213,6 +225,7 @@ pl__scan_csv <- function(
     quote_char = quote_char,
     null_values = null_values,
     infer_schema_length = infer_schema_length,
+    infer_schema_files = infer_schema_files,
     row_index_name = row_index_name,
     row_index_offset = row_index_offset,
     n_rows = n_rows,
@@ -249,10 +262,11 @@ pl__read_csv <- function(
   cache = FALSE,
   infer_schema = TRUE,
   infer_schema_length = 100,
+  infer_schema_files = NULL,
   n_rows = NULL,
   encoding = c("utf8", "utf8-lossy"),
   low_memory = FALSE,
-  rechunk = FALSE,
+  rechunk = deprecated(),
   skip_rows_after_header = 0,
   row_index_name = NULL,
   row_index_offset = 0,

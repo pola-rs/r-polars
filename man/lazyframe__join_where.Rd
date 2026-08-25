@@ -4,7 +4,12 @@
 \alias{lazyframe__join_where}
 \title{Perform a join based on one or multiple (in)equality predicates}
 \usage{
-lazyframe__join_where(other, ..., suffix = "_right")
+lazyframe__join_where(
+  other,
+  ...,
+  how = c("inner", "left", "right"),
+  suffix = "_right"
+)
 }
 \arguments{
 \item{other}{LazyFrame to join with.}
@@ -15,6 +20,9 @@ suffix must be applied in the predicate. For example, if both tables have a
 column \code{"x"} that you want to use in the conditions, you must refer to the
 column of the right table as \code{"x<suffix>"}.}
 
+\item{how}{Join strategy, one of \code{"inner"} (default), \code{"left"} or
+\code{"right"}.}
+
 \item{suffix}{Suffix to append to columns with a duplicate name.}
 }
 \value{
@@ -23,9 +31,9 @@ A polars \link{LazyFrame}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-This performs an inner join, so only rows where all predicates are true are
-included in the result, and a row from either LazyFrame may be included
-multiple times in the result.
+By default, this performs an inner join, so only rows where all predicates
+are true are included in the result, and a row from either LazyFrame may be
+included multiple times in the result.
 
 Note that the row order of the input LazyFrames is not preserved.
 }
@@ -48,5 +56,13 @@ east$join_where(
   west,
   pl$col("dur") < pl$col("time"),
   pl$col("rev") < pl$col("cost")
+)$collect()
+
+# Keep all rows of the left frame, even those without a match
+east$join_where(
+  west,
+  pl$col("dur") < pl$col("time"),
+  pl$col("rev") < pl$col("cost"),
+  how = "left"
 )$collect()
 }

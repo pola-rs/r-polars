@@ -53,6 +53,9 @@
     Code
       pl$scan_ipc(tmpf, rechunk = list())
     Condition
+      Warning:
+      ! The `rechunk` argument is deprecated as of polars 1.15.0.
+      i Call `$rechunk()` on the output instead.
       Error in `pl$scan_ipc()`:
       ! Evaluation failed in `$scan_ipc()`.
       Caused by error:

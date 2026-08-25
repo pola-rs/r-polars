@@ -16,5 +16,5 @@
       Error in `pl$scan_ndjson()`:
       ! Evaluation failed in `$scan_ndjson()`.
       Caused by error:
-      ! out of range integral type conversion attempted
+      ! number would be zero for non-zero type
 

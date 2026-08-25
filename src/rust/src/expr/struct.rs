@@ -26,6 +26,15 @@ impl PlRExpr {
             .into())
     }
 
+    fn struct_drop(&self, names: StringSexp, strict: bool) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .struct_()
+            .drop(names.iter(), strict)
+            .into())
+    }
+
     fn struct_json_encode(&self) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {

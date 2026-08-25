@@ -10,7 +10,7 @@ pl__scan_ipc(
   ...,
   n_rows = NULL,
   cache = TRUE,
-  rechunk = FALSE,
+  rechunk = deprecated(),
   row_index_name = NULL,
   row_index_offset = 0L,
   storage_options = NULL,
@@ -32,7 +32,9 @@ for scanning cloud locations, see the \code{storage_options} parameter.}
 
 \item{cache}{Cache the result after reading.}
 
-\item{rechunk}{Reallocate to contiguous memory when all chunks/files are parsed.}
+\item{rechunk}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Reallocate to contiguous
+memory when all chunks/files are parsed. Call \verb{$rechunk()} on the output
+instead.}
 
 \item{row_index_name}{If not \code{NULL}, this will insert a row index column with
 the given name.}

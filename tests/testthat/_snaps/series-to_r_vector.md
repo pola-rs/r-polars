@@ -122,6 +122,11 @@
       ! Evaluation failed in `$to_r_vector()`.
       Caused by error:
       ! datetime '2020-11-01 01:00:00' is ambiguous in time zone 'America/New_York'. Please use `ambiguous` to tell how it should be localized.
+      
+      This error occurred in the following expression:
+      	col("").dt.replace_time_zone(["raise"])
+      while evaluating this larger expression:
+      	col("").dt.replace_time_zone(["raise"]).dt.convert_time_zone().dt.replace_time_zone(["raise"])
 
 # ambiguous argument 'earliest'
 
@@ -156,6 +161,11 @@
       ! Evaluation failed in `$to_r_vector()`.
       Caused by error:
       ! datetime '2020-03-08 02:00:00' is non-existent in time zone 'America/New_York'. You may be able to use `non_existent='null'` to return `null` in this case.
+      
+      This error occurred in the following expression:
+      	col("").dt.replace_time_zone(["raise"])
+      while evaluating this larger expression:
+      	col("").dt.replace_time_zone(["raise"]).dt.convert_time_zone().dt.replace_time_zone(["raise"])
 
 # non_existent argument 'null'
 
