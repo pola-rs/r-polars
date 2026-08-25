@@ -141,7 +141,7 @@ test_that("list$get", {
         } else if (i < 0) {
           rev(x)[-i]
         } else {
-          stop("internal error in test")
+          stop("internal error in test", call. = FALSE)
         }
       })
     )
