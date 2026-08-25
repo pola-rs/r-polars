@@ -283,7 +283,9 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
     seq_n_rows <- seq_len(n_rows)
     idx <- if (is_logical(i)) {
       # If logical, `i` must be of length 1 or number of rows
-      if (!length_i %in% c(1L, n_rows)) {
+      if (length_i %in% c(1L, n_rows)) {
+        seq_n_rows[i]
+      } else {
         abort(
           c(
             `!` = sprintf("Can't subset rows with `%s`.", deparse(i_arg)),
@@ -296,8 +298,6 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
           ),
           call = error_env
         )
-      } else {
-        seq_n_rows[i]
       }
     } else {
       idx <- if (is_character(i)) {

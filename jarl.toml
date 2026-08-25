@@ -5,7 +5,13 @@ ignore = [
   # Don't think they help for readability
   "sample_int", "nzchar",
   # No need here, and it would require installing R in Jarl's CI workflow
-  "DPLYR"
+  "DPLYR",
+  # Doesn't play well with our use of rlang::list2() internally
+  "missing_argument",
+  # Lots of unnecessary reports
+  "nested_pipe",
+  # This package has a lot of probably unavoidable false positives
+  "unused_object"
 ]
 default-exclude = true
 exclude = ["R/000-wrappers.R"]
