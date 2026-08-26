@@ -12,7 +12,7 @@ check_sha256 <- function(file, sum, os = c("linux", "macos", "windows")) {
       macos = system2("shasum", args = c("-a", "256", file), stdout = TRUE) |>
         gsub(r"(\s.*)", "", x = _),
       windows = system2("certutil", args = c("-hashfile", file, "SHA256"), stdout = TRUE)[2],
-      stop("unreachable")
+      stop("unreachable", call. = FALSE)
     )
   }
 
@@ -25,7 +25,8 @@ check_sha256 <- function(file, sum, os = c("linux", "macos", "windows")) {
       sum,
       "\n",
       "- Got:      ",
-      out
+      out,
+      call. = FALSE
     )
   }
 
@@ -42,7 +43,7 @@ which_os <- function() {
   } else if (R.version$os %in% c("linux-gnu", "linux-musl")) {
     R.version$os
   } else {
-    stop("Pre-built binaries are not available for OS: ", R.version$os)
+    stop("Pre-built binaries are not available for OS: ", R.version$os, call. = FALSE)
   }
 }
 
@@ -51,7 +52,7 @@ which_arch <- function() {
     R.Version()$arch,
     x86_64 = "x86_64",
     aarch64 = "aarch64",
-    stop("Pre-built binaries are not available for Arch: ", R.Version()$arch)
+    stop("Pre-built binaries are not available for Arch: ", R.Version()$arch, call. = FALSE)
   )
 }
 
@@ -110,7 +111,7 @@ lib_sum <- lib_data |>
   (\(x) x$sha256sum)()
 
 if (!length(lib_sum)) {
-  stop("No pre-built binary found at <", target_url, ">")
+  stop("No pre-built binary found at <", target_url, ">", call. = FALSE)
 }
 
 message("Found pre-built binary at <", target_url, ">.\nDownloading...")
