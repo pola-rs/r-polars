@@ -1,0 +1,4 @@
+# Ensure update this table if upstream polars add new compat levels
+[inline-r.substitutions]
+"(pl$CompatLevel$oldest:pl$CompatLevel$newest) |> format_code()" = '\code{0} and \code{1}'
+"pl$CompatLevel$newest |> format_code()" = '\code{1}'
