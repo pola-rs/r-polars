@@ -255,10 +255,10 @@ jobs:
           - ubuntu-latest
         r:
           - release
-          - "4.3"
+          - "4.5"
         exclude:
           - os: macos-latest
-            r: "4.3"
+            r: "4.5"
         include:
           - os: windows-11-arm
             r: release

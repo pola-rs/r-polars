@@ -161,14 +161,14 @@ jobs:
           - windows-latest
           - ubuntu-latest
         r:
-          - "4.3"
+          - "4.5"
           - release
           - devel
         exclude:
           - os: macos-latest
             r: devel
           - os: macos-latest
-            r: "4.3"
+            r: "4.5"
         include:
           - os: macos-15-intel
             r: release
