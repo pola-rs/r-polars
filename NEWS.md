@@ -70,6 +70,9 @@ This is an update that corresponds to Python Polars 1.44.1.
 * Fixed reading Parquet files whose data pages contain concatenated gzip
   members
   (#1842, [pola-rs/polars#28808](https://github.com/pola-rs/polars/pull/28808)).
+* The `mirai` integration no longer hangs indefinitely when a worker fails to
+  deserialize a Polars object (for example because the worker loaded a
+  different Polars build); the error is now reported immediately (#1842).
 
 ## polars 1.14.0
 
