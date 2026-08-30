@@ -2841,15 +2841,15 @@ lazyframe__describe <- function(
       } else {
         pl$lit(NA, dtype = dtype)
       }
-      min_expr <- if (!skip_minmax(dtype)) {
+      min_expr <- if (skip_minmax(dtype)) {
+        pl$lit(NA, dtype = dtype)
+      } else {
         pl$col(name)$min()
-      } else {
-        pl$lit(NA, dtype = dtype)
       }
-      max_expr <- if (!skip_minmax(dtype)) {
-        pl$col(name)$max()
-      } else {
+      max_expr <- if (skip_minmax(dtype)) {
         pl$lit(NA, dtype = dtype)
+      } else {
+        pl$col(name)$max()
       }
 
       # percentiles

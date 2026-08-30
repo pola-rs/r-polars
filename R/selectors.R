@@ -41,6 +41,7 @@
 #' df$select(!cs$boolean()$as_expr())
 #' @aliases polars_selector Selector
 #' @export
+#' @usage cs
 cs <- new.env(parent = emptyenv())
 
 # The env for storing selector methods
@@ -1070,8 +1071,8 @@ cs__matches <- function(pattern) {
         pattern <- substring(pattern, 1, nchar(pattern) - 2)
       }
 
-      pfx <- if (!startsWith(pattern, "^")) "^.*" else ""
-      sfx <- if (!endsWith(pattern, "$")) ".*$" else ""
+      pfx <- if (startsWith(pattern, "^")) "" else "^.*"
+      sfx <- if (endsWith(pattern, "$")) "" else ".*$"
       sprintf("%s%s%s", pfx, pattern, sfx) |>
         PlRSelector$matches()
     }

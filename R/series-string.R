@@ -41,11 +41,11 @@ series_str_to_datetime <- function(
   wrap({
     check_dots_empty0(...)
 
-    ambiguous <- if (!is_polars_series(ambiguous)) {
+    ambiguous <- if (is_polars_series(ambiguous)) {
+      ambiguous
+    } else {
       arg_match0(ambiguous, c("raise", "earliest", "latest", "null")) |>
         as_polars_series()
-    } else {
-      ambiguous
     }
 
     if (is.null(format) && is.null(time_zone)) {
@@ -134,11 +134,11 @@ series_str_strptime <- function(
         ambiguous = ambiguous
       )
     } else {
-      ambiguous <- if (!is_polars_series(ambiguous)) {
+      ambiguous <- if (is_polars_series(ambiguous)) {
+        ambiguous
+      } else {
         arg_match0(ambiguous, c("raise", "earliest", "latest", "null")) |>
           as_polars_series()
-      } else {
-        ambiguous
       }
       ambiguous_expr <- as_polars_expr(ambiguous)
       s <- wrap(self$`_s`)

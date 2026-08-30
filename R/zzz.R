@@ -21,6 +21,7 @@
 #' df <- pl$DataFrame(a = c(1, 2, 3), b = c(4, 5, 6))
 #' df
 #' @export
+#' @usage pl
 pl <- new.env(parent = emptyenv())
 
 # A function to collect objects to be assigned to the environment
