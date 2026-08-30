@@ -85,9 +85,11 @@ test_that("multiple paths works", {
 
 test_that("scan_ndjson/read_ndjson error", {
   expect_snapshot(pl$read_ndjson(character()), error = TRUE)
-  # Error message is platform dependent
+  # Error messages below are platform-dependent
   expect_error(pl$read_ndjson("foobar"), "os error 2")
-  expect_snapshot(pl$scan_ndjson("foo", batch_size = 0), error = TRUE)
+  # `batch_size = 0` fails when converting to `NonZeroUsize`; the message
+  # (from Rust's stdlib) differs across platforms / Rust versions.
+  expect_error(pl$scan_ndjson("foo", batch_size = 0))
 })
 
 test_that("read/scan: arg rechunk is deprecated", {

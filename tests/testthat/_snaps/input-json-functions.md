@@ -8,13 +8,3 @@
       Caused by error:
       ! `source` must have length > 0.
 
----
-
-    Code
-      pl$scan_ndjson("foo", batch_size = 0)
-    Condition
-      Error in `pl$scan_ndjson()`:
-      ! Evaluation failed in `$scan_ndjson()`.
-      Caused by error:
-      ! number would be zero for non-zero type
-
