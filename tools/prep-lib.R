@@ -81,6 +81,9 @@ current_os <- which_os()
 current_arch <- which_arch()
 vendor_sys_abi <- which_vendor_sys_abi(current_os, current_arch)
 
+current_r <- sprintf("%s.%s", R.version$major, R.version$minor) |>
+  numeric_version()
+
 target_triple <- if (nzchar(Sys.getenv("TARGET"))) {
   message(sprintf("TARGET is overridden to '%s'", Sys.getenv("TARGET")))
   Sys.getenv("TARGET")
@@ -112,6 +115,10 @@ lib_sum <- lib_data |>
 
 if (!length(lib_sum)) {
   stop("No pre-built binary found at <", target_url, ">", call. = FALSE)
+}
+
+if (current_r < "4.5.0") {
+  stop("Pre-built binaries are only available for R >= 4.5.0.", call. = FALSE)
 }
 
 message("Found pre-built binary at <", target_url, ">.\nDownloading...")
