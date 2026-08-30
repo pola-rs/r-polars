@@ -37,10 +37,20 @@ register_mirai_serial <- function() {
       )
     }
 
+    # The unserialize hooks run inside R's (de)serialization machinery on the
+    # daemon, *outside* mirai's task-evaluation loop. If they throw, mirai cannot
+    # turn the failure into an `errorValue` and the task never resolves, hanging
+    # the caller. Return the condition instead so the task fails normally.
+    ufunc_safe <- function(f) function(x) tryCatch(f(x), error = function(e) e)
+
     mirai::register_serial(
       c("polars_data_frame", "polars_lazy_frame", "polars_series"),
       sfunc = list(\(x) x$serialize(), \(x) x$serialize(), \(x) x$serialize()),
-      ufunc = list(pl$deserialize_df, pl$deserialize_lf, pl$deserialize_series)
+      ufunc = list(
+        ufunc_safe(pl$deserialize_df),
+        ufunc_safe(pl$deserialize_lf),
+        ufunc_safe(pl$deserialize_series)
+      )
     )
   }
 }
