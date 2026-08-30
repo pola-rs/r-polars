@@ -75,7 +75,7 @@ jobs:
       - name: pref for aarch64-unknown-linux-musl
         if: matrix.target == 'aarch64-unknown-linux-musl'
         run: |
-           echo 'CC_aarch64_unknown_linux_musl=musl-gcc' >>"$GITHUB_ENV"
+          echo 'CC_aarch64_unknown_linux_musl=musl-gcc' >>"$GITHUB_ENV"
       - name: limit rust build jobs on aarch64 linux
         if: runner.os == 'Linux' && runner.arch == 'ARM64'
         run: |
