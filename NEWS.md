@@ -2,6 +2,78 @@
 
 ## polars (development version)
 
+This is an update that corresponds to Python Polars 1.44.1.
+
+### Deprecations
+
+* The `rechunk` argument of `pl$read_csv()`, `pl$scan_csv()`,
+  `pl$read_parquet()`, `pl$scan_parquet()`, `pl$read_ndjson()`,
+  `pl$scan_ndjson()`, `pl$read_ipc()`, `pl$scan_ipc()` and
+  `pl$read_ipc_stream()` is deprecated. Call `$rechunk()` on the output
+  instead
+  (#1842, [pola-rs/polars#28063](https://github.com/pola-rs/polars/pull/28063)).
+* `<expr>$rechunk()` is deprecated. Rechunking within a query is not
+  well-defined; call `$rechunk()` on the DataFrame after collecting the
+  results instead
+  (#1842, [pola-rs/polars#28692](https://github.com/pola-rs/polars/pull/28692)).
+* `<expr>$struct$rename_fields()` now warns when the number of names passed
+  doesn't match the number of fields of the struct. This will become an error
+  in Polars 2.0. Use the new `<expr>$struct$drop()` to drop the trailing
+  fields first
+  (#1842, [pola-rs/polars#28672](https://github.com/pola-rs/polars/pull/28672)).
+
+### New features
+
+* `<expr>$struct$drop()` to drop one or more fields from a struct
+  (#1842, [pola-rs/polars#28666](https://github.com/pola-rs/polars/pull/28666)).
+* `<expr>$arr$dot()` to compute the row-wise dot product of two `Array`
+  columns of numeric type
+  (#1842, [pola-rs/polars#28504](https://github.com/pola-rs/polars/pull/28504),
+  [pola-rs/polars#28829](https://github.com/pola-rs/polars/pull/28829)).
+* `<lazyframe>$join_where()` and `<dataframe>$join_where()` gain a `how`
+  argument, which accepts `"inner"` (default), `"left"` and `"right"`
+  (#1842, [pola-rs/polars#28880](https://github.com/pola-rs/polars/pull/28880)).
+* `pl$read_csv()` and `pl$scan_csv()` gain the experimental
+  `infer_schema_files` argument to control how many files are used to infer
+  the schema when reading several files at once
+  (#1842, [pola-rs/polars#28809](https://github.com/pola-rs/polars/pull/28809)).
+
+### Bug fixes
+
+* `pl$when()$then()$otherwise()` could return incorrect results in some cases
+  involving broadcasting or a non-scalar null mask
+  (#1842, [pola-rs/polars#28970](https://github.com/pola-rs/polars/pull/28970),
+  [pola-rs/polars#28946](https://github.com/pola-rs/polars/pull/28946)).
+* `pl$min_horizontal()` and `pl$max_horizontal()` now ignore `NaN` values, as
+  `pl$min()` and `pl$max()` already do
+  (#1842, [pola-rs/polars#28710](https://github.com/pola-rs/polars/pull/28710)).
+* `<expr>$rolling_*_by()` now returns `null` for rows where the `by` column is
+  `null` instead of producing incorrect results
+  (#1842, [pola-rs/polars#27367](https://github.com/pola-rs/polars/pull/27367)).
+* `pl$business_day_count()` and `<expr>$dt$add_business_days()` now propagate
+  `null` values in their inputs correctly
+  (#1842, [pola-rs/polars#28703](https://github.com/pola-rs/polars/pull/28703)).
+* `<expr>$sum()` on a `Decimal` column now raises on overflow instead of
+  silently wrapping around
+  (#1842, [pola-rs/polars#28688](https://github.com/pola-rs/polars/pull/28688)).
+* `<expr>$is_nan()`, `<expr>$is_not_nan()`, `<expr>$is_finite()`, and
+  `<expr>$is_infinite()` now return `null` for `null` entries
+  (#1842, [pola-rs/polars#28883](https://github.com/pola-rs/polars/pull/28883)).
+* `pl$lit(x, dtype = pl$Unknown)` now behaves identically to `pl$lit(x)`
+  (#1842, [pola-rs/polars#28830](https://github.com/pola-rs/polars/pull/28830)).
+* Fixed several data-correctness issues when importing Arrow data: `null`
+  values in `Map` arrays, buffer offsets for `String` and `Binary`, and
+  nested `LargeList` values
+  (#1842, [pola-rs/polars#28680](https://github.com/pola-rs/polars/pull/28680),
+  [pola-rs/polars#28662](https://github.com/pola-rs/polars/pull/28662),
+  [pola-rs/polars#28632](https://github.com/pola-rs/polars/pull/28632)).
+* Fixed reading Parquet files whose data pages contain concatenated gzip
+  members
+  (#1842, [pola-rs/polars#28808](https://github.com/pola-rs/polars/pull/28808)).
+* The `mirai` integration no longer hangs indefinitely when a worker fails to
+  deserialize a Polars object (for example because the worker loaded a
+  different Polars build); the error is now reported immediately (#1842).
+
 ## polars 1.14.0
 
 This is an update that corresponds to Python Polars 1.43.2.

@@ -13,7 +13,9 @@
 #'   for scanning cloud locations, see the `storage_options` parameter.
 #' @param n_rows Stop reading from the source after reading `n_rows`.
 #' @param cache Cache the result after reading.
-#' @param rechunk Reallocate to contiguous memory when all chunks/files are parsed.
+#' @param rechunk `r lifecycle::badge("deprecated")` Reallocate to contiguous
+#'   memory when all chunks/files are parsed. Call `$rechunk()` on the output
+#'   instead.
 #' @param row_index_name If not `NULL`, this will insert a row index column with
 #'   the given name.
 #' @param row_index_offset Offset to start the row index column (only used if
@@ -72,7 +74,7 @@ pl__scan_ipc <- function(
   ...,
   n_rows = NULL,
   cache = TRUE,
-  rechunk = FALSE,
+  rechunk = deprecated(),
   row_index_name = NULL,
   row_index_offset = 0L,
   storage_options = NULL,
@@ -129,6 +131,12 @@ pl__scan_ipc <- function(
     hive_schema <- parse_into_list_of_datatypes(!!!hive_schema)
   }
 
+  if (is_present(rechunk)) {
+    warn_deprecated_rechunk()
+  } else {
+    rechunk <- FALSE
+  }
+
   PlRLazyFrame$new_from_ipc(
     source = source,
     n_rows = n_rows,
@@ -173,7 +181,7 @@ pl__read_ipc <- function(
   ...,
   n_rows = NULL,
   cache = TRUE,
-  rechunk = FALSE,
+  rechunk = deprecated(),
   row_index_name = NULL,
   row_index_offset = 0L,
   storage_options = NULL,
@@ -199,7 +207,9 @@ pl__read_ipc <- function(
 #' @inheritParams pl__scan_ipc
 #' @param source A character of the path to an Arrow IPC stream file.
 #' @param columns A character vector of column names to read.
-#' @param rechunk A logical value to indicate whether to make sure that all data is contiguous.
+#' @param rechunk `r lifecycle::badge("deprecated")` A logical value to indicate
+#'   whether to make sure that all data is contiguous. Call `$rechunk()` on the
+#'   output instead.
 #' @examplesIf requireNamespace("nanoarrow", quietly = TRUE)
 #' temp_file <- tempfile(fileext = ".arrows")
 #'
@@ -214,10 +224,16 @@ pl__read_ipc_stream <- function(
   n_rows = NULL,
   row_index_name = NULL,
   row_index_offset = 0L,
-  rechunk = TRUE
+  rechunk = deprecated()
 ) {
   check_dots_empty0(...)
   check_character(columns, allow_na = FALSE, allow_null = TRUE)
+
+  if (is_present(rechunk)) {
+    warn_deprecated_rechunk()
+  } else {
+    rechunk <- TRUE
+  }
 
   PlRDataFrame$read_ipc_stream(
     source = source,

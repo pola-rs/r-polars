@@ -55,6 +55,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! lengths don't match: arguments for `list.gather` have different lengths (3 != 2)
+      
+      This error occurred in the following expression:
+      	col("x").list.gather([Series[literal]])
 
 ---
 
@@ -67,6 +70,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! gather indices are out of bounds
+      
+      This error occurred in the following expression:
+      	col("x").list.gather([Series[literal]])
 
 ---
 
@@ -96,6 +102,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! conversion from `f64` to `u32` failed in column 'literal' for 1 out of 1 values: [-1.0]
+      
+      This error occurred in the following expression:
+      	col("a").list.gather_every([-1.0, 0.0])
 
 ---
 
@@ -122,6 +131,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! conversion from `f64` to `u32` failed in column 'literal' for 1 out of 1 values: [-1.0]
+      
+      This error occurred in the following expression:
+      	col("a").list.gather_every([2.0, -1.0])
 
 # join
 
@@ -164,7 +176,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: unable to add a column of length 6 to a DataFrame of height 2
+      ! lengths don't match: can't broadcast Series 'a' of length 6 to length 2
 
 # $list$sample() works
 
@@ -177,6 +189,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! fraction must be between 0.0 and 1.0, got: 2
+      
+      This error occurred in the following expression:
+      	col("values").list.sample_fraction([2.0])
 
 # list$to_struct with field = NULL, upper_bound = 1
 

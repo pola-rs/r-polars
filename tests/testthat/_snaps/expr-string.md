@@ -13,6 +13,9 @@
       You might want to try:
       - setting `strict=False` to set values that cannot be converted to `null`
       - using `str.strptime`, `str.to_date`, or `str.to_datetime` and providing a format string
+      
+      This error occurred in the following expression:
+      	col("x").str.strptime(["raise"])
 
 # str$strptime date
 
@@ -43,6 +46,9 @@
       You might want to try:
       - setting `strict=False` to set values that cannot be converted to `null`
       - using `str.strptime`, `str.to_date`, or `str.to_datetime` and providing a format string
+      
+      This error occurred in the following expression:
+      	col("x").str.strptime(["raise"])
 
 # str$strptime time
 
@@ -69,6 +75,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! conversion from `str` to `time` failed in column 'x' for 1 out of 3 values: ["invalid time"]
+      
+      This error occurred in the following expression:
+      	col("x").str.strptime(["raise"])
 
 # $str$to_date
 
@@ -85,6 +94,9 @@
       You might want to try:
       - setting `strict=False` to set values that cannot be converted to `null`
       - using `str.strptime`, `str.to_date`, or `str.to_datetime` and providing a format string
+      
+      This error occurred in the following expression:
+      	col("x").str.strptime(["raise"])
 
 # $str$to_time
 
@@ -97,6 +109,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! conversion from `str` to `time` failed in column 'x' for 1 out of 3 values: ["28:00:02"]
+      
+      This error occurred in the following expression:
+      	col("x").str.strptime(["raise"])
 
 # $str$to_datetime
 
@@ -113,6 +128,9 @@
       You might want to try:
       - setting `strict=False` to set values that cannot be converted to `null`
       - using `str.strptime`, `str.to_date`, or `str.to_datetime` and providing a format string
+      
+      This error occurred in the following expression:
+      	col("invalid").str.strptime(["raise"])
 
 ---
 
@@ -127,6 +145,9 @@
       ! `strptime` / `to_datetime` was called with no format and no time zone, but a time zone is part of the data.
       
       This was previously allowed but led to unpredictable and erroneous results. Give a format string, set a time zone or perform the operation eagerly on a Series instead of on an Expr.
+      
+      This error occurred in the following expression:
+      	col("with_tz").str.strptime(["raise"])
 
 # zfill
 
@@ -276,6 +297,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! invalid `base64` encoding found; try setting `strict=false` to ignore
+      
+      This error occurred in the following expression:
+      	col("x").str.base64_decode()
 
 ---
 
@@ -344,6 +368,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! invalid series dtype: expected `String`, got `f64` for series with name `literal`
+      
+      This error occurred in the following expression:
+      	"abc".str.extract_all([1.0])
 
 # str$count_matches
 
@@ -356,6 +383,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! invalid series dtype: expected `String`, got `f64` for series with name `literal`
+      
+      This error occurred in the following expression:
+      	col("foo").str.count_matches([5.0])
 
 # str$split
 
@@ -368,6 +398,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! invalid series dtype: expected `String`, got `f64` for series with name `literal`
+      
+      This error occurred in the following expression:
+      	col("x").str.split([42.0])
 
 ---
 
@@ -422,6 +455,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! invalid regex pattern in str.split_regex: (
+      
+      This error occurred in the following expression:
+      	col("x").str.split_regex(["("])
 
 # str$split_exact
 
@@ -455,6 +491,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! regex replacement with 'n > 1' not yet supported
+      
+      This error occurred in the following expression:
+      	col("x").str.replace(["\d", "foo"])
 
 # str$to_integer
 
@@ -467,6 +506,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! strict integer parsing failed for 1 value(s): ["hej"]; error message for the first shown value: 'invalid digit found in string' (consider non-strict parsing)
+      
+      This error occurred in the following expression:
+      	col("x").str.to_integer([10.0])
 
 # str$replace_many
 
@@ -479,7 +521,14 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! expected the same amount of patterns as replacement strings
+      ! lengths don't match: can't broadcast Series 'literal' of length 3 to length 2
+      
+      This error occurred in the following expression:
+      	col("x").str.replace_many([["hi", "hello"], ["foo", "bar", "foo2"]])
+      
+      
+      This error occurred with the following context stack:
+      	[1] expected the same amount of patterns as replacement strings
 
 ---
 
@@ -492,7 +541,14 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! expected the same amount of patterns as replacement strings
+      ! lengths don't match: can't broadcast Series 'literal' of length 2 to length 3
+      
+      This error occurred in the following expression:
+      	col("x").str.replace_many([["hi", "hello", "good morning"], ["foo", "bar"]])
+      
+      
+      This error occurred with the following context stack:
+      	[1] expected the same amount of patterns as replacement strings
 
 # str$strptime's deprecated operation
 
@@ -507,6 +563,9 @@
       ! `strptime` / `to_datetime` was called with no format and no time zone, but a time zone is part of the data.
       
       This was previously allowed but led to unpredictable and erroneous results. Give a format string, set a time zone or perform the operation eagerly on a Series instead of on an Expr.
+      
+      This error occurred in the following expression:
+      	"2020-01-01T01:00:00+09:00".str.strptime(["raise"])
 
 # str$find works
 
@@ -539,6 +598,9 @@
           (?iAa
              ^
       error: unrecognized flag
+      
+      This error occurred in the following expression:
+      	col("s").str.find(["(?iAa"])
 
 # $str$extract_many works
 
@@ -569,6 +631,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! can not match overlapping patterns when leftmost == True
+      
+      This error occurred in the following expression:
+      	"foo".str.extract_many([["foo"]])
 
 # to_decimal
 
@@ -678,4 +743,7 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! can not match overlapping patterns when leftmost == True
+      
+      This error occurred in the following expression:
+      	"foo".str.extract_many([["foo"]])
 

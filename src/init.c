@@ -869,6 +869,11 @@ SEXP savvy_PlRExpr_arr_count_matches__impl(SEXP self__, SEXP c_arg__expr) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_arr_dot__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRExpr_arr_dot__ffi(self__, c_arg__other);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_arr_eval__impl(SEXP self__, SEXP c_arg__expr, SEXP c_arg__as_list) {
     SEXP res = savvy_PlRExpr_arr_eval__ffi(self__, c_arg__expr, c_arg__as_list);
     return handle_result(res);
@@ -2549,6 +2554,11 @@ SEXP savvy_PlRExpr_str_zfill__impl(SEXP self__, SEXP c_arg__length) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_struct_drop__impl(SEXP self__, SEXP c_arg__names, SEXP c_arg__strict) {
+    SEXP res = savvy_PlRExpr_struct_drop__ffi(self__, c_arg__names, c_arg__strict);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_struct_field_by_index__impl(SEXP self__, SEXP c_arg__index) {
     SEXP res = savvy_PlRExpr_struct_field_by_index__ffi(self__, c_arg__index);
     return handle_result(res);
@@ -2764,8 +2774,8 @@ SEXP savvy_PlRLazyFrame_join_asof__impl(SEXP self__, SEXP c_arg__other, SEXP c_a
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_join_where__impl(SEXP self__, SEXP c_arg__other, SEXP c_arg__predicates, SEXP c_arg__suffix) {
-    SEXP res = savvy_PlRLazyFrame_join_where__ffi(self__, c_arg__other, c_arg__predicates, c_arg__suffix);
+SEXP savvy_PlRLazyFrame_join_where__impl(SEXP self__, SEXP c_arg__other, SEXP c_arg__predicates, SEXP c_arg__how, SEXP c_arg__suffix) {
+    SEXP res = savvy_PlRLazyFrame_join_where__ffi(self__, c_arg__other, c_arg__predicates, c_arg__how, c_arg__suffix);
     return handle_result(res);
 }
 
@@ -2794,8 +2804,8 @@ SEXP savvy_PlRLazyFrame_min__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_new_from_csv__impl(SEXP c_arg__source, SEXP c_arg__separator, SEXP c_arg__has_header, SEXP c_arg__ignore_errors, SEXP c_arg__skip_rows, SEXP c_arg__cache, SEXP c_arg__missing_utf8_is_empty_string, SEXP c_arg__low_memory, SEXP c_arg__rechunk, SEXP c_arg__skip_rows_after_header, SEXP c_arg__encoding, SEXP c_arg__try_parse_dates, SEXP c_arg__eol_char, SEXP c_arg__raise_if_empty, SEXP c_arg__truncate_ragged_lines, SEXP c_arg__decimal_comma, SEXP c_arg__glob, SEXP c_arg__row_index_offset, SEXP c_arg__missing_columns, SEXP c_arg__comment_prefix, SEXP c_arg__quote_char, SEXP c_arg__null_values, SEXP c_arg__infer_schema_length, SEXP c_arg__row_index_name, SEXP c_arg__n_rows, SEXP c_arg__overwrite_dtype, SEXP c_arg__schema, SEXP c_arg__storage_options, SEXP c_arg__include_file_paths) {
-    SEXP res = savvy_PlRLazyFrame_new_from_csv__ffi(c_arg__source, c_arg__separator, c_arg__has_header, c_arg__ignore_errors, c_arg__skip_rows, c_arg__cache, c_arg__missing_utf8_is_empty_string, c_arg__low_memory, c_arg__rechunk, c_arg__skip_rows_after_header, c_arg__encoding, c_arg__try_parse_dates, c_arg__eol_char, c_arg__raise_if_empty, c_arg__truncate_ragged_lines, c_arg__decimal_comma, c_arg__glob, c_arg__row_index_offset, c_arg__missing_columns, c_arg__comment_prefix, c_arg__quote_char, c_arg__null_values, c_arg__infer_schema_length, c_arg__row_index_name, c_arg__n_rows, c_arg__overwrite_dtype, c_arg__schema, c_arg__storage_options, c_arg__include_file_paths);
+SEXP savvy_PlRLazyFrame_new_from_csv__impl(SEXP c_arg__source, SEXP c_arg__separator, SEXP c_arg__has_header, SEXP c_arg__ignore_errors, SEXP c_arg__skip_rows, SEXP c_arg__cache, SEXP c_arg__missing_utf8_is_empty_string, SEXP c_arg__low_memory, SEXP c_arg__rechunk, SEXP c_arg__skip_rows_after_header, SEXP c_arg__encoding, SEXP c_arg__try_parse_dates, SEXP c_arg__eol_char, SEXP c_arg__raise_if_empty, SEXP c_arg__truncate_ragged_lines, SEXP c_arg__decimal_comma, SEXP c_arg__glob, SEXP c_arg__row_index_offset, SEXP c_arg__missing_columns, SEXP c_arg__comment_prefix, SEXP c_arg__quote_char, SEXP c_arg__null_values, SEXP c_arg__infer_schema_length, SEXP c_arg__infer_schema_files, SEXP c_arg__row_index_name, SEXP c_arg__n_rows, SEXP c_arg__overwrite_dtype, SEXP c_arg__schema, SEXP c_arg__storage_options, SEXP c_arg__include_file_paths) {
+    SEXP res = savvy_PlRLazyFrame_new_from_csv__ffi(c_arg__source, c_arg__separator, c_arg__has_header, c_arg__ignore_errors, c_arg__skip_rows, c_arg__cache, c_arg__missing_utf8_is_empty_string, c_arg__low_memory, c_arg__rechunk, c_arg__skip_rows_after_header, c_arg__encoding, c_arg__try_parse_dates, c_arg__eol_char, c_arg__raise_if_empty, c_arg__truncate_ragged_lines, c_arg__decimal_comma, c_arg__glob, c_arg__row_index_offset, c_arg__missing_columns, c_arg__comment_prefix, c_arg__quote_char, c_arg__null_values, c_arg__infer_schema_length, c_arg__infer_schema_files, c_arg__row_index_name, c_arg__n_rows, c_arg__overwrite_dtype, c_arg__schema, c_arg__storage_options, c_arg__include_file_paths);
     return handle_result(res);
 }
 
@@ -3626,6 +3636,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_arr_arg_min__impl", (DL_FUNC) &savvy_PlRExpr_arr_arg_min__impl, 1},
     {"savvy_PlRExpr_arr_contains__impl", (DL_FUNC) &savvy_PlRExpr_arr_contains__impl, 3},
     {"savvy_PlRExpr_arr_count_matches__impl", (DL_FUNC) &savvy_PlRExpr_arr_count_matches__impl, 2},
+    {"savvy_PlRExpr_arr_dot__impl", (DL_FUNC) &savvy_PlRExpr_arr_dot__impl, 2},
     {"savvy_PlRExpr_arr_eval__impl", (DL_FUNC) &savvy_PlRExpr_arr_eval__impl, 3},
     {"savvy_PlRExpr_arr_get__impl", (DL_FUNC) &savvy_PlRExpr_arr_get__impl, 3},
     {"savvy_PlRExpr_arr_join__impl", (DL_FUNC) &savvy_PlRExpr_arr_join__impl, 3},
@@ -3962,6 +3973,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_str_to_titlecase__impl", (DL_FUNC) &savvy_PlRExpr_str_to_titlecase__impl, 1},
     {"savvy_PlRExpr_str_to_uppercase__impl", (DL_FUNC) &savvy_PlRExpr_str_to_uppercase__impl, 1},
     {"savvy_PlRExpr_str_zfill__impl", (DL_FUNC) &savvy_PlRExpr_str_zfill__impl, 2},
+    {"savvy_PlRExpr_struct_drop__impl", (DL_FUNC) &savvy_PlRExpr_struct_drop__impl, 3},
     {"savvy_PlRExpr_struct_field_by_index__impl", (DL_FUNC) &savvy_PlRExpr_struct_field_by_index__impl, 2},
     {"savvy_PlRExpr_struct_json_encode__impl", (DL_FUNC) &savvy_PlRExpr_struct_json_encode__impl, 1},
     {"savvy_PlRExpr_struct_multiple_fields__impl", (DL_FUNC) &savvy_PlRExpr_struct_multiple_fields__impl, 2},
@@ -4005,13 +4017,13 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_group_by_dynamic__impl", (DL_FUNC) &savvy_PlRLazyFrame_group_by_dynamic__impl, 10},
     {"savvy_PlRLazyFrame_join__impl", (DL_FUNC) &savvy_PlRLazyFrame_join__impl, 12},
     {"savvy_PlRLazyFrame_join_asof__impl", (DL_FUNC) &savvy_PlRLazyFrame_join_asof__impl, 15},
-    {"savvy_PlRLazyFrame_join_where__impl", (DL_FUNC) &savvy_PlRLazyFrame_join_where__impl, 4},
+    {"savvy_PlRLazyFrame_join_where__impl", (DL_FUNC) &savvy_PlRLazyFrame_join_where__impl, 5},
     {"savvy_PlRLazyFrame_max__impl", (DL_FUNC) &savvy_PlRLazyFrame_max__impl, 1},
     {"savvy_PlRLazyFrame_mean__impl", (DL_FUNC) &savvy_PlRLazyFrame_mean__impl, 1},
     {"savvy_PlRLazyFrame_median__impl", (DL_FUNC) &savvy_PlRLazyFrame_median__impl, 1},
     {"savvy_PlRLazyFrame_merge_sorted__impl", (DL_FUNC) &savvy_PlRLazyFrame_merge_sorted__impl, 4},
     {"savvy_PlRLazyFrame_min__impl", (DL_FUNC) &savvy_PlRLazyFrame_min__impl, 1},
-    {"savvy_PlRLazyFrame_new_from_csv__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_csv__impl, 29},
+    {"savvy_PlRLazyFrame_new_from_csv__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_csv__impl, 30},
     {"savvy_PlRLazyFrame_new_from_ipc__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_ipc__impl, 11},
     {"savvy_PlRLazyFrame_new_from_ndjson__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_ndjson__impl, 13},
     {"savvy_PlRLazyFrame_new_from_parquet__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_parquet__impl, 17},

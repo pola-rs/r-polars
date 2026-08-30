@@ -64,7 +64,7 @@ pl__scan_parquet <- function(
   schema = NULL,
   hive_schema = NULL,
   try_parse_hive_dates = TRUE,
-  rechunk = FALSE,
+  rechunk = deprecated(),
   low_memory = FALSE,
   cache = TRUE,
   storage_options = NULL,
@@ -133,6 +133,12 @@ pl__scan_parquet <- function(
     hive_schema <- parse_into_list_of_datatypes(!!!hive_schema)
   }
 
+  if (is_present(rechunk)) {
+    warn_deprecated_rechunk()
+  } else {
+    rechunk <- FALSE
+  }
+
   PlRLazyFrame$new_from_parquet(
     source,
     n_rows = n_rows,
@@ -187,7 +193,7 @@ pl__read_parquet <- function(
   schema = NULL,
   hive_schema = NULL,
   try_parse_hive_dates = TRUE,
-  rechunk = FALSE,
+  rechunk = deprecated(),
   low_memory = FALSE,
   cache = TRUE,
   storage_options = NULL,

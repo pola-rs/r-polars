@@ -21,6 +21,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! found invalid category value when converting from physical to enum
+      
+      This error occurred in the following expression:
+      	col("x").cat.to()
 
 ---
 
@@ -33,6 +36,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! cannot convert column of type u16 to enum with physical type u8; column dtype must match the enum/categorical's physical type
+      
+      This error occurred in the following expression:
+      	col("x").cat.to()
 
 ---
 
@@ -45,6 +51,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! invalid dtype: expected an Enum or Categorical type, received 'String'
+      
+      This error occurred in the following expression:
+      	col("x").cat.to()
 
 ---
 

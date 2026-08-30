@@ -11,7 +11,7 @@ pl__read_ipc_stream(
   n_rows = NULL,
   row_index_name = NULL,
   row_index_offset = 0L,
-  rechunk = TRUE
+  rechunk = deprecated()
 )
 }
 \arguments{
@@ -29,7 +29,9 @@ the given name.}
 \item{row_index_offset}{Offset to start the row index column (only used if
 the name is set by \code{row_index_name}).}
 
-\item{rechunk}{A logical value to indicate whether to make sure that all data is contiguous.}
+\item{rechunk}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} A logical value to indicate
+whether to make sure that all data is contiguous. Call \verb{$rechunk()} on the
+output instead.}
 }
 \value{
 A polars \link{DataFrame}

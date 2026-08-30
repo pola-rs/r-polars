@@ -33,7 +33,7 @@
       Error in `lf$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: unable to add a column of length 0 to a DataFrame of height 10
+      ! lengths don't match: can't broadcast Series 'b' of length 0 to length 10
 
 # as_polars_expr works for classes chr (1)
 
@@ -100,7 +100,7 @@
       Error in `lf$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: unable to add a column of length 2 to a DataFrame of height 10
+      ! lengths don't match: can't broadcast Series 'b' of length 2 to length 10
 
 # as_polars_expr works for classes chr NA
 
@@ -165,7 +165,7 @@
       Error in `lf$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: unable to add a column of length 0 to a DataFrame of height 10
+      ! lengths don't match: can't broadcast Series 'b' of length 0 to length 10
 
 # as_polars_expr works for classes lgl (1)
 
@@ -232,7 +232,7 @@
       Error in `lf$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: unable to add a column of length 2 to a DataFrame of height 10
+      ! lengths don't match: can't broadcast Series 'b' of length 2 to length 10
 
 # as_polars_expr works for classes lgl NA
 
@@ -297,7 +297,7 @@
       Error in `lf$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: unable to add a column of length 0 to a DataFrame of height 10
+      ! lengths don't match: can't broadcast Series 'b' of length 0 to length 10
 
 # as_polars_expr works for classes int (1)
 
@@ -364,7 +364,7 @@
       Error in `lf$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: unable to add a column of length 2 to a DataFrame of height 10
+      ! lengths don't match: can't broadcast Series 'b' of length 2 to length 10
 
 # as_polars_expr works for classes int NA
 
@@ -429,7 +429,7 @@
       Error in `lf$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: unable to add a column of length 0 to a DataFrame of height 10
+      ! lengths don't match: can't broadcast Series 'b' of length 0 to length 10
 
 # as_polars_expr works for classes dbl (1)
 
@@ -496,7 +496,7 @@
       Error in `lf$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: unable to add a column of length 2 to a DataFrame of height 10
+      ! lengths don't match: can't broadcast Series 'b' of length 2 to length 10
 
 # as_polars_expr works for classes dbl NaN
 
@@ -701,7 +701,7 @@
       Error in `lf$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: unable to add a column of length 0 to a DataFrame of height 10
+      ! lengths don't match: can't broadcast Series 'b' of length 0 to length 10
 
 # as_polars_expr works for classes list (1)
 
@@ -768,7 +768,7 @@
       Error in `lf$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: unable to add a column of length 2 to a DataFrame of height 10
+      ! lengths don't match: can't broadcast Series 'b' of length 2 to length 10
 
 # as_polars_expr works for classes Date (0)
 
@@ -805,7 +805,7 @@
       Error in `lf$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: unable to add a column of length 0 to a DataFrame of height 10
+      ! lengths don't match: can't broadcast Series 'b' of length 0 to length 10
 
 # as_polars_expr works for classes Date (1)
 
@@ -872,7 +872,7 @@
       Error in `lf$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: unable to add a column of length 2 to a DataFrame of height 10
+      ! lengths don't match: can't broadcast Series 'b' of length 2 to length 10
 
 # as_polars_expr works for classes POSIXct (UTC) (0)
 
@@ -909,7 +909,7 @@
       Error in `lf$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: unable to add a column of length 0 to a DataFrame of height 10
+      ! lengths don't match: can't broadcast Series 'b' of length 0 to length 10
 
 # as_polars_expr works for classes POSIXct (UTC) (1)
 
@@ -976,7 +976,7 @@
       Error in `lf$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: unable to add a column of length 2 to a DataFrame of height 10
+      ! lengths don't match: can't broadcast Series 'b' of length 2 to length 10
 
 # as_polars_expr works for classes series (0)
 
@@ -1013,7 +1013,7 @@
       Error in `lf$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: unable to add a column of length 0 to a DataFrame of height 10
+      ! lengths don't match: can't broadcast Series 'b' of length 0 to length 10
 
 # as_polars_expr works for classes series (1)
 
@@ -1080,5 +1080,5 @@
       Error in `lf$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: unable to add a column of length 2 to a DataFrame of height 10
+      ! lengths don't match: can't broadcast Series 'b' of length 2 to length 10
 

@@ -252,6 +252,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! expected Int64, Int32, UInt64, or UInt32, got f64
+      
+      This error occurred in the following expression:
+      	col("x").add_business_days([5.0, [].alias("")])
 
 ---
 
@@ -320,6 +323,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid date components (2020, 13, 1) supplied
+      
+      This error occurred in the following expression:
+      	col("datetime").dt.replace([null, 13.0, null, null, null, null, null, "raise"])
 
 # dt$replace() basic behavior day
 
@@ -332,6 +338,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid date components (2020, 1, 32) supplied
+      
+      This error occurred in the following expression:
+      	col("datetime").dt.replace([null, null, 32.0, null, null, null, null, "raise"])
 
 # dt$replace() basic behavior hour
 
@@ -344,6 +353,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid time components (25, 0, 0, 0) supplied
+      
+      This error occurred in the following expression:
+      	col("datetime").dt.replace([null, null, null, 25.0, null, null, null, "raise"])
 
 # dt$replace() basic behavior minute
 
@@ -356,6 +368,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid time components (0, 61, 0, 0) supplied
+      
+      This error occurred in the following expression:
+      	col("datetime").dt.replace([null, null, null, null, 61.0, null, null, "raise"])
 
 # dt$replace() basic behavior second
 
@@ -368,6 +383,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid time components (0, 0, 61, 0) supplied
+      
+      This error occurred in the following expression:
+      	col("datetime").dt.replace([null, null, null, null, null, 61.0, null, "raise"])
 
 # dt$replace() argument 'ambiguous' ambiguous_pl=error, ambiguous_clock=error
 
@@ -380,4 +398,7 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! datetime '2018-10-28 02:30:00' is ambiguous in time zone 'Europe/Brussels'. Please use `ambiguous` to tell how it should be localized.
+      
+      This error occurred in the following expression:
+      	col("datetime").dt.replace([null, null, null, 2.0, null, null, null, "raise"])
 

@@ -27,7 +27,7 @@ impl From<ParseError> for RPolarsErr {
 impl From<RPolarsErr> for savvy::Error {
     fn from(err: RPolarsErr) -> Self {
         use RPolarsErr::*;
-        let default = || savvy::Error::new(format!("{}", &err).as_str());
+        let default = || savvy::Error::new(format!("{}", err).as_str());
 
         match err {
             Polars(PolarsError::ColumnNotFound(x)) => {

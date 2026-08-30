@@ -79,4 +79,7 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! get index is out of bounds
+      
+      This error occurred in the following expression:
+      	col("x").bin.get([0.0])
 

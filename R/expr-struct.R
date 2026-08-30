@@ -93,6 +93,35 @@ expr_struct_rename_fields <- function(names) {
   })
 }
 
+#' Drop one or more fields from the struct
+#'
+#' @param names Character vector of the names of the fields to drop.
+#' @param strict If `TRUE` (default), raise an error if any of the specified
+#' fields doesn't exist in the struct.
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(
+#'   aaa = c(1, 2),
+#'   bbb = c("ab", "cd"),
+#'   ccc = c(TRUE, NA)
+#' )$select(struct_col = pl$struct("aaa", "bbb", "ccc"))
+#' df
+#'
+#' df$select(pl$col("struct_col")$struct$drop("aaa"))
+#'
+#' # Dropping an unknown field is an error unless `strict = FALSE`
+#' df$select(pl$col("struct_col")$struct$drop("zzz", strict = FALSE))
+expr_struct_drop <- function(names, ..., strict = TRUE) {
+  wrap({
+    check_dots_empty0(...)
+    check_character(names, allow_na = FALSE)
+    check_bool(strict)
+    self$`_rexpr`$struct_drop(names, strict)
+  })
+}
+
 #' Convert this struct to a string column with json values
 #'
 #' @inherit as_polars_expr return

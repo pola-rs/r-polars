@@ -87,7 +87,7 @@ impl std::fmt::Display for PlRDataType {
                             if field.name().is_empty() {
                                 "".into()
                             } else {
-                                format!("`{}`=", &field.name())
+                                format!("`{}`=", field.name())
                             },
                             PlRDataType {
                                 dt: field.dtype().clone()

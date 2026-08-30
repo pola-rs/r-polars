@@ -20,10 +20,11 @@ pl__read_csv(
   cache = FALSE,
   infer_schema = TRUE,
   infer_schema_length = 100,
+  infer_schema_files = NULL,
   n_rows = NULL,
   encoding = c("utf8", "utf8-lossy"),
   low_memory = FALSE,
-  rechunk = FALSE,
+  rechunk = deprecated(),
   skip_rows_after_header = 0,
   row_index_name = NULL,
   row_index_offset = 0,
@@ -92,8 +93,13 @@ not inferred and will be \code{pl$String} if not specified in \code{schema} or
 \code{schema_overrides}.}
 
 \item{infer_schema_length}{The maximum number of rows to scan for schema
-inference. If \code{NULL}, the full data may be scanned (this is slow). Set
-\code{infer_schema = FALSE} to read all columns as \code{pl$String}.}
+inference. This applies individually to each file included according to
+\code{infer_schema_files}. If \code{NULL}, the full data may be scanned (this is
+slow). Set \code{infer_schema = FALSE} to read all columns as \code{pl$String}.}
+
+\item{infer_schema_files}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} How many
+files to use when inferring the schema. If \code{NULL} (default), all files are
+used.}
 
 \item{n_rows}{Stop reading from the source after reading \code{n_rows}.}
 
@@ -102,7 +108,9 @@ UTF8 values are replaced with "?" characters.}
 
 \item{low_memory}{Reduce memory pressure at the expense of performance.}
 
-\item{rechunk}{Reallocate to contiguous memory when all chunks/files are parsed.}
+\item{rechunk}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Reallocate to contiguous
+memory when all chunks/files are parsed. Call \verb{$rechunk()} on the output
+instead.}
 
 \item{skip_rows_after_header}{Skip this number of rows when the header is
 parsed.}

@@ -29,6 +29,10 @@ impl PlRExpr {
         Ok(self.inner.clone().arr().median().into())
     }
 
+    fn arr_dot(&self, other: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().arr().dot(other.inner.clone()).into())
+    }
+
     fn arr_to_list(&self) -> Result<Self> {
         Ok(self.inner.clone().arr().to_list().into())
     }

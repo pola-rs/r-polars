@@ -102,3 +102,43 @@ test_that("struct$unnest", {
     )
   )
 })
+
+test_that("struct$drop", {
+  df <- pl$DataFrame(
+    aaa = c(1, 2),
+    bbb = c("ab", "cd"),
+    ccc = c(TRUE, NA)
+  )$select(struct_col = pl$struct("aaa", "bbb", "ccc"))
+
+  expect_equal(
+    df$select(pl$col("struct_col")$struct$drop("aaa"))$unnest("struct_col"),
+    pl$DataFrame(bbb = c("ab", "cd"), ccc = c(TRUE, NA))
+  )
+
+  # several fields at once
+  expect_equal(
+    df$select(pl$col("struct_col")$struct$drop(c("aaa", "ccc")))$unnest(
+      "struct_col"
+    ),
+    pl$DataFrame(bbb = c("ab", "cd"))
+  )
+
+  # unknown fields error by default, are ignored with `strict = FALSE`
+  expect_error(
+    df$select(pl$col("struct_col")$struct$drop("zzz")),
+    "field not found: zzz"
+  )
+  expect_equal(
+    df$select(pl$col("struct_col")$struct$drop("zzz", strict = FALSE)),
+    df
+  )
+
+  expect_error(
+    df$select(pl$col("struct_col")$struct$drop(1)),
+    "must be a character vector"
+  )
+  expect_error(
+    df$select(pl$col("struct_col")$struct$drop("aaa", TRUE)),
+    "`...` must be empty"
+  )
+})

@@ -4364,6 +4364,13 @@ expr__qcut <- function(
 
 #' Create a single chunk of memory for this Series
 #'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' `<expr>$rechunk()` is deprecated. Rechunking within a query is not
+#' well-defined. Use `$rechunk()` on the DataFrame after collecting the results
+#' instead.
+#'
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(a = c(1, 1, 2))
@@ -4372,6 +4379,19 @@ expr__qcut <- function(
 #' df$select(pl$repeat_(NA, 3)$append(pl$col("a"))$rechunk())
 expr__rechunk <- function() {
   wrap({
+    deprecate_warn(
+      c(
+        `!` = sprintf(
+          "%s is deprecated as of %s 1.15.0.",
+          format_fn("rechunk"),
+          format_pkg("polars")
+        ),
+        i = sprintf(
+          "Rechunking within a query is not well-defined. Call %s on the DataFrame after collecting the results instead.", # nolint: line_length_linter
+          format_code("$rechunk()")
+        )
+      )
+    )
     self$`_rexpr`$rechunk()
   })
 }

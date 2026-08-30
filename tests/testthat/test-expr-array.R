@@ -451,3 +451,47 @@ test_that("arr$agg() works", {
     error = TRUE
   )
 })
+
+test_that("arr$dot", {
+  df <- pl$DataFrame(
+    a = list(c(1, 2), c(3, 4)),
+    b = list(c(5, 6), c(7, 8))
+  )$cast(pl$Array(pl$Float64, 2))
+
+  expect_equal(
+    df$select(dot = pl$col("a")$arr$dot("b")),
+    pl$DataFrame(dot = c(17, 53))
+  )
+
+  # an Expr works too
+  expect_equal(
+    df$select(dot = pl$col("a")$arr$dot(pl$col("b"))),
+    pl$DataFrame(dot = c(17, 53))
+  )
+
+  # a one-row input is broadcast
+  query <- pl$DataFrame(x = list(c(1, 0)))$cast(pl$Array(pl$Float64, 2))
+  expect_equal(
+    df$select(dot = pl$col("a")$arr$dot(pl$lit(query$get_column("x")))),
+    pl$DataFrame(dot = c(1, 3))
+  )
+
+  # null rows propagate
+  df_null <- pl$DataFrame(
+    a = list(c(1, 2), NULL),
+    b = list(c(5, 6), c(7, 8))
+  )$cast(pl$Array(pl$Float64, 2))
+  expect_equal(
+    df_null$select(dot = pl$col("a")$arr$dot("b")),
+    pl$DataFrame(dot = c(17, NA))
+  )
+
+  # arrays must have the same width
+  expect_error(
+    pl$DataFrame(a = list(c(1, 2)), b = list(c(1, 2, 3)))$cast(
+      a = pl$Array(pl$Float64, 2),
+      b = pl$Array(pl$Float64, 3)
+    )$select(pl$col("a")$arr$dot("b")),
+    "width"
+  )
+})

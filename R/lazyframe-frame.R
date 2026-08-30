@@ -1511,9 +1511,9 @@ lazyframe__join <- function(
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
-#' This performs an inner join, so only rows where all predicates are true are
-#' included in the result, and a row from either LazyFrame may be included
-#' multiple times in the result.
+#' By default, this performs an inner join, so only rows where all predicates
+#' are true are included in the result, and a row from either LazyFrame may be
+#' included multiple times in the result.
 #'
 #' Note that the row order of the input LazyFrames is not preserved.
 #'
@@ -1523,6 +1523,8 @@ lazyframe__join <- function(
 #' suffix must be applied in the predicate. For example, if both tables have a
 #' column `"x"` that you want to use in the conditions, you must refer to the
 #' column of the right table as `"x<suffix>"`.
+#' @param how Join strategy, one of `"inner"` (default), `"left"` or
+#' `"right"`.
 #' @param suffix Suffix to append to columns with a duplicate name.
 #'
 #' @inherit as_polars_lf return
@@ -1547,15 +1549,25 @@ lazyframe__join <- function(
 #'   pl$col("dur") < pl$col("time"),
 #'   pl$col("rev") < pl$col("cost")
 #' )$collect()
+#'
+#' # Keep all rows of the left frame, even those without a match
+#' east$join_where(
+#'   west,
+#'   pl$col("dur") < pl$col("time"),
+#'   pl$col("rev") < pl$col("cost"),
+#'   how = "left"
+#' )$collect()
 lazyframe__join_where <- function(
   other,
   ...,
+  how = c("inner", "left", "right"),
   suffix = "_right"
 ) {
   wrap({
     check_polars_lf(other)
+    how <- arg_match0(how, values = c("inner", "left", "right"))
     by <- parse_into_list_of_expressions(...)
-    self$`_ldf`$join_where(other$`_ldf`, by, suffix)
+    self$`_ldf`$join_where(other$`_ldf`, by, how, suffix)
   })
 }
 

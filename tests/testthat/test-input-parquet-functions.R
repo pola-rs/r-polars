@@ -157,3 +157,16 @@ test_that("arg 'missing_columns' works", {
     pl$DataFrame(a = c(1, 1), b = c(2, 2), c = c(3, NA))
   )
 })
+
+test_that("read/scan: arg rechunk is deprecated", {
+  tmpf <- withr::local_tempfile(fileext = ".parquet")
+  pl$DataFrame(a = 1:3)$write_parquet(tmpf)
+
+  expect_deprecated(pl$read_parquet(tmpf, rechunk = TRUE))
+  expect_deprecated(pl$scan_parquet(tmpf, rechunk = TRUE))
+
+  expect_no_condition(pl$read_parquet(tmpf))
+
+  local_lifecycle_silence()
+  expect_equal(pl$read_parquet(tmpf, rechunk = TRUE), pl$DataFrame(a = 1:3))
+})

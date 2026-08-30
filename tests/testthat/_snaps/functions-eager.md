@@ -36,7 +36,10 @@
       Error in `pl$concat()`:
       ! Evaluation failed in `$concat()`.
       Caused by error:
-      ! type Float64 is incompatible with expected type Int32: failed to vstack column 'a'
+      ! type Float64 is incompatible with expected type Int32
+      
+      This error occurred with the following context stack:
+      	[1] failed to vstack column 'a'
 
 # how = 'horizontal' works
 
@@ -142,7 +145,10 @@
       Error in `pl$concat()`:
       ! Evaluation failed in `$concat()`.
       Caused by error:
-      ! type String is incompatible with expected type Int32: failed to vstack column 'b'
+      ! type String is incompatible with expected type Int32
+      
+      This error occurred with the following context stack:
+      	[1] failed to vstack column 'b'
 
 ---
 

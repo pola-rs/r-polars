@@ -17,7 +17,7 @@ pl__read_parquet(
   schema = NULL,
   hive_schema = NULL,
   try_parse_hive_dates = TRUE,
-  rechunk = FALSE,
+  rechunk = deprecated(),
   low_memory = FALSE,
   cache = TRUE,
   storage_options = NULL,
@@ -78,7 +78,9 @@ If \code{NULL} (default), the schema of the Hive partitions is inferred.}
 \item{try_parse_hive_dates}{Whether to try parsing hive values as date /
 datetime types.}
 
-\item{rechunk}{Reallocate to contiguous memory when all chunks/files are parsed.}
+\item{rechunk}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Reallocate to contiguous
+memory when all chunks/files are parsed. Call \verb{$rechunk()} on the output
+instead.}
 
 \item{low_memory}{Reduce memory pressure at the expense of performance}
 

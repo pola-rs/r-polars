@@ -10,7 +10,11 @@ expr__rechunk()
 A polars \link{expression}
 }
 \description{
-Create a single chunk of memory for this Series
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\verb{<expr>$rechunk()} is deprecated. Rechunking within a query is not
+well-defined. Use \verb{$rechunk()} on the DataFrame after collecting the results
+instead.
 }
 \examples{
 df <- pl$DataFrame(a = c(1, 1, 2))

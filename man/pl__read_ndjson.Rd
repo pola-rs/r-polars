@@ -13,7 +13,7 @@ pl__read_ndjson(
   batch_size = 1024,
   n_rows = NULL,
   low_memory = FALSE,
-  rechunk = FALSE,
+  rechunk = deprecated(),
   row_index_name = NULL,
   row_index_offset = 0L,
   ignore_errors = FALSE,
@@ -38,8 +38,9 @@ a list. Names of list elements are used to match to inferred columns.}
 list. Names of list elements are used to match to inferred columns.}
 
 \item{infer_schema_length}{The maximum number of rows to scan for schema
-inference. If \code{NULL}, the full data may be scanned (this is slow). Set
-\code{infer_schema = FALSE} to read all columns as \code{pl$String}.}
+inference. This applies individually to each file included according to
+\code{infer_schema_files}. If \code{NULL}, the full data may be scanned (this is
+slow). Set \code{infer_schema = FALSE} to read all columns as \code{pl$String}.}
 
 \item{batch_size}{Number of rows to read in each batch.}
 
@@ -47,7 +48,9 @@ inference. If \code{NULL}, the full data may be scanned (this is slow). Set
 
 \item{low_memory}{Reduce memory pressure at the expense of performance.}
 
-\item{rechunk}{Reallocate to contiguous memory when all chunks/files are parsed.}
+\item{rechunk}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Reallocate to contiguous
+memory when all chunks/files are parsed. Call \verb{$rechunk()} on the output
+instead.}
 
 \item{row_index_name}{If not \code{NULL}, this will insert a row index column with
 the given name.}

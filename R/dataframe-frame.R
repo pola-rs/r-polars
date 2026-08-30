@@ -1326,9 +1326,9 @@ dataframe__shift <- function(n = 1, ..., fill_value = NULL) {
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
-#' This performs an inner join, so only rows where all predicates are true are
-#' included in the result, and a row from either DataFrame may be included
-#' multiple times in the result.
+#' By default, this performs an inner join, so only rows where all predicates
+#' are true are included in the result, and a row from either DataFrame may be
+#' included multiple times in the result.
 #'
 #' Note that the row order of the input DataFrames is not preserved.
 #'
@@ -1360,11 +1360,17 @@ dataframe__shift <- function(n = 1, ..., fill_value = NULL) {
 dataframe__join_where <- function(
   other,
   ...,
+  how = c("inner", "left", "right"),
   suffix = "_right"
 ) {
   wrap({
     check_polars_df(other)
-    self$lazy()$join_where(other$lazy(), ..., suffix = suffix)$collect(
+    self$lazy()$join_where(
+      other$lazy(),
+      ...,
+      how = how,
+      suffix = suffix
+    )$collect(
       optimizations = DEFAULT_EAGER_OPT_FLAGS
     )
   })

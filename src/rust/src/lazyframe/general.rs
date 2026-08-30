@@ -558,6 +558,7 @@ impl PlRLazyFrame {
             })))
             .suffix(suffix)
             .finish()
+            .map_err(RPolarsErr::from)?
             .into())
     }
 
@@ -602,17 +603,26 @@ impl PlRLazyFrame {
             .suffix(suffix)
             .maintain_order(maintain_order)
             .finish()
+            .map_err(RPolarsErr::from)?
             .into())
     }
 
-    fn join_where(&self, other: &PlRLazyFrame, predicates: ListSexp, suffix: &str) -> Result<Self> {
+    fn join_where(
+        &self,
+        other: &PlRLazyFrame,
+        predicates: ListSexp,
+        how: &str,
+        suffix: &str,
+    ) -> Result<Self> {
         let ldf = self.ldf.clone();
         let other = other.ldf.clone();
         let predicates = <Wrap<Vec<Expr>>>::try_from(predicates)?.0;
+        let how = <Wrap<JoinType>>::try_from(how)?.0;
 
         Ok(ldf
             .join_builder()
             .with(other)
+            .how(how)
             .suffix(suffix)
             .join_where(predicates)
             .into())
@@ -988,6 +998,7 @@ impl PlRLazyFrame {
         quote_char: Option<&str>,
         null_values: Option<StringSexp>,
         infer_schema_length: Option<NumericScalar>,
+        infer_schema_files: Option<NumericScalar>,
         row_index_name: Option<&str>,
         n_rows: Option<NumericScalar>,
         overwrite_dtype: Option<ListSexp>,
@@ -1004,6 +1015,12 @@ impl PlRLazyFrame {
             let infer_schema_length = match infer_schema_length {
                 Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
                 None => None,
+            };
+            let infer_schema_files = match infer_schema_files {
+                Some(x) => NonZeroUsize::new(<Wrap<usize>>::try_from(x)?.0).ok_or_else(|| {
+                    RPolarsErr::Other("`infer_schema_files` must be greater than 0".to_string())
+                })?,
+                None => NonZeroUsize::MAX,
             };
             let missing_columns_policy = <Wrap<MissingColumnsPolicy>>::try_from(missing_columns)?.0;
             let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
@@ -1070,6 +1087,7 @@ impl PlRLazyFrame {
             LazyCsvReader::new_with_sources(sources)
                 .with_cloud_options(cloud_options)
                 .with_infer_schema_length(infer_schema_length)
+                .with_infer_schema_files(infer_schema_files)
                 .with_separator(separator)
                 .with_has_header(has_header)
                 .with_ignore_errors(ignore_errors)

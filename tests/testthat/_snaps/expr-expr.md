@@ -47,6 +47,9 @@
       ! lengths don't match: the length of the window expression did not match that of the group
       
       Error originated in expression: 'col("val").top_k([2.0]).over([col("a")])'
+      
+      This error occurred in the following expression:
+      	col("val").top_k([2.0]).over([col("a")])
 
 # cast
 
@@ -60,6 +63,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! casting from Utf8View to Boolean not supported
+      
+      This error occurred in the following expression:
+      	col("Species").strict_cast(String).strict_cast(Boolean)
 
 ---
 
@@ -72,6 +78,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! conversion from `i64` to `i32` failed in column 'big' for 1 out of 1 values: [1125899906842624]
+      
+      This error occurred in the following expression:
+      	col("big").strict_cast(Int32)
 
 ---
 
@@ -190,6 +199,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! truncation ('to_zero') can only be used on numeric types
+      
+      This error occurred in the following expression:
+      	col("x").truncate()
 
 # gather that
 
@@ -202,6 +214,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! gather indices are out of bounds
+      
+      This error occurred in the following expression:
+      	Series[literal].gather(11)
 
 # get null_on_oob
 
@@ -214,6 +229,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! gather indices are out of bounds
+      
+      This error occurred in the following expression:
+      	Series[literal].get(11)
 
 # fill_nan() works
 
@@ -226,6 +244,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! lengths don't match: shapes of `self`, `mask` and `other` are not suitable for `zip_with` operation
+      
+      This error occurred in the following expression:
+      	.when([(col("a").is_not_nan()) | (col("a").is_null())]).then(col("a")).otherwise(Series[literal])
 
 # std var
 
@@ -272,6 +293,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! `by` column in `rolling_*_by` must be the same length as values column
+      
+      This error occurred in the following expression:
+      	col("a").rolling_min_by([1.0])
 
 # rolling_*_by: arg 'min_samples'
 
@@ -299,6 +323,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! `rolling_rank_by` window needs to be closed on the right side (i.e., `closed` must be `right` or `both`)
+      
+      This error occurred in the following expression:
+      	col("a").rolling_rank_by([col("date")])
 
 ---
 
@@ -442,6 +469,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! lengths don't match: cannot take a larger sample than the total population when `with_replacement=false`
+      
+      This error occurred in the following expression:
+      	col("a").sample([2.0])
 
 # ewm_
 
@@ -571,6 +601,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! conversion from `f64` to `u64` failed in column 'literal' for 1 out of 1 values: [-1.0]
+      
+      This error occurred in the following expression:
+      	1.0.extend_constant([5.0, -1.0])
 
 ---
 
@@ -583,6 +616,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! conversion from `f64` to `u64` failed in column 'literal' for 1 out of 1 values: [inf]
+      
+      This error occurred in the following expression:
+      	1.0.extend_constant([5.0, inf])
 
 # entropy
 
@@ -595,6 +631,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! expected numerical input for 'entropy'
+      
+      This error occurred in the following expression:
+      	Series[literal].entropy()
 
 # implode
 
@@ -635,6 +674,9 @@
       ! incomplete mapping specified for `replace_strict`
       
       Hint: Pass a `default` value to set unmapped values.
+      
+      This error occurred in the following expression:
+      	col("a").replace_strict([[2.0], [100.0]])
 
 ---
 
@@ -730,6 +772,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! `abs_tol` must be non-negative but got -1
+      
+      This error occurred in the following expression:
+      	col("a").is_close([col("b")])
 
 ---
 
@@ -742,6 +787,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! `rel_tol` must be non-negative but got -1
+      
+      This error occurred in the following expression:
+      	col("a").is_close([col("b")])
 
 ---
 
@@ -810,6 +858,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! aggregation 'item' expected a single value, got 2 values
+      
+      This error occurred in the following expression:
+      	col("x").item()
 
 ---
 
@@ -822,6 +873,9 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! aggregation 'item' expected a single value, got none
+      
+      This error occurred in the following expression:
+      	col("x").item()
 
 ---
 
