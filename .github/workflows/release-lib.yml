@@ -103,8 +103,8 @@ jobs:
         # that the cc crate passes; the wrapper rewrites it to Zig's own format
         # (`aarch64-linux-musl`) before invoking `zig cc`.
         run: |
-          echo 'CC_aarch64_unknown_linux_musl=$GITHUB_WORKSPACE/.github/scripts/zig-aarch64-musl-cc.sh' >>"$GITHUB_ENV"
-          echo 'CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=$GITHUB_WORKSPACE/.github/scripts/zig-aarch64-musl-cc.sh' >>"$GITHUB_ENV"
+          echo "CC_aarch64_unknown_linux_musl=$GITHUB_WORKSPACE/.github/scripts/zig-aarch64-musl-cc.sh" >>"$GITHUB_ENV"
+          echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=$GITHUB_WORKSPACE/.github/scripts/zig-aarch64-musl-cc.sh" >>"$GITHUB_ENV"
 
       - name: limit rust build jobs on aarch64 linux
         if: runner.os == 'Linux' && runner.arch == 'ARM64'

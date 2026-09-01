@@ -9,20 +9,20 @@ set -eu
 
 newargs=""
 for arg in "$@"; do
-  # Skip a stray leading `cc` subcommand; cc-rs invokes the wrapper with the
-  # flags only, but some callers pass `cc` explicitly.
-  case "$arg" in
-    cc)
-      continue
-      ;;
-  esac
-  case "$arg" in
-    --target=aarch64-unknown-linux-musl)
-      arg="--target=aarch64-linux-musl"
-      ;;
-  esac
-  # Quote each arg so paths with spaces survive the final eval.
-  newargs="$newargs '$(printf '%s' "$arg" | sed "s/'/'\\\\''/g")'"
+	# Skip a stray leading `cc` subcommand; cc-rs invokes the wrapper with the
+	# flags only, but some callers pass `cc` explicitly.
+	case "$arg" in
+	cc)
+		continue
+		;;
+	esac
+	case "$arg" in
+	--target=aarch64-unknown-linux-musl)
+		arg="--target=aarch64-linux-musl"
+		;;
+	esac
+	# Quote each arg so paths with spaces survive the final eval.
+	newargs="$newargs '$(printf '%s' "$arg" | sed "s/'/'\\\\''/g")'"
 done
 
 eval "exec zig cc $newargs"
