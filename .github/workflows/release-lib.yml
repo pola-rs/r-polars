@@ -74,9 +74,18 @@ jobs:
 
       - name: setup Zig (C toolchain for musl cross-compilation)
         if: matrix.target == 'aarch64-unknown-linux-musl'
-        uses: mlugg/setup-zig@v1
-        with:
-          version: 0.16.0
+        run: |
+          # This runner is native ARM64, so install the aarch64-linux Zig build
+          # directly instead of relying on an action (the action's post-cleanup
+          # step fails to find `zig` on PATH).
+          mkdir -p "$HOME/.zig"
+          curl -fsSL \
+            https://ziglang.org/download/0.16.0/zig-aarch64-linux-0.16.0.tar.xz \
+            -o /tmp/zig.tar.xz
+          echo 'ea4b09bfb22ec6f6c6ceac57ab63efb6b46e17ab08d21f69f3a48b38e1534f17  /tmp/zig.tar.xz' | sha256sum -c -
+          tar -xJf /tmp/zig.tar.xz -C "$HOME/.zig" --strip-components=1
+          echo "$HOME/.zig" >>"$GITHUB_PATH"
+          zig version
 
       - name: pref for aarch64-unknown-linux-musl
         if: matrix.target == 'aarch64-unknown-linux-musl'
