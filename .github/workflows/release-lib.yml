@@ -152,7 +152,7 @@ jobs:
   build-aarch64-musl:
     runs-on: ubuntu-24.04-arm
     container:
-      image: alpine:3.22
+      image: alpine:3.24
     permissions:
       contents: read
       packages: write
@@ -163,7 +163,7 @@ jobs:
       - name: install system deps
         run: |
           # R and R-dev live in Alpine's community repository
-          apk add --no-cache --repository "https://dl-cdn.alpinelinux.org/alpine/v3.22/community" \
+          apk add --no-cache --repository "https://dl-cdn.alpinelinux.org/alpine/v3.24/community" \
             bash curl gcc jq make musl-dev pkg-config R R-dev tar
 
       - name: install Rust toolchain
