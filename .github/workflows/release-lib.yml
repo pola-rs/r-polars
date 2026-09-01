@@ -91,15 +91,20 @@ jobs:
 
       - name: pref for aarch64-unknown-linux-musl
         if: matrix.target == 'aarch64-unknown-linux-musl'
-        # Use Zig's cross-compiler (zig cc) as the C compiler and linker for
-        # the musl target. Unlike the previous CC=aarch64-linux-gnu-gcc
-        # workaround, zig cc targets musl directly, so jemalloc's C is compiled
+        # Use Zig's cross-compiler as the C compiler and linker for the musl
+        # target. Unlike the previous CC=aarch64-linux-gnu-gcc workaround, zig
+        # cc targets musl directly, so C (jemalloc, ring, ...) is compiled
         # against musl headers and never leaks glibc fortification symbols like
         # __fprintf_chk (fixes #1760). It also provides working atomics, unlike
         # the Ubuntu musl-gcc wrapper.
+        #
+        # We point at the wrapper script rather than `zig cc` directly because
+        # Zig rejects the Rust-style target triple (`aarch64-unknown-linux-musl`)
+        # that the cc crate passes; the wrapper rewrites it to Zig's own format
+        # (`aarch64-linux-musl`) before invoking `zig cc`.
         run: |
-          echo 'CC_aarch64_unknown_linux_musl=zig cc' >>"$GITHUB_ENV"
-          echo 'CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=zig cc' >>"$GITHUB_ENV"
+          echo 'CC_aarch64_unknown_linux_musl=$GITHUB_WORKSPACE/.github/scripts/zig-aarch64-musl-cc.sh' >>"$GITHUB_ENV"
+          echo 'CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=$GITHUB_WORKSPACE/.github/scripts/zig-aarch64-musl-cc.sh' >>"$GITHUB_ENV"
 
       - name: limit rust build jobs on aarch64 linux
         if: runner.os == 'Linux' && runner.arch == 'ARM64'
