@@ -84,7 +84,9 @@ jobs:
             -o /tmp/zig.tar.xz
           echo 'ea4b09bfb22ec6f6c6ceac57ab63efb6b46e17ab08d21f69f3a48b38e1534f17  /tmp/zig.tar.xz' | sha256sum -c -
           tar -xJf /tmp/zig.tar.xz -C "$HOME/.zig" --strip-components=1
+          # GITHUB_PATH only applies to later steps, so export for this step
           echo "$HOME/.zig" >>"$GITHUB_PATH"
+          export PATH="$HOME/.zig:$PATH"
           zig version
 
       - name: pref for aarch64-unknown-linux-musl
