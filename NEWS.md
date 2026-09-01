@@ -50,8 +50,8 @@ This is an update that corresponds to Python Polars 1.44.1.
 * `<expr>$rolling_*_by()` now returns `null` for rows where the `by` column is
   `null` instead of producing incorrect results
   (#1842, [pola-rs/polars#27367](https://github.com/pola-rs/polars/pull/27367)).
-* `pl$business_day_count()` and `<expr>$dt$add_business_days()` now propagate
-  `null` values in their inputs correctly
+* `<expr>$dt$add_business_days()` now propagates `null` values in its input
+  correctly
   (#1842, [pola-rs/polars#28703](https://github.com/pola-rs/polars/pull/28703)).
 * `<expr>$sum()` on a `Decimal` column now raises on overflow instead of
   silently wrapping around
