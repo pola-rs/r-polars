@@ -74,11 +74,8 @@ jobs:
 
       - name: pref for aarch64-unknown-linux-musl
         if: matrix.target == 'aarch64-unknown-linux-musl'
-        # Ref <https://github.com/rust-lang/stacker/issues/80>
         run: |
-          echo 'CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-gnu-gcc' >>"$GITHUB_ENV"
-          echo 'CC=aarch64-linux-gnu-gcc' >>"$GITHUB_ENV"
-
+          echo 'CC_aarch64_unknown_linux_musl=musl-gcc' >>"$GITHUB_ENV"
       - name: limit rust build jobs on aarch64 linux
         if: runner.os == 'Linux' && runner.arch == 'ARM64'
         run: |
