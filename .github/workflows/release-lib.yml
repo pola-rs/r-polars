@@ -72,12 +72,39 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y musl-tools
 
+      - name: setup Zig (C toolchain for musl cross-compilation)
+        if: matrix.target == 'aarch64-unknown-linux-musl'
+        run: |
+          # This runner is native ARM64, so install the aarch64-linux Zig build
+          # directly instead of relying on an action (the action's post-cleanup
+          # step fails to find `zig` on PATH).
+          mkdir -p "$HOME/.zig"
+          curl -fsSL \
+            https://ziglang.org/download/0.16.0/zig-aarch64-linux-0.16.0.tar.xz \
+            -o /tmp/zig.tar.xz
+          echo 'ea4b09bfb22ec6f6c6ceac57ab63efb6b46e17ab08d21f69f3a48b38e1534f17  /tmp/zig.tar.xz' | sha256sum -c -
+          tar -xJf /tmp/zig.tar.xz -C "$HOME/.zig" --strip-components=1
+          # GITHUB_PATH only applies to later steps, so export for this step
+          echo "$HOME/.zig" >>"$GITHUB_PATH"
+          export PATH="$HOME/.zig:$PATH"
+          zig version
+
       - name: pref for aarch64-unknown-linux-musl
         if: matrix.target == 'aarch64-unknown-linux-musl'
-        # Ref <https://github.com/rust-lang/stacker/issues/80>
+        # Use Zig's cross-compiler as the C compiler and linker for the musl
+        # target. Unlike the previous CC=aarch64-linux-gnu-gcc workaround, zig
+        # cc targets musl directly, so C (jemalloc, ring, ...) is compiled
+        # against musl headers and never leaks glibc fortification symbols like
+        # __fprintf_chk (fixes #1760). It also provides working atomics, unlike
+        # the Ubuntu musl-gcc wrapper.
+        #
+        # We point at the wrapper script rather than `zig cc` directly because
+        # Zig rejects the Rust-style target triple (`aarch64-unknown-linux-musl`)
+        # that the cc crate passes; the wrapper rewrites it to Zig's own format
+        # (`aarch64-linux-musl`) before invoking `zig cc`.
         run: |
-          echo 'CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-gnu-gcc' >>"$GITHUB_ENV"
-          echo 'CC=aarch64-linux-gnu-gcc' >>"$GITHUB_ENV"
+          echo "CC_aarch64_unknown_linux_musl=$GITHUB_WORKSPACE/.github/scripts/zig-aarch64-musl-cc.sh" >>"$GITHUB_ENV"
+          echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=$GITHUB_WORKSPACE/.github/scripts/zig-aarch64-musl-cc.sh" >>"$GITHUB_ENV"
 
       - name: limit rust build jobs on aarch64 linux
         if: runner.os == 'Linux' && runner.arch == 'ARM64'
