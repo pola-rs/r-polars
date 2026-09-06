@@ -1572,13 +1572,40 @@ test_that("hash", {
     pl$col(c("Sepal.Width", "Species"))$unique()$hash()$implode()
   )
   hash_values2 <- df$select(
-    pl$col(c("Sepal.Width", "Species"))$unique()$hash(1, 2, 3, 4)$implode()
+    suppressWarnings(pl$col(c("Sepal.Width", "Species"))$unique()$hash(1, 2, 3, 4))$implode()
   )
 
   expect_false(
     identical(as.list(hash_values1, as_series = FALSE), as.list(hash_values2, as_series = FALSE))
   )
   expect_false(anyDuplicated(as.list(hash_values1, as_series = FALSE)$Sepal.Width) > 0)
+})
+
+test_that("hash additional seeds are deprecated", {
+  local_lifecycle_warnings()
+  expr <- pl$col("a")
+
+  expect_snapshot(invisible(expr$hash(seed_1 = 1)), cnd_class = TRUE)
+  expect_snapshot(invisible(expr$hash(seed_2 = 2)), cnd_class = TRUE)
+  expect_snapshot(invisible(expr$hash(seed_3 = 3)), cnd_class = TRUE)
+  expect_snapshot(
+    invisible(expr$hash(seed_1 = 1, seed_2 = 2, seed_3 = 3)),
+    cnd_class = TRUE
+  )
+  expect_snapshot(invisible(expr$hash(seed_1 = NULL)), cnd_class = TRUE)
+
+  expect_no_condition(expr$hash())
+  expect_no_condition(expr$hash(seed = 42))
+
+  df <- pl$DataFrame(a = 1:3)
+  old <- suppressWarnings(df$select(pl$col("a")$hash(42, 1, 2, 3)))
+  explicit <- suppressWarnings(
+    df$select(pl$col("a")$hash(seed = 42, seed_1 = 1, seed_2 = 2, seed_3 = 3))
+  )
+  expect_equal(old, explicit)
+
+  null_seed <- suppressWarnings(df$select(pl$col("a")$hash(seed = 42, seed_1 = NULL)))
+  expect_equal(null_seed, df$select(pl$col("a")$hash(seed = 42)))
 })
 
 test_that("reinterpret", {

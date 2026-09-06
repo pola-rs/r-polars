@@ -19,6 +19,8 @@
   `list(c(...))`.
 * The `...` arguments of `pl$col()`, `cs$by_name()`, and `cs$by_dtype()`
   are deprecated. Pass column names or data types as one vector or list.
+* The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` and
+  `<dataframe>$hash_rows()` are deprecated. Use `seed` instead.
 
 ## polars 1.15.0
 

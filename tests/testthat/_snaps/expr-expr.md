@@ -282,6 +282,51 @@
       Caused by error:
       ! `closed` must be one of "both", "left", "right", or "none", not "foo".
 
+# hash additional seeds are deprecated
+
+    Code
+      invisible(expr$hash(seed_1 = 1))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
+      i Use the `seed` argument instead.
+
+---
+
+    Code
+      invisible(expr$hash(seed_2 = 2))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
+      i Use the `seed` argument instead.
+
+---
+
+    Code
+      invisible(expr$hash(seed_3 = 3))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
+      i Use the `seed` argument instead.
+
+---
+
+    Code
+      invisible(expr$hash(seed_1 = 1, seed_2 = 2, seed_3 = 3))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
+      i Use the `seed` argument instead.
+
+---
+
+    Code
+      invisible(expr$hash(seed_1 = NULL))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
+      i Use the `seed` argument instead.
+
 # rolling_*_by only works with date, datetime, or integers
 
     Code

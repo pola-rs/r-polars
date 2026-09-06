@@ -69,6 +69,20 @@ warn_arrow_compression_default <- function(user_env = caller_env(2)) {
   )
 }
 
+warn_deprecated_hash_seeds <- function(fn, user_env = caller_env(2)) {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "The `seed_1`, `seed_2`, and `seed_3` arguments of %s are deprecated as of %s 1.16.0.",
+        format_fn(fn),
+        format_pkg("polars")
+      ),
+      i = sprintf("Use the %s argument instead.", format_arg("seed"))
+    ),
+    user_env = user_env
+  )
+}
+
 warn_deprecated_selector_dots <- function(
   fn,
   argument,
