@@ -41,7 +41,10 @@ warn_deprecated_file_cache_ttl <- function(user_env = caller_env(2)) {
         format_arg("file_cache_ttl"),
         format_pkg("polars")
       ),
-      i = "The Polars 2.0 streaming readers do not use the file cache, and this argument has no direct replacement."
+      i = paste0(
+        "The Polars 2.0 streaming readers do not use the file cache, ",
+        "and this argument has no direct replacement."
+      )
     ),
     user_env = user_env
   )
@@ -59,7 +62,10 @@ warn_deprecated_file_cache <- function(user_env = caller_env(2)) {
         format_arg("cache"),
         format_pkg("polars")
       ),
-      i = "The Polars 2.0 streaming readers do not use the file cache, and this argument has no direct replacement."
+      i = paste0(
+        "The Polars 2.0 streaming readers do not use the file cache, ",
+        "and this argument has no direct replacement."
+      )
     ),
     user_env = user_env
   )

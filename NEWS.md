@@ -4,10 +4,11 @@
 
 ### Deprecations
 
-* The deprecated `file_cache_ttl` argument of the CSV, IPC, and NDJSON
-  readers now warns that the file cache is no longer supported and has no
-  direct replacement in Polars 2.0. It is no longer translated into
-  `storage_options`.
+* The `cache` argument of CSV and Arrow file readers is deprecated: Polars 2.0
+  streaming readers do not use the file cache, and `cache` has no direct
+  replacement. The deprecated `file_cache_ttl` argument of CSV, Arrow file,
+  and NDJSON readers now has the same guidance and is no longer translated
+  into `storage_options`.
 * Omitting `compression` in Arrow file output functions now warns that the
   default will change from `"zstd"` to `"uncompressed"` in Polars 2.0. Pass
   `compression = "zstd"` to keep the current behavior or
