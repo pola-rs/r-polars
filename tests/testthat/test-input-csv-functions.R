@@ -324,7 +324,7 @@ test_that("read/scan: arg 'file_cache_ttl' is deprecated", {
   expect_no_condition(pl$read_csv(tmpf))
 
   captured <- NULL
-  original <- polars:::PlRLazyFrame$new_from_csv
+  original <- get("PlRLazyFrame", asNamespace("polars"))$new_from_csv
   mock <- new.env(parent = emptyenv())
   mock$new_from_csv <- function(...) {
     captured <<- list(...)

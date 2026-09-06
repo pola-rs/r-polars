@@ -67,7 +67,7 @@ test_that("read/scan: arg 'file_cache_ttl' is deprecated", {
   expect_no_condition(pl$read_ipc(tmpf))
 
   captured <- NULL
-  original <- polars:::PlRLazyFrame$new_from_ipc
+  original <- get("PlRLazyFrame", asNamespace("polars"))$new_from_ipc
   mock <- new.env(parent = emptyenv())
   mock$new_from_ipc <- function(...) {
     captured <<- list(...)

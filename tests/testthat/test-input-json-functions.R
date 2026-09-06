@@ -110,7 +110,7 @@ test_that("read/scan: arg 'file_cache_ttl' is deprecated", {
   expect_no_condition(pl$read_ndjson(tmpf))
 
   captured <- NULL
-  original <- polars:::PlRLazyFrame$new_from_ndjson
+  original <- get("PlRLazyFrame", asNamespace("polars"))$new_from_ndjson
   mock <- new.env(parent = emptyenv())
   mock$new_from_ndjson <- function(...) {
     captured <<- list(...)
