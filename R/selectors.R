@@ -86,7 +86,7 @@ selector__sub <- function(other) {
 selector__or <- function(other) {
   wrap({
     if (is_column(other)) {
-      warn_deprecated_selector_column_operation("|")
+      warn_deprecated_selector_col("|")
       other <- cs__by_name(other$meta$output_name())
     }
     if (is_polars_selector(other)) {
@@ -100,7 +100,7 @@ selector__or <- function(other) {
 selector__and <- function(other) {
   wrap({
     if (is_column(other)) {
-      warn_deprecated_selector_column_operation("&")
+      warn_deprecated_selector_col("&")
       colname <- other$meta$output_name()
       other <- cs__by_name(colname)
     }
@@ -115,7 +115,7 @@ selector__and <- function(other) {
 selector__xor <- function(other) {
   wrap({
     if (is_column(other)) {
-      warn_deprecated_selector_column_operation("$xor()")
+      warn_deprecated_selector_col("$xor()")
       other <- cs$by_name(other$meta$output_name())
     }
     if (is_polars_selector(other)) {
