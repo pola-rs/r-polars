@@ -118,3 +118,25 @@ warn_deprecated_selector_dots <- function(
     user_env = user_env
   )
 }
+
+warn_deprecated_selector_column_operation <- function(
+  operator,
+  user_env = caller_env(2)
+) {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "Using %s as the right-hand operand of %s on a selector is deprecated as of %s 1.16.0.",
+        format_code("pl$col(...)"),
+        format_code(operator),
+        format_pkg("polars")
+      ),
+      i = sprintf(
+        "Use %s for set operations or %s for element-wise operations.",
+        format_code("cs$by_name(...)"),
+        format_code("<selector>$as_expr()")
+      )
+    ),
+    user_env = user_env
+  )
+}

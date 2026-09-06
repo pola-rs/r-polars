@@ -27,6 +27,9 @@
   have a local scope and are always ordered lexically.
 * `<Enum>$union()` is deprecated. Construct an Enum explicitly from the
   combined categories instead.
+* Using a bare `pl$col()` as the right-hand operand of selector `&`, `|`, or
+  `$xor()` is deprecated. Use `cs$by_name()` for set operations or
+  `<selector>$as_expr()` for element-wise operations.
 
 ## polars 1.15.0
 
