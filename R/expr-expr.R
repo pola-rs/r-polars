@@ -2063,8 +2063,8 @@ expr__log1p <- function() {
 #' Hash elements
 #'
 #' @param seed Integer, random seed parameter. Defaults to 0.
-#' @param seed_1,seed_2,seed_3 Integer, random seed parameters. Default to
-#' `seed` if not set.
+#' @param seed_1,seed_2,seed_3 `r lifecycle::badge("deprecated")` Integer,
+#' random seed parameters. Default to `seed` if not set.
 #' @inherit as_polars_expr return
 #'
 #' @details
@@ -2074,12 +2074,21 @@ expr__log1p <- function() {
 #'
 #' @examples
 #' df <- pl$DataFrame(a = c(1, 2, NA), b = c("x", NA, "z"))
-#' df$with_columns(pl$all()$hash(10, 20, 30, 40))
-expr__hash <- function(seed = 0, seed_1 = NULL, seed_2 = NULL, seed_3 = NULL) {
+#' df$with_columns(pl$all()$hash(seed = 10))
+expr__hash <- function(
+  seed = 0,
+  seed_1 = deprecated(),
+  seed_2 = deprecated(),
+  seed_3 = deprecated()
+) {
+  if (is_present(seed_1) || is_present(seed_2) || is_present(seed_3)) {
+    warn_deprecated_hash_seeds("<expr>$hash")
+  }
+
   wrap({
-    seed_1 <- seed_1 %||% seed
-    seed_2 <- seed_2 %||% seed
-    seed_3 <- seed_3 %||% seed
+    seed_1 <- if (is_present(seed_1)) seed_1 %||% seed else seed
+    seed_2 <- if (is_present(seed_2)) seed_2 %||% seed else seed
+    seed_3 <- if (is_present(seed_3)) seed_3 %||% seed else seed
     self$`_rexpr`$hash(seed, seed_1, seed_2, seed_3)
   })
 }

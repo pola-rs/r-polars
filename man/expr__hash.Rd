@@ -4,13 +4,18 @@
 \alias{expr__hash}
 \title{Hash elements}
 \usage{
-expr__hash(seed = 0, seed_1 = NULL, seed_2 = NULL, seed_3 = NULL)
+expr__hash(
+  seed = 0,
+  seed_1 = deprecated(),
+  seed_2 = deprecated(),
+  seed_3 = deprecated()
+)
 }
 \arguments{
 \item{seed}{Integer, random seed parameter. Defaults to 0.}
 
-\item{seed_1, seed_2, seed_3}{Integer, random seed parameters. Default to
-\code{seed} if not set.}
+\item{seed_1, seed_2, seed_3}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Integer,
+random seed parameters. Default to \code{seed} if not set.}
 }
 \value{
 A polars \link{expression}
@@ -25,5 +30,5 @@ version.
 }
 \examples{
 df <- pl$DataFrame(a = c(1, 2, NA), b = c("x", NA, "z"))
-df$with_columns(pl$all()$hash(10, 20, 30, 40))
+df$with_columns(pl$all()$hash(seed = 10))
 }

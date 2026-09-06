@@ -1,3 +1,12 @@
+# Series hash uses the Expr seed deprecation
+
+    Code
+      invisible(series$hash(seed_1 = 1))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
+      i Use the `seed` argument instead.
+
 # .DollarNames(<series>)
 
     Code
