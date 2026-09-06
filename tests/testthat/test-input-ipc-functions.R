@@ -49,6 +49,50 @@ test_that("Test reading data from Apache Arrow file", {
   )
 })
 
+test_that("read/scan: arg 'file_cache_ttl' is deprecated", {
+  tmpf <- withr::local_tempfile()
+  pl$DataFrame(a = 1:3)$write_ipc(tmpf, compression = "uncompressed")
+
+  expect_warning(
+    pl$scan_ipc(tmpf, file_cache_ttl = 10),
+    "file cache is no longer supported",
+    class = "polars_deprecation_warning"
+  )
+  expect_warning(
+    pl$read_ipc(tmpf, file_cache_ttl = 10),
+    "file cache is no longer supported",
+    class = "polars_deprecation_warning"
+  )
+  expect_no_condition(pl$scan_ipc(tmpf))
+  expect_no_condition(pl$read_ipc(tmpf))
+
+  captured <- NULL
+  original <- polars:::PlRLazyFrame$new_from_ipc
+  mock <- new.env(parent = emptyenv())
+  mock$new_from_ipc <- function(...) {
+    captured <<- list(...)
+    original(...)
+  }
+  testthat::local_mocked_bindings(PlRLazyFrame = mock, .package = "polars")
+
+  expect_warning(
+    pl$scan_ipc(
+      tmpf,
+      file_cache_ttl = 10,
+      storage_options = c(
+        endpoint_url = "https://example.com",
+        file_cache_ttl = "60"
+      )
+    ),
+    "file cache is no longer supported",
+    class = "polars_deprecation_warning"
+  )
+  expect_identical(
+    captured$storage_options,
+    c(endpoint_url = "https://example.com", file_cache_ttl = "60")
+  )
+})
+
 test_that("scanning from hive partition works", {
   skip_if_not_installed("arrow")
   temp_dir <- withr::local_tempdir()

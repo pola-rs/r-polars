@@ -92,6 +92,50 @@ test_that("scan_ndjson/read_ndjson error", {
   expect_error(pl$scan_ndjson("foo", batch_size = 0))
 })
 
+test_that("read/scan: arg 'file_cache_ttl' is deprecated", {
+  tmpf <- withr::local_tempfile()
+  writeLines('{"a": 1}', tmpf)
+
+  expect_warning(
+    pl$scan_ndjson(tmpf, file_cache_ttl = 10),
+    "file cache is no longer supported",
+    class = "polars_deprecation_warning"
+  )
+  expect_warning(
+    pl$read_ndjson(tmpf, file_cache_ttl = 10),
+    "file cache is no longer supported",
+    class = "polars_deprecation_warning"
+  )
+  expect_no_condition(pl$scan_ndjson(tmpf))
+  expect_no_condition(pl$read_ndjson(tmpf))
+
+  captured <- NULL
+  original <- polars:::PlRLazyFrame$new_from_ndjson
+  mock <- new.env(parent = emptyenv())
+  mock$new_from_ndjson <- function(...) {
+    captured <<- list(...)
+    original(...)
+  }
+  testthat::local_mocked_bindings(PlRLazyFrame = mock, .package = "polars")
+
+  expect_warning(
+    pl$scan_ndjson(
+      tmpf,
+      file_cache_ttl = 10,
+      storage_options = c(
+        endpoint_url = "https://example.com",
+        file_cache_ttl = "60"
+      )
+    ),
+    "file cache is no longer supported",
+    class = "polars_deprecation_warning"
+  )
+  expect_identical(
+    captured$storage_options,
+    c(endpoint_url = "https://example.com", file_cache_ttl = "60")
+  )
+})
+
 test_that("read/scan: arg rechunk is deprecated", {
   tmpf <- withr::local_tempfile(fileext = ".ndjson")
   pl$DataFrame(a = 1:3)$write_ndjson(tmpf)

@@ -37,9 +37,9 @@
 #' @param retries `r lifecycle::badge("deprecated")` Number of retries if
 #'   accessing a cloud instance fails. Specify `max_retries` in
 #'   `storage_options` instead.
-#' @param file_cache_ttl `r lifecycle::badge("deprecated")` Amount of time to
-#'   keep downloaded cloud files since their last access time, in seconds.
-#'   Specify `file_cache_ttl` in `storage_options` instead.
+#' @param file_cache_ttl `r lifecycle::badge("deprecated")` Deprecated and
+#'   ignored. The file cache is no longer supported and has no direct
+#'   replacement in Polars 2.0.
 #' @param hive_partitioning Infer statistics and schema from Hive partitioned
 #' sources and use them to prune reads. If `NULL` (default), it is automatically
 #' enabled when a single directory is passed, and otherwise disabled.
@@ -109,22 +109,7 @@ pl__scan_ipc <- function(
   }
 
   if (is_present(file_cache_ttl)) {
-    deprecate_warn(
-      c(
-        `!` = sprintf(
-          "The %s argument is deprecated as of %s 1.9.0.",
-          format_arg("file_cache_ttl"),
-          format_pkg("polars")
-        ),
-        i = sprintf(
-          "Specify %s in %s instead.",
-          format_code("file_cache_ttl"),
-          format_arg("storage_options")
-        )
-      )
-    )
-    storage_options <- storage_options %||% character()
-    storage_options[["file_cache_ttl"]] <- as.character(file_cache_ttl)
+    warn_deprecated_file_cache_ttl()
   }
 
   if (!is.null(hive_schema)) {

@@ -57,22 +57,7 @@ pl__scan_ndjson <- function(
   }
 
   if (is_present(file_cache_ttl)) {
-    deprecate_warn(
-      c(
-        `!` = sprintf(
-          "The %s argument is deprecated as of %s 1.9.0.",
-          format_arg("file_cache_ttl"),
-          format_pkg("polars")
-        ),
-        i = sprintf(
-          "Specify %s in %s instead.",
-          format_code("file_cache_ttl"),
-          format_arg("storage_options")
-        )
-      )
-    )
-    storage_options <- storage_options %||% character()
-    storage_options[["file_cache_ttl"]] <- as.character(file_cache_ttl)
+    warn_deprecated_file_cache_ttl()
   }
 
   if (!is.null(schema)) {

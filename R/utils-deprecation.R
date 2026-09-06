@@ -28,3 +28,20 @@ warn_deprecated_rechunk <- function(user_env = caller_env(2)) {
     user_env = user_env
   )
 }
+
+# The file cache was removed upstream and has no replacement in Polars 2.0.
+# Keep accepting this argument in the 1.x migration release, but do not pass it
+# on as a storage option.
+warn_deprecated_file_cache_ttl <- function(user_env = caller_env(2)) {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "The %s argument is deprecated as of %s 1.9.0.",
+        format_arg("file_cache_ttl"),
+        format_pkg("polars")
+      ),
+      i = "The file cache is no longer supported and has no direct replacement in polars 2.0."
+    ),
+    user_env = user_env
+  )
+}

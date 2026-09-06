@@ -2,6 +2,13 @@
 
 ## polars (development version)
 
+### Deprecations
+
+* The deprecated `file_cache_ttl` argument of the CSV, IPC, and NDJSON
+  readers now warns that the file cache is no longer supported and has no
+  direct replacement in Polars 2.0. It is no longer translated into
+  `storage_options`.
+
 ## polars 1.15.0
 
 This is an update that corresponds to Python Polars 1.44.1.
@@ -194,8 +201,10 @@ This is an update that corresponds to Python Polars 1.38.1.
 - The `retries` argument in scan/read and sink/write functions is deprecated (#1726).
   Use `max_retries` in `storage_options` instead.
 - The `file_cache_ttl` argument in `pl$scan_csv()`, `pl$scan_ipc()`, `pl$scan_ndjson()`,
-  and their `read_*` counterparts is deprecated (#1726).
-  Use `file_cache_ttl` in `storage_options` instead.
+  and their `read_*` counterparts is deprecated (#1726). The previous
+  recommendation to use `file_cache_ttl` in `storage_options` has since been
+  superseded: the file cache is no longer supported and has no direct
+  replacement in Polars 2.0.
 - `<expr>$flatten()` is deprecated. Use `<expr>$list$explode()` instead (#1726).
 
 ### New features
