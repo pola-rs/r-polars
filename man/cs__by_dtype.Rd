@@ -26,10 +26,10 @@ df <- pl$DataFrame(
 )
 
 # Select all columns with date or string dtypes:
-df$select(cs$by_dtype(list(pl$Date, pl$String)))
+df$select(cs$by_dtype(c(pl$Date, pl$String)))
 
 # Select all columns that are not of date or string dtype:
-df$select(!cs$by_dtype(list(pl$Date, pl$String)))
+df$select(!cs$by_dtype(c(pl$Date, pl$String)))
 
 # Group by string columns and sum the numeric columns:
 df$group_by(cs$string())$agg(cs$numeric()$sum())$sort("other")

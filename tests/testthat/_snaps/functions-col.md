@@ -47,6 +47,13 @@
     Output
       cs.by_dtype([Int8])
 
+# pl$col() works dtype vector
+
+    Code
+      object
+    Output
+      cs.by_dtype([Int8, Int16])
+
 # pl$col() works dtype list
 
     Code

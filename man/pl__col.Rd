@@ -35,7 +35,7 @@ pl$col("foo")
 pl$col(c("foo", "bar"))
 
 # multiple columns by polars data types
-pl$col(list(pl$Float64, pl$String))
+pl$col(c(pl$Float64, pl$String))
 
 # Single `"*"` is converted to a wildcard expression
 pl$col("*")

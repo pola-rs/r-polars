@@ -348,7 +348,7 @@ test_that("col DataType + col(s) + col regex", {
 
   # multiple
   expect_equal(
-    df$select(pl$col(list(pl$Float64, pl$Categorical()))),
+    df$select(pl$col(c(pl$Float64, pl$Categorical()))),
     df
   )
 

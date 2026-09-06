@@ -158,11 +158,11 @@ test_that("by_dtype", {
   )
 
   expect_named(
-    df$select(cs$by_dtype(list(pl$Date, pl$String))),
+    df$select(cs$by_dtype(c(pl$Date, pl$String))),
     c("dt", "other")
   )
   expect_named(
-    df$select(!cs$by_dtype(list(pl$Date, pl$String))),
+    df$select(!cs$by_dtype(c(pl$Date, pl$String))),
     "value"
   )
   expect_snapshot(

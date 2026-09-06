@@ -10,6 +10,7 @@ patrick::with_parameters_test_that(
       "^str.*$", pl$col("^str.*$"), c("str", "struct"),
       "patterns", pl$col(c("^str.*$", "i8")), c("i8", "str", "struct"),
       "pl$Int8", pl$col(pl$Int8), c("i8"),
+      "dtype vector", pl$col(c(pl$Int8, pl$Int16)), c("i8", "i16"),
       "dtype list", pl$col(list(pl$Int8, pl$Int16)), c("i8", "i16"),
     )
   },
