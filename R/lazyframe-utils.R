@@ -184,21 +184,17 @@ forward_old_opt_flags <- function(
 
   if (is_present(collapse_joins)) {
     warn_func("collapse_joins")
-    # collapse_joins was merged to predicate_pushdown, so there is no flag anymore
+    # collapse_joins was merged into predicate_pushdown upstream.
+    if (isFALSE(collapse_joins)) {
+      prop(optimizations, "predicate_pushdown", check = FALSE) <- FALSE
+      need_validation <- TRUE
+    }
   }
 
   if (is_present(no_optimization)) {
     warn_func("no_optimization")
     if (isTRUE(no_optimization)) {
-      props(optimizations, check = FALSE) <- list(
-        predicate_pushdown = FALSE,
-        projection_pushdown = FALSE,
-        slice_pushdown = FALSE,
-        comm_subplan_elim = FALSE,
-        comm_subexpr_elim = FALSE,
-        cluster_with_columns = FALSE,
-        check_order_observe = FALSE
-      )
+      optimizations <- optimizations$no_optimizations()
     }
   }
 

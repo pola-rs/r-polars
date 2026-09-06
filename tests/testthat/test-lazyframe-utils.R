@@ -18,5 +18,6 @@ test_that("forward_old_opt_flags", {
   expect_snapshot(test_fn(comm_subexpr_elim = FALSE))
   expect_snapshot(test_fn(cluster_with_columns = FALSE))
   expect_snapshot(test_fn(collapse_joins = FALSE))
+  expect_snapshot(test_fn(predicate_pushdown = FALSE, collapse_joins = TRUE))
   expect_snapshot(test_fn(no_optimization = TRUE))
 })
