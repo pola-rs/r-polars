@@ -45,7 +45,7 @@ df <- pl$DataFrame(
 )
 df$unique(maintain_order = TRUE)
 
-df$unique(subset = c("bar", "ham"), maintain_order = TRUE)
+df$unique(c("bar", "ham"), maintain_order = TRUE)
 
 df$unique(keep = "last", maintain_order = TRUE)
 }
