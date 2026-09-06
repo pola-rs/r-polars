@@ -202,7 +202,34 @@
       <polars::QueryOptFlags>
        @ type_coercion       : logi TRUE
        @ type_check          : logi TRUE
-       @ predicate_pushdown  : logi TRUE
+       @ predicate_pushdown  : logi FALSE
+       @ projection_pushdown : logi TRUE
+       @ simplify_expression : logi TRUE
+       @ slice_pushdown      : logi TRUE
+       @ comm_subplan_elim   : logi TRUE
+       @ comm_subexpr_elim   : logi TRUE
+       @ cluster_with_columns: logi TRUE
+       @ check_order_observe : logi TRUE
+       @ fast_projection     : logi TRUE
+       @ eager               : logi FALSE
+       @ streaming           : logi FALSE
+
+---
+
+    Code
+      test_fn(predicate_pushdown = FALSE, collapse_joins = TRUE)
+    Condition
+      Warning:
+      ! `predicate_pushdown` is deprecated.
+      i Use `optimizations` instead.
+      Warning:
+      ! `collapse_joins` is deprecated.
+      i Use `optimizations` instead.
+    Output
+      <polars::QueryOptFlags>
+       @ type_coercion       : logi TRUE
+       @ type_check          : logi TRUE
+       @ predicate_pushdown  : logi FALSE
        @ projection_pushdown : logi TRUE
        @ simplify_expression : logi TRUE
        @ slice_pushdown      : logi TRUE
@@ -228,13 +255,13 @@
        @ type_check          : logi TRUE
        @ predicate_pushdown  : logi FALSE
        @ projection_pushdown : logi FALSE
-       @ simplify_expression : logi TRUE
+       @ simplify_expression : logi FALSE
        @ slice_pushdown      : logi FALSE
        @ comm_subplan_elim   : logi FALSE
        @ comm_subexpr_elim   : logi FALSE
        @ cluster_with_columns: logi FALSE
        @ check_order_observe : logi FALSE
-       @ fast_projection     : logi TRUE
+       @ fast_projection     : logi FALSE
        @ eager               : logi FALSE
        @ streaming           : logi FALSE
 
