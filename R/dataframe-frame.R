@@ -852,7 +852,7 @@ dataframe__set_sorted <- function(column, ..., descending = FALSE) {
 #' )
 #' df$unique(maintain_order = TRUE)
 #'
-#' df$unique(subset = c("bar", "ham"), maintain_order = TRUE)
+#' df$unique(c("bar", "ham"), maintain_order = TRUE)
 #'
 #' df$unique(keep = "last", maintain_order = TRUE)
 dataframe__unique <- function(

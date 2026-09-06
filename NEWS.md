@@ -21,6 +21,12 @@
   are deprecated. Pass column names or data types as one vector or list.
 * The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` and
   `<dataframe>$hash_rows()` are deprecated. Use `seed` instead.
+* `<expr>$agg_groups()`, `<series>$cat$is_local()`, and
+  `<series>$cat$uses_lexical_ordering()` are deprecated. Use the documented
+  row-index aggregation pattern for `agg_groups()`; categoricals no longer
+  have a local scope and are always ordered lexically.
+* `<Enum>$union()` is deprecated. Construct an Enum explicitly from the
+  combined categories instead.
 
 ## polars 1.15.0
 
