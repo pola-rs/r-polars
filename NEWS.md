@@ -8,6 +8,11 @@
   readers now warns that the file cache is no longer supported and has no
   direct replacement in Polars 2.0. It is no longer translated into
   `storage_options`.
+* Bare character vectors passed to `<expr>$str$contains_any()` and
+  `<expr>$str$replace_many()` will be interpreted as column names in Polars
+  2.0. Use `pl$lit(...)$implode()` for literal patterns or `pl$col()` for
+  column patterns. A shared literal vector can also be passed as
+  `list(c(...))`.
 
 ## polars 1.15.0
 
