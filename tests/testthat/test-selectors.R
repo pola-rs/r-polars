@@ -13,7 +13,7 @@ test_that("'union' operator works", {
     c("foo", "foo2")
   )
   expect_named(
-    df$select(cs$string() | pl$col("foo2")),
+    df$select(suppressWarnings(cs$string() | pl$col("foo2"))),
     c("foo", "foo2")
   )
 })
@@ -25,12 +25,45 @@ test_that("'and' operator works", {
     "foot"
   )
   expect_named(
-    df$select(cs$numeric() & pl$col("foot")),
+    df$select(suppressWarnings(cs$numeric() & pl$col("foot"))),
     "foot"
   )
   expect_named(
-    df$select(cs$by_name("foo") & pl$col("foot")),
+    df$select(suppressWarnings(cs$by_name("foo") & pl$col("foot"))),
     character(0)
+  )
+})
+
+test_that("selector and column operations are deprecated", {
+  local_lifecycle_warnings()
+  df <- pl$DataFrame(foo = c("a", "b"), foot = c(1, 2), foo2 = c(TRUE, FALSE))
+
+  expect_snapshot(cs$string() | pl$col("foo2"), cnd_class = TRUE)
+  expect_snapshot(cs$numeric() & pl$col("foot"), cnd_class = TRUE)
+  expect_snapshot(cs$by_name("foo")$xor(pl$col("foo")), cnd_class = TRUE)
+
+  expect_named(
+    df$select(suppressWarnings(cs$string() | pl$col("foo2"))),
+    c("foo", "foo2")
+  )
+  expect_named(
+    df$select(suppressWarnings(cs$numeric() & pl$col("foot"))),
+    "foot"
+  )
+  expect_named(
+    df$select(suppressWarnings(cs$by_name("foo")$xor(pl$col("foo")))),
+    character(0)
+  )
+
+  expect_no_condition(cs$string() | cs$by_name("foo2"))
+  expect_no_condition(cs$numeric() & cs$by_name("foot"))
+  expect_no_condition(cs$string()$xor(cs$by_name("foo")))
+  expect_no_condition(cs$by_name("foo2")$as_expr() | pl$lit(TRUE))
+  expect_no_condition(pl$col("foo") | cs$by_name("foo"))
+
+  expect_equal(
+    df$select(cs$by_name("foo2")$as_expr() | pl$lit(TRUE)),
+    pl$DataFrame(foo2 = c(TRUE, TRUE))
   )
 })
 

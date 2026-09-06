@@ -24,6 +24,10 @@
 #' `<selector>$as_expr()` can be used to materialize the selector as a normal
 #' expression.
 #'
+#' Using a bare `pl$col()` expression as the right-hand operand of `&`, `|`,
+#' or `$xor()` on a selector is deprecated. Use `cs$by_name()` for set
+#' operations or `<selector>$as_expr()` for element-wise operations.
+#'
 #' @examples
 #' cs
 #'
@@ -82,7 +86,7 @@ selector__sub <- function(other) {
 selector__or <- function(other) {
   wrap({
     if (is_column(other)) {
-      # TODO: @2.0 remove? (check polars-python)
+      warn_deprecated_selector_column_operation("|")
       other <- cs__by_name(other$meta$output_name())
     }
     if (is_polars_selector(other)) {
@@ -96,7 +100,7 @@ selector__or <- function(other) {
 selector__and <- function(other) {
   wrap({
     if (is_column(other)) {
-      # TODO: @2.0 remove? (check polars-python)
+      warn_deprecated_selector_column_operation("&")
       colname <- other$meta$output_name()
       other <- cs__by_name(colname)
     }
@@ -111,7 +115,7 @@ selector__and <- function(other) {
 selector__xor <- function(other) {
   wrap({
     if (is_column(other)) {
-      # TODO: @2.0 remove? (check polars-python)
+      warn_deprecated_selector_column_operation("$xor()")
       other <- cs$by_name(other$meta$output_name())
     }
     if (is_polars_selector(other)) {

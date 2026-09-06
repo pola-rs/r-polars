@@ -1,3 +1,36 @@
+# selector and column operations are deprecated
+
+    Code
+      cs$string() | pl$col("foo2")
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Using `pl$col(...)` as the right-hand operand of `|` on a selector is deprecated as of polars 1.16.0.
+      i Use `cs$by_name(...)` for set operations or `<selector>$as_expr()` for element-wise operations.
+    Output
+      [cs.string() | cs.by_name('foo2', require_all=true)]
+
+---
+
+    Code
+      cs$numeric() & pl$col("foot")
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Using `pl$col(...)` as the right-hand operand of `&` on a selector is deprecated as of polars 1.16.0.
+      i Use `cs$by_name(...)` for set operations or `<selector>$as_expr()` for element-wise operations.
+    Output
+      [cs.numeric() & cs.by_name('foot', require_all=true)]
+
+---
+
+    Code
+      cs$by_name("foo")$xor(pl$col("foo"))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Using `pl$col(...)` as the right-hand operand of `$xor()` on a selector is deprecated as of polars 1.16.0.
+      i Use `cs$by_name(...)` for set operations or `<selector>$as_expr()` for element-wise operations.
+    Output
+      [cs.by_name('foo', require_all=true) ^ cs.by_name('foo', require_all=true)]
+
 # alpha
 
     Code

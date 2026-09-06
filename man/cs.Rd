@@ -36,6 +36,10 @@ Note that Python Polars uses \code{~} instead of \code{!} to invert selectors.
 If we want to apply operators on the data instead of the selector sets,
 \verb{<selector>$as_expr()} can be used to materialize the selector as a normal
 expression.
+
+Using a bare \code{pl$col()} expression as the right-hand operand of \code{&}, \code{|},
+or \verb{$xor()} on a selector is deprecated. Use \code{cs$by_name()} for set
+operations or \verb{<selector>$as_expr()} for element-wise operations.
 }
 
 \examples{
