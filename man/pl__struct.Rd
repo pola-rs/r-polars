@@ -43,6 +43,6 @@ df$select(pl$struct(p = "int", q = "bool")$alias("my_struct"))$schema
 # Pass a schema to specify the datatype of each field in the struct:
 struct_schema <- list(int = pl$UInt32, list = pl$List(pl$Float32))
 df$select(
-  new_struct = pl$struct(pl$col("int", "list"), .schema = struct_schema)
+  new_struct = pl$struct(pl$col(c("int", "list")), .schema = struct_schema)
 )$unnest("new_struct")
 }

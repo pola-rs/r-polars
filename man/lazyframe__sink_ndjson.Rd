@@ -147,7 +147,7 @@ requireNamespace("jsonlite", quiet = TRUE)
 dat <- as_polars_lf(head(mtcars))
 destination <- tempfile()
 
-dat$select(pl$col("drat", "mpg"))$sink_ndjson(destination)
+dat$select(pl$col(c("drat", "mpg")))$sink_ndjson(destination)
 jsonlite::stream_in(file(destination))
 \dontshow{\}) # examplesIf}
 }

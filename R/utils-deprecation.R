@@ -68,3 +68,39 @@ warn_arrow_compression_default <- function(user_env = caller_env(2)) {
     user_env = user_env
   )
 }
+
+warn_deprecated_selector_dots <- function(
+  fn,
+  argument,
+  empty = FALSE,
+  user_env = caller_env(2)
+) {
+  message <- if (empty) {
+    sprintf(
+      "Calling %s without an argument is deprecated as of %s 1.16.0.",
+      format_fn(fn),
+      format_pkg("polars")
+    )
+  } else {
+    sprintf(
+      "Using `...` to supply values to %s is deprecated as of %s 1.16.0.",
+      format_fn(fn),
+      format_pkg("polars")
+    )
+  }
+
+  deprecate_warn(
+    c(
+      `!` = message,
+      i = sprintf(
+        if (empty) {
+          "Pass an explicit empty %s instead."
+        } else {
+          "Pass the values as a single %s argument instead."
+        },
+        format_code(argument)
+      )
+    ),
+    user_env = user_env
+  )
+}

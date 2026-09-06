@@ -10,7 +10,7 @@ test_that("pl$coalesce()", {
     pl$DataFrame(a = c(1, 2, 3, 10))
   )
   expect_equal(
-    df$select(pl$coalesce(pl$col("a", "b", "c"), 10)),
+    df$select(pl$coalesce(pl$col(c("a", "b", "c")), 10)),
     pl$DataFrame(a = c(1, 2, 3, 10))
   )
   expect_error(

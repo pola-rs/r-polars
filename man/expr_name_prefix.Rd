@@ -21,7 +21,7 @@ dat <- as_polars_df(mtcars)
 dat$select(
   pl$col("mpg"),
   pl$col("mpg")$name$prefix("name_"),
-  pl$col("cyl", "drat")$name$prefix("bar_")
+  pl$col(c("cyl", "drat"))$name$prefix("bar_")
 )
 }
 \seealso{

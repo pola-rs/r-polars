@@ -4,10 +4,13 @@
 \alias{cs__by_dtype}
 \title{Select all columns matching the given dtypes}
 \usage{
-cs__by_dtype(...)
+cs__by_dtype(..., dtypes)
 }
 \arguments{
-\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Data types to select.}
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Deprecated compatibility
+interface for passing multiple data types.}
+
+\item{dtypes}{A Polars data type or list of Polars data types to select.}
 }
 \value{
 A Polars \link[=cs]{selector}
@@ -23,10 +26,10 @@ df <- pl$DataFrame(
 )
 
 # Select all columns with date or string dtypes:
-df$select(cs$by_dtype(pl$Date, pl$String))
+df$select(cs$by_dtype(c(pl$Date, pl$String)))
 
 # Select all columns that are not of date or string dtype:
-df$select(!cs$by_dtype(pl$Date, pl$String))
+df$select(!cs$by_dtype(c(pl$Date, pl$String)))
 
 # Group by string columns and sum the numeric columns:
 df$group_by(cs$string())$agg(cs$numeric()$sum())$sort("other")

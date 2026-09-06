@@ -22,7 +22,7 @@ requireNamespace("jsonlite", quiet = TRUE)
 dat <- as_polars_df(head(mtcars))
 destination <- tempfile()
 
-dat$select(pl$col("drat", "mpg"))$write_json(destination)
+dat$select(pl$col(c("drat", "mpg")))$write_json(destination)
 jsonlite::fromJSON(destination)
 \dontshow{\}) # examplesIf}
 }

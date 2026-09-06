@@ -4,19 +4,21 @@
 \alias{pl__col}
 \title{Create an expression representing column(s) in a DataFrame}
 \usage{
-pl__col(...)
+pl__col(..., names)
 }
 \arguments{
-\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}>
-The name or \link[=DataType]{data type} of the column(s) to represent.
-Unnamed objects one of the following:
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Deprecated compatibility
+interface for passing multiple names or data types.}
+
+\item{names}{The name(s) or \link[=DataType]{data type} of the column(s) to
+represent. It accepts one of the following:
 \itemize{
-\item Single string(s) representing column names
+\item A character vector representing column names
 \itemize{
 \item Regular expressions starting with \code{^} and ending with \code{$} are allowed.
 \item Single wildcard \code{"*"}  has a special meaning: check the examples.
 }
-\item \link[=DataType]{Polars DataType(s)}
+\item A \link[=DataType]{Polars DataType} or list of Polars data types
 }}
 }
 \value{
@@ -30,17 +32,16 @@ Create an expression representing column(s) in a DataFrame
 pl$col("foo")
 
 # multiple columns by characters
-pl$col("foo", "bar")
+pl$col(c("foo", "bar"))
 
 # multiple columns by polars data types
-pl$col(pl$Float64, pl$String)
+pl$col(c(pl$Float64, pl$String))
 
 # Single `"*"` is converted to a wildcard expression
 pl$col("*")
 
-# Character vectors with length > 1 should be used with `!!!`
-pl$col(!!!c("foo", "bar"), "baz")
-pl$col("foo", !!!c("bar", "baz"))
+# The old dynamic-dots interface is deprecated:
+pl$col("foo", "bar")
 
 # there are some special notations for selecting columns
 df <- pl$DataFrame(foo = 1:3, bar = 4:6, baz = 7:9)

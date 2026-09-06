@@ -31,14 +31,14 @@ test_that("parse_into_selector works", {
   expect_snapshot(parse_into_selector(NA_character_), error = TRUE)
   expect_equal(
     parse_into_selector(character()),
-    cs$by_name(require_all = TRUE)
+    cs$by_name(character(), require_all = TRUE)
   )
   expect_snapshot(parse_into_selector(integer()), error = TRUE)
 
   # Including selector and expr
   expect_equal(
     parse_into_selector(c("foo", "bar"), cs$numeric(), pl$col("baz")),
-    cs$by_name("foo", "bar", require_all = TRUE) |
+    cs$by_name(c("foo", "bar"), require_all = TRUE) |
       cs$numeric() |
       cs$by_name("baz", require_all = TRUE)
   )

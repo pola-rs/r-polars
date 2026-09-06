@@ -1112,7 +1112,7 @@ lazyframe__fill_null <- function(
       if (!is.null(dtypes)) {
         return(
           self$with_columns(
-            pl$col(!!!dtypes)$fill_null(value = value, limit = limit)
+            pl$col(dtypes)$fill_null(value = value, limit = limit)
           ) |>
             wrap()
         )
@@ -2890,7 +2890,7 @@ lazyframe__describe <- function(
 
     # calculate requested metrics in parallel, then collect the result
     df_metrics <- if (length(sort_cols) > 0) {
-      self$with_columns(pl$col(!!!unique(sort_cols))$sort())
+      self$with_columns(pl$col(unique(sort_cols))$sort())
     } else {
       self
     }

@@ -17,6 +17,8 @@
   2.0. Use `pl$lit(...)$implode()` for literal patterns or `pl$col()` for
   column patterns. A shared literal vector can also be passed as
   `list(c(...))`.
+* The `...` arguments of `pl$col()`, `cs$by_name()`, and `cs$by_dtype()`
+  are deprecated. Pass column names or data types as one vector or list.
 
 ## polars 1.15.0
 

@@ -60,7 +60,7 @@
 #' # character
 #' ## as_lit = FALSE (default)
 #' as_polars_expr("a") # Same as `pl$col("a")`
-#' as_polars_expr(c("a", "b")) # Same as `pl$col("a", "b")`
+#' as_polars_expr(c("a", "b")) # Same as `pl$col(c("a", "b"))`
 #'
 #' ## as_lit = TRUE
 #' as_polars_expr(character(0), as_lit = TRUE)
@@ -104,7 +104,7 @@
 #'   as_polars_expr()
 #'
 #' # polars_expr
-#' as_polars_expr(pl$col("a", "b"))
+#' as_polars_expr(pl$col(c("a", "b")))
 #' @export
 as_polars_expr <- function(x, ...) {
   UseMethod("as_polars_expr")
@@ -157,7 +157,7 @@ as_polars_expr.polars_expr <- function(x, ..., structify = deprecated()) {
 #' @export
 as_polars_expr.character <- function(x, ..., as_lit = FALSE) {
   if (isFALSE(as_lit)) {
-    pl$col(!!!x)
+    pl$col(x)
   } else {
     NextMethod()
   }

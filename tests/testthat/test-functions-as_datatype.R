@@ -173,7 +173,7 @@ test_that("pl$struct()", {
   struct_schema <- list(int = pl$UInt32, list = pl$List(pl$Float32))
   expect_equal(
     df$select(
-      my_struct = pl$struct(pl$col("int", "list"), .schema = struct_schema)
+      my_struct = pl$struct(pl$col(c("int", "list")), .schema = struct_schema)
     )$unnest("my_struct"),
     df$select("int", "list")$cast(int = pl$UInt32, list = pl$List(pl$Float32))
   )

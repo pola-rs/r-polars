@@ -465,7 +465,7 @@ patrick::with_parameters_test_that(
       ~.test_name, ~value,
       "NULL", NULL,
       "list of strings", list("bar", "ham"),
-      "expr", pl$col("bar", "ham")
+      "expr", pl$col(c("bar", "ham"))
     )
   },
   code = {
@@ -1131,7 +1131,7 @@ test_that("unnest", {
   )
 
   expect_query_equal(
-    .input$unnest(pl$col("first_struct", "second_struct")),
+    .input$unnest(pl$col(c("first_struct", "second_struct"))),
     .input = df2,
     df
   )
@@ -1157,7 +1157,7 @@ test_that("unnest", {
     .input$unnest("first_struct"),
     .input = df2,
     df$select(
-      pl$col("a", "b", "c"),
+      pl$col(c("a", "b", "c")),
       pl$struct(c("d", "e", "f"))$alias("second_struct")
     )
   )
