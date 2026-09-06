@@ -1,15 +1,19 @@
-# TODO: @2.0.0: Fix the default value of compression to "uncompressed"
+# TODO: @2.0.0: Remove the migration warning branches and change the
+# default of compression to "uncompressed" in all Arrow file output functions.
 
-#' Evaluate the query in streaming mode and write to Arrow IPC File Format
+#' Evaluate the query in streaming mode and write to Arrow File Format
 #'
 #' @inherit lazyframe__sink_parquet description params return
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams lazyframe__collect
 #' @param compression Determines the compression algorithm.
+#' In Polars 1.16, omitting this argument uses `"zstd"` and emits a
+#' deprecation warning. The default changes to `"uncompressed"` in Polars 2.0;
+#' pass an explicit value to choose either behavior without a warning.
 #' Must be one of:
 #' - `"uncompressed"` or `NULL`: Write an uncompressed Arrow file.
 #' - `"lz4"`: Fast compression/decompression.
-#' - `"zstd"` (default): Good compression performance.
+#' - `"zstd"`: Good compression performance.
 #' @param compat_level Determines the compatibility level when exporting
 #'   Polars' internal data structures. When specifying a new compatibility level,
 #'   Polars exports its internal data structures that might not be interpretable by
@@ -24,7 +28,7 @@
 #'   - `"oldest"`: Same as `0` (High compatibility).
 #' @examples
 #' tmpf <- tempfile(fileext = ".arrow")
-#' as_polars_lf(mtcars)$sink_ipc(tmpf)
+#' as_polars_lf(mtcars)$sink_ipc(tmpf, compression = "zstd")
 #'
 #' pl$read_ipc(tmpf)
 lazyframe__sink_ipc <- function(
@@ -47,8 +51,14 @@ lazyframe__sink_ipc <- function(
   collapse_joins = deprecated(),
   no_optimization = deprecated()
 ) {
+  compression_missing <- missing(compression)
   wrap({
     check_dots_empty0(...)
+
+    if (compression_missing) {
+      warn_arrow_compression_default()
+      compression <- "zstd"
+    }
 
     # Allow override by option at the downstream function
     if (missing(compat_level)) {
@@ -92,9 +102,15 @@ lazyframe__lazy_sink_ipc <- function(
   sync_on_close = c("none", "data", "all"),
   mkdir = FALSE
 ) {
+  compression_missing <- missing(compression)
   wrap({
     check_dots_empty0(...)
     check_character(storage_options, allow_null = TRUE)
+
+    if (compression_missing) {
+      warn_arrow_compression_default()
+      compression <- "zstd"
+    }
 
     if (is_present(retries)) {
       deprecate_warn(
@@ -144,14 +160,14 @@ lazyframe__lazy_sink_ipc <- function(
   })
 }
 
-#' Write to Arrow IPC File Format
+#' Write to Arrow File Format
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams lazyframe__sink_ipc
 #' @inherit dataframe__write_parquet return
 #' @examples
 #' tmpf <- tempfile(fileext = ".arrow")
-#' as_polars_df(mtcars)$write_ipc(tmpf)
+#' as_polars_df(mtcars)$write_ipc(tmpf, compression = "zstd")
 #'
 #' pl$read_ipc(tmpf)
 dataframe__write_ipc <- function(
@@ -162,8 +178,14 @@ dataframe__write_ipc <- function(
   storage_options = NULL,
   retries = deprecated()
 ) {
+  compression_missing <- missing(compression)
   wrap({
     check_dots_empty0(...)
+
+    if (compression_missing) {
+      warn_arrow_compression_default()
+      compression <- "zstd"
+    }
 
     # Allow override by option at the downstream function
     if (missing(compat_level)) {
@@ -186,14 +208,14 @@ dataframe__write_ipc <- function(
   invisible(NULL)
 }
 
-#' Write to Arrow IPC Streaming Format
+#' Write to Arrow Streaming Format
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams lazyframe__sink_ipc
 #' @inherit dataframe__write_parquet return
 #' @examplesIf requireNamespace("nanoarrow", quiet = TRUE) && nanoarrow::nanoarrow_with_zstd()
 #' tmpf <- tempfile(fileext = ".arrows")
-#' as_polars_df(mtcars)$write_ipc_stream(tmpf)
+#' as_polars_df(mtcars)$write_ipc_stream(tmpf, compression = "zstd")
 #'
 #' nanoarrow::read_nanoarrow(tmpf)
 dataframe__write_ipc_stream <- function(
@@ -202,8 +224,14 @@ dataframe__write_ipc_stream <- function(
   compression = c("zstd", "lz4", "uncompressed"),
   compat_level = c("newest", "oldest")
 ) {
+  compression_missing <- missing(compression)
   wrap({
     check_dots_empty0(...)
+
+    if (compression_missing) {
+      warn_arrow_compression_default()
+      compression <- "zstd"
+    }
 
     # Handle missing values with use_option_if_missing (similar to lazy_sink_ipc)
     compat_level <- use_option_if_missing(

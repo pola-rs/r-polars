@@ -3,7 +3,7 @@
 \name{lazyframe__sink_ipc}
 \alias{lazyframe__sink_ipc}
 \alias{lazyframe__lazy_sink_ipc}
-\title{Evaluate the query in streaming mode and write to Arrow IPC File Format}
+\title{Evaluate the query in streaming mode and write to Arrow File Format}
 \usage{
 lazyframe__sink_ipc(
   path,
@@ -44,11 +44,14 @@ lazyframe__lazy_sink_ipc(
 \item{...}{These dots are for future extensions and must be empty.}
 
 \item{compression}{Determines the compression algorithm.
+In Polars 1.16, omitting this argument uses \code{"zstd"} and emits a
+deprecation warning. The default changes to \code{"uncompressed"} in Polars 2.0;
+pass an explicit value to choose either behavior without a warning.
 Must be one of:
 \itemize{
 \item \code{"uncompressed"} or \code{NULL}: Write an uncompressed Arrow file.
 \item \code{"lz4"}: Fast compression/decompression.
-\item \code{"zstd"} (default): Good compression performance.
+\item \code{"zstd"}: Good compression performance.
 }}
 
 \item{compat_level}{Determines the compatibility level when exporting
@@ -157,7 +160,7 @@ This is useful if you want to save a query to review or run later.
 }
 \examples{
 tmpf <- tempfile(fileext = ".arrow")
-as_polars_lf(mtcars)$sink_ipc(tmpf)
+as_polars_lf(mtcars)$sink_ipc(tmpf, compression = "zstd")
 
 pl$read_ipc(tmpf)
 }

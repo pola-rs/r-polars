@@ -2,7 +2,7 @@ patrick::with_parameters_test_that(
   "roundtrip around serialization",
   .cases = {
     tmpf <- withr::local_tempfile(fileext = ".arrow")
-    pl$DataFrame(a = 1, b = "foo")$write_ipc(tmpf)
+    pl$DataFrame(a = 1, b = "foo")$write_ipc(tmpf, compression = "uncompressed")
 
     tibble::tribble(
       ~.test_name, ~x,

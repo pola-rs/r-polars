@@ -45,3 +45,26 @@ warn_deprecated_file_cache_ttl <- function(user_env = caller_env(2)) {
     user_env = user_env
   )
 }
+
+warn_arrow_compression_default <- function(user_env = caller_env(2)) {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "The default value of %s is deprecated as of %s 1.16.0.",
+        format_arg("compression"),
+        format_pkg("polars")
+      ),
+      i = sprintf(
+        paste0(
+          "The default will change from %s to %s in Polars 2.0. ",
+          "Use %s to keep the current behavior or %s to opt into the new default."
+        ),
+        format_code('"zstd"'),
+        format_code('"uncompressed"'),
+        format_code('compression = "zstd"'),
+        format_code('compression = "uncompressed"')
+      )
+    ),
+    user_env = user_env
+  )
+}

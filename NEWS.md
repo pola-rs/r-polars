@@ -8,6 +8,10 @@
   readers now warns that the file cache is no longer supported and has no
   direct replacement in Polars 2.0. It is no longer translated into
   `storage_options`.
+* Omitting `compression` in Arrow file output functions now warns that the
+  default will change from `"zstd"` to `"uncompressed"` in Polars 2.0. Pass
+  `compression = "zstd"` to keep the current behavior or
+  `compression = "uncompressed"` to opt into the new default.
 * Bare character vectors passed to `<expr>$str$contains_any()` and
   `<expr>$str$replace_many()` will be interpreted as column names in Polars
   2.0. Use `pl$lit(...)$implode()` for literal patterns or `pl$col()` for

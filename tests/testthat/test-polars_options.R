@@ -126,10 +126,18 @@ patrick::with_parameters_test_that(
     withr::with_options(list(polars.compat_level = level), {
       tmpf <- withr::local_tempfile(fileext = ".arrow")
 
-      expect_snapshot(pl$LazyFrame(x = 1:3)$lazy_sink_ipc(tmpf))
-      expect_snapshot(pl$LazyFrame(x = 1:3)$sink_ipc(tmpf))
-      expect_snapshot(pl$DataFrame(x = 1:3)$write_ipc(tmpf))
-      expect_snapshot(pl$DataFrame(x = 1:3)$write_ipc_stream(tmpf))
+      expect_snapshot(
+        pl$LazyFrame(x = 1:3)$lazy_sink_ipc(tmpf, compression = "zstd")
+      )
+      expect_snapshot(
+        pl$LazyFrame(x = 1:3)$sink_ipc(tmpf, compression = "zstd")
+      )
+      expect_snapshot(
+        pl$DataFrame(x = 1:3)$write_ipc(tmpf, compression = "zstd")
+      )
+      expect_snapshot(
+        pl$DataFrame(x = 1:3)$write_ipc_stream(tmpf, compression = "zstd")
+      )
 
       skip_if_not_installed("nanoarrow")
 
