@@ -160,6 +160,25 @@
       Caused by error:
       ! type bool is incompatible with expected type str
 
+# agg_groups is deprecated
+
+    Code
+      df$group_by("group", .maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! `agg_groups()` is deprecated as of polars 1.16.0.
+      i Use `df$with_row_index()$group_by(..., .maintain_order = TRUE)$agg(pl$col("index"))` instead.
+    Output
+      shape: (2, 2)
+      ┌───────┬───────────┐
+      │ group ┆ value     │
+      │ ---   ┆ ---       │
+      │ str   ┆ list[u32] │
+      ╞═══════╪═══════════╡
+      │ one   ┆ [0, 1, 2] │
+      │ two   ┆ [3, 4, 5] │
+      └───────┴───────────┘
+
 # truncate
 
     Code

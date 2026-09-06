@@ -1429,6 +1429,12 @@ expr__cumulative_eval <- function(expr, ..., min_samples = 1) {
 
 #' Get the group indexes of the group by operation
 #'
+#' `r lifecycle::badge("deprecated")`
+#'
+#' `agg_groups()` is deprecated as of polars 1.16.0. Use
+#' `df$with_row_index()$group_by(..., .maintain_order = TRUE)$agg(pl$col("index"))`
+#' instead.
+#'
 #' Should be used in aggregation context only.
 #' @inherit as_polars_expr return
 #' @examples
@@ -1437,8 +1443,26 @@ expr__cumulative_eval <- function(expr, ..., min_samples = 1) {
 #'   value = c(94, 95, 96, 97, 97, 99)
 #' )
 #'
-#' df$group_by("group", maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
+#' df$group_by("group", .maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
+#'
+#' # Recommended approach
+#' df$with_row_index()$group_by("group", .maintain_order = TRUE)$agg(pl$col("index"))
 expr__agg_groups <- function() {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "%s is deprecated as of %s 1.16.0.",
+        format_fn("agg_groups"),
+        format_pkg("polars")
+      ),
+      i = sprintf(
+        "Use %s instead.",
+        format_code(
+          'df$with_row_index()$group_by(..., .maintain_order = TRUE)$agg(pl$col("index"))'
+        )
+      )
+    )
+  )
   self$`_rexpr`$agg_groups() |>
     wrap()
 }

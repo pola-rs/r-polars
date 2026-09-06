@@ -764,6 +764,32 @@ test_that("Expr_append", {
   )
 })
 
+test_that("agg_groups is deprecated", {
+  local_lifecycle_warnings()
+  df <- pl$DataFrame(
+    group = rep(c("one", "two"), each = 3),
+    value = c(94, 95, 96, 97, 97, 99)
+  )
+
+  expect_snapshot(
+    df$group_by("group", .maintain_order = TRUE)$agg(pl$col("value")$agg_groups()),
+    cnd_class = TRUE
+  )
+
+  old <- suppressWarnings(
+    df$group_by("group", .maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
+  )
+  expect_no_condition(
+    df$with_row_index()$group_by("group", .maintain_order = TRUE)$agg(pl$col("index"))
+  )
+  recommended <- df$with_row_index()$group_by("group", .maintain_order = TRUE)$agg(pl$col("index"))
+  expect_equal(old$get_column("group"), recommended$get_column("group"))
+  expect_equal(
+    unclass(old$get_column("value")$to_r_vector()),
+    unclass(recommended$get_column("index")$to_r_vector())
+  )
+})
+
 test_that("rechunk() works but is deprecated", {
   expect_deprecated(pl$col("a")$rechunk())
 

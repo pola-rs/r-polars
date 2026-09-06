@@ -14,6 +14,16 @@ namespace_series_cat <- function(x) {
 }
 
 series_cat_is_local <- function() {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "%s is deprecated as of %s 1.16.0.",
+        format_fn("cat$is_local"),
+        format_pkg("polars")
+      ),
+      i = "Categoricals no longer have a local scope."
+    )
+  )
   self$`_s`$cat_is_local() |>
     wrap()
 }
@@ -36,6 +46,16 @@ series_cat_to_local <- function() {
 
 # nolint start: object_length_linter
 series_cat_uses_lexical_ordering <- function() {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "%s is deprecated as of %s 1.16.0.",
+        format_fn("cat$uses_lexical_ordering"),
+        format_pkg("polars")
+      ),
+      i = "Categoricals are now always ordered lexically."
+    )
+  )
   self$`_s`$cat_uses_lexical_ordering() |>
     wrap()
 }
