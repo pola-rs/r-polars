@@ -56,7 +56,7 @@ lazyframe__sink_ipc <- function(
     check_dots_empty0(...)
 
     if (compression_missing) {
-      warn_deprecated_ipc_compression()
+      warn_arrow_compression_default()
       compression <- "zstd"
     }
 
@@ -108,7 +108,7 @@ lazyframe__lazy_sink_ipc <- function(
     check_character(storage_options, allow_null = TRUE)
 
     if (compression_missing) {
-      warn_deprecated_ipc_compression()
+      warn_arrow_compression_default()
       compression <- "zstd"
     }
 
@@ -183,7 +183,7 @@ dataframe__write_ipc <- function(
     check_dots_empty0(...)
 
     if (compression_missing) {
-      warn_deprecated_ipc_compression()
+      warn_arrow_compression_default()
       compression <- "zstd"
     }
 
@@ -229,7 +229,7 @@ dataframe__write_ipc_stream <- function(
     check_dots_empty0(...)
 
     if (compression_missing) {
-      warn_deprecated_ipc_compression()
+      warn_arrow_compression_default()
       compression <- "zstd"
     }
 
