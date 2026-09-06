@@ -248,7 +248,7 @@ dat$filter(pl$col("cyl") == 6)
 
 dat$filter(pl$col("cyl") == 6 & pl$col("am") == 1)
 
-dat$select(pl$col("mpg", "hp"))
+dat$select(pl$col(c("mpg", "hp")))
 ```
 
 Of course, we can chain those methods to create a pipeline:
@@ -257,7 +257,7 @@ Of course, we can chain those methods to create a pipeline:
 dat$filter(
   pl$col("cyl") == 6
 )$select(
-  pl$col("mpg", "hp", "cyl")
+  pl$col(c("mpg", "hp", "cyl"))
 )
 ```
 
@@ -284,7 +284,7 @@ For what it's worth, the previous query could have been written more concisely a
 
 ```{r}
 dat$with_columns(
-  pl$col("mpg", "hp")$sum()$over("cyl")$name$prefix("sum_")
+  pl$col(c("mpg", "hp"))$sum()$over("cyl")$name$prefix("sum_")
 )
 ```
 
@@ -294,7 +294,7 @@ by groups instead of modifying them. We need simply invoke the `$group_by()` and
 
 ```{r}
 dat$group_by("cyl", .maintain_order = TRUE)$agg(
-  pl$col("mpg", "hp")$sum()
+  pl$col(c("mpg", "hp"))$sum()
 )
 ```
 
@@ -418,7 +418,7 @@ LazyFrame.
 subset_query <- ldat$filter(
   pl$col("cyl") == 6
 )$select(
-  pl$col("mpg", "hp", "cyl")
+  pl$col(c("mpg", "hp", "cyl"))
 )
 
 subset_query
@@ -483,7 +483,7 @@ aq$filter(
 )$group_by(
   "Month"
 )$agg(
-  pl$col("Ozone", "Temp")$mean()
+  pl$col(c("Ozone", "Temp"))$mean()
 )$collect()
 ```
 

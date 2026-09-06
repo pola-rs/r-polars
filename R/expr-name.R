@@ -38,7 +38,7 @@ expr_name_keep <- function() {
 #' dat$select(
 #'   pl$col("mpg"),
 #'   pl$col("mpg")$name$prefix("name_"),
-#'   pl$col("cyl", "drat")$name$prefix("bar_")
+#'   pl$col(c("cyl", "drat"))$name$prefix("bar_")
 #' )
 expr_name_prefix <- function(prefix) {
   self$`_rexpr`$name_prefix(prefix) |>
@@ -58,7 +58,7 @@ expr_name_prefix <- function(prefix) {
 #' dat$select(
 #'   pl$col("mpg"),
 #'   pl$col("mpg")$name$suffix("_foo"),
-#'   pl$col("cyl", "drat")$name$suffix("_bar")
+#'   pl$col(c("cyl", "drat"))$name$suffix("_bar")
 #' )
 expr_name_suffix <- function(suffix) {
   self$`_rexpr`$name_suffix(suffix) |>

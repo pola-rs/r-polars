@@ -2,29 +2,29 @@
 #' Create an expression representing column(s) in a DataFrame
 #'
 #' @inherit as_polars_expr return
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]>
-#' The name or [data type][DataType] of the column(s) to represent.
-#' Unnamed objects one of the following:
-#' - Single string(s) representing column names
+#' @param names The name(s) or [data type][DataType] of the column(s) to
+#' represent. It accepts one of the following:
+#' - A character vector representing column names
 #'   - Regular expressions starting with `^` and ending with `$` are allowed.
 #'   - Single wildcard `"*"`  has a special meaning: check the examples.
-#' - [Polars DataType(s)][DataType]
+#' - A [Polars DataType][DataType] or list of Polars data types
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Deprecated compatibility
+#' interface for passing multiple names or data types.
 #' @examples
 #' # a single column by a character
 #' pl$col("foo")
 #'
 #' # multiple columns by characters
-#' pl$col("foo", "bar")
+#' pl$col(c("foo", "bar"))
 #'
 #' # multiple columns by polars data types
-#' pl$col(pl$Float64, pl$String)
+#' pl$col(list(pl$Float64, pl$String))
 #'
 #' # Single `"*"` is converted to a wildcard expression
 #' pl$col("*")
 #'
-#' # Character vectors with length > 1 should be used with `!!!`
-#' pl$col(!!!c("foo", "bar"), "baz")
-#' pl$col("foo", !!!c("bar", "baz"))
+#' # The old dynamic-dots interface is deprecated:
+#' pl$col("foo", "bar")
 #'
 #' # there are some special notations for selecting columns
 #' df <- pl$DataFrame(foo = 1:3, bar = 4:6, baz = 7:9)
@@ -35,25 +35,84 @@
 #' ## select multiple columns by a regular expression
 #' ## starts with `^` and ends with `$`
 #' df$select(pl$col("^ba.*$"))
-pl__col <- function(...) {
+pl__col <- function(..., names) {
   wrap({
     check_dots_unnamed()
 
     dots <- list2(...)
+    has_names <- !missing(names)
 
-    if (is_list_of_string(dots)) {
-      if (length(dots) == 1L) {
-        col(dots[[1]])
+    if (has_names && length(dots) > 0L) {
+      abort("Can't combine `names` with positional values in `...`.")
+    }
+
+    if (!has_names && length(dots) >= 2L) {
+      warn_deprecated_selector_dots("pl$col", "names")
+      legacy_names <- dots
+
+      if (is_list_of_string(legacy_names)) {
+        if (length(legacy_names) == 1L) {
+          col(legacy_names[[1L]])
+        } else {
+          cs__by_name(
+            vapply(legacy_names, `[[`, character(1L), 1L),
+            require_all = TRUE,
+            expand_patterns = TRUE
+          )$as_expr()
+        }
+      } else if (is_list_of_polars_dtype(legacy_names)) {
+        cs__by_dtype(legacy_names)$as_expr()
       } else {
-        cs__by_name(!!!dots, require_all = TRUE, expand_patterns = TRUE)$as_expr()
+        abort(c(
+          "Invalid input for `pl$col()`.",
+          `*` = paste0(
+            "`pl$col()` accepts either a single character vector or a list ",
+            "of Polars data types."
+          )
+        ))
       }
-    } else if (is_list_of_polars_dtype(dots)) {
-      cs__by_dtype(!!!dots)$as_expr()
     } else {
-      abort(c(
-        "Invalid input for `pl$col()`.",
-        `*` = "`pl$col()` accepts either single strings or Polars data types."
-      ))
+      selected <- if (has_names) {
+        names
+      } else if (length(dots) == 0L) {
+        warn_deprecated_selector_dots("pl$col", "names", empty = TRUE)
+        character()
+      } else {
+        dots[[1L]]
+      }
+
+      if (is_character(selected)) {
+        if (anyNA(selected)) {
+          abort(c(
+            "Invalid input for `pl$col()`.",
+            `*` = paste0(
+              "`pl$col()` accepts either a single character vector or a list ",
+              "of Polars data types."
+            )
+          ))
+        }
+        if (length(selected) == 1L) {
+          col(selected[[1L]])
+        } else {
+          cs__by_name(
+            selected,
+            require_all = TRUE,
+            expand_patterns = TRUE
+          )$as_expr()
+        }
+      } else if (is_polars_dtype(selected)) {
+        cs__by_dtype(list(selected))$as_expr()
+      } else if (is_list_of_polars_dtype(selected)) {
+        cs__by_dtype(selected)$as_expr()
+      } else {
+        abort(c(
+          "Invalid input for `pl$col()`.",
+          `*` = paste0(
+            "`pl$col()` accepts either a single character vector or a list ",
+            "of Polars data types."
+          )
+        ))
+      }
     }
   })
 }

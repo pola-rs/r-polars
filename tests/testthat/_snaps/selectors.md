@@ -64,6 +64,110 @@
       x Problematic argument:
       * a = "foo"
 
+# single-argument selector interfaces deprecate dynamic dots
+
+    Code
+      cs$by_name("foo", "bar")
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Using `...` to supply values to `cs$by_name()` is deprecated as of polars 1.16.0.
+      i Pass the values as a single `names` argument instead.
+    Output
+      cs.by_name('foo', 'bar', require_all=true)
+
+---
+
+    Code
+      cs$by_name(!!!c("foo", "bar"))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Using `...` to supply values to `cs$by_name()` is deprecated as of polars 1.16.0.
+      i Pass the values as a single `names` argument instead.
+    Output
+      cs.by_name('foo', 'bar', require_all=true)
+
+---
+
+    Code
+      cs$by_name()
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Calling `cs$by_name()` without an argument is deprecated as of polars 1.16.0.
+      i Pass an explicit empty `names` instead.
+    Output
+      cs.by_name(require_all=true)
+
+---
+
+    Code
+      cs$by_dtype(pl$Date, pl$String)
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Using `...` to supply values to `cs$by_dtype()` is deprecated as of polars 1.16.0.
+      i Pass the values as a single `dtypes` argument instead.
+    Output
+      cs.by_dtype([Date, String])
+
+---
+
+    Code
+      cs$by_dtype(!!!list(pl$Date, pl$String))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Using `...` to supply values to `cs$by_dtype()` is deprecated as of polars 1.16.0.
+      i Pass the values as a single `dtypes` argument instead.
+    Output
+      cs.by_dtype([Date, String])
+
+---
+
+    Code
+      cs$by_dtype()
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Calling `cs$by_dtype()` without an argument is deprecated as of polars 1.16.0.
+      i Pass an explicit empty `dtypes` instead.
+    Output
+      cs.by_dtype([])
+
+---
+
+    Code
+      cs$by_name("bar", names = "foo")
+    Condition <rlang_error>
+      Error in `cs$by_name()`:
+      ! Evaluation failed in `$by_name()`.
+      Caused by error in `cs$by_name()`:
+      ! Can't combine `names` with positional values in `...`.
+
+---
+
+    Code
+      cs$by_name(c("foo", "bar"), "baz")
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Using `...` to supply values to `cs$by_name()` is deprecated as of polars 1.16.0.
+      i Pass the values as a single `names` argument instead.
+    Condition <rlang_error>
+      Error in `cs$by_name()`:
+      ! Evaluation failed in `$by_name()`.
+      Caused by error in `cs$by_name()`:
+      ! `...` must be a list of single strings, not a list.
+
+---
+
+    Code
+      cs$by_dtype(list(pl$Date), pl$String)
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Using `...` to supply values to `cs$by_dtype()` is deprecated as of polars 1.16.0.
+      i Pass the values as a single `dtypes` argument instead.
+    Condition <rlang_error>
+      Error in `cs$by_dtype()`:
+      ! Evaluation failed in `$by_dtype()`.
+      Caused by error in `cs$by_dtype()`:
+      ! Dynamic dots `...` must be polars data types, got a list
+
 # contains
 
     Code

@@ -92,7 +92,7 @@ a \link[=DataType]{Binary} type scalar. Otherwise, the default method is called.
 # character
 ## as_lit = FALSE (default)
 as_polars_expr("a") # Same as `pl$col("a")`
-as_polars_expr(c("a", "b")) # Same as `pl$col("a", "b")`
+as_polars_expr(c("a", "b")) # Same as `pl$col(c("a", "b"))`
 
 ## as_lit = TRUE
 as_polars_expr(character(0), as_lit = TRUE)
@@ -136,7 +136,7 @@ as_polars_series(1) |>
   as_polars_expr()
 
 # polars_expr
-as_polars_expr(pl$col("a", "b"))
+as_polars_expr(pl$col(c("a", "b")))
 }
 \seealso{
 \itemize{

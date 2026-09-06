@@ -3,7 +3,7 @@ test_that("x argument can't be missing", {
 })
 
 test_that("as_polars_expr for polars_expr `structify=TRUE`", {
-  expect_deprecated(as_polars_expr(pl$col("a", "b"), structify = TRUE))
+  expect_deprecated(as_polars_expr(pl$col(c("a", "b")), structify = TRUE))
 
   # This feature is deprecated
   local_lifecycle_silence()
@@ -12,16 +12,16 @@ test_that("as_polars_expr for polars_expr `structify=TRUE`", {
     as_polars_expr(x, structify = TRUE)
   }
   expect_equal(as_func(pl$col("a")), pl$col("a"))
-  expect_equal(as_func(pl$col("a", "b")), pl$struct(pl$col("a", "b")))
+  expect_equal(as_func(pl$col(c("a", "b"))), pl$struct(pl$col(c("a", "b"))))
   expect_equal(as_func(pl$col("*")), pl$struct(pl$col("*")))
 })
 
 test_that("as_polars_expr for character `as_lit=FALSE`", {
   invalid_error_message <- r"(Invalid input for `pl\$col\(\)`)"
 
-  expect_equal(as_polars_expr(character()), pl$col())
+  expect_equal(as_polars_expr(character()), pl$col(character()))
   expect_equal(as_polars_expr(c("foo")), pl$col("foo"))
-  expect_equal(as_polars_expr(c("foo", "bar")), pl$col("foo", "bar"))
+  expect_equal(as_polars_expr(c("foo", "bar")), pl$col(c("foo", "bar")))
   expect_error(as_polars_expr(NA_character_), invalid_error_message)
   expect_error(as_polars_expr(c("foo", NA_character_)), invalid_error_message)
 })

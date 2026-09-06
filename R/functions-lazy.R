@@ -53,7 +53,7 @@ pl__element <- function() {
 #'
 #' df$with_columns(d = pl$coalesce("a", "b", "c", 10))
 #'
-#' df$with_columns(d = pl$coalesce(pl$col("a", "b", "c"), 10))
+#' df$with_columns(d = pl$coalesce(pl$col(c("a", "b", "c")), 10))
 pl__coalesce <- function(...) {
   check_dots_unnamed()
 

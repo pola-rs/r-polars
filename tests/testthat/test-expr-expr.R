@@ -3,14 +3,14 @@ test_that("map_batches works", {
 
   expect_query_equal(
     .input$select(
-      pl$col("a", "b")$map_batches(\(...) NULL)
+      pl$col(c("a", "b"))$map_batches(\(...) NULL)
     ),
     .data,
     pl$DataFrame(a = NULL, b = NULL)
   )
   expect_query_equal(
     .input$select(
-      pl$col("a", "b")$map_batches(\(x) x$name)
+      pl$col(c("a", "b"))$map_batches(\(x) x$name)
     ),
     .data,
     pl$DataFrame(a = "a", b = "b")
@@ -348,14 +348,14 @@ test_that("col DataType + col(s) + col regex", {
 
   # multiple
   expect_equal(
-    df$select(pl$col(pl$Float64, pl$Categorical())),
+    df$select(pl$col(list(pl$Float64, pl$Categorical()))),
     df
   )
 
   # multiple cols
   selected_cols <- c("Sepal.Length", "Sepal.Width")
   expect_equal(
-    df$select(pl$col(!!!selected_cols)),
+    df$select(pl$col(selected_cols)),
     as_polars_df(iris[, selected_cols])
   )
 
@@ -1569,10 +1569,10 @@ test_that("hash", {
   df <- as_polars_df(iris)
 
   hash_values1 <- df$select(
-    pl$col("Sepal.Width", "Species")$unique()$hash()$implode()
+    pl$col(c("Sepal.Width", "Species"))$unique()$hash()$implode()
   )
   hash_values2 <- df$select(
-    pl$col("Sepal.Width", "Species")$unique()$hash(1, 2, 3, 4)$implode()
+    pl$col(c("Sepal.Width", "Species"))$unique()$hash(1, 2, 3, 4)$implode()
   )
 
   expect_false(

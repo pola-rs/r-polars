@@ -4,10 +4,13 @@
 \alias{cs__by_name}
 \title{Select all columns matching the given names}
 \usage{
-cs__by_name(..., require_all = TRUE, expand_patterns = FALSE)
+cs__by_name(..., names, require_all = TRUE, expand_patterns = FALSE)
 }
 \arguments{
-\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column names to select.}
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Deprecated compatibility
+interface for passing multiple column names.}
+
+\item{names}{A character vector of column names to select.}
 
 \item{require_all}{Whether to match all names (the default) or any of the names.}
 
@@ -33,13 +36,13 @@ df <- pl$DataFrame(
 )
 
 # Select columns by name:
-df$select(cs$by_name("foo", "bar"))
+df$select(cs$by_name(c("foo", "bar")))
 
 # Match any of the given columns by name:
-df$select(cs$by_name("baz", "moose", "foo", "bear", require_all = FALSE))
+df$select(cs$by_name(c("baz", "moose", "foo", "bear"), require_all = FALSE))
 
 # Match all columns except for those given:
-df$select(!cs$by_name("foo", "bar"))
+df$select(!cs$by_name(c("foo", "bar")))
 }
 \seealso{
 \link{cs} for the documentation on operators supported by selectors.

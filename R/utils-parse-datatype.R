@@ -12,3 +12,11 @@ parse_into_list_of_datatypes <- function(...) {
       x$`_dt`
     })
 }
+
+parse_list_of_datatypes <- function(dtypes, arg = "dtypes") {
+  if (!is_list_of_polars_dtype(dtypes)) {
+    stop_input_type(dtypes, "a list of polars data types", arg = arg)
+  }
+
+  lapply(dtypes, `[[`, "_dt")
+}

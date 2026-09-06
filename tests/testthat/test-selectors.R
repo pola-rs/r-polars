@@ -158,11 +158,11 @@ test_that("by_dtype", {
   )
 
   expect_named(
-    df$select(cs$by_dtype(pl$Date, pl$String)),
+    df$select(cs$by_dtype(list(pl$Date, pl$String))),
     c("dt", "other")
   )
   expect_named(
-    df$select(!cs$by_dtype(pl$Date, pl$String)),
+    df$select(!cs$by_dtype(list(pl$Date, pl$String))),
     "value"
   )
   expect_snapshot(
@@ -188,17 +188,45 @@ test_that("by_name", {
   )
 
   expect_equal(
-    df$select(cs$by_name("foo", "bar")),
+    df$select(cs$by_name(c("foo", "bar"))),
     df$select("foo", "bar")
   )
   expect_equal(
-    df$select(cs$by_name("baz", "moose", "foo", "bear", require_all = FALSE)),
+    df$select(cs$by_name(c("baz", "moose", "foo", "bear"), require_all = FALSE)),
     df$select("baz", "foo")
   )
   expect_snapshot(
     df$select(cs$by_name(a = "foo")),
     error = TRUE
   )
+})
+
+test_that("single-argument selector interfaces deprecate dynamic dots", {
+  local_lifecycle_warnings()
+  expect_snapshot(cs$by_name("foo", "bar"), cnd_class = TRUE)
+  expect_snapshot(cs$by_name(!!!c("foo", "bar")), cnd_class = TRUE)
+  expect_snapshot(cs$by_name(), cnd_class = TRUE)
+  expect_snapshot(cs$by_dtype(pl$Date, pl$String), cnd_class = TRUE)
+  expect_snapshot(cs$by_dtype(!!!list(pl$Date, pl$String)), cnd_class = TRUE)
+  expect_snapshot(cs$by_dtype(), cnd_class = TRUE)
+  expect_snapshot(cs$by_name("bar", names = "foo"), error = TRUE, cnd_class = TRUE)
+  expect_snapshot(cs$by_name(c("foo", "bar"), "baz"), error = TRUE, cnd_class = TRUE)
+  expect_snapshot(cs$by_dtype(list(pl$Date), pl$String), error = TRUE, cnd_class = TRUE)
+
+  expect_silent(cs$by_name(names = c("foo", "bar")))
+  expect_silent(cs$by_name(character()))
+  expect_silent(cs$by_name("foo"))
+  expect_silent(cs$by_dtype(dtypes = list(pl$Date, pl$String)))
+  expect_silent(cs$by_dtype(list()))
+  expect_silent(cs$by_dtype(pl$Date))
+
+  local_lifecycle_silence()
+  old_names <- cs$by_name("foo", "bar")
+  new_names <- cs$by_name(c("foo", "bar"))
+  old_dtypes <- cs$by_dtype(pl$Date, pl$String)
+  new_dtypes <- cs$by_dtype(list(pl$Date, pl$String))
+  expect_equal(new_names, old_names, ignore_attr = TRUE)
+  expect_equal(new_dtypes, old_dtypes, ignore_attr = TRUE)
 })
 
 test_that("categorical", {

@@ -148,9 +148,14 @@ selector__exclude <- function(...) {
     }
 
     if (length(exclude_dtypes) > 0L) {
-      self - cs__by_dtype(...)
+      self - cs__by_dtype(exclude_dtypes)
     } else {
-      self - cs__by_name(..., require_all = FALSE, expand_patterns = TRUE)
+      self -
+        cs__by_name(
+          as.character(exclude_cols),
+          require_all = FALSE,
+          expand_patterns = TRUE
+        )
     }
   })
 }
@@ -318,7 +323,9 @@ cs__boolean <- function() {
 
 #' Select all columns matching the given dtypes
 #'
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Data types to select.
+#' @param dtypes A Polars data type or list of Polars data types to select.
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Deprecated compatibility
+#' interface for passing multiple data types.
 #'
 #' @inherit cs__empty return seealso
 #' @examples
@@ -329,18 +336,44 @@ cs__boolean <- function() {
 #' )
 #'
 #' # Select all columns with date or string dtypes:
-#' df$select(cs$by_dtype(pl$Date, pl$String))
+#' df$select(cs$by_dtype(list(pl$Date, pl$String)))
 #'
 #' # Select all columns that are not of date or string dtype:
-#' df$select(!cs$by_dtype(pl$Date, pl$String))
+#' df$select(!cs$by_dtype(list(pl$Date, pl$String)))
 #'
 #' # Group by string columns and sum the numeric columns:
 #' df$group_by(cs$string())$agg(cs$numeric()$sum())$sort("other")
-cs__by_dtype <- function(...) {
+cs__by_dtype <- function(..., dtypes) {
   wrap({
     check_dots_unnamed()
-    parse_into_list_of_datatypes(...) |>
-      PlRSelector$by_dtype()
+    has_dtypes <- !missing(dtypes)
+    dots <- list2(...)
+
+    if (has_dtypes && length(dots) > 0L) {
+      abort("Can't combine `dtypes` with positional values in `...`.")
+    }
+
+    if (!has_dtypes && length(dots) >= 2L) {
+      warn_deprecated_selector_dots("cs$by_dtype", "dtypes")
+      legacy_dtypes <- dots
+      parse_into_list_of_datatypes(!!!legacy_dtypes) |>
+        PlRSelector$by_dtype()
+    } else {
+      selected <- if (has_dtypes) {
+        dtypes
+      } else if (length(dots) == 0L) {
+        warn_deprecated_selector_dots("cs$by_dtype", "dtypes", empty = TRUE)
+        list()
+      } else {
+        dots[[1L]]
+      }
+
+      if (is_polars_dtype(selected)) {
+        selected <- list(selected)
+      }
+      parse_list_of_datatypes(selected) |>
+        PlRSelector$by_dtype()
+    }
   })
 }
 
@@ -383,7 +416,9 @@ cs__by_index <- function(indices, ..., require_all = TRUE) {
 
 #' Select all columns matching the given names
 #'
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column names to select.
+#' @param names A character vector of column names to select.
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Deprecated compatibility
+#' interface for passing multiple column names.
 #' @param require_all Whether to match all names (the default) or any of the names.
 #' @param expand_patterns Whether to expand regex patterns (`^...$`) and
 #'   wildcards (`*`) in names. Default is `FALSE` (treat names as literals).
@@ -399,20 +434,47 @@ cs__by_index <- function(indices, ..., require_all = TRUE) {
 #' )
 #'
 #' # Select columns by name:
-#' df$select(cs$by_name("foo", "bar"))
+#' df$select(cs$by_name(c("foo", "bar")))
 #'
 #' # Match any of the given columns by name:
-#' df$select(cs$by_name("baz", "moose", "foo", "bear", require_all = FALSE))
+#' df$select(cs$by_name(c("baz", "moose", "foo", "bear"), require_all = FALSE))
 #'
 #' # Match all columns except for those given:
-#' df$select(!cs$by_name("foo", "bar"))
-cs__by_name <- function(..., require_all = TRUE, expand_patterns = FALSE) {
+#' df$select(!cs$by_name(c("foo", "bar")))
+cs__by_name <- function(..., names, require_all = TRUE, expand_patterns = FALSE) {
   wrap({
     check_dots_unnamed()
-    names <- list2(...)
-    check_list_of_string(names, arg = "...")
+    has_names <- !missing(names)
+    dots <- list2(...)
 
-    PlRSelector$by_name(as.character(names), require_all, expand_patterns)
+    if (has_names && length(dots) > 0L) {
+      abort("Can't combine `names` with positional values in `...`.")
+    }
+
+    if (!has_names && length(dots) >= 2L) {
+      warn_deprecated_selector_dots("cs$by_name", "names")
+      legacy_names <- dots
+      check_list_of_string(legacy_names, arg = "...")
+      PlRSelector$by_name(
+        vapply(legacy_names, `[[`, character(1L), 1L),
+        require_all,
+        expand_patterns
+      )
+    } else {
+      selected <- if (has_names) {
+        names
+      } else if (length(dots) == 0L) {
+        warn_deprecated_selector_dots("cs$by_name", "names", empty = TRUE)
+        character()
+      } else {
+        dots[[1L]]
+      }
+
+      if (!is_character(selected) || anyNA(selected)) {
+        abort("`names` must be a character vector.")
+      }
+      PlRSelector$by_name(selected, require_all, expand_patterns)
+    }
   })
 }
 
@@ -883,8 +945,8 @@ cs__exclude <- function(...) {
     }
 
     all_selected <- c(
-      cs__by_name(!!!col_names, require_all = FALSE),
-      cs__by_dtype(!!!dtypes),
+      cs__by_name(as.character(col_names), require_all = FALSE),
+      cs__by_dtype(dtypes),
       if (length(regexes) > 0L) {
         cs__matches(sprintf("(%s)", paste0(unlist(regexes), collapse = "|")))
       },

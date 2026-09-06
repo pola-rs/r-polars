@@ -15,5 +15,5 @@ as_polars_selector.polars_expr <- function(x, ...) {
 #' @export
 as_polars_selector.character <- function(x, ..., strict = TRUE) {
   # Accept chr vec rather than single string
-  cs__by_name(!!!x, require_all = strict)
+  cs__by_name(x, require_all = strict)
 }

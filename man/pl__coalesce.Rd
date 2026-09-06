@@ -27,5 +27,5 @@ df <- pl$DataFrame(
 
 df$with_columns(d = pl$coalesce("a", "b", "c", 10))
 
-df$with_columns(d = pl$coalesce(pl$col("a", "b", "c"), 10))
+df$with_columns(d = pl$coalesce(pl$col(c("a", "b", "c")), 10))
 }

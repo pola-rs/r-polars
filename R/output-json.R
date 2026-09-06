@@ -27,7 +27,7 @@
 #' dat <- as_polars_lf(head(mtcars))
 #' destination <- tempfile()
 #'
-#' dat$select(pl$col("drat", "mpg"))$sink_ndjson(destination)
+#' dat$select(pl$col(c("drat", "mpg")))$sink_ndjson(destination)
 #' jsonlite::stream_in(file(destination))
 lazyframe__sink_ndjson <- function(
   path,
@@ -144,7 +144,7 @@ lazyframe__lazy_sink_ndjson <- function(
 #' dat <- as_polars_df(head(mtcars))
 #' destination <- tempfile()
 #'
-#' dat$select(pl$col("drat", "mpg"))$write_json(destination)
+#' dat$select(pl$col(c("drat", "mpg")))$write_json(destination)
 #' jsonlite::fromJSON(destination)
 dataframe__write_json <- function(file) {
   wrap({
@@ -162,7 +162,7 @@ dataframe__write_json <- function(file) {
 #' dat <- as_polars_df(head(mtcars))
 #' destination <- tempfile()
 #'
-#' dat$select(pl$col("drat", "mpg"))$write_ndjson(destination)
+#' dat$select(pl$col(c("drat", "mpg")))$write_ndjson(destination)
 #' jsonlite::stream_in(file(destination))
 dataframe__write_ndjson <- function(
   file,
