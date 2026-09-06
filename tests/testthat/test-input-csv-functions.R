@@ -306,6 +306,50 @@ test_that("read/scan: arg 'storage_options' throws basic errors", {
   )
 })
 
+test_that("read/scan: arg 'file_cache_ttl' is deprecated", {
+  tmpf <- withr::local_tempfile()
+  writeLines("a\n1", tmpf)
+
+  expect_warning(
+    pl$scan_csv(tmpf, file_cache_ttl = 10),
+    "file cache is no longer supported",
+    class = "polars_deprecation_warning"
+  )
+  expect_warning(
+    pl$read_csv(tmpf, file_cache_ttl = 10),
+    "file cache is no longer supported",
+    class = "polars_deprecation_warning"
+  )
+  expect_no_condition(pl$scan_csv(tmpf))
+  expect_no_condition(pl$read_csv(tmpf))
+
+  captured <- NULL
+  original <- get("PlRLazyFrame", asNamespace("polars"))$new_from_csv
+  mock <- new.env(parent = emptyenv())
+  mock$new_from_csv <- function(...) {
+    captured <<- list(...)
+    original(...)
+  }
+  testthat::local_mocked_bindings(PlRLazyFrame = mock, .package = "polars")
+
+  expect_warning(
+    pl$scan_csv(
+      tmpf,
+      file_cache_ttl = 10,
+      storage_options = c(
+        endpoint_url = "https://example.com",
+        file_cache_ttl = "60"
+      )
+    ),
+    "file cache is no longer supported",
+    class = "polars_deprecation_warning"
+  )
+  expect_identical(
+    captured$storage_options,
+    c(endpoint_url = "https://example.com", file_cache_ttl = "60")
+  )
+})
+
 test_that("read/scan: arg 'decimal_comma' works", {
   tmpf <- withr::local_tempfile()
   writeLines("a|b|c\n1,5|a|2\n2||", tmpf)

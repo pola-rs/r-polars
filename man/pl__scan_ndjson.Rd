@@ -82,9 +82,9 @@ information from environment variables.}
 accessing a cloud instance fails. Specify \code{max_retries} in
 \code{storage_options} instead.}
 
-\item{file_cache_ttl}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Amount of time to
-keep downloaded cloud files since their last access time, in seconds.
-Specify \code{file_cache_ttl} in \code{storage_options} instead.}
+\item{file_cache_ttl}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Deprecated and
+ignored. The file cache is no longer supported and has no direct
+replacement in Polars 2.0.}
 
 \item{include_file_paths}{Include the path of the source file(s) as a column
 with this name.}
