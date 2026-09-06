@@ -2660,24 +2660,24 @@
 # polars.compat_level option works level=newest
 
     Code
-      pl$LazyFrame(x = 1:3)$lazy_sink_ipc(tmpf)
+      pl$LazyFrame(x = 1:3)$lazy_sink_ipc(tmpf, compression = "zstd")
     Output
       <polars_lazy_frame>
 
 ---
 
     Code
-      pl$LazyFrame(x = 1:3)$sink_ipc(tmpf)
+      pl$LazyFrame(x = 1:3)$sink_ipc(tmpf, compression = "zstd")
 
 ---
 
     Code
-      pl$DataFrame(x = 1:3)$write_ipc(tmpf)
+      pl$DataFrame(x = 1:3)$write_ipc(tmpf, compression = "zstd")
 
 ---
 
     Code
-      pl$DataFrame(x = 1:3)$write_ipc_stream(tmpf)
+      pl$DataFrame(x = 1:3)$write_ipc_stream(tmpf, compression = "zstd")
 
 ---
 
@@ -2707,7 +2707,7 @@
 # polars.compat_level option works level=oldest
 
     Code
-      pl$LazyFrame(x = 1:3)$lazy_sink_ipc(tmpf)
+      pl$LazyFrame(x = 1:3)$lazy_sink_ipc(tmpf, compression = "zstd")
     Message
       `compat_level` is overridden by the option "polars.compat_level" with the string "oldest"
     Output
@@ -2716,21 +2716,21 @@
 ---
 
     Code
-      pl$LazyFrame(x = 1:3)$sink_ipc(tmpf)
+      pl$LazyFrame(x = 1:3)$sink_ipc(tmpf, compression = "zstd")
     Message
       `compat_level` is overridden by the option "polars.compat_level" with the string "oldest"
 
 ---
 
     Code
-      pl$DataFrame(x = 1:3)$write_ipc(tmpf)
+      pl$DataFrame(x = 1:3)$write_ipc(tmpf, compression = "zstd")
     Message
       `compat_level` is overridden by the option "polars.compat_level" with the string "oldest"
 
 ---
 
     Code
-      pl$DataFrame(x = 1:3)$write_ipc_stream(tmpf)
+      pl$DataFrame(x = 1:3)$write_ipc_stream(tmpf, compression = "zstd")
     Message
       `compat_level` is overridden by the option "polars.compat_level" with the string "oldest"
 
@@ -2768,7 +2768,7 @@
 # polars.compat_level option works level=1
 
     Code
-      pl$LazyFrame(x = 1:3)$lazy_sink_ipc(tmpf)
+      pl$LazyFrame(x = 1:3)$lazy_sink_ipc(tmpf, compression = "zstd")
     Message
       `compat_level` is overridden by the option "polars.compat_level" with the number 1
     Output
@@ -2777,21 +2777,21 @@
 ---
 
     Code
-      pl$LazyFrame(x = 1:3)$sink_ipc(tmpf)
+      pl$LazyFrame(x = 1:3)$sink_ipc(tmpf, compression = "zstd")
     Message
       `compat_level` is overridden by the option "polars.compat_level" with the number 1
 
 ---
 
     Code
-      pl$DataFrame(x = 1:3)$write_ipc(tmpf)
+      pl$DataFrame(x = 1:3)$write_ipc(tmpf, compression = "zstd")
     Message
       `compat_level` is overridden by the option "polars.compat_level" with the number 1
 
 ---
 
     Code
-      pl$DataFrame(x = 1:3)$write_ipc_stream(tmpf)
+      pl$DataFrame(x = 1:3)$write_ipc_stream(tmpf, compression = "zstd")
     Message
       `compat_level` is overridden by the option "polars.compat_level" with the number 1
 
@@ -2829,7 +2829,7 @@
 # polars.compat_level option works level=0
 
     Code
-      pl$LazyFrame(x = 1:3)$lazy_sink_ipc(tmpf)
+      pl$LazyFrame(x = 1:3)$lazy_sink_ipc(tmpf, compression = "zstd")
     Message
       `compat_level` is overridden by the option "polars.compat_level" with the number 0
     Output
@@ -2838,21 +2838,21 @@
 ---
 
     Code
-      pl$LazyFrame(x = 1:3)$sink_ipc(tmpf)
+      pl$LazyFrame(x = 1:3)$sink_ipc(tmpf, compression = "zstd")
     Message
       `compat_level` is overridden by the option "polars.compat_level" with the number 0
 
 ---
 
     Code
-      pl$DataFrame(x = 1:3)$write_ipc(tmpf)
+      pl$DataFrame(x = 1:3)$write_ipc(tmpf, compression = "zstd")
     Message
       `compat_level` is overridden by the option "polars.compat_level" with the number 0
 
 ---
 
     Code
-      pl$DataFrame(x = 1:3)$write_ipc_stream(tmpf)
+      pl$DataFrame(x = 1:3)$write_ipc_stream(tmpf, compression = "zstd")
     Message
       `compat_level` is overridden by the option "polars.compat_level" with the number 0
 

@@ -216,7 +216,7 @@ test_that("read_ipc_stream works", {
 
 test_that("read/scan: arg rechunk is deprecated", {
   tmpf <- withr::local_tempfile(fileext = ".arrow")
-  pl$DataFrame(a = 1:3)$write_ipc(tmpf)
+  pl$DataFrame(a = 1:3)$write_ipc(tmpf, compression = "uncompressed")
 
   expect_deprecated(pl$read_ipc(tmpf, rechunk = TRUE))
   expect_deprecated(pl$scan_ipc(tmpf, rechunk = TRUE))

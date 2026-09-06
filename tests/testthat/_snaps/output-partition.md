@@ -106,7 +106,7 @@
 
     Code
       as_polars_lf(mtcars)$sink_ipc(pl$PartitionBy(out_max_size_max,
-        max_rows_per_file = 2^64 - 1), mkdir = TRUE)
+        max_rows_per_file = 2^64 - 1), compression = "zstd", mkdir = TRUE)
     Condition
       Error in `as_polars_lf(mtcars)$sink_ipc()`:
       ! Evaluation failed in `$sink_ipc()`.

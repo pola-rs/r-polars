@@ -8,7 +8,7 @@ patrick::with_parameters_test_that(
     expect_equal(pl$read_ipc(tmpf), df)
 
     # update with new data
-    expect_null(lf$slice(5, 5)$sink_ipc(tmpf))
+    expect_null(lf$slice(5, 5)$sink_ipc(tmpf, compression = compression))
     expect_equal(
       pl$read_ipc(tmpf),
       df$slice(5, 5)
@@ -19,11 +19,79 @@ patrick::with_parameters_test_that(
 
 test_that("lazy_sink_ipc works", {
   temp_out <- withr::local_tempfile()
-  lf <- as_polars_lf(mtcars)$lazy_sink_ipc(temp_out)
+  lf <- as_polars_lf(mtcars)$lazy_sink_ipc(temp_out, compression = "zstd")
 
   expect_snapshot(lf$explain() |> cat())
   expect_snapshot(lf$collect())
   expect_equal(pl$read_ipc(temp_out), as_polars_df(mtcars))
+})
+
+test_that("Arrow file compression defaults are deprecated", {
+  local_lifecycle_warnings()
+  lf <- as_polars_lf(iris)
+  df <- as_polars_df(iris)
+
+  expect_snapshot(
+    lf$lazy_sink_ipc(withr::local_tempfile()),
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    lf$sink_ipc(withr::local_tempfile()),
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    df$write_ipc(withr::local_tempfile()),
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    df$write_ipc_stream(withr::local_tempfile()),
+    cnd_class = TRUE
+  )
+})
+
+test_that("Arrow file compression explicit values are quiet", {
+  local_lifecycle_warnings()
+  lf <- as_polars_lf(iris)
+  df <- as_polars_df(iris)
+
+  expect_no_condition(
+    lf$lazy_sink_ipc(withr::local_tempfile(), compression = "uncompressed")
+  )
+  expect_no_condition(
+    lf$sink_ipc(withr::local_tempfile(), compression = "zstd")
+  )
+  expect_no_condition(
+    df$write_ipc(withr::local_tempfile(), compression = "lz4")
+  )
+  expect_no_condition(
+    df$write_ipc_stream(withr::local_tempfile(), compression = NULL)
+  )
+})
+
+test_that("Arrow file default compression remains zstd in 1.16", {
+  local_lifecycle_silence()
+  lf <- as_polars_lf(iris)
+  df <- as_polars_df(iris)
+  read_raw <- function(path) {
+    readBin(path, what = raw(), n = file.info(path)$size)
+  }
+
+  lazy_default <- withr::local_tempfile()
+  lazy_zstd <- withr::local_tempfile()
+  lf$lazy_sink_ipc(lazy_default)$collect()
+  lf$lazy_sink_ipc(lazy_zstd, compression = "zstd")$collect()
+  expect_identical(read_raw(lazy_default), read_raw(lazy_zstd))
+  expect_equal(pl$read_ipc(lazy_default), pl$read_ipc(lazy_zstd))
+
+  stream_default <- withr::local_tempfile()
+  stream_zstd <- withr::local_tempfile()
+  df$write_ipc_stream(stream_default)
+  df$write_ipc_stream(stream_zstd, compression = "zstd")
+  expect_identical(read_raw(stream_default), read_raw(stream_zstd))
+  expect_equal(
+    pl$read_ipc_stream(stream_default),
+    pl$read_ipc_stream(stream_zstd)
+  )
 })
 
 test_that("sink_ipc: wrong compression", {
@@ -60,7 +128,7 @@ patrick::with_parameters_test_that(
     expect_equal(pl$read_ipc(tmpf), df)
 
     # update with new data
-    df$slice(5, 5)$write_ipc(tmpf)
+    df$slice(5, 5)$write_ipc(tmpf, compression = compression)
     expect_equal(
       pl$read_ipc(tmpf),
       df$slice(5, 5)
@@ -103,7 +171,7 @@ patrick::with_parameters_test_that(
 
     # update with new data
     skip_on_os("windows") # Windows has file locking issues
-    df$slice(5, 5)$write_ipc_stream(tmpf)
+    df$slice(5, 5)$write_ipc_stream(tmpf, compression = compression)
     expect_equal(
       pl$read_ipc_stream(tmpf),
       df$slice(5, 5)
