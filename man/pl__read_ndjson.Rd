@@ -83,8 +83,8 @@ accessing a cloud instance fails. Specify \code{max_retries} in
 \code{storage_options} instead.}
 
 \item{file_cache_ttl}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Deprecated and
-ignored. The file cache is no longer supported and has no direct
-replacement in Polars 2.0.}
+ignored. The Polars 2.0 streaming readers do not use the file cache, and
+this argument has no direct replacement.}
 
 \item{include_file_paths}{Include the path of the source file(s) as a column
 with this name.}

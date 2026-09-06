@@ -12,7 +12,9 @@
 #' @param source Path(s) to a file or directory. When needing to authenticate
 #'   for scanning cloud locations, see the `storage_options` parameter.
 #' @param n_rows Stop reading from the source after reading `n_rows`.
-#' @param cache Cache the result after reading.
+#' @param cache `r lifecycle::badge("deprecated")` The Polars 2.0 streaming
+#' readers do not use the file cache, and this argument has no direct
+#' replacement.
 #' @param rechunk `r lifecycle::badge("deprecated")` Reallocate to contiguous
 #'   memory when all chunks/files are parsed. Call `$rechunk()` on the output
 #'   instead.
@@ -38,8 +40,8 @@
 #'   accessing a cloud instance fails. Specify `max_retries` in
 #'   `storage_options` instead.
 #' @param file_cache_ttl `r lifecycle::badge("deprecated")` Deprecated and
-#'   ignored. The file cache is no longer supported and has no direct
-#'   replacement in Polars 2.0.
+#'   ignored. The Polars 2.0 streaming readers do not use the file cache, and
+#'   this argument has no direct replacement.
 #' @param hive_partitioning Infer statistics and schema from Hive partitioned
 #' sources and use them to prune reads. If `NULL` (default), it is automatically
 #' enabled when a single directory is passed, and otherwise disabled.
@@ -73,7 +75,7 @@ pl__scan_ipc <- function(
   source,
   ...,
   n_rows = NULL,
-  cache = TRUE,
+  cache = deprecated(),
   rechunk = deprecated(),
   row_index_name = NULL,
   row_index_offset = 0L,
@@ -88,6 +90,12 @@ pl__scan_ipc <- function(
   check_dots_empty0(...)
   check_list_of_polars_dtype(hive_schema, allow_null = TRUE)
   check_character(storage_options, allow_null = TRUE)
+
+  if (is_present(cache)) {
+    warn_deprecated_file_cache()
+  } else {
+    cache <- TRUE
+  }
 
   if (is_present(retries)) {
     deprecate_warn(
@@ -165,7 +173,7 @@ pl__read_ipc <- function(
   source,
   ...,
   n_rows = NULL,
-  cache = TRUE,
+  cache = deprecated(),
   rechunk = deprecated(),
   row_index_name = NULL,
   row_index_offset = 0L,

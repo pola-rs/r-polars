@@ -37,6 +37,9 @@
 #' @param ignore_errors Keep reading the file even if some lines yield errors.
 #' You can also use `infer_schema = FALSE` to read all columns as UTF8 to
 #' check which values might cause an issue.
+#' @param cache `r lifecycle::badge("deprecated")` The Polars 2.0 streaming
+#' readers do not use the file cache, and this argument has no direct
+#' replacement.
 #  TODO: enable this parameter
 #  @param with_column_names Apply a function over the column names just in time
 #  (when they are determined). This function will receive (and should return) a
@@ -95,7 +98,7 @@ pl__scan_csv <- function(
   null_values = NULL,
   empty_string_is_null = TRUE,
   ignore_errors = FALSE,
-  cache = FALSE,
+  cache = deprecated(),
   infer_schema = TRUE,
   infer_schema_length = 100,
   infer_schema_files = NULL,
@@ -131,6 +134,12 @@ pl__scan_csv <- function(
   check_number_whole(infer_schema_files, min = 1, allow_null = TRUE)
   encoding <- arg_match0(encoding, values = c("utf8", "utf8-lossy"))
   missing_columns <- arg_match0(missing_columns, values = c("insert", "raise"))
+
+  if (is_present(cache)) {
+    warn_deprecated_file_cache()
+  } else {
+    cache <- FALSE
+  }
 
   if (is_present(missing_utf8_is_empty_string)) {
     deprecate_warn(
@@ -244,7 +253,7 @@ pl__read_csv <- function(
   null_values = NULL,
   empty_string_is_null = TRUE,
   ignore_errors = FALSE,
-  cache = FALSE,
+  cache = deprecated(),
   infer_schema = TRUE,
   infer_schema_length = 100,
   infer_schema_files = NULL,

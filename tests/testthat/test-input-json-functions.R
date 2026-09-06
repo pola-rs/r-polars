@@ -98,12 +98,12 @@ test_that("read/scan: arg 'file_cache_ttl' is deprecated", {
 
   expect_warning(
     pl$scan_ndjson(tmpf, file_cache_ttl = 10),
-    "file cache is no longer supported",
+    "do not use the file cache",
     class = "polars_deprecation_warning"
   )
   expect_warning(
     pl$read_ndjson(tmpf, file_cache_ttl = 10),
-    "file cache is no longer supported",
+    "do not use the file cache",
     class = "polars_deprecation_warning"
   )
   expect_no_condition(pl$scan_ndjson(tmpf))
@@ -127,7 +127,7 @@ test_that("read/scan: arg 'file_cache_ttl' is deprecated", {
         file_cache_ttl = "60"
       )
     ),
-    "file cache is no longer supported",
+    "do not use the file cache",
     class = "polars_deprecation_warning"
   )
   expect_identical(

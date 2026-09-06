@@ -26,6 +26,7 @@
 #'   the datatypes in the file(s). If there are extra columns that are not in the
 #'   file(s), consider also enabling `allow_missing_columns`.
 #' @param low_memory Reduce memory pressure at the expense of performance
+#' @param cache Cache the result after reading.
 #' @param missing_columns Configuration for behavior when columns defined in the schema
 #'   are missing from the data:
 #'   - `"raise"` (default): Raises an error.

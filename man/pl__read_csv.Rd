@@ -17,7 +17,7 @@ pl__read_csv(
   null_values = NULL,
   empty_string_is_null = TRUE,
   ignore_errors = FALSE,
-  cache = FALSE,
+  cache = deprecated(),
   infer_schema = TRUE,
   infer_schema_length = 100,
   infer_schema_files = NULL,
@@ -85,7 +85,9 @@ missing string values as an empty character instead.}
 You can also use \code{infer_schema = FALSE} to read all columns as UTF8 to
 check which values might cause an issue.}
 
-\item{cache}{Cache the result after reading.}
+\item{cache}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} The Polars 2.0 streaming
+readers do not use the file cache, and this argument has no direct
+replacement.}
 
 \item{infer_schema}{If \code{TRUE} (default), the schema is inferred from the
 data using the first \code{infer_schema_length} rows. When \code{FALSE}, the schema is
@@ -160,8 +162,8 @@ accessing a cloud instance fails. Specify \code{max_retries} in
 \code{storage_options} instead.}
 
 \item{file_cache_ttl}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Deprecated and
-ignored. The file cache is no longer supported and has no direct
-replacement in Polars 2.0.}
+ignored. The Polars 2.0 streaming readers do not use the file cache, and
+this argument has no direct replacement.}
 
 \item{include_file_paths}{Include the path of the source file(s) as a column
 with this name.}

@@ -312,12 +312,12 @@ test_that("read/scan: arg 'file_cache_ttl' is deprecated", {
 
   expect_warning(
     pl$scan_csv(tmpf, file_cache_ttl = 10),
-    "file cache is no longer supported",
+    "do not use the file cache",
     class = "polars_deprecation_warning"
   )
   expect_warning(
     pl$read_csv(tmpf, file_cache_ttl = 10),
-    "file cache is no longer supported",
+    "do not use the file cache",
     class = "polars_deprecation_warning"
   )
   expect_no_condition(pl$scan_csv(tmpf))
@@ -341,13 +341,52 @@ test_that("read/scan: arg 'file_cache_ttl' is deprecated", {
         file_cache_ttl = "60"
       )
     ),
-    "file cache is no longer supported",
+    "do not use the file cache",
     class = "polars_deprecation_warning"
   )
   expect_identical(
     captured$storage_options,
     c(endpoint_url = "https://example.com", file_cache_ttl = "60")
   )
+})
+
+test_that("read/scan: arg 'cache' is deprecated", {
+  local_lifecycle_warnings()
+  tmpf <- withr::local_tempfile()
+  writeLines("a\n1", tmpf)
+
+  captured <- new.env(parent = emptyenv())
+  original <- get("PlRLazyFrame", asNamespace("polars"))$new_from_csv
+  mock <- new.env(parent = emptyenv())
+  mock$new_from_csv <- function(...) {
+    captured$args <- list(...)
+    original(...)
+  }
+  testthat::local_mocked_bindings(PlRLazyFrame = mock, .package = "polars")
+
+  expect_no_condition(pl$scan_csv(tmpf))
+  expect_false(captured$args$cache)
+
+  expect_snapshot(
+    {
+      pl$scan_csv(tmpf, cache = TRUE)
+      NULL
+    },
+    cnd_class = TRUE
+  )
+  expect_true(captured$args$cache)
+
+  expect_no_condition(pl$read_csv(tmpf))
+  expect_false(captured$args$cache)
+
+  expect_snapshot(
+    {
+      pl$read_csv(tmpf, cache = TRUE)
+      NULL
+    },
+    cnd_class = TRUE
+  )
+  expect_true(captured$args$cache)
 })
 
 test_that("read/scan: arg 'decimal_comma' works", {
