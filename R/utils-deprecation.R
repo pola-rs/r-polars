@@ -119,7 +119,7 @@ warn_deprecated_selector_dots <- function(
   )
 }
 
-warn_deprecated_selector_column_operation <- function(
+warn_deprecated_selector_col <- function(
   operator,
   user_env = caller_env(2)
 ) {
