@@ -13,6 +13,20 @@
           )
         }
 
+        deprecate_warn(
+          c(
+            `!` = sprintf(
+              "%s is deprecated as of %s 1.16.0.",
+              format_fn("<Enum>$union"),
+              format_pkg("polars")
+            ),
+            i = sprintf(
+              "Use %s instead.",
+              format_code("pl$Enum(unique(c(lhs$categories, rhs$categories)))")
+            )
+          )
+        )
+
         PlRDataType$new_enum(
           as_polars_series(unique(c(self$categories, other$categories)), name = "category")$`_s`
         )

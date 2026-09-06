@@ -10,6 +10,13 @@ expr__agg_groups()
 A polars \link{expression}
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+}
+\details{
+\code{agg_groups()} is deprecated as of polars 1.16.0. Use
+\code{df$with_row_index()$group_by(..., .maintain_order = TRUE)$agg(pl$col("index"))}
+instead.
+
 Should be used in aggregation context only.
 }
 \examples{
@@ -18,5 +25,8 @@ df <- pl$DataFrame(
   value = c(94, 95, 96, 97, 97, 99)
 )
 
-df$group_by("group", maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
+df$group_by("group", .maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
+
+# Recommended approach
+df$with_row_index()$group_by("group", .maintain_order = TRUE)$agg(pl$col("index"))
 }

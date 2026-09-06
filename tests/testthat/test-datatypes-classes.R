@@ -73,10 +73,23 @@ patrick::with_parameters_test_that(
     )
   },
   code = {
-    expect_equal(pl$Enum(c("b", "d"))$union(input), expected_output)
-    expect_equal(input$union(input), input)
+    expect_equal(suppressWarnings(pl$Enum(c("b", "d"))$union(input)), expected_output)
+    expect_equal(suppressWarnings(input$union(input)), input)
   }
 )
+
+test_that("Enum union is deprecated", {
+  local_lifecycle_warnings()
+  lhs <- pl$Enum(c("b", "d"))
+  rhs <- pl$Enum(c("d", "a"))
+
+  expect_snapshot(lhs$union(rhs), cnd_class = TRUE)
+
+  old <- suppressWarnings(lhs$union(rhs))
+  expect_no_condition(pl$Enum(unique(c(lhs$categories, rhs$categories))))
+  recommended <- pl$Enum(unique(c(lhs$categories, rhs$categories)))
+  expect_equal(old, recommended)
+})
 
 test_that("Enum union error", {
   expect_error(pl$Enum("a")$union(1), "`other` must be a polars data type, not the number 1")

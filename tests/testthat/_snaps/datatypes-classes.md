@@ -541,6 +541,17 @@
       Caused by error in `pl$Enum()`:
       ! Enum categories must be unique, found duplicated: b, a
 
+# Enum union is deprecated
+
+    Code
+      lhs$union(rhs)
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! `<Enum>$union()` is deprecated as of polars 1.16.0.
+      i Use `pl$Enum(unique(c(lhs$categories, rhs$categories)))` instead.
+    Output
+      Enum(categories=c('b', 'd', 'a'))
+
 # Decimal deprecation
 
     Code
