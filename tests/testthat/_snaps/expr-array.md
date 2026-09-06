@@ -162,6 +162,10 @@
       pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(
         values = pl$Array(pl$Int64, 2)))$select(pl$col("values")$arr$to_struct(
         fields = fields))$unnest("values")
+    Condition
+      Warning:
+      ! Legacy arguments of `<expr>$arr$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
     Output
       shape: (3, 2)
       ┌─────────┬─────────┐
@@ -180,6 +184,10 @@
       pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(
         values = pl$Array(pl$Int64, 2)))$select(pl$col("values")$arr$to_struct(
         fields = fields))$unnest("values")
+    Condition
+      Warning:
+      ! Legacy arguments of `<expr>$arr$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
     Output
       shape: (3, 2)
       ┌─────────┬─────────┐
@@ -190,6 +198,64 @@
       │ 1       ┆ 2       │
       │ 1       ┆ 1       │
       │ 2       ┆ 2       │
+      └─────────┴─────────┘
+
+# arr$to_struct deprecates dynamic field names
+
+    Code
+      df$select(pl$col("values")$arr$to_struct(fields = function(idx) paste0("field_",
+        idx)))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Legacy arguments of `<expr>$arr$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
+    Output
+      shape: (2, 1)
+      ┌───────────┐
+      │ values    │
+      │ ---       │
+      │ struct[2] │
+      ╞═══════════╡
+      │ {1,2}     │
+      │ {1,1}     │
+      └───────────┘
+
+# series arr$to_struct delegates to the expression API
+
+    Code
+      as_polars_df(series$arr$to_struct(fields = function(idx) paste0("field_", idx)))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Legacy arguments of `<expr>$arr$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
+    Output
+      shape: (2, 2)
+      ┌─────────┬─────────┐
+      │ field_0 ┆ field_1 │
+      │ ---     ┆ ---     │
+      │ i64     ┆ i64     │
+      ╞═════════╪═════════╡
+      │ 1       ┆ 2       │
+      │ 1       ┆ 1       │
+      └─────────┴─────────┘
+
+---
+
+    Code
+      as_polars_df(series$arr$to_struct(fields = ~ paste0("field_", .)))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Legacy arguments of `<expr>$arr$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
+    Output
+      shape: (2, 2)
+      ┌─────────┬─────────┐
+      │ field_0 ┆ field_1 │
+      │ ---     ┆ ---     │
+      │ i64     ┆ i64     │
+      ╞═════════╪═════════╡
+      │ 1       ┆ 2       │
+      │ 1       ┆ 1       │
       └─────────┴─────────┘
 
 # arr$eval()

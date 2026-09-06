@@ -402,6 +402,40 @@ patrick::with_parameters_test_that(
   }
 )
 
+test_that("arr$to_struct deprecates dynamic field names", {
+  df <- pl$DataFrame(
+    values = list(c(1, 2), c(1, 1)),
+    .schema_overrides = list(values = pl$Array(pl$Int64, 2))
+  )
+
+  expect_no_warning(
+    df$select(pl$col("values")$arr$to_struct(fields = c("a", "b")))
+  )
+  expect_snapshot(
+    df$select(
+      pl$col("values")$arr$to_struct(fields = \(idx) paste0("field_", idx))
+    ),
+    cnd_class = TRUE
+  )
+})
+
+test_that("series arr$to_struct delegates to the expression API", {
+  series <- as_polars_series(
+    list(c(1, 2), c(1, 1)),
+    name = "values"
+  )$cast(pl$Array(pl$Int64, 2))
+  expect_no_warning(series$arr$to_struct())
+  expect_no_warning(series$arr$to_struct(fields = c("a", "b")))
+  expect_snapshot(
+    as_polars_df(series$arr$to_struct(fields = \(idx) paste0("field_", idx))),
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    as_polars_df(series$arr$to_struct(fields = ~ paste0("field_", .))),
+    cnd_class = TRUE
+  )
+})
+
 test_that("arr$eval()", {
   df <- pl$DataFrame(
     a = list(c(1, 1), c(8, 5), c(3, 2))

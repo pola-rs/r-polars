@@ -30,6 +30,12 @@
 * Using a bare `pl$col()` as the right-hand operand of selector `&`, `|`, or
   `$xor()` is deprecated. Use `cs$by_name()` for set operations or
   `<selector>$as_expr()` for element-wise operations.
+* Omitted or function-valued `fields` and `n_field_strategy` are deprecated
+  for `<expr>$list$to_struct()` and `<series>$list$to_struct()`. Use an
+  explicit character vector of field names instead.
+* `upper_bound` is deprecated for `<expr>$list$to_struct()`. Function-valued
+  `fields` are deprecated for `<expr>$arr$to_struct()` and
+  `<series>$arr$to_struct()`.
 
 ## polars 1.15.0
 

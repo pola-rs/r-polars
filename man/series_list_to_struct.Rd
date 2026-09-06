@@ -4,13 +4,21 @@
 \alias{series_list_to_struct}
 \title{Convert the series of type List to a series of type Struct}
 \usage{
-series_list_to_struct(
-  n_field_strategy = c("first_non_null", "max_width"),
-  fields = NULL
-)
+series_list_to_struct(..., fields = NULL, n_field_strategy = deprecated())
 }
 \arguments{
-\item{n_field_strategy}{One of \code{"first_non_null"} or \code{"max_width"}.
+\item{...}{A character vector of field names can be supplied as the first
+positional argument. Scalar \code{"first_non_null"} and \code{"max_width"} values
+are interpreted as legacy \code{n_field_strategy}; use \code{fields = ...} when
+either is a field name. Additional positional arguments are deprecated
+compatibility arguments.}
+
+\item{fields}{Character vector of field names. \code{NULL} (default) and
+function-valued fields are deprecated; use an explicit character vector,
+which will be required in Polars 2.0.}
+
+\item{n_field_strategy}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} One of
+\code{"first_non_null"} or \code{"max_width"}.
 Strategy to determine the number of fields of the struct.
 \itemize{
 \item \code{"first_non_null"} (default): Set number of fields equal to
@@ -18,16 +26,7 @@ the length of the first non zero-length sublist.
 \item \code{"max_width"}: Set number of fields as max length of all sublists.
 }
 
-If the \code{field} argument is character, this argument will be ignored.}
-
-\item{fields}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-\code{NULL} (default) or character vector of field names, or a function that
-takes an integer index and returns character.
-If the name and number of the desired fields is known in advance,
-character vector of field names can be given, which will be assigned by index.
-Otherwise, to dynamically assign field names, a custom function can be used;
-if neither are set, fields will be \code{field_0}, \code{field_1}...
-See the examples for details.}
+If the \code{fields} argument is character, this argument will be ignored.}
 }
 \value{
 A \link[=Series]{polars Series}
@@ -36,14 +35,13 @@ A \link[=Series]{polars Series}
 Convert the series of type List to a series of type Struct
 }
 \examples{
-# Convert list to struct with default field name assignment:
+# Convert list to struct with explicit field names:
 s1 <- as_polars_series(list(0:2, 0:1))
-s2 <- s1$list$to_struct()
+s2 <- s1$list$to_struct(c("one", "two", "three"))
 s2
 s2$struct$fields
 
-# Convert list to struct with field name assignment by
-# function/index:
+# Dynamic field-name functions are deprecated:
 s3 <- s1$list$to_struct(fields = \\(idx) sprintf("n\%02d", idx))
 s3$struct$fields
 

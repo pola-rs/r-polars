@@ -354,12 +354,11 @@ expr_arr_to_list <- function() {
 #' Convert the Series of type Array to a Series of type Struct
 #'
 #' @param fields `r lifecycle::badge("experimental")`
-#'   `NULL` (default) or character vector of field names, or a function that
-#'   takes an integer index and returns character.
-#'   If the name and number of the desired fields is known in advance,
-#'   character vector of field names can be given, which will be assigned by index.
-#'   Otherwise, to dynamically assign field names, a custom function can be used;
-#'   if neither are set, fields will be `field_0`, `field_1`...
+#'   `NULL` (default) or character vector of field names. A function that
+#'   takes an integer index and returns character remains accepted only for
+#'   compatibility; explicit character names are preferred.
+#'   A character vector assigns explicit names by index. If `NULL` is used,
+#'   names are generated as `field_0`, `field_1`, ... from the fixed array width.
 #'   See the examples for details.
 #' @inherit as_polars_expr return
 #' @examples
@@ -370,7 +369,7 @@ expr_arr_to_list <- function() {
 #'
 #' df$with_columns(struct = pl$col("n")$arr$to_struct())
 #'
-#' # Convert array to struct with field name assignment by function/index:
+#' # Dynamic field-name functions are deprecated:
 #' df$select(pl$col("n")$arr$to_struct(\(idx) paste0("n", idx)))$unnest("n")
 #'
 #' # Convert array to struct with field name assignment by index from character:
@@ -380,6 +379,9 @@ expr_arr_to_struct <- function(fields = NULL) {
     if (is_character(fields)) {
       wrap(self$`_rexpr`$arr_to_struct())$struct$rename_fields(fields)
     } else {
+      if (!is.null(fields)) {
+        warn_deprecated_to_struct("<expr>$arr$to_struct()")
+      }
       name_gen <- if (is.null(fields)) {
         NULL
       } else {
