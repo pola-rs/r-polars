@@ -5,25 +5,28 @@
 \title{Convert the Series of type List to a Series of type Struct}
 \usage{
 expr_list_to_struct(
-  n_field_strategy = deprecated(),
+  ...,
   fields = NULL,
-  upper_bound = NULL
+  n_field_strategy = deprecated(),
+  upper_bound = deprecated()
 )
 }
 \arguments{
+\item{...}{A character vector of field names can be supplied as the first
+positional argument. Scalar \code{"first_non_null"} and \code{"max_width"} values
+are interpreted as legacy \code{n_field_strategy}; use \code{fields = ...} when
+either is a field name. Additional positional arguments are deprecated
+compatibility arguments.}
+
+\item{fields}{Character vector of field names. \code{NULL} (default) and
+function-valued fields are deprecated; use an explicit character vector,
+which will be required in Polars 2.0.}
+
 \item{n_field_strategy}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 Ignored.}
 
-\item{fields}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-\code{NULL} (default) or character vector of field names, or a function that
-takes an integer index and returns character.
-If the name and number of the desired fields is known in advance,
-character vector of field names can be given, which will be assigned by index.
-Otherwise, to dynamically assign field names, a custom function can be used;
-if neither are set, fields will be \code{field_0}, \code{field_1}...
-See the examples for details.}
-
-\item{upper_bound}{Single positive integer value or \code{NULL} (default).
+\item{upper_bound}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Single positive
+integer value or \code{NULL} (default).
 A \link[=Expr]{polars expression} needs to be able to evaluate the output datatype at all
 times, so the caller must provide an upper bound of the number of struct
 fields that will be created if \code{fields} is not a character vector of field names.}
@@ -36,7 +39,8 @@ Convert the Series of type List to a Series of type Struct
 }
 \details{
 As of polars 1.3.0, the \code{n_field_strategy} argument is ignored and deprecated.
-The \code{fields} needs to be a character vector or the \code{upper_bound} is regarded as ground truth.
+Use an explicit character vector for \code{fields}; this form is warning-free and
+will be required in Polars 2.0. The \code{upper_bound} argument is deprecated.
 
 If inferring field length is needed, \code{\link[=series_list_to_struct]{<series>$list$to_struct()}}
 can be used, which inspects the data at runtime.
@@ -44,13 +48,11 @@ can be used, which inspects the data at runtime.
 \examples{
 df <- pl$DataFrame(n = list(c(0, 1), c(0, 1, 2)))
 
-# Convert list to struct with default field name assignment:
+# Convert list to struct with explicit field names:
 
-# This will become a struct with 2 fields.
-df$select(pl$col("n")$list$to_struct(upper_bound = 2))$unnest("n")
+df$select(pl$col("n")$list$to_struct(c("one", "two", "three")))$unnest("n")
 
-# Convert list to struct with field name assignment by
-# function/index:
+# Dynamic field-name functions are deprecated:
 df$select(
   pl$col("n")$list$to_struct(
     fields = \\(idx) paste0("n", idx + 1),

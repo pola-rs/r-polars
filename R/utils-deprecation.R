@@ -140,3 +140,20 @@ warn_deprecated_selector_col <- function(
     user_env = user_env
   )
 }
+
+warn_deprecated_to_struct <- function(method, user_env = caller_env(2)) {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "Legacy arguments of %s are deprecated as of %s 1.16.0.",
+        format_code(method),
+        format_pkg("polars")
+      ),
+      i = sprintf(
+        "Use an explicit character vector for %s.",
+        format_arg("fields")
+      )
+    ),
+    user_env = user_env
+  )
+}

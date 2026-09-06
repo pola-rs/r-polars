@@ -756,6 +756,55 @@ test_that("list$to_struct's deprecated argument", {
     cnd_class = TRUE
   )
   expect_snapshot(pl$col("foo")$list$to_struct(), cnd_class = TRUE)
+  expect_snapshot(
+    pl$col("foo")$list$to_struct(fields = NULL),
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    pl$col("foo")$list$to_struct(
+      fields = \(idx) paste0("field_", idx),
+      upper_bound = 2
+    ),
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    pl$col("foo")$list$to_struct(fields = c("a"), upper_bound = 1),
+    cnd_class = TRUE
+  )
+})
+
+test_that("list$to_struct accepts future-compatible fields", {
+  expect_no_warning(pl$col("foo")$list$to_struct(c("a", "b")))
+  expect_no_warning(
+    pl$col("foo")$list$to_struct(fields = c("a", "b"))
+  )
+  expect_no_warning(
+    pl$col("foo")$list$to_struct(fields = "max_width")
+  )
+  expect_snapshot(
+    pl$col("foo")$list$to_struct("max_width"),
+    cnd_class = TRUE
+  )
+})
+
+test_that("list$to_struct preserves mixed legacy positional forms", {
+  df <- pl$DataFrame(values = list(c(1, 2), c(1, 2, 3)))
+
+  expect_snapshot(
+    df$select(
+      pl$col("values")$list$to_struct(c("a", "b"), upper_bound = 2)
+    ),
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    df$select(
+      pl$col("values")$list$to_struct(
+        n_field_strategy = "ignored",
+        c("a", "b")
+      )
+    ),
+    cnd_class = TRUE
+  )
 })
 
 patrick::with_parameters_test_that(

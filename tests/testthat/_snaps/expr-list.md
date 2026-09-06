@@ -199,6 +199,10 @@
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
         values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
         upper_bound = upper_bound))$unnest("values")
+    Condition
+      Warning:
+      ! Legacy arguments of `<expr>$list$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
     Output
       shape: (3, 1)
       ┌─────────┐
@@ -217,6 +221,10 @@
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
         values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
         upper_bound = upper_bound))$unnest("values")
+    Condition
+      Warning:
+      ! Legacy arguments of `<expr>$list$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
     Output
       shape: (3, 1)
       ┌─────────┐
@@ -235,6 +243,10 @@
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
         values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
         upper_bound = upper_bound))$unnest("values")
+    Condition
+      Warning:
+      ! Legacy arguments of `<expr>$list$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
     Output
       shape: (3, 1)
       ┌─────────┐
@@ -253,6 +265,10 @@
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
         values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
         upper_bound = upper_bound))$unnest("values")
+    Condition
+      Warning:
+      ! Legacy arguments of `<expr>$list$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
     Output
       shape: (3, 1)
       ┌─────┐
@@ -271,6 +287,10 @@
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
         values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
         upper_bound = upper_bound))$unnest("values")
+    Condition
+      Warning:
+      ! Legacy arguments of `<expr>$list$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
     Output
       shape: (3, 4)
       ┌─────┬──────┬──────┬──────┐
@@ -289,6 +309,10 @@
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
         values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
         upper_bound = upper_bound))$unnest("values")
+    Condition
+      Warning:
+      ! Legacy arguments of `<expr>$list$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
     Output
       shape: (3, 5)
       ┌─────────┬─────────┬─────────┬─────────┬─────────┐
@@ -307,6 +331,10 @@
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
         values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
         upper_bound = upper_bound))$unnest("values")
+    Condition
+      Warning:
+      ! Legacy arguments of `<expr>$list$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
     Output
       shape: (3, 5)
       ┌─────────┬─────────┬─────────┬─────────┬─────────┐
@@ -325,6 +353,10 @@
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
         values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
         upper_bound = upper_bound))$unnest("values")
+    Condition
+      Warning:
+      ! Legacy arguments of `<expr>$list$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
     Output
       shape: (3, 5)
       ┌─────────┬─────────┬─────────┬─────────┬─────────┐
@@ -343,6 +375,10 @@
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
         values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
         upper_bound = upper_bound))$unnest("values")
+    Condition
+      Warning:
+      ! Legacy arguments of `<expr>$list$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
     Output
       shape: (3, 1)
       ┌─────┐
@@ -361,6 +397,10 @@
       pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
         values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
         upper_bound = upper_bound))$unnest("values")
+    Condition
+      Warning:
+      ! Legacy arguments of `<expr>$list$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
     Output
       shape: (3, 4)
       ┌─────┬──────┬──────┬──────┐
@@ -379,7 +419,8 @@
       pl$col("foo")$list$to_struct("foo", fields = "a")
     Condition <lifecycle_warning_deprecated>
       Warning:
-      ! `<expr>$list$to_struct()` with `n_field_strategy` is deprecated and has no effect on execution.
+      ! Legacy arguments of `<expr>$list$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
     Output
       col("foo").list.to_struct()
 
@@ -389,10 +430,94 @@
       pl$col("foo")$list$to_struct()
     Condition <lifecycle_warning_deprecated>
       Warning:
-      ! `<expr>$list$to_struct()` without `upper_bound` is deprecated, automatically setting `upper_bound = 1L`.
-      i Either modify `fields` to be a vector or specify `upper_bound` to suppress this warning.
+      ! Legacy arguments of `<expr>$list$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
     Output
       col("foo").list.to_struct()
+
+---
+
+    Code
+      pl$col("foo")$list$to_struct(fields = NULL)
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Legacy arguments of `<expr>$list$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
+    Output
+      col("foo").list.to_struct()
+
+---
+
+    Code
+      pl$col("foo")$list$to_struct(fields = function(idx) paste0("field_", idx),
+      upper_bound = 2)
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Legacy arguments of `<expr>$list$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
+    Output
+      col("foo").list.to_struct()
+
+---
+
+    Code
+      pl$col("foo")$list$to_struct(fields = c("a"), upper_bound = 1)
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Legacy arguments of `<expr>$list$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
+    Output
+      col("foo").list.to_struct()
+
+# list$to_struct accepts future-compatible fields
+
+    Code
+      pl$col("foo")$list$to_struct("max_width")
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Legacy arguments of `<expr>$list$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
+    Output
+      col("foo").list.to_struct()
+
+# list$to_struct preserves mixed legacy positional forms
+
+    Code
+      df$select(pl$col("values")$list$to_struct(c("a", "b"), upper_bound = 2))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Legacy arguments of `<expr>$list$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
+    Output
+      shape: (2, 1)
+      ┌───────────┐
+      │ values    │
+      │ ---       │
+      │ struct[2] │
+      ╞═══════════╡
+      │ {1.0,2.0} │
+      │ {1.0,2.0} │
+      └───────────┘
+
+---
+
+    Code
+      df$select(pl$col("values")$list$to_struct(n_field_strategy = "ignored", c("a",
+        "b")))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Legacy arguments of `<expr>$list$to_struct()` are deprecated as of polars 1.16.0.
+      i Use an explicit character vector for `fields`.
+    Output
+      shape: (2, 1)
+      ┌───────────┐
+      │ values    │
+      │ ---       │
+      │ struct[2] │
+      ╞═══════════╡
+      │ {1.0,2.0} │
+      │ {1.0,2.0} │
+      └───────────┘
 
 # list$agg() works
 
