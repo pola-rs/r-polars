@@ -129,7 +129,6 @@
     Condition <polars_deprecation_warning>
       Warning:
       `list.gather` with a flat datatype is deprecated. Please use `implode` to return to previous behavior.
-
       See https://github.com/pola-rs/polars/issues/22149 for more information.
     Output
       shape: (2, 1)
@@ -149,7 +148,6 @@
     Condition <polars_deprecation_warning>
       Warning:
       `is_in` with a collection of the same datatype is ambiguous and deprecated. Please use `implode` to return to previous behavior.
-
       See https://github.com/pola-rs/polars/issues/22149 for more information.
     Output
       shape: (3, 1)
