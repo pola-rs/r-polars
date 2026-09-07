@@ -2064,7 +2064,9 @@ expr__log1p <- function() {
 #'
 #' @param seed Integer, random seed parameter. Defaults to 0.
 #' @param seed_1,seed_2,seed_3 `r lifecycle::badge("deprecated")` Integer,
-#' random seed parameters. Default to `seed` if not set.
+#' random seed parameters. Default to `seed` if not set. These arguments will
+#' be removed in Polars 2.0; only `seed` will remain, and hash values may
+#' change.
 #' @inherit as_polars_expr return
 #'
 #' @details

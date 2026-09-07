@@ -336,7 +336,7 @@
     Condition <lifecycle_warning_deprecated>
       Warning:
       ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
-      i Use the `seed` argument instead.
+      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
 
 ---
 
@@ -345,7 +345,7 @@
     Condition <lifecycle_warning_deprecated>
       Warning:
       ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
-      i Use the `seed` argument instead.
+      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
 
 ---
 
@@ -354,7 +354,7 @@
     Condition <lifecycle_warning_deprecated>
       Warning:
       ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
-      i Use the `seed` argument instead.
+      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
 
 ---
 
@@ -363,7 +363,7 @@
     Condition <lifecycle_warning_deprecated>
       Warning:
       ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
-      i Use the `seed` argument instead.
+      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
 
 ---
 
@@ -372,7 +372,7 @@
     Condition <lifecycle_warning_deprecated>
       Warning:
       ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
-      i Use the `seed` argument instead.
+      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
 
 # rolling_*_by only works with date, datetime, or integers
 

@@ -138,7 +138,10 @@ warn_deprecated_hash_seeds <- function(fn, user_env = caller_env(2)) {
         format_fn(fn),
         format_pkg("polars")
       ),
-      i = sprintf("Use the %s argument instead.", format_arg("seed"))
+      i = paste0(
+        "The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in ",
+        "Polars 2.0; only `seed` will remain. Hash values may change."
+      )
     ),
     user_env = user_env
   )

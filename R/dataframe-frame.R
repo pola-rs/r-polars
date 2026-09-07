@@ -2129,7 +2129,8 @@ dataframe__group_by_dynamic <- function(
 #'
 #' @param seed Random seed parameter. Defaults to 0.
 #' @param seed_1,seed_2,seed_3 `r lifecycle::badge("deprecated")` Random seed
-#' parameters. Defaults to `seed` if not set.
+#' parameters. Defaults to `seed` if not set. These arguments will be removed
+#' in Polars 2.0; only `seed` will remain, and hash values may change.
 #'
 #' @details
 #' This implementation does not guarantee stable results across different
