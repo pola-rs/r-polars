@@ -1,3 +1,20 @@
+# TODO: @2.0 Replace the dynamic-dots `...` interface with a single `names`
+# argument and remove this compatibility helper.
+parse_vertical_agg_input <- function(...) {
+  check_dots_unnamed()
+  dots <- list2(...)
+
+  if (length(dots) == 0L) {
+    return(character())
+  }
+
+  if (all(vapply(dots, is_character, logical(1L)))) {
+    return(unlist(dots, use.names = FALSE))
+  }
+
+  dots
+}
+
 #' Either return an expression representing all columns, or evaluate a bitwise
 #' AND operation
 #'
@@ -23,7 +40,9 @@ pl__all <- function(..., ignore_nulls = TRUE) {
   if (missing(...)) {
     pl$col("*")
   } else {
-    pl$col(...)$all(ignore_nulls = ignore_nulls)
+    pl$col(names = parse_vertical_agg_input(...))$all(
+      ignore_nulls = ignore_nulls
+    )
   }
 }
 
@@ -43,7 +62,9 @@ pl__all <- function(..., ignore_nulls = TRUE) {
 #'
 #' df$select(pl$any("a"))
 pl__any <- function(..., ignore_nulls = TRUE) {
-  pl$col(...)$any(ignore_nulls = ignore_nulls)
+  pl$col(names = parse_vertical_agg_input(...))$any(
+    ignore_nulls = ignore_nulls
+  )
 }
 
 #' Get the maximum value
@@ -65,7 +86,7 @@ pl__any <- function(..., ignore_nulls = TRUE) {
 #' # Get the maximum value of multiple columns
 #' df$select(pl$max("a", "b"))
 pl__max <- function(...) {
-  pl$col(...)$max()
+  pl$col(names = parse_vertical_agg_input(...))$max()
 }
 
 #' Get the minimum value
@@ -87,7 +108,7 @@ pl__max <- function(...) {
 #' # Get the minimum value of multiple columns
 #' df$select(pl$min("a", "b"))
 pl__min <- function(...) {
-  pl$col(...)$min()
+  pl$col(names = parse_vertical_agg_input(...))$min()
 }
 
 #' Sum all values
@@ -109,7 +130,7 @@ pl__min <- function(...) {
 #' # Get the sum of multiple columns
 #' df$select(pl$sum("a", "b"))
 pl__sum <- function(...) {
-  pl$col(...)$sum()
+  pl$col(names = parse_vertical_agg_input(...))$sum()
 }
 
 #' Cumulatively sum all values
@@ -131,5 +152,5 @@ pl__sum <- function(...) {
 #' # Get the cum_sum of multiple columns
 #' df$select(pl$cum_sum("a", "b"))
 pl__cum_sum <- function(...) {
-  pl$col(...)$cum_sum()
+  pl$col(names = parse_vertical_agg_input(...))$cum_sum()
 }
