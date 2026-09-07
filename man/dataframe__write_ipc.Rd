@@ -2,7 +2,7 @@
 % Please edit documentation in R/output-ipc.R
 \name{dataframe__write_ipc}
 \alias{dataframe__write_ipc}
-\title{Write to Arrow File Format}
+\title{Write to Arrow IPC File Format}
 \usage{
 dataframe__write_ipc(
   path,
@@ -67,7 +67,7 @@ accessing a cloud instance fails. Specify \code{max_retries} in
 \code{NULL} invisibly.
 }
 \description{
-Write to Arrow File Format
+Write to Arrow IPC File Format
 }
 \examples{
 tmpf <- tempfile(fileext = ".arrow")

@@ -3,7 +3,7 @@
 \name{lazyframe__sink_ipc}
 \alias{lazyframe__sink_ipc}
 \alias{lazyframe__lazy_sink_ipc}
-\title{Evaluate the query in streaming mode and write to Arrow File Format}
+\title{Evaluate the query in streaming mode and write to Arrow IPC File Format}
 \usage{
 lazyframe__sink_ipc(
   path,

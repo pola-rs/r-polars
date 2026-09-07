@@ -2,7 +2,7 @@
 % Please edit documentation in R/output-ipc.R
 \name{dataframe__write_ipc_stream}
 \alias{dataframe__write_ipc_stream}
-\title{Write to Arrow Streaming Format}
+\title{Write to Arrow IPC Stream Format}
 \usage{
 dataframe__write_ipc_stream(
   path,
@@ -45,7 +45,7 @@ Use the highest level, currently same as
 \code{NULL} invisibly.
 }
 \description{
-Write to Arrow Streaming Format
+Write to Arrow IPC Stream Format
 }
 \examples{
 \dontshow{if (\{
