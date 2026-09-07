@@ -158,6 +158,59 @@ test_that("arg 'missing_columns' works", {
   )
 })
 
+test_that("read/scan: arg 'allow_missing_columns' is deprecated", {
+  local_lifecycle_warnings()
+  tmpf <- withr::local_tempfile(fileext = ".parquet")
+  pl$DataFrame(a = 1:3)$write_parquet(tmpf)
+
+  captured <- new.env(parent = emptyenv())
+  original <- get("PlRLazyFrame", asNamespace("polars"))$new_from_parquet
+  mock <- new.env(parent = emptyenv())
+  mock$new_from_parquet <- function(...) {
+    captured$args <- list(...)
+    original(...)
+  }
+  testthat::local_mocked_bindings(PlRLazyFrame = mock, .package = "polars")
+
+  expect_snapshot(
+    {
+      pl$scan_parquet(tmpf, allow_missing_columns = TRUE)
+      NULL
+    },
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    {
+      pl$scan_parquet(tmpf, allow_missing_columns = FALSE)
+      NULL
+    },
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    {
+      pl$read_parquet(tmpf, allow_missing_columns = TRUE)
+      NULL
+    },
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    {
+      pl$read_parquet(tmpf, allow_missing_columns = FALSE)
+      NULL
+    },
+    cnd_class = TRUE
+  )
+  local_lifecycle_silence()
+  pl$scan_parquet(tmpf, allow_missing_columns = TRUE)
+  expect_identical(captured$args$missing_columns, "insert")
+  pl$scan_parquet(tmpf, allow_missing_columns = FALSE)
+  expect_identical(captured$args$missing_columns, "raise")
+  pl$read_parquet(tmpf, allow_missing_columns = TRUE)
+  expect_identical(captured$args$missing_columns, "insert")
+  pl$read_parquet(tmpf, allow_missing_columns = FALSE)
+  expect_identical(captured$args$missing_columns, "raise")
+})
+
 test_that("read/scan: arg rechunk is deprecated", {
   tmpf <- withr::local_tempfile(fileext = ".parquet")
   pl$DataFrame(a = 1:3)$write_parquet(tmpf)

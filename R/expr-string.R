@@ -285,10 +285,15 @@ expr_str_concat <- function(
   ...,
   ignore_nulls = TRUE
 ) {
+  replacement <- if (is.null(delimiter)) {
+    'Use `$str$join("-")` instead.'
+  } else {
+    "Use `$str$join()` with the same delimiter instead."
+  }
   deprecate_warn(
     c(
       `!` = "`$str$concat()` is deprecated.",
-      i = "Use `$str$join()` instead."
+      i = replacement
     )
   )
   delimiter <- delimiter %||% "-"

@@ -24,7 +24,7 @@
 #' @param schema `r lifecycle::badge("experimental")`
 #'   Named list of [datatypes][DataType] of the columns. The datatypes must match
 #'   the datatypes in the file(s). If there are extra columns that are not in the
-#'   file(s), consider also enabling `allow_missing_columns`.
+#'   file(s), consider also setting `missing_columns = "insert"`.
 #' @param low_memory Reduce memory pressure at the expense of performance
 #' @param cache Cache the result after reading.
 #' @param missing_columns Configuration for behavior when columns defined in the schema
@@ -112,22 +112,17 @@ pl__scan_parquet <- function(
   )
 
   if (is_present(allow_missing_columns)) {
+    missing_columns <- if (allow_missing_columns) "insert" else "raise"
+    replacement <- sprintf('missing_columns = "%s"', missing_columns)
     deprecate_warn(
       c(
         `!` = sprintf(
-          "The argument %s of %s is deprecated.",
-          format_arg("allow_missing_columns"),
-          format_fn("scan_parquet")
+          "The argument %s is deprecated.",
+          format_arg("allow_missing_columns")
         ),
-        i = sprintf(
-          "Use the argument %s instead and pass one of %s.",
-          format_arg("missing_columns"),
-          format_code("('insert', 'raise')")
-        )
+        i = sprintf("Use %s instead.", format_code(replacement))
       )
     )
-
-    missing_columns <- if (allow_missing_columns) "insert" else "raise"
   }
 
   if (!is.null(hive_schema)) {

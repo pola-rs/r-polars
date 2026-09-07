@@ -14,6 +14,7 @@ A polars \link{expression}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-Cast to Int64 and then to Datetime instead.
+Cast to Int64 and then to the desired Datetime or Duration dtype and time
+unit instead.
 }
 \keyword{internal}

@@ -149,6 +149,42 @@
       This error occurred in the following expression:
       	col("with_tz").str.strptime(["raise"])
 
+# str$concat
+
+    Code
+      df$select(pl$col("x")$str$concat())
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! `$str$concat()` is deprecated.
+      i Use `$str$join("-")` instead.
+    Output
+      shape: (1, 1)
+      ┌─────┐
+      │ x   │
+      │ --- │
+      │ str │
+      ╞═════╡
+      │ 1-a │
+      └─────┘
+
+---
+
+    Code
+      df$select(pl$col("x")$str$concat("|"))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! `$str$concat()` is deprecated.
+      i Use `$str$join()` with the same delimiter instead.
+    Output
+      shape: (1, 1)
+      ┌─────┐
+      │ x   │
+      │ --- │
+      │ str │
+      ╞═════╡
+      │ 1|a │
+      └─────┘
+
 # zfill
 
     Code

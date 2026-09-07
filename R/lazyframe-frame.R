@@ -335,10 +335,10 @@ lazyframe__collect <- function(
 #' @description
 #' `r lifecycle::badge("deprecated")`
 #'
-#' `$profile()` is deprecated. It was made for the older in-memory engine, but
-#' Polars now uses a streaming engine by default. Due to the concurrent nature
-#' of the streaming engine, the profiling information from this method would
-#' be misleading.
+#' `$profile()` is deprecated. Starting with Polars 2.0, `engine = "auto"` will
+#' use the streaming engine by default. Due to the concurrent nature of the
+#' streaming engine, the profiling information from this method would be
+#' misleading.
 #'
 #' This will run the query and return a list containing the
 #' materialized DataFrame and a DataFrame that contains profiling information
@@ -395,7 +395,11 @@ lazyframe__profile <- function(
           format_fn("profile"),
           format_pkg("polars")
         ),
-        i = "It was made for the older in-memory engine, but Polars now uses a streaming engine by default. Due to the concurrent nature of the streaming engine, the profiling information from this method would be misleading." # nolint: line_length_linter
+        i = paste0(
+          "Starting with Polars 2.0, engine = \"auto\" will use the streaming ",
+          "engine by default. Due to the concurrent nature of the streaming ",
+          "engine, the profiling information from this method would be misleading."
+        )
       )
     )
     engine <- arg_match0(engine, c("auto", "in-memory", "streaming"))

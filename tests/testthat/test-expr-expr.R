@@ -1465,26 +1465,44 @@ test_that("filter", {
 })
 
 test_that("explode/flatten", {
+  local_lifecycle_warnings()
   expect_equal(
     pl$DataFrame(a = list(letters))$select(pl$col("a")$explode(empty_as_null = TRUE)),
     pl$DataFrame(a = letters)
   )
-  expect_warning(
-    expect_equal(
-      pl$DataFrame(a = list(letters))$select(pl$col("a")$flatten()),
-      pl$DataFrame(a = letters)
-    ),
-    "is deprecated"
+  expect_snapshot(
+    pl$DataFrame(a = list(letters))$select(pl$col("a")$flatten()),
+    cnd_class = TRUE
   )
-
-  # default warns that empty_as_null will change to FALSE in 2.0
   expect_warning(
     pl$DataFrame(a = list(letters))$select(pl$col("a")$explode()),
     "will change"
   )
+  local_lifecycle_silence()
+  expect_equal(
+    pl$DataFrame(a = list(letters))$select(pl$col("a")$flatten()),
+    pl$DataFrame(a = list(letters))$select(
+      pl$col("a")$list$explode(empty_as_null = TRUE, keep_nulls = TRUE)
+    )
+  )
+  expect_equal(
+    pl$DataFrame(a = list(letters))$select(
+      pl$col("a")$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)
+    ),
+    pl$DataFrame(a = letters)
+  )
 
   # empty and null handling
   df <- pl$DataFrame(a = list(NULL, list(NA), list()))
+  old_flatten <- df$select(pl$col("a")$flatten())
+  expect_equal(
+    old_flatten,
+    df$select(pl$col("a")$list$explode(empty_as_null = TRUE, keep_nulls = TRUE))
+  )
+  future_flatten <- df$select(
+    pl$col("a")$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)
+  )
+  expect_gt(old_flatten$height, future_flatten$height)
   expect_equal(
     df$select(pl$col("a")$explode(empty_as_null = TRUE)),
     pl$DataFrame(a = list(NULL, NA, NULL))

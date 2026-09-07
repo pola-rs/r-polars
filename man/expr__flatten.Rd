@@ -12,7 +12,9 @@ A polars \link{expression}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
-\verb{$flatten()} is deprecated. Use \link[=expr_list_explode]{$list$explode()} instead.
+\verb{$flatten()} is deprecated. For Polars 2.0-compatible behavior, use
+\verb{$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)}. To preserve the
+legacy behavior exactly, use \verb{$list$explode(empty_as_null = TRUE, keep_nulls = TRUE)}; the null handling differs between these forms.
 }
 \examples{
 df <- pl$DataFrame(
