@@ -379,6 +379,8 @@ test_that("read/scan: arg 'schema_overrides' works", {
     pl$read_csv(tmpf, schema_overrides = list(pl$Categorical()), infer_schema_files = NULL),
     pl$DataFrame(a = c(1.5, 2), factor(c("a", NA)), c = c(2L, NA))$cast(c = pl$Int64)
   )
+  # TODO: @2.0: require unnamed schema overrides to cover every column; use
+  # a named list for partial overrides.
 })
 
 test_that("read/scan: arg 'schema' works", {
@@ -413,6 +415,23 @@ test_that("read/scan: arg 'schema' works", {
       infer_schema_files = NULL
     ),
     error = TRUE
+  )
+})
+
+test_that("read/scan: schema currently matches columns positionally", {
+  tmpf <- withr::local_tempfile()
+  writeLines("a,b\nA,B", tmpf)
+  schema <- list(b = pl$String, a = pl$String)
+
+  # TODO: @2.0: schema fields will match by name, so expect b = "B" and a = "A".
+  expected <- pl$DataFrame(b = "A", a = "B")
+  expect_equal(
+    pl$scan_csv(tmpf, schema = schema, infer_schema_files = NULL)$collect(),
+    expected
+  )
+  expect_equal(
+    pl$read_csv(tmpf, schema = schema, infer_schema_files = NULL),
+    expected
   )
 })
 
