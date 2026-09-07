@@ -379,6 +379,8 @@ test_that("read/scan: arg 'schema_overrides' works", {
     pl$read_csv(tmpf, schema_overrides = list(pl$Categorical()), infer_schema_files = NULL),
     pl$DataFrame(a = c(1.5, 2), factor(c("a", NA)), c = c(2L, NA))$cast(c = pl$Int64)
   )
+  # TODO: @2.0: require unnamed schema overrides to cover every column; use
+  # a named list for partial overrides.
 })
 
 test_that("read/scan: arg 'schema' works", {
