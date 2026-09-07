@@ -83,6 +83,18 @@ test_that("vertical aggregation helpers accept vector and spliced names", {
   expect_no_warning(df$select(pl$sum(names)))
   expect_no_warning(df$select(pl$cum_sum(!!!names)))
 
+  dtypes <- list(pl$Int64, pl$Float64)
+  df_dtypes <- pl$DataFrame(
+    int = as.integer(c(1, 2, 3)),
+    dbl = c(1, 2, 3)
+  )
+  expect_no_warning({
+    expect_equal(
+      df_dtypes$select(pl$sum(dtypes)),
+      df_dtypes$select(pl$sum(pl$Int64, pl$Float64))
+    )
+  })
+
   expect_error(
     pl$all(a = "a"),
     "Arguments in `...` must be passed by position, not name"

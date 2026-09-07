@@ -12,6 +12,10 @@ parse_vertical_agg_input <- function(...) {
     return(unlist(dots, use.names = FALSE))
   }
 
+  if (length(dots) == 1L) {
+    return(dots[[1L]])
+  }
+
   dots
 }
 
