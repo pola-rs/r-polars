@@ -237,9 +237,12 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 #' @param engine The engine name to use for processing the query.
 #'   One of the followings:
 #'   - `"auto"` (default): Select the engine automatically.
-#'     The `"in-memory"` engine will be selected for most cases.
-#'   - `"in-memory"`: Use the in-memory engine.
-#'   - `"streaming"`: `r lifecycle::badge("experimental")` Use the (new) streaming engine.
+#'     In Polars 1.16, the `"in-memory"` engine is selected for most cases.
+#'     Starting with Polars 2.0, the streaming engine is selected instead.
+#'     Use `"in-memory"` to keep the current execution engine explicitly.
+#'   - `"in-memory"`: Use the in-memory engine. This is an escape hatch for
+#'     queries whose incidental row order differs under streaming.
+#'   - `"streaming"`: Use the streaming engine.
 #' @param optimizations `r lifecycle::badge("experimental")`
 #'   A [QueryOptFlags] object to indicate optimization passes done during query optimization.
 #' @param type_coercion `r lifecycle::badge("deprecated")`
@@ -1779,6 +1782,9 @@ lazyframe__pivot <- function(
 #' the melted columns. Defaults to `"variable"`.
 #' @param value_name Name to give to the new column containing the values of
 #' the melted columns. Defaults to `"value"`.
+#'
+#' The row order of the result is not guaranteed; use `$sort()` when a stable
+#' order is required.
 #'
 #' @inherit as_polars_lf return
 #'

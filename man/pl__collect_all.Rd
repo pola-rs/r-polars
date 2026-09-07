@@ -20,9 +20,12 @@ pl__collect_all(
 One of the followings:
 \itemize{
 \item \code{"auto"} (default): Select the engine automatically.
-The \code{"in-memory"} engine will be selected for most cases.
-\item \code{"in-memory"}: Use the in-memory engine.
-\item \code{"streaming"}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Use the (new) streaming engine.
+In Polars 1.16, the \code{"in-memory"} engine is selected for most cases.
+Starting with Polars 2.0, the streaming engine is selected instead.
+Use \code{"in-memory"} to keep the current execution engine explicitly.
+\item \code{"in-memory"}: Use the in-memory engine. This is an escape hatch for
+queries whose incidental row order differs under streaming.
+\item \code{"streaming"}: Use the streaming engine.
 }}
 
 \item{optimizations}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
