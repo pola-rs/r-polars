@@ -64,7 +64,7 @@
 #'   cat(list.files("."))
 #'   cat("\n\n")
 #'
-#'   pl$read_csv(".")
+#'   pl$read_csv(".", infer_schema_files = NULL)
 #' })
 #'
 #' # The number of rows in each chunk can be adjusted with `chunk_size`.

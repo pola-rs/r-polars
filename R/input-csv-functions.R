@@ -53,8 +53,10 @@
 #' `infer_schema_files`. If `NULL`, the full data may be scanned (this is
 #' slow). Set `infer_schema = FALSE` to read all columns as `pl$String`.
 #' @param infer_schema_files `r lifecycle::badge("experimental")` How many
-#' files to use when inferring the schema. If `NULL` (default), all files are
-#' used.
+#' files to use when inferring the schema. In Polars 1.16, omitting this
+#' argument and setting it to `NULL` uses all files. Starting with Polars 2.0,
+#' the default will be 10 files. Use `infer_schema_files = 10` to opt into the
+#' new default or `infer_schema_files = NULL` to keep using all files.
 #' @param encoding Either `"utf8"` or `"utf8-lossy"`. Lossy means that invalid
 #' UTF8 values are replaced with "?" characters.
 #' @param low_memory Reduce memory pressure at the expense of performance.
@@ -74,15 +76,20 @@
 #  their original name.
 #'
 #' @param raise_if_empty If `FALSE`, parsing an empty file returns an empty
-#' DataFrame or LazyFrame.
+#' DataFrame or LazyFrame. In Polars 1.16, the default is `TRUE`. Starting with
+#' Polars 2.0, the default will be conditional: it will be `FALSE` when
+#' `has_header = FALSE` and `schema` is supplied, and `TRUE` otherwise. Pass an
+#' explicit value to select the desired behavior.
 #' @param truncate_ragged_lines Truncate lines that are longer than the schema.
+#' Its default is unchanged in Polars 1.16. In Polars 2.0, the default will be
+#' determined together with the `extra_columns` CSV option.
 #' @param decimal_comma Parse floats using a comma as the decimal separator
 #' instead of a period.
 #' @param glob Expand path given via globbing rules.
 #' @examples
 #' my_file <- tempfile()
 #' write.csv(iris, my_file)
-#' lazy_frame <- pl$scan_csv(my_file)
+#' lazy_frame <- pl$scan_csv(my_file, infer_schema_files = 10)
 #' lazy_frame$collect()
 #' unlink(my_file)
 pl__scan_csv <- function(
@@ -123,6 +130,8 @@ pl__scan_csv <- function(
   missing_utf8_is_empty_string = deprecated()
 ) {
   check_dots_empty0(...)
+  infer_schema_files_missing <- missing(infer_schema_files)
+  raise_if_empty_missing <- missing(raise_if_empty)
   check_character(source, allow_na = FALSE)
   if (length(source) == 0) {
     abort("`source` must have length > 0.")
@@ -134,6 +143,20 @@ pl__scan_csv <- function(
   check_number_whole(infer_schema_files, min = 1, allow_null = TRUE)
   encoding <- arg_match0(encoding, values = c("utf8", "utf8-lossy"))
   missing_columns <- arg_match0(missing_columns, values = c("insert", "raise"))
+
+  if (infer_schema_files_missing) {
+    # TODO: @2.0: default omitted values to 10 and remove this migration path.
+    warn_csv_infer_schema_files()
+  }
+
+  if (
+    raise_if_empty_missing &&
+      isFALSE(has_header) &&
+      !is.null(schema)
+  ) {
+    # TODO: @2.0: resolve omission as `is.null(schema) || isTRUE(has_header)`.
+    warn_csv_raise_if_empty()
+  }
 
   if (is_present(cache)) {
     warn_deprecated_file_cache()
@@ -212,6 +235,8 @@ pl__scan_csv <- function(
     try_parse_dates = try_parse_dates,
     eol_char = eol_char,
     raise_if_empty = raise_if_empty,
+    # TODO: @2.0: derive omission from `extra_columns == "ignore"` and reject
+    # an explicit `FALSE` when that option requests truncation.
     truncate_ragged_lines = truncate_ragged_lines,
     decimal_comma = decimal_comma,
     glob = glob,
@@ -238,7 +263,7 @@ pl__scan_csv <- function(
 #' @examples
 #' my_file <- tempfile()
 #' write.csv(iris, my_file)
-#' pl$read_csv(my_file)
+#' pl$read_csv(my_file, infer_schema_files = 10)
 #' unlink(my_file)
 pl__read_csv <- function(
   source,
@@ -279,6 +304,18 @@ pl__read_csv <- function(
 ) {
   check_dots_empty0(...)
   .args <- as.list(environment())
+  if (missing(infer_schema_files)) {
+    # TODO: @2.0: remove when the formal default changes to 10.
+    .args$infer_schema_files <- missing_arg()
+  }
+  if (missing(raise_if_empty)) {
+    # TODO: @2.0: retain for the conditional default.
+    .args$raise_if_empty <- missing_arg()
+  }
+  if (missing(truncate_ragged_lines)) {
+    # TODO: @2.0: retain for the `extra_columns`-dependent default.
+    .args$truncate_ragged_lines <- missing_arg()
+  }
   do.call(pl$scan_csv, .args)$collect() |>
     wrap()
 }

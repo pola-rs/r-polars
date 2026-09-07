@@ -2,7 +2,7 @@ test_that("sink_csv works", {
   lf <- as_polars_lf(mtcars)
   temp_out <- withr::local_tempfile(fileext = ".csv")
   expect_null(lf$sink_csv(temp_out))
-  expect_equal(pl$read_csv(temp_out), lf$collect())
+  expect_equal(pl$read_csv(temp_out, infer_schema_files = 10), lf$collect())
 })
 
 test_that("lazy_sink_csv works", {
@@ -11,7 +11,7 @@ test_that("lazy_sink_csv works", {
 
   expect_snapshot(lf$explain() |> cat())
   expect_snapshot(lf$collect())
-  expect_equal(pl$read_csv(temp_out), as_polars_df(mtcars))
+  expect_equal(pl$read_csv(temp_out, infer_schema_files = 10), as_polars_df(mtcars))
 })
 
 test_that("sink_csv: null_value works", {
@@ -25,7 +25,10 @@ test_that("sink_csv: null_value works", {
   )
   lf$sink_csv(temp_out, null_value = "hello")
   expect_equal(
-    pl$read_csv(temp_out)$select("disp", "hp")$slice(offset = 0, length = 1),
+    pl$read_csv(temp_out, infer_schema_files = 10)$select("disp", "hp")$slice(
+      offset = 0,
+      length = 1
+    ),
     pl$DataFrame(disp = "hello", hp = "hello")
   )
 })
@@ -36,7 +39,7 @@ test_that("sink_csv: separator works", {
 
   lf$sink_csv(temp_out, separator = "|")
   expect_equal(
-    pl$read_csv(temp_out, separator = "|"),
+    pl$read_csv(temp_out, separator = "|", infer_schema_files = 10),
     lf$collect()
   )
   expect_error(
@@ -97,12 +100,14 @@ test_that("sink_csv: date_format works", {
   dat$sink_csv(temp_out, date_format = "%Y")
 
   expect_equal(
-    pl$read_csv(temp_out)$with_columns(pl$col("date"))$sort("date")$cast(pl$Int32),
+    pl$read_csv(temp_out, infer_schema_files = 10)$with_columns(pl$col("date"))$sort("date")$cast(
+      pl$Int32
+    ),
     pl$DataFrame(date = 2020:2023)
   )
   dat$sink_csv(temp_out, date_format = "%d/%m/%Y")
   expect_equal(
-    pl$read_csv(temp_out)$sort("date"),
+    pl$read_csv(temp_out, infer_schema_files = 10)$sort("date"),
     pl$DataFrame(date = paste0("01/01/", 2020:2023))
   )
 })
@@ -119,7 +124,7 @@ test_that("sink_csv: datetime_format works", {
   dat$sink_csv(temp_out, datetime_format = "%Hh%Mm - %d/%m/%Y")
 
   expect_equal(
-    pl$read_csv(temp_out)$sort("date"),
+    pl$read_csv(temp_out, infer_schema_files = 10)$sort("date"),
     pl$DataFrame(
       date = c(
         "00h00m - 01/01/2020",
@@ -142,7 +147,7 @@ test_that("sink_csv: time_format works", {
   dat$sink_csv(temp_out, time_format = "%Hh%Mm%Ss")
 
   expect_equal(
-    pl$read_csv(temp_out)$sort("date"),
+    pl$read_csv(temp_out, infer_schema_files = 10)$sort("date"),
     pl$DataFrame(date = paste0(c("00", "00", "08", "16"), "h00m00s"))
   )
 })
@@ -153,13 +158,13 @@ test_that("sink_csv: float_precision works", {
   dat$sink_csv(temp_out, float_precision = 1)
 
   expect_equal(
-    pl$read_csv(temp_out)$sort("x"),
+    pl$read_csv(temp_out, infer_schema_files = 10)$sort("x"),
     pl$DataFrame(x = c(1.2, 5.6))
   )
 
   dat$sink_csv(temp_out, float_precision = 3)
   expect_equal(
-    pl$read_csv(temp_out)$sort("x"),
+    pl$read_csv(temp_out, infer_schema_files = 10)$sort("x"),
     pl$DataFrame(x = c(1.234, 5.600))
   )
 })
@@ -185,7 +190,7 @@ test_that("write_csv works", {
   df <- as_polars_df(mtcars)
   temp_out <- withr::local_tempfile(fileext = ".csv")
   expect_null(df$write_csv(temp_out))
-  expect_equal(pl$read_csv(temp_out), df)
+  expect_equal(pl$read_csv(temp_out, infer_schema_files = 10), df)
 })
 
 test_that("write_csv: null_value works", {
@@ -199,7 +204,10 @@ test_that("write_csv: null_value works", {
   )
   df$write_csv(temp_out, null_value = "hello")
   expect_equal(
-    pl$read_csv(temp_out)$select("disp", "hp")$slice(offset = 0, length = 1),
+    pl$read_csv(temp_out, infer_schema_files = 10)$select("disp", "hp")$slice(
+      offset = 0,
+      length = 1
+    ),
     pl$DataFrame(disp = "hello", hp = "hello")
   )
 })
@@ -210,7 +218,7 @@ test_that("write_csv: separator works", {
 
   df$write_csv(temp_out, separator = "|")
   expect_equal(
-    pl$read_csv(temp_out, separator = "|"),
+    pl$read_csv(temp_out, separator = "|", infer_schema_files = 10),
     df
   )
   expect_error(
@@ -271,12 +279,14 @@ test_that("write_csv: date_format works", {
   dat$write_csv(temp_out, date_format = "%Y")
 
   expect_equal(
-    pl$read_csv(temp_out)$with_columns(pl$col("date"))$sort("date")$cast(pl$Int32),
+    pl$read_csv(temp_out, infer_schema_files = 10)$with_columns(pl$col("date"))$sort("date")$cast(
+      pl$Int32
+    ),
     pl$DataFrame(date = 2020:2023)
   )
   dat$write_csv(temp_out, date_format = "%d/%m/%Y")
   expect_equal(
-    pl$read_csv(temp_out)$sort("date"),
+    pl$read_csv(temp_out, infer_schema_files = 10)$sort("date"),
     pl$DataFrame(date = paste0("01/01/", 2020:2023))
   )
 })
@@ -293,7 +303,7 @@ test_that("write_csv: datetime_format works", {
   dat$write_csv(temp_out, datetime_format = "%Hh%Mm - %d/%m/%Y")
 
   expect_equal(
-    pl$read_csv(temp_out)$sort("date"),
+    pl$read_csv(temp_out, infer_schema_files = 10)$sort("date"),
     pl$DataFrame(
       date = c(
         "00h00m - 01/01/2020",
@@ -316,7 +326,7 @@ test_that("write_csv: time_format works", {
   dat$write_csv(temp_out, time_format = "%Hh%Mm%Ss")
 
   expect_equal(
-    pl$read_csv(temp_out)$sort("date"),
+    pl$read_csv(temp_out, infer_schema_files = 10)$sort("date"),
     pl$DataFrame(date = paste0(c("00", "00", "08", "16"), "h00m00s"))
   )
 })
@@ -327,13 +337,13 @@ test_that("write_csv: float_precision works", {
   dat$write_csv(temp_out, float_precision = 1)
 
   expect_equal(
-    pl$read_csv(temp_out)$sort("x"),
+    pl$read_csv(temp_out, infer_schema_files = 10)$sort("x"),
     pl$DataFrame(x = c(1.2, 5.6))
   )
 
   dat$write_csv(temp_out, float_precision = 3)
   expect_equal(
-    pl$read_csv(temp_out)$sort("x"),
+    pl$read_csv(temp_out, infer_schema_files = 10)$sort("x"),
     pl$DataFrame(x = c(1.234, 5.600))
   )
 })
@@ -360,11 +370,11 @@ test_that("write_csv can export compressed data", {
 
   tmpf <- withr::local_tempfile(fileext = ".csv.zst")
   dat$write_csv(tmpf, compression = "zstd")
-  expect_equal(dat, pl$read_csv(tmpf))
+  expect_equal(dat, pl$read_csv(tmpf, infer_schema_files = 10))
 
   tmpf <- withr::local_tempfile(fileext = ".csv.gz")
   dat$write_csv(tmpf, compression = "gzip")
-  expect_equal(dat, pl$read_csv(tmpf))
+  expect_equal(dat, pl$read_csv(tmpf, infer_schema_files = 10))
 
   expect_snapshot(
     dat$write_csv(tmpf, compression = "foo"),
@@ -377,11 +387,11 @@ test_that("sink_csv can export compressed data", {
 
   tmpf <- withr::local_tempfile(fileext = ".csv.zst")
   dat$sink_csv(tmpf, compression = "zstd")
-  expect_equal(dat$collect(), pl$read_csv(tmpf))
+  expect_equal(dat$collect(), pl$read_csv(tmpf, infer_schema_files = 10))
 
   tmpf <- withr::local_tempfile(fileext = ".csv.gz")
   dat$sink_csv(tmpf, compression = "gzip")
-  expect_equal(dat$collect(), pl$read_csv(tmpf))
+  expect_equal(dat$collect(), pl$read_csv(tmpf, infer_schema_files = 10))
 })
 
 test_that("error if wrong compression extension", {
@@ -409,8 +419,8 @@ test_that("arg check_extension works", {
   tmpf <- withr::local_tempfile(fileext = ".foo")
 
   dat$sink_csv(tmpf, compression = "zstd", check_extension = FALSE)
-  expect_equal(dat$collect(), pl$read_csv(tmpf))
+  expect_equal(dat$collect(), pl$read_csv(tmpf, infer_schema_files = 10))
 
   dat$sink_csv(tmpf, compression = "gzip", check_extension = FALSE)
-  expect_equal(dat$collect(), pl$read_csv(tmpf))
+  expect_equal(dat$collect(), pl$read_csv(tmpf, infer_schema_files = 10))
 })

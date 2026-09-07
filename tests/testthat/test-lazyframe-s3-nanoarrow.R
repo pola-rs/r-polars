@@ -51,7 +51,7 @@ test_that("test lazy scan", {
   writeLines("a\n1", tmpf)
 
   # create array stream
-  stream <- pl$scan_csv(tmpf) |>
+  stream <- pl$scan_csv(tmpf, infer_schema_files = 10) |>
     nanoarrow::as_nanoarrow_array_stream()
 
   # write more rows after creating the stream
@@ -62,7 +62,7 @@ test_that("test lazy scan", {
   expect_shape(df, dim = c(2L, 1L))
 
   # create array stream again
-  stream <- pl$scan_csv(tmpf) |>
+  stream <- pl$scan_csv(tmpf, infer_schema_files = 10) |>
     nanoarrow::as_nanoarrow_array_stream()
 
   # overwrite the file having another schema
