@@ -418,6 +418,23 @@ test_that("read/scan: arg 'schema' works", {
   )
 })
 
+test_that("read/scan: schema currently matches columns positionally", {
+  tmpf <- withr::local_tempfile()
+  writeLines("a,b\nA,B", tmpf)
+  schema <- list(b = pl$String, a = pl$String)
+
+  # TODO: @2.0: schema fields will match by name, so expect b = "B" and a = "A".
+  expected <- pl$DataFrame(b = "A", a = "B")
+  expect_equal(
+    pl$scan_csv(tmpf, schema = schema, infer_schema_files = NULL)$collect(),
+    expected
+  )
+  expect_equal(
+    pl$read_csv(tmpf, schema = schema, infer_schema_files = NULL),
+    expected
+  )
+})
+
 # TODO: can't check if it actually works
 test_that("read/scan: arg 'storage_options' throws basic errors", {
   tmpf <- withr::local_tempfile()

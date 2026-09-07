@@ -12,6 +12,10 @@ test_that("Test reading data from Apache Arrow file", {
     as_polars_df(iris)
   )
   expect_equal(
+    pl$read_ipc(tmpf),
+    pl$scan_ipc(tmpf)$collect()
+  )
+  expect_equal(
     pl$scan_ipc(tmpf, n_rows = read_limit)$collect(),
     as_polars_df(droplevels(head(iris, read_limit)))
   )

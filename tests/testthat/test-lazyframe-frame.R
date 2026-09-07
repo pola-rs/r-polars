@@ -299,17 +299,17 @@ test_that("with_columns_seq can create list variables", {
 test_that("bottom_k works", {
   df <- pl$DataFrame(
     a = c("a", "b", "a", "b", "b", "c"),
-    b = c(2, 1, 1, 3, 2, 1)
+    b = c(2, 1, 4, 3, 5, 6)
   )
   expect_query_equal(
-    .input$bottom_k(4, by = "b"),
+    .input$bottom_k(4, by = "b")$sort("b"),
     df,
-    pl$DataFrame(a = c("b", "a", "c", "a"), b = c(1, 1, 1, 2))
+    pl$DataFrame(a = c("b", "a", "b", "a"), b = c(1, 2, 3, 4))
   )
   expect_query_equal(
-    .input$bottom_k(4, by = c("a", "b")),
+    .input$bottom_k(4, by = c("a", "b"))$sort(c("a", "b")),
     df,
-    pl$DataFrame(a = c("a", "a", "b", "b"), b = c(1, 2, 1, 2))
+    pl$DataFrame(a = c("a", "a", "b", "b"), b = c(2, 4, 1, 3))
   )
   expect_query_error(
     .input$bottom_k(4, by = 1),
@@ -321,17 +321,17 @@ test_that("bottom_k works", {
 test_that("top_k works", {
   df <- pl$DataFrame(
     a = c("a", "b", "a", "b", "b", "c"),
-    b = c(2, 1, 1, 3, 2, 1)
+    b = c(2, 1, 4, 3, 5, 6)
   )
   expect_query_equal(
-    .input$top_k(4, by = "b"),
+    .input$top_k(4, by = "b")$sort("b", descending = TRUE),
     df,
-    pl$DataFrame(a = c("b", "a", "b", "b"), b = c(3, 2, 2, 1))
+    pl$DataFrame(a = c("c", "b", "a", "b"), b = c(6, 5, 4, 3))
   )
   expect_query_equal(
-    .input$top_k(4, by = c("a", "b")),
+    .input$top_k(4, by = c("a", "b"))$sort(c("a", "b")),
     df,
-    pl$DataFrame(a = c("c", "b", "b", "b"), b = c(1, 3, 2, 1))
+    pl$DataFrame(a = c("b", "b", "b", "c"), b = c(1, 3, 5, 6))
   )
   expect_query_error(
     .input$top_k(4, by = 1),
@@ -505,7 +505,7 @@ test_that("join: basic usage", {
 
   # inner default
   expect_query_equal(
-    .input$join(.input2, on = "ham"),
+    .input$join(.input2, on = "ham", maintain_order = "left"),
     .input = df,
     .input2 = other_df,
     pl$DataFrame(
@@ -518,7 +518,7 @@ test_that("join: basic usage", {
 
   # outer
   expect_query_equal(
-    .input$join(.input2, on = "ham", how = "full"),
+    .input$join(.input2, on = "ham", how = "full", maintain_order = "right_left"),
     .input = df,
     .input2 = other_df,
     pl$DataFrame(
@@ -550,7 +550,7 @@ test_that("right join works", {
   a <- pl$DataFrame(a = c(1, 2, 3), b = c(1, 2, 4))
   b <- pl$DataFrame(a = c(1, 3), b = c(1, 3), c = c(1, 3))
   expect_query_equal(
-    .input$join(.input2, on = "a", how = "right", coalesce = TRUE),
+    .input$join(.input2, on = "a", how = "right", coalesce = TRUE, maintain_order = "right"),
     .input = a,
     .input2 = b,
     pl$DataFrame(
@@ -561,7 +561,7 @@ test_that("right join works", {
     )
   )
   expect_query_equal(
-    .input$join(.input2, on = "a", how = "right", coalesce = FALSE),
+    .input$join(.input2, on = "a", how = "right", coalesce = FALSE, maintain_order = "right"),
     .input = a,
     .input2 = b,
     pl$DataFrame(
@@ -579,7 +579,7 @@ test_that("semi and anti join", {
   df_b <- pl$DataFrame(key = c(3L, 4L, 5L, NA))
 
   expect_query_equal(
-    .input$join(.input2, on = "key", how = "anti"),
+    .input$join(.input2, on = "key", how = "anti", maintain_order = "left"),
     .input = df_a,
     .input2 = df_b,
     pl$DataFrame(key = 1:2, payload = c("f", "i"))
@@ -595,7 +595,7 @@ test_that("semi and anti join", {
   df_b <- pl$DataFrame(a = c(3L, 3L, 4L, 5L), b = c("c", "c", "d", "e"))
 
   expect_query_equal(
-    .input$join(.input2, on = c("a", "b"), how = "anti"),
+    .input$join(.input2, on = c("a", "b"), how = "anti", maintain_order = "left"),
     .input = df_a,
     .input2 = df_b,
     pl$DataFrame(a = c(1:2, 1L), b = c("a", "b", "a"), payload = c(10L, 20L, 40L))
@@ -613,7 +613,7 @@ test_that("cross join", {
   dat2 <- pl$DataFrame(y = 1:4)
 
   expect_query_equal(
-    .input$join(.input2, how = "cross"),
+    .input$join(.input2, how = "cross", maintain_order = "left_right"),
     .input = dat,
     .input2 = dat2,
     pl$DataFrame(
@@ -647,7 +647,7 @@ test_that("cross join", {
 
   # suffix works
   expect_query_equal(
-    .input$join(.input, how = "cross"),
+    .input$join(.input, how = "cross", maintain_order = "left_right"),
     .input = dat,
     pl$DataFrame(
       x = rep(letters[1:3], each = 3),
@@ -692,7 +692,7 @@ test_that("argument 'nulls_equal' works", {
 
   # consider nulls as a valid key
   expect_query_equal(
-    .input$join(.input2, on = "x", nulls_equal = TRUE),
+    .input$join(.input2, on = "x", nulls_equal = TRUE, maintain_order = "left"),
     .input = df1,
     .input2 = df2,
     pl$DataFrame(x = c(NA, "b"), y = c(1L, 3L), y2 = c(4L, 5L))
@@ -701,7 +701,7 @@ test_that("argument 'nulls_equal' works", {
   # several nulls
   df3 <- pl$DataFrame(x = c(NA, letters[2:3], NA), y2 = 4:7)
   expect_query_equal(
-    .input$join(.input2, on = "x", nulls_equal = TRUE),
+    .input$join(.input2, on = "x", nulls_equal = TRUE, maintain_order = "right"),
     .input = df1,
     .input2 = df3,
     pl$DataFrame(x = c(NA, "b", NA), y = c(1L, 3L, 1L), y2 = c(4L, 5L, 7L))
@@ -1802,7 +1802,7 @@ test_that("inequality joins work", {
       .input2,
       pl$col("dur") < pl$col("time"),
       pl$col("rev") < pl$col("cost")
-    ),
+    )$sort("id", "t_id"),
     .input = east,
     .input2 = west,
     pl$DataFrame(
@@ -1814,7 +1814,7 @@ test_that("inequality joins work", {
       time = c(130, 150, 170, 150, 170),
       cost = c(13, 15, 16, 15, 16),
       cores_right = c(2, 1, 4, 1, 4)
-    )
+    )$sort("id", "t_id")
   )
 
   expect_query_error(
@@ -1908,7 +1908,7 @@ test_that("inequality joins require suffix when identical column names", {
       .input2,
       pl$col("dur") < pl$col("dur_right"),
       pl$col("rev") < pl$col("rev_right")
-    ),
+    )$sort("id", "t_id"),
     .input = east,
     .input2 = west,
     pl$DataFrame(
@@ -1920,7 +1920,7 @@ test_that("inequality joins require suffix when identical column names", {
       dur_right = c(130, 150, 170, 150, 170),
       rev_right = c(13, 15, 16, 15, 16),
       cores_right = c(2, 1, 4, 1, 4)
-    )
+    )$sort("id", "t_id")
   )
 })
 
@@ -2009,26 +2009,26 @@ test_that("unpivot() works", {
   )
 
   expect_query_equal(
-    .input$unpivot(index = "a", on = c("b", "c")),
+    .input$unpivot(index = "a", on = c("b", "c"))$sort("a", "variable"),
     .input = df,
     pl$DataFrame(
       a = c("x", "y", "z", "x", "y", "z"),
       variable = c("b", "b", "b", "c", "c", "c"),
       value = c(1, 3, 5, 2, 4, 6)
-    )
+    )$sort("a", "variable")
   )
   # value_name = "c" conflicts with existing column "c" in lazy path
   # (upstream fix pola-rs/polars#26606: proper duplicate name check for unpivot)
   # Eager path succeeds because the column is consumed before value_name is applied
   expect_eager_equal_lazy_error(
-    .input$unpivot(index = c("a", "b"), value_name = "c"),
+    .input$unpivot(index = c("a", "b"), value_name = "c")$sort("a", "b", "variable"),
     input = df,
     expected = pl$DataFrame(
       a = c("x", "y", "z"),
       b = c(1, 3, 5),
       variable = rep("c", 3),
       c = c(2, 4, 6)
-    ),
+    )$sort("a", "b", "variable"),
     "duplicate",
     fixed = TRUE
   )
@@ -2038,14 +2038,14 @@ test_that("unpivot() works", {
       on = "c",
       value_name = "alice",
       variable_name = "bob"
-    ),
+    )$sort("a", "b", "bob"),
     .input = df,
     pl$DataFrame(
       a = c("x", "y", "z"),
       b = c(1, 3, 5),
       bob = rep("c", 3),
       alice = c(2, 4, 6)
-    )
+    )$sort("a", "b", "bob")
   )
   expect_query_equal(
     .input$unpivot(
@@ -2053,14 +2053,14 @@ test_that("unpivot() works", {
       on = cs$by_name("c"), # single selector is allowed
       value_name = "alice",
       variable_name = "bob"
-    ),
+    )$sort("a", "b", "bob"),
     .input = df,
     df$unpivot(
       index = c("a", "b"),
       on = "c",
       value_name = "alice",
       variable_name = "bob"
-    )
+    )$sort("a", "b", "bob")
   )
 
   expect_query_error(
@@ -2247,7 +2247,7 @@ test_that("rolling: argument 'group_by' works", {
       pl$sum("a")$alias("sum_a"),
       pl$min("a")$alias("min_a"),
       pl$max("a")$alias("max_a")
-    )$select("sum_a", "min_a", "max_a"),
+    )$sort("grp", "index")$select("sum_a", "min_a", "max_a"),
     .input = df,
     pl$DataFrame(
       sum_a = c(3, 10, 5, 14, 2, 3),
@@ -2260,11 +2260,11 @@ test_that("rolling: argument 'group_by' works", {
   expect_query_equal(
     .input$rolling(index_column = "index", period = "2i", group_by = "grp")$agg(
       pl$sum("a")$alias("sum_a")
-    ),
+    )$sort("grp", "index"),
     .input = df,
     df$rolling(index_column = "index", period = "2i", group_by = pl$col("grp"))$agg(
       pl$sum("a")$alias("sum_a")
-    )
+    )$sort("grp", "index")
   )
 })
 
@@ -2541,7 +2541,7 @@ test_that("group_by_dynamic: argument 'by' works", {
   expect_query_equal(
     .input$group_by_dynamic(index_column = "dt", every = "2h", group_by = pl$col("grp"))$agg(
       pl$col("n")$mean()
-    ),
+    )$sort("grp", "dt"),
     .input = df,
     pl$DataFrame(
       grp = c("a", "a", "b", "b"),
@@ -2554,14 +2554,14 @@ test_that("group_by_dynamic: argument 'by' works", {
         )
       ),
       n = c(1, 5.5, 3, 4)
-    )
+    )$sort("grp", "dt")
   )
 
   # string is parsed as column name in "by"
   expect_query_equal(
     .input$group_by_dynamic(index_column = "dt", every = "2h", group_by = "grp")$agg(
       pl$col("n")$mean()
-    ),
+    )$sort("grp", "dt"),
     .input = df,
     pl$DataFrame(
       grp = c("a", "a", "b", "b"),
@@ -2574,7 +2574,7 @@ test_that("group_by_dynamic: argument 'by' works", {
         )
       ),
       n = c(1, 5.5, 3, 4)
-    )
+    )$sort("grp", "dt")
   )
 })
 
