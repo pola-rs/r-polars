@@ -235,7 +235,7 @@ as_polars_lf(mtcars)$sink_csv(tmpf)
 
 # Create a query that can be run in streaming end-to-end
 tmpf2 <- tempfile(fileext = ".csv")
-lf <- pl$scan_csv(tmpf)$select(pl$col("cyl") * 2)$lazy_sink_csv(tmpf2)
+lf <- pl$scan_csv(tmpf, infer_schema_files = 10)$select(pl$col("cyl") * 2)$lazy_sink_csv(tmpf2)
 lf$explain() |>
   cat()
 
@@ -243,5 +243,5 @@ lf$explain() |>
 lf$collect()
 
 # Load CSV directly into a DataFrame / memory
-pl$read_csv(tmpf2)
+pl$read_csv(tmpf2, infer_schema_files = 10)
 }

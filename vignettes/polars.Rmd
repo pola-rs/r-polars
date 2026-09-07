@@ -455,13 +455,13 @@ demonstrate using the `airquality` dataset that also comes bundled with base R.
 ```{r}
 write.csv(airquality, "airquality.csv", row.names = FALSE)
 
-pl$read_csv("airquality.csv")
+pl$read_csv("airquality.csv", infer_schema_files = 10)
 ```
 
 Again, however, the package works best if we take the lazy approach.
 
 ```{r}
-pl$scan_csv("airquality.csv")
+pl$scan_csv("airquality.csv", infer_schema_files = 10)
 ```
 
 We could obviously append a set of query operators to the above LazyFrame and

@@ -33,6 +33,11 @@
   `list(c(...))`.
 * The `...` arguments of `pl$col()`, `cs$by_name()`, and `cs$by_dtype()`
   are deprecated. Pass column names or data types as one vector or list.
+* Omitting `infer_schema_files` in CSV readers now warns because the default
+  will change to `10` in Polars 2.0. Pass `10` to opt into the new default or
+  `NULL` to continue using all files. The conditional Polars 2.0 default of
+  `raise_if_empty` is documented; pass an explicit value when `has_header = FALSE`
+  and `schema` is supplied.
 * The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` and
   `<dataframe>$hash_rows()` are deprecated. Use `seed` instead.
 * `<expr>$agg_groups()`, `<series>$cat$is_local()`, and

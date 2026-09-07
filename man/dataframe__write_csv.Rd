@@ -127,8 +127,8 @@ Write to comma-separated values (CSV) file
 \examples{
 tmpf <- tempfile()
 as_polars_df(mtcars)$write_csv(tmpf)
-pl$read_csv(tmpf)
+pl$read_csv(tmpf, infer_schema_files = 10)
 
 as_polars_df(mtcars)$write_csv(tmpf, separator = "|")
-pl$read_csv(tmpf, separator = "|")
+pl$read_csv(tmpf, separator = "|", infer_schema_files = 10)
 }

@@ -71,6 +71,42 @@ warn_deprecated_file_cache <- function(user_env = caller_env(2)) {
   )
 }
 
+warn_csv_infer_schema_files <- function(user_env = caller_env(2)) {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "The default value of %s will change in %s 2.0.",
+        format_arg("infer_schema_files"),
+        format_pkg("polars")
+      ),
+      i = paste0(
+        "The default will change from using all files to 10 files in Polars 2.0. ",
+        "Use `infer_schema_files = 10` to opt into the new default or ",
+        "`infer_schema_files = NULL` to keep using all files."
+      )
+    ),
+    user_env = user_env
+  )
+}
+
+warn_csv_raise_if_empty <- function(user_env = caller_env(2)) {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "The default value of %s will change in %s 2.0.",
+        format_arg("raise_if_empty"),
+        format_pkg("polars")
+      ),
+      i = paste0(
+        "When `has_header = FALSE` and `schema` is supplied, the default will ",
+        "change from `TRUE` to `FALSE` in Polars 2.0. Use ",
+        "`raise_if_empty = TRUE` to keep the current behavior."
+      )
+    ),
+    user_env = user_env
+  )
+}
+
 warn_arrow_compression_default <- function(user_env = caller_env(2)) {
   deprecate_warn(
     c(

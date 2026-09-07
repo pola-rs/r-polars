@@ -83,7 +83,7 @@ csv_file <- tempfile(fileext = ".csv")
 write.csv(iris, csv_file, row.names = FALSE)
 
 # Create a query plan (LazyFrame) with filtering and group aggregation
-q <- pl$scan_csv(csv_file)$filter(pl$col("Sepal.Length") > 5)$group_by(
+q <- pl$scan_csv(csv_file, infer_schema_files = 10)$filter(pl$col("Sepal.Length") > 5)$group_by(
   "Species",
   .maintain_order = TRUE
 )$agg(pl$all()$sum())
