@@ -4044,7 +4044,10 @@ expr_arr_explode <- expr__explode
 #' @description
 #' `r lifecycle::badge("deprecated")`
 #'
-#' `$flatten()` is deprecated. Use [$list$explode()][expr_list_explode] instead.
+#' `$flatten()` is deprecated. For Polars 2.0-compatible behavior, use
+#' `$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)`. To preserve the
+#' legacy behavior exactly, use `$list$explode(empty_as_null = TRUE,
+#' keep_nulls = TRUE)`; the null handling differs between these forms.
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -4062,7 +4065,12 @@ expr__flatten <- function() {
         format_fn("flatten"),
         format_pkg("polars")
       ),
-      i = sprintf("Use %s instead.", format_fn("list$explode"))
+      i = paste0(
+        "Use `$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)` for ",
+        "Polars 2.0-compatible behavior. Use ",
+        "`$list$explode(empty_as_null = TRUE, keep_nulls = TRUE)` to preserve ",
+        "the legacy behavior exactly."
+      )
     )
   )
   wrap({

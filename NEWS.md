@@ -4,6 +4,19 @@
 
 ### Deprecations
 
+* `<expr>$flatten()` is deprecated. Use
+  `$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)` for Polars
+  2.0-compatible behavior, or set both arguments to `TRUE` to preserve the
+  legacy behavior.
+* `<expr>$str$concat()` is deprecated. Use `$str$join("-")` when the delimiter
+  is omitted, or pass the same delimiter to `$str$join()`.
+* The `allow_missing_columns` argument of Parquet readers is deprecated. Use
+  `missing_columns = "insert"` or `missing_columns = "raise"` instead.
+* `<lazyframe>$profile()` is deprecated. Starting with Polars 2.0,
+  `engine = "auto"` will use the streaming engine by default, which makes
+  profiling information from this method misleading.
+* `$dt$with_time_unit()` is deprecated. Cast to Int64 and then to the desired
+  Datetime or Duration dtype and time unit instead.
 * The `cache` argument of CSV and Arrow file readers is deprecated: Polars 2.0
   streaming readers do not use the file cache, and `cache` has no direct
   replacement. The deprecated `file_cache_ttl` argument of CSV, Arrow file,
@@ -129,8 +142,8 @@ This is an update that corresponds to Python Polars 1.43.2.
 * `<series>$cat$to_local()` is deprecated; Categoricals no longer have a local
   scope
   ([pola-rs/polars#28299](https://github.com/pola-rs/polars/pull/28299)).
-* `<lazyframe>$profile()` is deprecated. It was made for the older in-memory
-  engine, but Polars now uses a streaming engine by default, and the
+* `<lazyframe>$profile()` is deprecated. Starting with Polars 2.0,
+  `engine = "auto"` will use the streaming engine by default, and the
   profiling information from this method would be misleading
   ([pola-rs/polars#28275](https://github.com/pola-rs/polars/pull/28275)).
 
@@ -234,7 +247,10 @@ This is an update that corresponds to Python Polars 1.38.1.
   recommendation to use `file_cache_ttl` in `storage_options` has since been
   superseded: the file cache is no longer supported and has no direct
   replacement in Polars 2.0.
-- `<expr>$flatten()` is deprecated. Use `<expr>$list$explode()` instead (#1726).
+- `<expr>$flatten()` is deprecated. Use
+  `<expr>$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)` for
+  Polars 2.0-compatible behavior, or set both arguments to `TRUE` to preserve
+  the legacy behavior (#1726).
 
 ### New features
 

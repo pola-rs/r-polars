@@ -46,3 +46,81 @@
       Caused by error:
       ! Column(s) not found: did not find column c, consider passing `missing_columns='insert'`
 
+# read/scan: arg 'allow_missing_columns' is deprecated
+
+    Code
+      pl$scan_parquet(tmpf, allow_missing_columns = TRUE)
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The argument `allow_missing_columns` is deprecated.
+      i Use `missing_columns = "insert"` instead.
+    Output
+      <polars_lazy_frame>
+    Code
+      NULL
+    Output
+      NULL
+
+---
+
+    Code
+      pl$scan_parquet(tmpf, allow_missing_columns = FALSE)
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The argument `allow_missing_columns` is deprecated.
+      i Use `missing_columns = "raise"` instead.
+    Output
+      <polars_lazy_frame>
+    Code
+      NULL
+    Output
+      NULL
+
+---
+
+    Code
+      pl$read_parquet(tmpf, allow_missing_columns = TRUE)
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The argument `allow_missing_columns` is deprecated.
+      i Use `missing_columns = "insert"` instead.
+    Output
+      shape: (3, 1)
+      ┌─────┐
+      │ a   │
+      │ --- │
+      │ i32 │
+      ╞═════╡
+      │ 1   │
+      │ 2   │
+      │ 3   │
+      └─────┘
+    Code
+      NULL
+    Output
+      NULL
+
+---
+
+    Code
+      pl$read_parquet(tmpf, allow_missing_columns = FALSE)
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The argument `allow_missing_columns` is deprecated.
+      i Use `missing_columns = "raise"` instead.
+    Output
+      shape: (3, 1)
+      ┌─────┐
+      │ a   │
+      │ --- │
+      │ i32 │
+      ╞═════╡
+      │ 1   │
+      │ 2   │
+      │ 3   │
+      └─────┘
+    Code
+      NULL
+    Output
+      NULL
+

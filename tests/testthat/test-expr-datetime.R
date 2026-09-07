@@ -602,6 +602,24 @@ test_that("dt$with_time_unit cast_time_unit", {
   )
 })
 
+test_that("dt$with_time_unit supports Duration", {
+  local_lifecycle_warnings()
+  duration <- pl$DataFrame(
+    duration = as_polars_series(1:3)$cast(pl$Duration("ms"))
+  )
+  expect_snapshot(
+    duration$select(pl$col("duration")$dt$with_time_unit("us")),
+    cnd_class = TRUE
+  )
+  local_lifecycle_silence()
+  expect_equal(
+    duration$select(pl$col("duration")$dt$with_time_unit("us")),
+    duration$select(
+      duration = pl$col("duration")$cast(pl$Int64)$cast(pl$Duration("us"))
+    )
+  )
+})
+
 test_that("$convert_time_zone() works", {
   df_time <- pl$select(
     date = pl$datetime_range(

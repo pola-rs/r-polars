@@ -204,7 +204,7 @@
     Condition
       Warning:
       ! `$dt$with_time_unit()` is deprecated.
-      i Cast to Int64 and then to Datetime with the desired time unit instead.
+      i Cast to Int64 and then to the desired Datetime or Duration dtype and time unit instead.
       Error in `as_polars_series(as.Date("2022-1-1"))$dt$with_time_unit()`:
       ! Evaluation failed in `$with_time_unit()`.
       Caused by error:
@@ -219,13 +219,33 @@
     Condition
       Warning:
       ! `$dt$with_time_unit()` is deprecated.
-      i Cast to Int64 and then to Datetime with the desired time unit instead.
+      i Cast to Int64 and then to the desired Datetime or Duration dtype and time unit instead.
       Error in `as_polars_series(as.Date("2022-1-1"))$dt$with_time_unit()`:
       ! Evaluation failed in `$with_time_unit()`.
       Caused by error:
       ! Evaluation failed.
       Caused by error:
       ! `time_unit` must be a string or character vector.
+
+# dt$with_time_unit supports Duration
+
+    Code
+      duration$select(pl$col("duration")$dt$with_time_unit("us"))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! `$dt$with_time_unit()` is deprecated.
+      i Cast to Int64 and then to the desired Datetime or Duration dtype and time unit instead.
+    Output
+      shape: (3, 1)
+      ┌──────────────┐
+      │ duration     │
+      │ ---          │
+      │ duration[μs] │
+      ╞══════════════╡
+      │ 1µs          │
+      │ 2µs          │
+      │ 3µs          │
+      └──────────────┘
 
 # dt$add_business_days
 

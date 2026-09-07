@@ -287,6 +287,34 @@
       Caused by error:
       ! -1.0 is out of range that can be safely converted to u8
 
+# explode/flatten
+
+    Code
+      pl$DataFrame(a = list(letters))$select(pl$col("a")$flatten())
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! `flatten()` is deprecated as of polars 1.9.0.
+      i Use `$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)` for Polars 2.0-compatible behavior. Use `$list$explode(empty_as_null = TRUE, keep_nulls = TRUE)` to preserve the legacy behavior exactly.
+    Output
+      shape: (26, 1)
+      ┌─────┐
+      │ a   │
+      │ --- │
+      │ str │
+      ╞═════╡
+      │ a   │
+      │ b   │
+      │ c   │
+      │ d   │
+      │ e   │
+      │ …   │
+      │ v   │
+      │ w   │
+      │ x   │
+      │ y   │
+      │ z   │
+      └─────┘
+
 # is_between errors if wrong 'closed' arg
 
     Code

@@ -128,6 +128,15 @@
         p1[label="TABLE\nπ 1/11"]
       }
 
+# $profile() is deprecated
+
+    Code
+      invisible(pl$LazyFrame(a = 1:3)$profile())
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! `profile()` is deprecated as of polars 1.14.0.
+      i Starting with Polars 2.0, engine = "auto" will use the streaming engine by default. Due to the concurrent nature of the streaming engine, the profiling information from this method would be misleading.
+
 # $unique's argument deprecation NULL
 
     Code

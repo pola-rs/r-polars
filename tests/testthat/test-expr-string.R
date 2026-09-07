@@ -187,6 +187,7 @@ test_that("str$len_bytes str$len_chars", {
 })
 
 test_that("str$concat", {
+  local_lifecycle_warnings()
   df <- pl$DataFrame(x = c("1", "a", NA))
   expect_equal(
     df$select(pl$col("x")$str$join()),
@@ -201,12 +202,30 @@ test_that("str$concat", {
     pl$DataFrame(x = NA_character_)
   )
   # deprecated
-  expect_warning(
-    expect_equal(
-      df$select(pl$col("x")$str$concat()),
-      pl$DataFrame(x = "1-a")
-    ),
-    "deprecated"
+  expect_snapshot(
+    df$select(pl$col("x")$str$concat()),
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    df$select(pl$col("x")$str$concat("|")),
+    cnd_class = TRUE
+  )
+  local_lifecycle_silence()
+  expect_equal(
+    df$select(pl$col("x")$str$concat()),
+    pl$DataFrame(x = "1-a")
+  )
+  expect_equal(
+    df$select(pl$col("x")$str$concat("|")),
+    pl$DataFrame(x = "1|a")
+  )
+  expect_equal(
+    df$select(pl$col("x")$str$concat()),
+    df$select(pl$col("x")$str$join("-"))
+  )
+  expect_equal(
+    df$select(pl$col("x")$str$concat("|")),
+    df$select(pl$col("x")$str$join("|"))
   )
 
   df <- pl$DataFrame(x = list(c("a", "b", "c"), c("1", "2", "æ")))

@@ -68,7 +68,7 @@ enabled when a single directory is passed, and otherwise disabled.}
 \item{schema}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 Named list of \link[=DataType]{datatypes} of the columns. The datatypes must match
 the datatypes in the file(s). If there are extra columns that are not in the
-file(s), consider also enabling \code{allow_missing_columns}.}
+file(s), consider also setting \code{missing_columns = "insert"}.}
 
 \item{hive_schema}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 A list containing the column names and data types of the columns by
