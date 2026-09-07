@@ -1,4 +1,5 @@
 test_that("Test reading data from Apache Arrow file", {
+  local_lifecycle_warnings()
   skip_if_not_installed("arrow")
 
   tmpf <- withr::local_tempfile()
@@ -29,7 +30,7 @@ test_that("Test reading data from Apache Arrow file", {
   expect_snapshot(pl$scan_ipc(0), error = TRUE)
   expect_snapshot(pl$scan_ipc(c("foo", NA_character_, "bar")), error = TRUE)
   expect_snapshot(pl$scan_ipc(tmpf, n_rows = "?"), error = TRUE)
-  expect_snapshot(pl$scan_ipc(tmpf, cache = 0L), error = TRUE)
+  expect_snapshot(pl$scan_ipc(tmpf, cache = 0L), error = TRUE, cnd_class = TRUE)
   expect_snapshot(pl$scan_ipc(tmpf, rechunk = list()), error = TRUE)
   expect_snapshot(pl$scan_ipc(tmpf, storage_options = c("foo", "bar")), error = TRUE)
   expect_snapshot(
@@ -55,12 +56,12 @@ test_that("read/scan: arg 'file_cache_ttl' is deprecated", {
 
   expect_warning(
     pl$scan_ipc(tmpf, file_cache_ttl = 10),
-    "file cache is no longer supported",
+    "do not use the file cache",
     class = "polars_deprecation_warning"
   )
   expect_warning(
     pl$read_ipc(tmpf, file_cache_ttl = 10),
-    "file cache is no longer supported",
+    "do not use the file cache",
     class = "polars_deprecation_warning"
   )
   expect_no_condition(pl$scan_ipc(tmpf))
@@ -84,13 +85,52 @@ test_that("read/scan: arg 'file_cache_ttl' is deprecated", {
         file_cache_ttl = "60"
       )
     ),
-    "file cache is no longer supported",
+    "do not use the file cache",
     class = "polars_deprecation_warning"
   )
   expect_identical(
     captured$storage_options,
     c(endpoint_url = "https://example.com", file_cache_ttl = "60")
   )
+})
+
+test_that("read/scan: arg 'cache' is deprecated", {
+  local_lifecycle_warnings()
+  tmpf <- withr::local_tempfile(fileext = ".arrow")
+  pl$DataFrame(a = 1:3)$write_ipc(tmpf, compression = "uncompressed")
+
+  captured <- new.env(parent = emptyenv())
+  original <- get("PlRLazyFrame", asNamespace("polars"))$new_from_ipc
+  mock <- new.env(parent = emptyenv())
+  mock$new_from_ipc <- function(...) {
+    captured$args <- list(...)
+    original(...)
+  }
+  testthat::local_mocked_bindings(PlRLazyFrame = mock, .package = "polars")
+
+  expect_no_condition(pl$scan_ipc(tmpf))
+  expect_true(captured$args$cache)
+
+  expect_snapshot(
+    {
+      pl$scan_ipc(tmpf, cache = FALSE)
+      NULL
+    },
+    cnd_class = TRUE
+  )
+  expect_false(captured$args$cache)
+
+  expect_no_condition(pl$read_ipc(tmpf))
+  expect_true(captured$args$cache)
+
+  expect_snapshot(
+    {
+      pl$read_ipc(tmpf, cache = FALSE)
+      NULL
+    },
+    cnd_class = TRUE
+  )
+  expect_false(captured$args$cache)
 })
 
 test_that("scanning from hive partition works", {

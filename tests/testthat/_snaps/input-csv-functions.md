@@ -107,6 +107,43 @@
       Caused by error:
       ! `storage_options` must be a character vector or `NULL`, not a list.
 
+# read/scan: arg 'cache' is deprecated
+
+    Code
+      pl$scan_csv(tmpf, cache = TRUE)
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The `cache` argument is deprecated as of polars 1.16.0.
+      i The Polars 2.0 streaming readers do not use the file cache, and this argument has no direct replacement.
+    Output
+      <polars_lazy_frame>
+    Code
+      NULL
+    Output
+      NULL
+
+---
+
+    Code
+      pl$read_csv(tmpf, cache = TRUE)
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The `cache` argument is deprecated as of polars 1.16.0.
+      i The Polars 2.0 streaming readers do not use the file cache, and this argument has no direct replacement.
+    Output
+      shape: (1, 1)
+      ┌─────┐
+      │ a   │
+      │ --- │
+      │ i64 │
+      ╞═════╡
+      │ 1   │
+      └─────┘
+    Code
+      NULL
+    Output
+      NULL
+
 # arg 'missing_columns' works
 
     Code

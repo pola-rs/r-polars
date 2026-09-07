@@ -8,7 +8,7 @@ pl__read_ipc(
   source,
   ...,
   n_rows = NULL,
-  cache = TRUE,
+  cache = deprecated(),
   rechunk = deprecated(),
   row_index_name = NULL,
   row_index_offset = 0L,
@@ -29,7 +29,9 @@ for scanning cloud locations, see the \code{storage_options} parameter.}
 
 \item{n_rows}{Stop reading from the source after reading \code{n_rows}.}
 
-\item{cache}{Cache the result after reading.}
+\item{cache}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} The Polars 2.0 streaming
+readers do not use the file cache, and this argument has no direct
+replacement.}
 
 \item{rechunk}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Reallocate to contiguous
 memory when all chunks/files are parsed. Call \verb{$rechunk()} on the output
@@ -62,8 +64,8 @@ accessing a cloud instance fails. Specify \code{max_retries} in
 \code{storage_options} instead.}
 
 \item{file_cache_ttl}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Deprecated and
-ignored. The file cache is no longer supported and has no direct
-replacement in Polars 2.0.}
+ignored. The Polars 2.0 streaming readers do not use the file cache, and
+this argument has no direct replacement.}
 
 \item{hive_partitioning}{Infer statistics and schema from Hive partitioned
 sources and use them to prune reads. If \code{NULL} (default), it is automatically
