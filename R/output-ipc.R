@@ -1,7 +1,7 @@
 # TODO: @2.0.0: Remove the migration warning branches and change the
 # default of compression to "uncompressed" in all Arrow file output functions.
 
-#' Evaluate the query in streaming mode and write to Arrow File Format
+#' Evaluate the query in streaming mode and write to Arrow IPC File Format
 #'
 #' @inherit lazyframe__sink_parquet description params return
 #' @inheritParams rlang::args_dots_empty
@@ -160,7 +160,7 @@ lazyframe__lazy_sink_ipc <- function(
   })
 }
 
-#' Write to Arrow File Format
+#' Write to Arrow IPC File Format
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams lazyframe__sink_ipc
@@ -208,7 +208,7 @@ dataframe__write_ipc <- function(
   invisible(NULL)
 }
 
-#' Write to Arrow Streaming Format
+#' Write to Arrow IPC Stream Format
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams lazyframe__sink_ipc
