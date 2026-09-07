@@ -25,7 +25,10 @@ If set to \code{NULL} (default), all columns that are not in \code{index} will b
 the melted columns. Defaults to \code{"variable"}.}
 
 \item{value_name}{Name to give to the new column containing the values of
-the melted columns. Defaults to \code{"value"}.}
+the melted columns. Defaults to \code{"value"}.
+
+The row order of the result is not guaranteed; use \verb{$sort()} when a stable
+order is required.}
 }
 \value{
 A polars \link{LazyFrame}
