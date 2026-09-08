@@ -4,7 +4,7 @@
 
 This release is the migration bridge from R Polars 1.x to R Polars 2.0.
 
-R Polars 1.16 still preserves Polars 1.x behavior and removes no existing API. However, old forms that can be detected reliably on the R side now warn, and each warning has a documented migration path that can be applied before upgrading to Polars 2.0.
+R Polars 1.16 preserves Polars 1.x behavior and removes no existing API. However, old forms that can be detected reliably on the R side now warn, and each warning has a documented migration path that can be applied before upgrading to Polars 2.0.
 
 R Polars 2.0 will be the semantic and API cutover. Deprecated compatibility forms will be removed, and several behaviors will change in ways that cannot be detected reliably at the R call site and therefore cannot produce migration warnings.
 
@@ -45,9 +45,10 @@ The following changes cannot be detected reliably at the R call site, so R Polar
 
 #### Other behavior changes
 
+- `pl$concat(how = "horizontal")` requires all frames to have the same height and raises when they differ, instead of padding shorter frames with `null`. Use `how = "horizontal_extend"` where padding is what you want. Calls that rely on the default behavior and never pass the deprecated `strict` argument cannot warn about this change.
 - The output column names of `pl$datetime()` and `pl$repeat_()` change. Use `$alias()` if your code depends on a particular output name.
 - Null `List` and `Array` values remain outer nulls when converted with `$to_struct()`.
-- Zero-width DataFrames and LazyFrames retain their height instead of collapsing to height zero.
+- Zero-width DataFrames and LazyFrames retain their height instead of collapsing to height zero. Dropping every column of a three-row DataFrame therefore returns a frame of shape `(3, 0)`. In Polars 2.0, an empty `pl$DataFrame()` has a fixed height of `0`, so adding a longer column with `$with_columns()` raises instead of adopting the new column's length.
 - Empty DataFrames can be transposed.
 
 ### Deprecations
@@ -62,7 +63,7 @@ The compatibility forms listed in this section retain their Polars 1.x behavior 
 #### String patterns and struct fields
 
 - Bare character vectors passed to `<expr>$str$contains_any()` and `<expr>$str$replace_many()` will be interpreted as column names in Polars 2.0. Use `pl$lit(...)$implode()` for literal patterns or `pl$col()` for column patterns. A shared literal vector can also be passed as `list(c(...))` (#1855).
-- Omitted or function-valued `fields`, and `n_field_strategy`, are deprecated for `<expr>$list$to_struct()` and `<series>$list$to_struct()`. Pass an explicit character vector of field names instead (#1863).
+- For `<expr>$list$to_struct()` and `<series>$list$to_struct()`, omitting `fields` or passing a function as `fields` is deprecated. The `n_field_strategy` argument is also deprecated in all forms. Pass an explicit character vector of field names instead (#1863).
 - `upper_bound` is deprecated for `<expr>$list$to_struct()`. Function-valued `fields` are deprecated for `<expr>$arr$to_struct()` and `<series>$arr$to_struct()` (#1863).
 
 #### Readers and writers
@@ -84,10 +85,10 @@ The compatibility forms listed in this section retain their Polars 1.x behavior 
 The following APIs were already deprecated before R Polars 1.16. They are repeated here because their Polars 2.0 migration path was previously incomplete, incorrect, or easy to miss.
 
 - `<expr>$flatten()` (deprecated in 1.9.0): use `$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)` for Polars 2.0-compatible behavior. To preserve the legacy behavior instead, set both arguments to `TRUE` (#1866).
-- `<expr>$str$concat()`: use `$str$join("-")` when `delimiter` was omitted, or pass the same delimiter explicitly to `$str$join()` (#1866).
+- `<expr>$str$concat()` (deprecated before 1.0.0): use `$str$join("-")` when `delimiter` is omitted, or pass the same delimiter explicitly to `$str$join()` (#1866).
 - `allow_missing_columns` in Parquet readers (deprecated in 1.7.0): use `missing_columns = "insert"` for `TRUE` or `missing_columns = "raise"` for `FALSE` (#1866).
 - `<lazyframe>$profile()` (deprecated in 1.14.0): starting with Polars 2.0, `engine = "auto"` uses the streaming engine, which makes the profiling information reported by this method misleading (#1866).
-- `<expr>$dt$with_time_unit()`: cast to `Int64`, then cast to the desired `Datetime` or `Duration` dtype and time unit (#1866).
+- `<expr>$dt$with_time_unit()` (deprecated before 1.0.0): cast to `Int64`, then cast to the desired `Datetime` or `Duration` dtype and time unit (#1866).
 - `<expr>$cat$get_categories()` (deprecated in 1.14.0): use `$unique()` for the distinct values present in a Categorical column, or `dtype$categories` for the fixed category list of an Enum.
 
 ### Bug fixes
