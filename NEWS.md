@@ -4,7 +4,7 @@
 
 This release is the migration bridge from R Polars 1.x to R Polars 2.0.
 
-R Polars 1.16 preserves Polars 1.x behavior and removes no existing API. However, old forms that can be detected reliably on the R side now warn, and each warning has a documented migration path that can be applied before upgrading to Polars 2.0.
+R Polars 1.16 removes no existing API and preserves Polars 1.x behavior except where noted below. Old forms that can be detected reliably on the R side now warn, and each warning has a documented migration path that can be applied before upgrading to Polars 2.0.
 
 R Polars 2.0 will be the semantic and API cutover. Deprecated compatibility forms will be removed, and several behaviors will change in ways that cannot be detected reliably at the R call site and therefore cannot produce migration warnings.
 
@@ -41,11 +41,10 @@ The following changes cannot be detected reliably at the R call site, so R Polar
 - The supertype of a signed integer type and `UInt64` changes from `Float64` to `Int128`.
 - Lossy numeric coercion in `is_in()` becomes an error.
 - Strict casts to a `Struct` dtype reject mismatched fields.
-- `$std()`, `$var()`, `$ewm_std()`, and `$ewm_var()` on `Duration` columns become errors.
+- `$std()` and `$ewm_std()` on `Duration` columns become errors. `$var()` and `$ewm_var()` on `Duration` columns already error in R Polars 1.16.
 
 #### Other behavior changes
 
-- `pl$concat(how = "horizontal")` requires all frames to have the same height and raises when they differ, instead of padding shorter frames with `null`. Use `how = "horizontal_extend"` where padding is what you want. Calls that rely on the default behavior and never pass the deprecated `strict` argument cannot warn about this change.
 - The output column names of `pl$datetime()` and `pl$repeat_()` change. Use `$alias()` if your code depends on a particular output name.
 - Null `List` and `Array` values remain outer nulls when converted with `$to_struct()`.
 - Zero-width DataFrames and LazyFrames retain their height instead of collapsing to height zero. Dropping every column of a three-row DataFrame therefore returns a frame of shape `(3, 0)`. In Polars 2.0, an empty `pl$DataFrame()` has a fixed height of `0`, so adding a longer column with `$with_columns()` raises instead of adopting the new column's length.
@@ -53,7 +52,7 @@ The following changes cannot be detected reliably at the R call site, so R Polar
 
 ### Deprecations
 
-The compatibility forms listed in this section retain their Polars 1.x behavior in R Polars 1.16 and are removed in R Polars 2.0.
+Unless noted otherwise, the deprecated forms below retain their Polars 1.x behavior in R Polars 1.16 but no longer retain that behavior in R Polars 2.0.
 
 #### Column selection and selectors
 
@@ -90,6 +89,7 @@ The following APIs were already deprecated before R Polars 1.16. They are repeat
 - `<lazyframe>$profile()` (deprecated in 1.14.0): starting with Polars 2.0, `engine = "auto"` uses the streaming engine, which makes the profiling information reported by this method misleading (#1866).
 - `<expr>$dt$with_time_unit()` (deprecated before 1.0.0): cast to `Int64`, then cast to the desired `Datetime` or `Duration` dtype and time unit (#1866).
 - `<expr>$cat$get_categories()` (deprecated in 1.14.0): use `$unique()` for the distinct values present in a Categorical column, or `dtype$categories` for the fixed category list of an Enum.
+- The `strict` argument of `pl$concat()` (deprecated in 1.13.0): in Polars 2.0, `how = "horizontal"` requires all frames to have the same height and raises when they differ, instead of padding shorter frames with `null`. Use `how = "horizontal_extend"` where padding is what you want. R Polars 1.16 warns whenever `how = "horizontal"` is used without `strict`, so this change is detectable; passing `strict = TRUE` opts into the Polars 2.0 behavior early and does not warn.
 
 ### Bug fixes
 
