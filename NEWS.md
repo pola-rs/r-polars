@@ -2,94 +2,154 @@
 
 ## polars (development version)
 
-This release is the migration bridge from R Polars 1.x to R Polars 2.0.
+This is the last release before R Polars 2.0. It doesn't remove any existing API
+and keeps the behaviour of Polars 1.x, except where noted below. However, it comes
+with a number of deprecation warnings and suggestions that can be applied before
+moving to R Polars 2.0, which will break code or silently produce wrong results
+otherwise.
 
-R Polars 1.16 removes no existing API and preserves Polars 1.x behavior except where noted below. Old forms that can be detected reliably on the R side now warn, and each warning has a documented migration path that can be applied before upgrading to Polars 2.0.
-
-R Polars 2.0 will be the semantic and API cutover. Deprecated APIs will be removed, Polars 1.x compatibility behavior will end, and several behaviors will change in ways that cannot be detected reliably at the R call site and therefore cannot produce migration warnings.
-
-### Preparing for Polars 2.0
-
-Migrating in four steps should keep the actual upgrade to Polars 2.0 small:
-
-1. Upgrade to R Polars 1.16 and run your tests, examples, and scripts.
-2. Resolve every deprecation warning. The 1.x compatibility forms covered by this migration all have documented migration paths. In most cases, the replacement form is warning-free in both R Polars 1.16 and R Polars 2.0. Deprecations added in this release are listed below; earlier deprecations remain documented in the release notes where they were introduced.
-3. Review **Polars 2.0 changes that cannot warn** below. Being warning-free is necessary, but not sufficient: these changes are silent, so they must be reviewed explicitly before upgrading.
-4. Upgrade to R Polars 2.0 and run your tests again.
+Note that **some changes described below cannot warn**, meaning that you should
+manually check your code when upgrading.
 
 ### Polars 2.0 changes that cannot warn
 
-The following changes cannot be detected reliably at the R call site, so R Polars 1.16 cannot warn about them.
-
 #### The streaming engine becomes the default
 
-- `engine = "auto"` selects the streaming engine for lazy queries in Polars 2.0. In Polars 1.x it selects the in-memory engine for most queries. Pass `engine = "in-memory"` when you explicitly need the previous engine.
-- Operations that do not guarantee row order may produce rows in a different order under the streaming engine. If row order matters, make it explicit with `$sort()` or an operation-specific ordering option instead of relying on incidental execution order.
+`engine = "auto"` used to select the `in-memory` engine for most queries in
+Polars 1.x, but it will select the `streaming` engine in Polars 2.0.
+
+The streaming engine may change the row order of the output, so if you rely on
+it you should make this row order explicit with `$sort()` or an operation-specific
+ordering option (e.g. with the argument `.maintain_order` in some functions).
+
+Pass `engine = "in-memory"` to keep the behavior from Polars 1.x.
 
 #### CSV reading
 
-- Automatically generated column names for headerless files start at zero. For example, the first generated name changes from `column_1` to `column_0`.
-- When `schema` is supplied, fields are matched to file columns by name rather than position, while the file's column order is preserved.
-- Partial `schema_overrides` should be passed as a named list so that overrides are matched explicitly by column name.
-- The default of `raise_if_empty` becomes conditional: it is `FALSE` when `has_header = FALSE` and `schema` is supplied, and `TRUE` otherwise. Pass an explicit value if your code depends on either behavior.
+- Automatically generated column names for headerless files start at zero. For
+  example, the first generated name changes from `column_1` to `column_0`.
+- When `schema` is supplied, fields are matched to file columns by name rather
+  than position, while the file's column order is preserved.
+- Partial `schema_overrides` should be passed as a named list so that overrides
+  are matched explicitly by column name.
+- The default of `raise_if_empty` becomes conditional: it is `FALSE` when
+  `has_header = FALSE` and `schema` is supplied, and `TRUE` otherwise. Pass an
+  explicit value if your code depends on either behavior.
 
 #### Type coercion and casting become stricter
 
-- The supertype of a signed integer type and `UInt64` changes from `Float64` to `Int128`.
+- The supertype of a signed integer type and `UInt64` changes from `Float64` to
+  `Int128`.
 - Lossy numeric coercion in `is_in()` becomes an error.
 - Strict casts to a `Struct` dtype reject mismatched fields.
 - `$std()` and `$ewm_std()` on `Duration` columns become errors.
 
 #### Other behavior changes
 
-- The output column names of `pl$datetime()` and `pl$repeat_()` change. Use `$alias()` if your code depends on a particular output name.
+- The output column names of `pl$datetime()` and `pl$repeat_()` change. Use
+  `$alias()` if your code depends on a particular output name.
 - Null `List` and `Array` values remain outer nulls when converted with `$to_struct()`.
-- Zero-width DataFrames and LazyFrames retain their height instead of collapsing to height zero. Dropping every column of a three-row DataFrame therefore returns a frame of shape `(3, 0)`. In Polars 2.0, an empty `pl$DataFrame()` has a fixed height of `0`, so adding a longer column with `$with_columns()` raises instead of adopting the new column's length.
+- Zero-width DataFrames and LazyFrames retain their height instead of collapsing
+  to height zero. Dropping every column of a three-row DataFrame therefore
+  returns a frame of shape `(3, 0)`. In Polars 2.0, an empty `pl$DataFrame()`
+  has a fixed height of `0`, so adding a longer column with `$with_columns()`
+  raises instead of adopting the new column's length.
 
 ### Deprecations
 
-Unless noted otherwise, the deprecated forms below retain their Polars 1.x behavior in R Polars 1.16 but no longer retain that behavior in R Polars 2.0.
+Unless noted otherwise, the deprecated forms below retain their Polars 1.x
+behavior in R Polars 1.16 but no longer retain that behavior in R Polars 2.0.
 
 #### Column selection and selectors
 
-- The `...` interfaces of `pl$col()`, `cs$by_name()`, and `cs$by_dtype()` are deprecated. Pass column names or data types as one vector or list instead, for example `pl$col(c("a", "b"))`, `cs$by_name(c("a", "b"))`, or `cs$by_dtype(c(pl$Int32, pl$Float64))` (#1857).
-- Using a bare `pl$col()` as the right-hand operand of selector `&`, `|`, or `$xor()` is deprecated. Use `cs$by_name()` for set operations on columns, or `<selector>$as_expr()` for element-wise operations (#1861).
+- The `...` interfaces of `pl$col()`, `cs$by_name()`, and `cs$by_dtype()` are
+  deprecated. Pass column names or data types as one vector or list instead, for
+  example `pl$col(c("a", "b"))`, `cs$by_name(c("a", "b"))`, or
+  `cs$by_dtype(c(pl$Int32, pl$Float64))` (#1857).
+- Using a bare `pl$col()` as the right-hand operand of selector `&`, `|`, or
+  `$xor()` is deprecated. Use `cs$by_name()` for set operations on columns, or
+  `<selector>$as_expr()` for element-wise operations (#1861).
 
 #### String patterns and struct fields
 
-- Bare character vectors passed to `<expr>$str$contains_any()` and `<expr>$str$replace_many()` will be interpreted as column names in Polars 2.0. Use `pl$lit(...)$implode()` for literal patterns or `pl$col()` for column patterns. A shared literal vector can also be passed as `list(c(...))` (#1855).
-- For `<expr>$list$to_struct()` and `<series>$list$to_struct()`, omitting `fields` or passing a function as `fields` is deprecated. The `n_field_strategy` argument is also deprecated in all forms. Pass an explicit character vector of field names instead (#1863).
-- `upper_bound` is deprecated for `<expr>$list$to_struct()`. Function-valued `fields` are deprecated for `<expr>$arr$to_struct()` and `<series>$arr$to_struct()` (#1863).
+- Bare character vectors passed to `<expr>$str$contains_any()` and
+  `<expr>$str$replace_many()` will be interpreted as column names in Polars 2.0.
+  Use `pl$lit(...)$implode()` for literal patterns or `pl$col()` for column patterns.
+  A shared literal vector can also be passed as `list(c(...))` (#1855).
+- For `<expr>$list$to_struct()` and `<series>$list$to_struct()`, omitting `fields`
+  or passing a function as `fields` is deprecated. The `n_field_strategy` argument
+  is also deprecated in all forms. Pass an explicit character vector of field
+  names instead (#1863).
+- `upper_bound` is deprecated for `<expr>$list$to_struct()`. Passing a function to
+  `fields` are deprecated for `<expr>$arr$to_struct()` and `<series>$arr$to_struct()`
+  (#1863).
 
 #### Readers and writers
 
-- Omitting `infer_schema_files` in CSV readers now warns because its default changes to `10` in Polars 2.0. Pass `infer_schema_files = 10` to opt into the new default, or `infer_schema_files = NULL` to continue using all files (#1870).
-- Omitting `compression` in Arrow IPC File Format and Arrow IPC Stream Format output functions now warns because the default changes from `"zstd"` to `"uncompressed"` in Polars 2.0. Pass `compression = "zstd"` to preserve the current behavior, or `compression = "uncompressed"` to opt into the new default (#1856).
-- The `cache` argument of CSV and Arrow IPC File Format readers is deprecated. Polars 2.0 streaming readers do not use the file cache, and there is no direct replacement. Remove the argument (#1865).
-- The already-deprecated `file_cache_ttl` argument of CSV, Arrow IPC File Format, and NDJSON readers now carries the same guidance as `cache` and is no longer translated into `storage_options` (#1854, #1865).
+- Omitting `infer_schema_files` in CSV readers now warns because its default
+  changes from `NULL` to `10` in Polars 2.0. Pass `infer_schema_files = 10` to
+  opt into the new default, or `infer_schema_files = NULL` to continue using all
+  files (#1870).
+- Omitting `compression` in `$write_ipc()` and `$sink_ipc()` now warns because
+  the default changes from `"zstd"` to `"uncompressed"` in Polars 2.0. Pass
+  `compression = "zstd"` to preserve the current behavior, or `compression = "uncompressed"`
+  to opt into the new default (#1856).
+- The `cache` argument of CSV and Arrow IPC File Format readers is deprecated.
+  Polars 2.0 streaming readers do not use the file cache, and there is no direct
+  replacement. Remove the argument (#1865).
+- The already-deprecated `file_cache_ttl` argument of CSV, Arrow IPC File Format,
+  and NDJSON readers is no longer translated into `storage_options` and can be
+  removed (#1854, #1865).
 
 #### Other methods and arguments
 
-- The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` and `<dataframe>$hash_rows()` are deprecated. Polars 2.0 removes them and retains only `seed`. Hash values are not guaranteed to remain the same across Polars versions (#1860).
-- `<expr>$agg_groups()` is deprecated. Use the row-index aggregation pattern documented in its help page instead (#1859).
-- `<series>$cat$is_local()` and `<series>$cat$uses_lexical_ordering()` are deprecated. Categoricals no longer have a local scope and are always ordered lexically (#1859).
-- `<Enum>$union()` is deprecated. Construct an Enum explicitly from the combined categories instead (#1859).
+- The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` and
+  `<dataframe>$hash_rows()` are deprecated. Polars 2.0 removes them and retains
+  only `seed`. Hash values are not guaranteed to remain the same across Polars
+  versions (#1860).
+- `<expr>$agg_groups()` is deprecated. Use the row-index aggregation pattern
+  documented in its help page instead (#1859).
+- `<series>$cat$is_local()` and `<series>$cat$uses_lexical_ordering()` are
+  deprecated. Categoricals no longer have a local scope and are always ordered
+  lexically (#1859).
+- `<Enum>$union()` is deprecated. Construct an Enum explicitly from the combined
+  categories instead (#1859).
 
 #### Migration notes for deprecations from earlier releases
 
-The following APIs were already deprecated before R Polars 1.16. They are repeated here because their Polars 2.0 migration path was previously incomplete, incorrect, or easy to miss.
+The following APIs were already deprecated before R Polars 1.16. They are
+repeated here because their Polars 2.0 migration path was previously incomplete,
+incorrect, or easy to miss.
 
-- `<expr>$flatten()` (deprecated in 1.9.0): use `$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)` for Polars 2.0-compatible behavior. To preserve the legacy behavior instead, set both arguments to `TRUE` (#1866).
-- `<expr>$str$concat()` (deprecated before 1.0.0): use `$str$join("-")` when `delimiter` is omitted, or pass the same delimiter explicitly to `$str$join()` (#1866).
-- `allow_missing_columns` in Parquet readers (deprecated in 1.7.0): use `missing_columns = "insert"` for `TRUE` or `missing_columns = "raise"` for `FALSE` (#1866).
-- `<lazyframe>$profile()` (deprecated in 1.14.0): starting with Polars 2.0, `engine = "auto"` uses the streaming engine, which makes the profiling information reported by this method misleading (#1866).
-- `<expr>$dt$with_time_unit()` (deprecated before 1.0.0): cast to `Int64`, then cast to the desired `Datetime` or `Duration` dtype and time unit (#1866).
-- `<expr>$cat$get_categories()` (deprecated in 1.14.0): use `$unique()` for the distinct values present in a Categorical column, or `dtype$categories` for the fixed category list of an Enum.
-- The `strict` argument of `pl$concat()` (deprecated in 1.13.0): in Polars 2.0, `how = "horizontal"` requires all frames to have the same height instead of padding shorter frames with `null`. Use `how = "horizontal_extend"` to preserve padding, or pass `strict = TRUE` in R Polars 1.16 to opt into the Polars 2.0 behavior early.
+- `<expr>$flatten()` (deprecated in 1.9.0): use `$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)`
+  for Polars 2.0-compatible behavior. To preserve the legacy behavior instead,
+  set both arguments to `TRUE` (#1866).
+- `<expr>$str$concat()` (deprecated before 1.0.0): use `$str$join("-")` when
+  `delimiter` is omitted, or pass the same delimiter explicitly to `$str$join()`
+  (#1866).
+- `allow_missing_columns` in Parquet readers (deprecated in 1.7.0): use
+  `missing_columns = "insert"` for `TRUE` or `missing_columns = "raise"`
+  for `FALSE` (#1866).
+- `<lazyframe>$profile()` (deprecated in 1.14.0): this will be entirely removed
+  because Polars will use the streaming engine by default, which makes the
+  profiling information reported by this method misleading (#1866).
+- `<expr>$dt$with_time_unit()` (deprecated before 1.0.0): cast to `Int64`, then
+  cast to the desired `Datetime` or `Duration` dtype and time unit (#1866).
+- `<expr>$cat$get_categories()` (deprecated in 1.14.0): this will be entirely
+  removed. Use `$unique()` for the distinct values present in a Categorical
+  column, or `dtype$categories` for the fixed category list of an Enum.
+- The `strict` argument of `pl$concat()` (deprecated in 1.13.0): in Polars 2.0,
+  `how = "horizontal"` requires all frames to have the same height instead of
+  padding shorter frames with `null`. Use `how = "horizontal_extend"` to preserve
+  padding, or pass `strict = TRUE` in R Polars 1.16 to opt into the Polars 2.0
+  behavior early.
 
 ### Bug fixes
 
-- Deprecated query-optimization arguments on LazyFrame methods are forwarded correctly again. `collapse_joins = FALSE` was previously ignored, while `no_optimization = TRUE` left `simplify_expression` and `fast_projection` enabled (#1864).
+- Deprecated query-optimization arguments on LazyFrame methods are forwarded
+  correctly again. `collapse_joins = FALSE` was previously ignored, while
+  `no_optimization = TRUE` left `simplify_expression` and `fast_projection`
+  enabled (#1864).
 
 ## polars 1.15.0
 
