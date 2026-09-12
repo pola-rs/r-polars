@@ -54,12 +54,40 @@ test_that("signed integer and UInt64 use the Int128 supertype", {
   expect_equal(out$to_series()$to_r_vector(), c(0, 1))
 })
 
-test_that("numeric is_in rejects lossy comparisons", {
+test_that("membership operations reject lossy comparisons", {
   input <- pl$DataFrame(value = 1L)$cast(value = pl$Int64)
 
-  expect_error(
+  expect_snapshot(
     input$select(pl$col("value")$is_in(list(1.99))),
-    "cannot check for Int64 values in List\\(Float64\\)"
+    transform = normalize_migration_snapshot,
+    error = TRUE
+  )
+
+  list_input <- pl$DataFrame(values = list(1L, 2L))
+  expect_snapshot(
+    list_input$select(pl$col("values")$list$contains(1)),
+    transform = normalize_migration_snapshot,
+    error = TRUE
+  )
+
+  array_input <- pl$DataFrame(values = list(c(1L, 2L), c(2L, 3L)))$cast(
+    values = pl$Array(pl$Int32, 2)
+  )
+  expect_snapshot(
+    array_input$select(pl$col("values")$arr$contains(1)),
+    transform = normalize_migration_snapshot,
+    error = TRUE
+  )
+
+  array_with_float_item <- array_input$with_columns(
+    item = pl$lit(c(1L, 2L))$cast(pl$Float64)
+  )
+  expect_snapshot(
+    array_with_float_item$select(
+      pl$col("values")$arr$contains(pl$col("item"))
+    ),
+    transform = normalize_migration_snapshot,
+    error = TRUE
   )
 })
 
@@ -114,6 +142,18 @@ test_that("Duration statistics reject duration input", {
 
 test_that("empty DataFrame transpose is supported", {
   expect_equal(pl$DataFrame()$transpose(), pl$DataFrame())
+})
+
+test_that("list sampling uses the Polars 2.0 deterministic output", {
+  df <- pl$DataFrame(
+    values = list(c(1L, 2L, 3L, NA), c(NA, NA), c(1L, 2L), NULL),
+    n = c(2L, 1L, 1L, 1L)
+  )
+
+  expect_equal(
+    df$select(sample = pl$col("values")$list$sample(n = pl$col("n"), seed = 1)),
+    pl$DataFrame(sample = list(c(3L, NA), NA, 2L, NULL))
+  )
 })
 
 test_that("selecting no columns returns the Polars 2.0 zero-width shape", {
@@ -183,6 +223,13 @@ test_that("Rust 2.0 behavior changes are routed to R snapshots", {
   expect_snapshot(
     pl$DataFrame(x = list(c(1L, 2L), c(3L, 4L)))$select(
       pl$col("x")$list$gather(c(0L, 1L))
+    ),
+    transform = normalize_migration_snapshot,
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$DataFrame(x = c("hello there", "hi there"))$select(
+      pl$col("x")$str$replace_many(list(c("hello", "hi")), c("foo", "bar"))
     ),
     transform = normalize_migration_snapshot,
     error = TRUE

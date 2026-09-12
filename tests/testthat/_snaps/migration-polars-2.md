@@ -1,3 +1,55 @@
+# membership operations reject lossy comparisons
+
+    Code
+      input$select(pl$col("value")$is_in(list(1.99)))
+    Condition
+      Error in `input$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: 'is_in' cannot check for Int64 values in List(Float64) data.
+      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for is_in() it is required to explicitly cast (one of) the operands to a compatible type.
+
+---
+
+    Code
+      list_input$select(pl$col("values")$list$contains(1))
+    Condition
+      Error in `list_input$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: 'list.contains' cannot check for Float64 values in List(Int32) data.
+      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for is_in() it is required to explicitly cast (one of) the operands to a compatible type.
+
+---
+
+    Code
+      array_input$select(pl$col("values")$arr$contains(1))
+    Condition
+      Error in `array_input$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: 'arr.contains' cannot check for Float64 values in Array(Int32, 2) data.
+      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for is_in() it is required to explicitly cast (one of) the operands to a compatible type.
+
+---
+
+    Code
+      array_with_float_item$select(pl$col("values")$arr$contains(pl$col("item")))
+    Condition
+      Error in `array_with_float_item$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: 'arr.contains' cannot check for Float64 values in Array(Int32, 2) data.
+      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for is_in() it is required to explicitly cast (one of) the operands to a compatible type.
+
 # strict Struct casts enforce the 2.0 field contract
 
     Code
@@ -140,6 +192,19 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid operation: `list.gather` indices must be a list of integers, not a flat i32. Use `implode` to wrap the flat value into a list.
+
+---
+
+    Code
+      pl$DataFrame(x = c("hello there", "hi there"))$select(pl$col("x")$str$
+        replace_many(list(c("hello", "hi")), c("foo", "bar")))
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: `str.replace_many` with a flat str datatype as replacement is invalid. Use `implode` to wrap the string value into a list.
 
 ---
 
