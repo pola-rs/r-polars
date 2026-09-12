@@ -20,9 +20,12 @@ in Polars 2.0, they will be interpreted as column names. Use
 patterns. To use the same character vector for all rows, use
 \code{list(c(...))} instead of \code{c(...)} (see Examples).}
 
-\item{replace_with}{A vector of strings used as replacements. If this is of
-length 1, then it is applied to all matches. Otherwise, it must be of same
-length as the \code{patterns} argument.}
+\item{replace_with}{A list containing a vector of strings used as
+replacements. If this vector is of length 1, then it is applied to all
+matches. Otherwise, it must be of the same length as the \code{patterns} vector.
+In Polars 1.16, a flat character vector is accepted with a deprecation
+warning, but Polars 2.0 requires a list. Use \code{list(c(...))} for a literal
+scalar or vector replacement.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
@@ -51,12 +54,16 @@ df <- pl$DataFrame(
 
 # a replacement of length 1 is applied to all matches
 df$with_columns(
-  remove_pronouns = pl$col("lyrics")$str$replace_many(list(c("you", "me")), "")
+  remove_pronouns = pl$col("lyrics")$str$replace_many(
+    list(c("you", "me")), list(c(""))
+  )
 )
 
 # if there are more than one replacement, the patterns and replacements are
 # matched
 df$with_columns(
-  fake_pronouns = pl$col("lyrics")$str$replace_many(list(c("you", "me")), c("foo", "bar"))
+  fake_pronouns = pl$col("lyrics")$str$replace_many(
+    list(c("you", "me")), list(c("foo", "bar"))
+  )
 )
 }

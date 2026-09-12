@@ -293,7 +293,7 @@ expr_list_last <- function() {
 #' )
 #' df$with_columns(
 #'   with_expr = pl$col("a")$list$contains(pl$col("item")),
-#'   with_lit = pl$col("a")$list$contains(1)
+#'   with_lit = pl$col("a")$list$contains(1L)
 #' )
 expr_list_contains <- function(item, ..., nulls_equal = TRUE) {
   wrap({
