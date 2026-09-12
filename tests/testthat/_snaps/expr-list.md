@@ -242,3 +242,4 @@
       ! Evaluation failed in `$agg()`.
       Caused by error in `pl$col("a")$list$agg()`:
       ! `expr` must be a polars expression, not the number 1.
+

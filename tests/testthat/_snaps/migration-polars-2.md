@@ -234,3 +234,4 @@
       Instead of `.cast(Enum([...])`, use `.cat.to(Enum([...]))`.
       This error occurred in the following expression:
         col("x").strict_cast(Enum([...]))
+

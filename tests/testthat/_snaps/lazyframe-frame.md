@@ -442,3 +442,4 @@
       ! Evaluation failed in `$alias()`.
       Caused by error:
       ! Argument `name` must be character, not logical
+

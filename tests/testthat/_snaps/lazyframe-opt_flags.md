@@ -204,3 +204,4 @@
       ! Evaluation failed in `$collect_all()`.
       Caused by error:
       ! Must be logical, not integer
+
