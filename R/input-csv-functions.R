@@ -25,9 +25,10 @@
 #' `schema_overrides` can be used to partially overwrite a schema. This must be
 #' a list. Names of list elements are used to match to inferred columns.
 #' @param schema_overrides Overwrite dtypes during inference. This must be a
-#' list. A fully named list partially overwrites inferred columns by name. A
-#' fully unnamed list overwrites dtypes by position and must include one dtype
-#' for every CSV column. Mixing named and unnamed elements is not supported.
+#'  list. If the list is named, dtypes partially overwrite inferred columns by
+#'  name. An empty string is a valid column name. If the list is unnamed, dtypes
+#'  overwrite columns by position and must include one dtype for every CSV
+#'  column. Names must not contain `NA` values.
 #' @param null_values Character vector specifying the values to interpret as
 #' `NA` values. It can be named, in which case names specify the columns in
 #' which this replacement must be made (e.g. `c(col1 = "a")`).
@@ -137,18 +138,9 @@ pl__scan_csv <- function(
   extra_columns <- arg_match0(extra_columns, values = c("raise", "ignore"))
 
   schema_overrides_names <- names(schema_overrides)
-  has_named_overrides <- FALSE
-  has_unnamed_overrides <- FALSE
-  if (!is.null(schema_overrides)) {
-    if (is.null(schema_overrides_names)) {
-      has_unnamed_overrides <- length(schema_overrides) > 0L
-    } else {
-      has_named_overrides <- any(!is.na(schema_overrides_names) & nzchar(schema_overrides_names))
-      has_unnamed_overrides <- any(is.na(schema_overrides_names) | !nzchar(schema_overrides_names))
-    }
-    if (has_named_overrides && has_unnamed_overrides) {
-      abort("`schema_overrides` must be either fully named or fully unnamed.")
-    }
+  has_unnamed_overrides <- is.null(schema_overrides_names)
+  if (!is.null(schema_overrides_names) && anyNA(schema_overrides_names)) {
+    abort("`schema_overrides` names must not contain `NA`.")
   }
 
   if (is.null(raise_if_empty)) {

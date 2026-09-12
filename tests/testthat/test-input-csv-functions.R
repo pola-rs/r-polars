@@ -343,14 +343,31 @@ test_that("read/scan: arg 'schema_overrides' works", {
     ),
     error = TRUE
   )
-  expect_snapshot(
+  # A non-NULL names attribute selects name-based overrides. This includes
+  # empty names, which are valid Polars column names.
+  writeLines("a,,c\n1,2,3\n2,4,5", tmpf)
+  empty_name_override <- setNames(list(pl$Int32), "")
+  out <- pl$read_csv(
+    tmpf,
+    schema_overrides = empty_name_override,
+    infer_schema_files = NULL
+  )
+  expect_named(out, c("a", "", "c"))
+  expect_equal(out$schema[[2]], pl$Int32)
+
+  mixed_empty_name <- list(a = pl$Float64, pl$Int32, c = pl$Int32)
+  expect_equal(
     pl$read_csv(
       tmpf,
-      schema_overrides = list(a = pl$Float64, pl$Categorical(), c = pl$Int32),
+      schema_overrides = mixed_empty_name,
       infer_schema_files = NULL
-    ),
-    error = TRUE
+    )$schema,
+    setNames(
+      list(pl$Float64, pl$Int32, pl$Int32),
+      c("a", "", "c")
+    )
   )
+
   mixed_na <- list(pl$Float64, pl$Int32)
   names(mixed_na) <- c(NA_character_, "b")
   expect_snapshot(

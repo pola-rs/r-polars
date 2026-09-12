@@ -67,9 +67,10 @@ inference. This argument expects the complete schema, whereas
 a list. Names of list elements are used to match to inferred columns.}
 
 \item{schema_overrides}{Overwrite dtypes during inference. This must be a
-list. A fully named list partially overwrites inferred columns by name. A
-fully unnamed list overwrites dtypes by position and must include one dtype
-for every CSV column. Mixing named and unnamed elements is not supported.}
+list. If the list is named, dtypes partially overwrite inferred columns by
+name. An empty string is a valid column name. If the list is unnamed, dtypes
+overwrite columns by position and must include one dtype for every CSV
+column. Names must not contain \code{NA} values.}
 
 \item{null_values}{Character vector specifying the values to interpret as
 \code{NA} values. It can be named, in which case names specify the columns in

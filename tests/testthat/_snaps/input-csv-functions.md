@@ -103,23 +103,12 @@
 ---
 
     Code
-      pl$read_csv(tmpf, schema_overrides = list(a = pl$Float64, pl$Categorical(), c = pl$
-        Int32), infer_schema_files = NULL)
-    Condition
-      Error in `pl$read_csv()`:
-      ! Evaluation failed in `$read_csv()`.
-      Caused by error:
-      ! `schema_overrides` must be either fully named or fully unnamed.
-
----
-
-    Code
       pl$read_csv(tmpf, schema_overrides = mixed_na, infer_schema_files = NULL)
     Condition
       Error in `pl$read_csv()`:
       ! Evaluation failed in `$read_csv()`.
       Caused by error:
-      ! `schema_overrides` must be either fully named or fully unnamed.
+      ! `schema_overrides` names must not contain `NA`.
 
 # read/scan: arg 'extra_columns' works
 
