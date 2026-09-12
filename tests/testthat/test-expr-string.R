@@ -1031,6 +1031,17 @@ test_that("str$replace_many", {
   )
 })
 
+test_that("str$replace_many flat replacement is deprecated", {
+  dat <- pl$DataFrame(x = c("HELLO there", "hi there", "good bye", NA))
+
+  expect_snapshot(
+    dat$select(
+      pl$col("x")$str$replace_many(list(c("hello", "he")), "")
+    ),
+    cnd_class = TRUE
+  )
+})
+
 patrick::with_parameters_test_that(
   "str$strptime without format specified",
   .cases = {

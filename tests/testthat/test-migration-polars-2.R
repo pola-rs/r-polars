@@ -72,6 +72,30 @@ test_that("numeric is_in preserves the current lossy comparison", {
   # TODO: @2.0: expect this lossy Int64-to-Float64 coercion to raise an error.
 })
 
+test_that("list and array membership preserve current lossy coercion", {
+  list_input <- pl$DataFrame(values = list(c(1L, 2L)))
+  expect_equal(
+    list_input$select(pl$col("values")$list$contains(1.99)),
+    pl$DataFrame(values = FALSE)
+  )
+
+  array_input <- pl$DataFrame(
+    values = list(c(1, 2)),
+    item = 1L
+  )$cast(values = pl$Array(pl$Float64, 2))
+  expect_equal(
+    array_input$select(pl$col("values")$arr$contains(pl$col("item"))),
+    pl$DataFrame(values = TRUE)
+  )
+  expect_equal(
+    array_input$select(pl$col("values")$arr$contains(1L)),
+    pl$DataFrame(values = TRUE)
+  )
+
+  # TODO: @2.0: expect all three lossy numeric membership operations to raise
+  # an error instead of coercing their operands to a common supertype.
+})
+
 test_that("strict Struct casts preserve current behavior", {
   input <- pl$DataFrame(a = 1:2, b = c("x", "y"))$select(s = pl$struct("a", "b"))
   target <- pl$Struct(a = pl$Int64, b = pl$String, c = pl$Int64)
@@ -117,8 +141,18 @@ test_that("selecting no columns preserves the current zero-width height", {
 
   expect_equal(dim(out), c(0L, 0L))
 
-  # TODO: @2.0: expect zero-width frames to preserve their input height, so
-  # this result should have dimensions c(3L, 0L).
+  # Selecting no columns is an empty projection and remains unchanged in
+  # Polars 2.0.
+})
+
+test_that("dropping all columns preserves the current zero-width height", {
+  input <- pl$DataFrame(a = 1:3, b = 4:6)
+
+  expect_equal(dim(input$drop(cs$all())), c(0L, 0L))
+  expect_equal(dim(input$lazy()$drop(cs$all())$collect()), c(0L, 0L))
+
+  # TODO: @2.0: expect dropping all columns to preserve the input height and
+  # return dimensions c(3L, 0L) for both DataFrame and LazyFrame.
 })
 
 test_that("list and array to_struct preserve outer nulls", {

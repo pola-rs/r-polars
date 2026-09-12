@@ -662,6 +662,9 @@ test_that("$list$sample() works", {
       )
     )
   )
+
+  # TODO: @2.0: update this expected output because sampling with replacement
+  # and shuffle disabled changes the order of the sampled values.
 })
 
 test_that("list$std", {
