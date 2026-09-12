@@ -58,7 +58,7 @@ column.}
 
 \item{path}{A character. File path to which the file should be written.}
 
-\item{compression}{The compression method. Must be one of:
+\item{compression}{The compression method. Defaults to \code{"lz4"}. Must be one of:
 \itemize{
 \item \code{"lz4"}: fast compression/decompression.
 \item \code{"uncompressed"}

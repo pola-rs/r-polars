@@ -178,6 +178,8 @@ expr_arr_unique <- function(..., maintain_order = FALSE) {
 #' This allows to extract one value per array only. Values are 0-indexed (so
 #' index `0` would return the first item of every sub-array) and negative values
 #' start from the end (so index `-1` returns the last item).
+#' In R, out-of-bounds indices return `null` by default; pass
+#' `null_on_oob = FALSE` to raise an error.
 #'
 #' @inherit expr_list_get params return
 #' @param index An Expr or something coercible to an Expr, that must return a
@@ -225,6 +227,7 @@ expr_arr_contains <- function(item, ..., nulls_equal = TRUE) {
 #'
 #' Join all string items in a sub-array and place a separator between them. This
 #' only works if the inner type of the array is `String`.
+#' The default is to propagate null values.
 #'
 #' @param separator String to separate the items with. Can be an Expr. Strings
 #'   are not parsed as columns.

@@ -103,6 +103,14 @@ test_that("arr$get", {
     df$select(pl$col("a")$arr$get("b")),
     pl$DataFrame(a = c(2, 2))$cast(pl$Float32)
   )
+  expect_equal(
+    df$select(pl$col("a")$arr$get(10)),
+    pl$DataFrame(a = c(NA, NA))$cast(pl$Float32)
+  )
+  expect_snapshot(
+    df$select(pl$col("a")$arr$get(10, null_on_oob = FALSE)),
+    error = TRUE
+  )
 })
 
 test_that("join", {

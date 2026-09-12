@@ -24,7 +24,7 @@ a path to a directory if writing a partitioned dataset.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{compression}{The compression method. Must be one of:
+\item{compression}{The compression method. Defaults to \code{"lz4"}. Must be one of:
 \itemize{
 \item \code{"lz4"}: fast compression/decompression.
 \item \code{"uncompressed"}

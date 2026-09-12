@@ -16,7 +16,7 @@
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams lazyframe__collect
 #' @param path A character. File path to which the file should be written.
-#' @param compression The compression method. Must be one of:
+#' @param compression The compression method. Defaults to `"lz4"`. Must be one of:
 #' * `"lz4"`: fast compression/decompression.
 #' * `"uncompressed"`
 #' * `"snappy"`: this guarantees that the parquet file will be compatible with

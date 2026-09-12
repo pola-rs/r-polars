@@ -21,6 +21,7 @@ A polars \link{expression}
 \description{
 Join all string items in a sub-array and place a separator between them. This
 only works if the inner type of the array is \code{String}.
+The default is to propagate null values.
 }
 \examples{
 df <- pl$DataFrame(

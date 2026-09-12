@@ -23,6 +23,8 @@ A polars \link{expression}
 \description{
 This allows to extract one value per list only. To extract several values by
 index, use \code{\link[=expr_list_gather]{$list$gather()}}.
+In R, out-of-bounds indices return \code{null} by default; pass
+\code{null_on_oob = FALSE} to raise an error.
 }
 \examples{
 df <- pl$DataFrame(

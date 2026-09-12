@@ -160,6 +160,8 @@ expr_list_concat <- function(other) {
 #'
 #' This allows to extract one value per list only. To extract several values by
 #' index, use [`$list$gather()`][expr_list_gather].
+#' In R, out-of-bounds indices return `null` by default; pass
+#' `null_on_oob = FALSE` to raise an error.
 #'
 #' @param index An Expr or something coercible to an Expr, that must return a
 #'   single index. Values are 0-indexed (so index 0 would return the first item
@@ -306,6 +308,7 @@ expr_list_contains <- function(item, ..., nulls_equal = TRUE) {
 #'
 #' Join all string items in a sub-list and place a separator between them. This
 #' only works if the inner dtype is `String`.
+#' The default is to propagate null values.
 #'
 #' @param separator String to separate the items with. Can be an Expr. Strings
 #'   are *not* parsed as columns.

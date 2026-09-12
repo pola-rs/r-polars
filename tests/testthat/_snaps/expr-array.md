@@ -32,6 +32,21 @@
       * ..1 = TRUE
       i Did you forget to name an argument?
 
+# arr$get
+
+    Code
+      df$select(pl$col("a")$arr$get(10, null_on_oob = FALSE))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! get index is out of bounds
+      
+      This error occurred in the following expression:
+      	col("a").arr.get([10.0])
+
 # join
 
     Code
