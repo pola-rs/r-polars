@@ -3020,8 +3020,7 @@ expr__rolling <- function(
 #' (which may not be 24 hours, due to daylight savings). Similarly for
 #' "calendar week", "calendar month", "calendar quarter", and "calendar year".
 #' @param min_samples The number of values in the window that should be
-#' non-null before computing a result. If `NULL` (default), it will be set
-#' equal to `window_size`.
+#'   non-null before computing a result. Defaults to 1.
 #' @param closed Define which sides of the interval are closed (inclusive).
 #' Default is `"right"`.
 #'
@@ -3080,6 +3079,8 @@ expr__rolling_max_by <- function(
 #' Apply a rolling min based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
+#' @param min_samples The number of values in the window that should be
+#'   non-null before computing a result. Defaults to 1.
 #' @inherit as_polars_expr return
 #' @examples
 #' df_temporal <- pl$select(
@@ -3130,6 +3131,8 @@ expr__rolling_min_by <- function(
 #' Apply a rolling mean based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
+#' @param min_samples The number of values in the window that should be
+#'   non-null before computing a result. Defaults to 1.
 #' @inherit as_polars_expr return
 #' @examples
 #' df_temporal <- pl$select(
@@ -3180,6 +3183,8 @@ expr__rolling_mean_by <- function(
 #' Apply a rolling median based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
+#' @param min_samples The number of values in the window that should be
+#'   non-null before computing a result. Defaults to 1.
 #' @inherit as_polars_expr return
 #' @examples
 #' df_temporal <- pl$select(
@@ -3230,6 +3235,8 @@ expr__rolling_median_by <- function(
 #' Apply a rolling sum based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
+#' @param min_samples The number of values in the window that should be
+#'   non-null before computing a result. Defaults to 0.
 #' @inherit as_polars_expr return
 #' @examples
 #' df_temporal <- pl$select(
@@ -3262,7 +3269,7 @@ expr__rolling_sum_by <- function(
   by,
   window_size,
   ...,
-  min_samples = 1,
+  min_samples = 0,
   closed = c("right", "both", "left", "none")
 ) {
   wrap({
@@ -3280,6 +3287,8 @@ expr__rolling_sum_by <- function(
 #' Apply a rolling quantile based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
+#' @param min_samples The number of values in the window that should be
+#'   non-null before computing a result. Defaults to 1.
 #' @inherit as_polars_expr return
 #' @inheritParams expr__quantile
 #' @examples
@@ -3341,6 +3350,8 @@ expr__rolling_quantile_by <- function(
 #' Apply a rolling standard deviation based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
+#' @param min_samples The number of values in the window that should be
+#'   non-null before computing a result. Defaults to 1.
 #' @inheritParams expr__std
 #' @inherit as_polars_expr return
 #' @examples
@@ -3394,6 +3405,8 @@ expr__rolling_std_by <- function(
 #' Apply a rolling variance based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
+#' @param min_samples The number of values in the window that should be
+#'   non-null before computing a result. Defaults to 1.
 #' @inheritParams expr__var
 #' @inherit as_polars_expr return
 #' @examples
@@ -3447,6 +3460,8 @@ expr__rolling_var_by <- function(
 #' Apply a rolling rank based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
+#' @param min_samples The number of values in the window that should be
+#'   non-null before computing a result. Defaults to 1.
 #' @inheritParams expr__rolling_rank
 #'
 #' @inherit as_polars_expr return

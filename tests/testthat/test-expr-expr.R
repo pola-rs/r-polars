@@ -1920,6 +1920,33 @@ test_that("rolling_*_by: arg 'min_samples'", {
   )
 })
 
+test_that("rolling_sum_by defaults min_samples to zero", {
+  df <- pl$select(
+    a = 1:3,
+    date = pl$date_range(as.Date("2001-1-1"), as.Date("2001-1-3"), "1d")
+  )
+
+  expect_equal(
+    df$select(
+      default = pl$col("a")$rolling_sum_by(
+        "date",
+        window_size = "1d",
+        closed = "none"
+      ),
+      explicit = pl$col("a")$rolling_sum_by(
+        "date",
+        window_size = "1d",
+        min_samples = 1,
+        closed = "none"
+      )
+    ),
+    pl$DataFrame(
+      default = c(0L, 0L, 0L),
+      explicit = c(NA_integer_, NA_integer_, NA_integer_)
+    )
+  )
+})
+
 test_that("rolling_*_by: arg 'closed'", {
   df <- pl$select(
     a = 1:6,
@@ -1930,7 +1957,7 @@ test_that("rolling_*_by: arg 'closed'", {
     min = c(NA, 1L, 1:4),
     max = c(NA, 1:5),
     mean = c(NA, 1, 1.5, 2.5, 3.5, 4.5),
-    sum = c(NA, 1L, 3L, 5L, 7L, 9L),
+    sum = c(0L, 1L, 3L, 5L, 7L, 9L),
     std = c(NA, NA, rep(0.7071067811865476, 4)),
     var = c(NA, NA, rep(0.5, 4)),
     median = c(NA, 1, 1.5, 2.5, 3.5, 4.5),

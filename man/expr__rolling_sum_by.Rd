@@ -8,7 +8,7 @@ expr__rolling_sum_by(
   by,
   window_size,
   ...,
-  min_samples = 1,
+  min_samples = 0,
   closed = c("right", "both", "left", "none")
 )
 }
@@ -43,8 +43,7 @@ By "calendar day", we mean the corresponding time on the next day
 \item{...}{These dots are for future extensions and must be empty.}
 
 \item{min_samples}{The number of values in the window that should be
-non-null before computing a result. If \code{NULL} (default), it will be set
-equal to \code{window_size}.}
+non-null before computing a result. Defaults to 0.}
 
 \item{closed}{Define which sides of the interval are closed (inclusive).
 Default is \code{"right"}.}
