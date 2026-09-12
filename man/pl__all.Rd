@@ -5,10 +5,12 @@
 \title{Either return an expression representing all columns, or evaluate a bitwise
 AND operation}
 \usage{
-pl__all(..., ignore_nulls = TRUE)
+pl__all(names, ..., ignore_nulls = TRUE)
 }
 \arguments{
-\item{...}{Name(s) of the columns to use in the aggregation.}
+\item{names}{Name(s) of the columns to use in the aggregation.}
+
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{ignore_nulls}{If \code{TRUE} (default), ignore null values. If \code{FALSE},
 \href{https://en.wikipedia.org/wiki/Three-valued_logic}{Kleene logic} is used to

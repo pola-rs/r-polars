@@ -1071,12 +1071,9 @@ expr_str_reverse <- function() {
 #'
 #' This function determines if any of the patterns find a match.
 #' @inherit expr_str_contains params return
-#' @param patterns String patterns to search. Accepts expression input. In
-#'   Polars 1.16, bare character vectors are interpreted as literal patterns;
-#'   in Polars 2.0, they will be interpreted as column names. Use
-#'   `pl$lit(...)$implode()` for literal patterns or `pl$col()` for column
-#'   patterns. To use the same character vector for all rows, use
-#'   `list(c(...))` instead of `c(...)` (see Examples).
+#' @param patterns String patterns to search. Accepts expression input. Bare
+#'   character vectors are interpreted as column names. For literal patterns,
+#'   use a list or an expression such as `pl$lit(...)$implode()`.
 #' @param ascii_case_insensitive Enable ASCII-aware case insensitive matching.
 #' When this option is enabled, searching will be performed without respect to
 #' case for ASCII letters (a-z and A-Z) only.
@@ -1102,8 +1099,7 @@ expr_str_contains_any <- function(
   wrap({
     check_dots_empty0(...)
     self$`_rexpr`$str_contains_any(
-      # TODO: @2.0 set this to FALSE to parse character vectors as columns.
-      as_polars_expr(patterns, as_lit = TRUE)$`_rexpr`,
+      as_polars_expr(patterns, as_lit = FALSE)$`_rexpr`,
       ascii_case_insensitive = ascii_case_insensitive
     )
   })
@@ -1115,8 +1111,6 @@ expr_str_contains_any <- function(
 #'
 #' @inherit as_polars_expr return
 #' @inheritParams rlang::args_dots_empty
-# TODO: @2.0 remove inheriting from expr_str_contains_any and document the
-#       column-name interpretation of bare character vectors directly.
 #' @inheritParams expr_str_contains_any
 #' @inheritParams expr_str_extract_many
 #' @param replace_with A vector of strings used as replacements. If this is of
@@ -1154,8 +1148,7 @@ expr_str_replace_many <- function(
   wrap({
     check_dots_empty0(...)
     self$`_rexpr`$str_replace_many(
-      # TODO: @2.0 set this to FALSE to parse character vectors as columns.
-      as_polars_expr(patterns, as_lit = TRUE)$`_rexpr`,
+      as_polars_expr(patterns, as_lit = FALSE)$`_rexpr`,
       as_polars_expr(replace_with, as_lit = TRUE)$`_rexpr`,
       ascii_case_insensitive = ascii_case_insensitive,
       leftmost = leftmost

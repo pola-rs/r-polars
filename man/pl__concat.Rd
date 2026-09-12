@@ -21,9 +21,8 @@ column values with \code{null};
 \item \code{"diagonal_relaxed"}: same as \code{"diagonal"}, but additionally coerces
 columns to their common supertype if they are mismatched (eg: Int32 to
 Int64);
-\item \code{"horizontal"}: stacks Series from DataFrames horizontally and fills with
-\code{null} if the input heights don't match (equivalent to
-\code{"horizontal_extend"} in this compatibility release);
+\item \code{"horizontal"}: stacks Series from DataFrames horizontally. All input
+frames must have the same height; raises an error otherwise;
 \item \code{"horizontal_extend"}: stacks Series from DataFrames horizontally and
 fills with \code{null} if the lengths don't match;
 \item \code{"align"}, \code{"align_full"}, \code{"align_left"}, \code{"align_right"}: Combines

@@ -4,13 +4,13 @@
 \alias{expr__explode}
 \title{Explode a list expression}
 \usage{
-expr__explode(..., empty_as_null = TRUE, keep_nulls = TRUE)
+expr__explode(..., empty_as_null = FALSE, keep_nulls = TRUE)
 }
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
 
 \item{empty_as_null}{Indicates to explode an empty list/array into a \code{null}.
-Defaults to \code{TRUE}.}
+Defaults to \code{FALSE}.}
 
 \item{keep_nulls}{Indicates to explode a \code{null} list/array into a \code{null}.}
 }

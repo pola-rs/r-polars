@@ -26,31 +26,7 @@ test_that("lazy_sink_ipc works", {
   expect_equal(pl$read_ipc(temp_out), as_polars_df(mtcars))
 })
 
-test_that("Arrow file compression defaults are deprecated", {
-  local_lifecycle_warnings()
-  lf <- as_polars_lf(iris)
-  df <- as_polars_df(iris)
-
-  expect_snapshot(
-    lf$lazy_sink_ipc(withr::local_tempfile()),
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    lf$sink_ipc(withr::local_tempfile()),
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    df$write_ipc(withr::local_tempfile()),
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    df$write_ipc_stream(withr::local_tempfile()),
-    cnd_class = TRUE
-  )
-})
-
 test_that("Arrow file compression explicit values are quiet", {
-  local_lifecycle_warnings()
   lf <- as_polars_lf(iris)
   df <- as_polars_df(iris)
 
@@ -68,8 +44,7 @@ test_that("Arrow file compression explicit values are quiet", {
   )
 })
 
-test_that("Arrow file default compression remains zstd in 1.16", {
-  local_lifecycle_silence()
+test_that("Arrow file default compression is uncompressed", {
   lf <- as_polars_lf(iris)
   df <- as_polars_df(iris)
   read_raw <- function(path) {
@@ -77,21 +52,35 @@ test_that("Arrow file default compression remains zstd in 1.16", {
   }
 
   lazy_default <- withr::local_tempfile()
-  lazy_zstd <- withr::local_tempfile()
+  lazy_uncompressed <- withr::local_tempfile()
   lf$lazy_sink_ipc(lazy_default)$collect()
-  lf$lazy_sink_ipc(lazy_zstd, compression = "zstd")$collect()
-  expect_identical(read_raw(lazy_default), read_raw(lazy_zstd))
-  expect_equal(pl$read_ipc(lazy_default), pl$read_ipc(lazy_zstd))
+  lf$lazy_sink_ipc(lazy_uncompressed, compression = "uncompressed")$collect()
+  expect_identical(read_raw(lazy_default), read_raw(lazy_uncompressed))
+  expect_equal(pl$read_ipc(lazy_default), pl$read_ipc(lazy_uncompressed))
 
   stream_default <- withr::local_tempfile()
-  stream_zstd <- withr::local_tempfile()
+  stream_uncompressed <- withr::local_tempfile()
   df$write_ipc_stream(stream_default)
-  df$write_ipc_stream(stream_zstd, compression = "zstd")
-  expect_identical(read_raw(stream_default), read_raw(stream_zstd))
+  df$write_ipc_stream(stream_uncompressed, compression = "uncompressed")
+  expect_identical(read_raw(stream_default), read_raw(stream_uncompressed))
   expect_equal(
     pl$read_ipc_stream(stream_default),
-    pl$read_ipc_stream(stream_zstd)
+    pl$read_ipc_stream(stream_uncompressed)
   )
+
+  sink_default <- withr::local_tempfile()
+  sink_uncompressed <- withr::local_tempfile()
+  lf$sink_ipc(sink_default)
+  lf$sink_ipc(sink_uncompressed, compression = "uncompressed")
+  expect_identical(read_raw(sink_default), read_raw(sink_uncompressed))
+  expect_equal(pl$read_ipc(sink_default), pl$read_ipc(sink_uncompressed))
+
+  write_default <- withr::local_tempfile()
+  write_uncompressed <- withr::local_tempfile()
+  df$write_ipc(write_default)
+  df$write_ipc(write_uncompressed, compression = "uncompressed")
+  expect_identical(read_raw(write_default), read_raw(write_uncompressed))
+  expect_equal(pl$read_ipc(write_default), pl$read_ipc(write_uncompressed))
 })
 
 test_that("sink_ipc: wrong compression", {

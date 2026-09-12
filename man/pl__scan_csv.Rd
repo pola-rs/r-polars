@@ -19,7 +19,7 @@ pl__scan_csv(
   ignore_errors = FALSE,
   infer_schema = TRUE,
   infer_schema_length = 100,
-  infer_schema_files = NULL,
+  infer_schema_files = 10,
   n_rows = NULL,
   encoding = c("utf8", "utf8-lossy"),
   low_memory = FALSE,
@@ -28,8 +28,8 @@ pl__scan_csv(
   row_index_offset = 0,
   try_parse_dates = FALSE,
   eol_char = "\\n",
-  raise_if_empty = TRUE,
-  truncate_ragged_lines = FALSE,
+  raise_if_empty = NULL,
+  truncate_ragged_lines = NULL,
   decimal_comma = FALSE,
   glob = TRUE,
   storage_options = NULL,
@@ -91,10 +91,7 @@ inference. This applies individually to each file included according to
 slow). Set \code{infer_schema = FALSE} to read all columns as \code{pl$String}.}
 
 \item{infer_schema_files}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} How many
-files to use when inferring the schema. In Polars 1.16, omitting this
-argument and setting it to \code{NULL} uses all files. Starting with Polars 2.0,
-the default will be 10 files. Use \code{infer_schema_files = 10} to opt into the
-new default or \code{infer_schema_files = NULL} to keep using all files.}
+files to use when inferring the schema. Defaults to 10.}
 
 \item{n_rows}{Stop reading from the source after reading \code{n_rows}.}
 
@@ -121,14 +118,11 @@ encountering a file with Windows line endings (\code{"\\r\\n"}), one can go with
 default \code{"\\n"}. The extra \code{"\\r"} will be removed when processed.}
 
 \item{raise_if_empty}{If \code{FALSE}, parsing an empty file returns an empty
-DataFrame or LazyFrame. In Polars 1.16, the default is \code{TRUE}. Starting with
-Polars 2.0, the default will be conditional: it will be \code{FALSE} when
-\code{has_header = FALSE} and \code{schema} is supplied, and \code{TRUE} otherwise. Pass an
-explicit value to select the desired behavior.}
+DataFrame or LazyFrame. Defaults to \code{FALSE} when \code{has_header = FALSE} and
+\code{schema} is supplied, and \code{TRUE} otherwise.}
 
 \item{truncate_ragged_lines}{Truncate lines that are longer than the schema.
-Its default is unchanged in Polars 1.16. In Polars 2.0, the default will be
-determined together with the \code{extra_columns} CSV option.}
+If \code{NULL} (the default), resolves to \code{FALSE}.}
 
 \item{decimal_comma}{Parse floats using a comma as the decimal separator
 instead of a period.}

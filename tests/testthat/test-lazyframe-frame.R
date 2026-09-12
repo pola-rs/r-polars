@@ -995,6 +995,14 @@ test_that("explode() works", {
     )
   )
   expect_query_equal(
+    .input$explode("numbers"),
+    df,
+    pl$DataFrame(
+      letters = c(rep("a", 2), rep("c", 3)),
+      numbers = c(1, NA, 6:8)
+    )
+  )
+  expect_query_equal(
     .input$explode("numbers", empty_as_null = FALSE),
     df,
     pl$DataFrame(

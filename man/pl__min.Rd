@@ -4,10 +4,12 @@
 \alias{pl__min}
 \title{Get the minimum value}
 \usage{
-pl__min(...)
+pl__min(names, ...)
 }
 \arguments{
-\item{...}{Name(s) of the columns to use in the aggregation.}
+\item{names}{Name(s) of the columns to use in the aggregation.}
+
+\item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
 A polars \link{expression}
@@ -26,5 +28,5 @@ df <- pl$DataFrame(
 df$select(pl$min("a"))
 
 # Get the minimum value of multiple columns
-df$select(pl$min("a", "b"))
+df$select(pl$min(c("a", "b")))
 }

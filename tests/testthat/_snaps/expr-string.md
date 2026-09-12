@@ -474,47 +474,7 @@
       This error occurred in the following expression:
       	col("x").str.to_integer([10.0])
 
-# str$contains_any
-
-    Code
-      dat$select(pl$col("x")$str$contains_any(c("hi", "hello")))
-    Condition <polars_deprecation_warning>
-      Warning:
-      `str.contains_any` with a flat string datatype is deprecated. Please use `implode` to return to previous behavior. See https://github.com/pola-rs/polars/issues/22149 for more information.
-    Output
-      shape: (4, 1)
-      ┌───────┐
-      │ x     │
-      │ ---   │
-      │ bool  │
-      ╞═══════╡
-      │ false │
-      │ true  │
-      │ false │
-      │ null  │
-      └───────┘
-
 # str$replace_many
-
-    Code
-      dat$select(pl$col("x")$str$replace_many(c("hello", "he"), list(c("foo"))))
-    Condition <polars_deprecation_warning>
-      Warning:
-      `str.replace_many` with a flat string datatype is deprecated. please use `implode` to return to previous behavior. See https://github.com/pola-rs/polars/issues/22149 for more information.
-    Output
-      shape: (4, 1)
-      ┌──────────────┐
-      │ x            │
-      │ ---          │
-      │ str          │
-      ╞══════════════╡
-      │ HELLO tfoore │
-      │ hi tfoore    │
-      │ good bye     │
-      │ null         │
-      └──────────────┘
-
----
 
     Code
       dat$with_columns(pl$col("x")$str$replace_many(list(c("hi", "hello")), list(c(

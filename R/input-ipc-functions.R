@@ -75,7 +75,7 @@ pl__scan_ipc <- function(
   check_list_of_polars_dtype(hive_schema, allow_null = TRUE)
   check_character(storage_options, allow_null = TRUE)
 
-  cache <- TRUE
+  cache <- FALSE
 
   if (!is.null(hive_schema)) {
     hive_schema <- parse_into_list_of_datatypes(!!!hive_schema)

@@ -10,74 +10,13 @@
       Caused by error:
       ! no data: empty CSV
 
-# read/scan: CSV default migrations preserve missingness
-
-    Code
-      pl$scan_csv(tmpf)
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default value of `infer_schema_files` will change in polars 2.0.
-      i The default will change from using all files to 10 files in Polars 2.0. Use `infer_schema_files = 10` to opt into the new default or `infer_schema_files = NULL` to keep using all files.
-    Output
-      <polars_lazy_frame>
-
----
-
-    Code
-      pl$read_csv(tmpf)
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default value of `infer_schema_files` will change in polars 2.0.
-      i The default will change from using all files to 10 files in Polars 2.0. Use `infer_schema_files = 10` to opt into the new default or `infer_schema_files = NULL` to keep using all files.
-    Output
-      shape: (1, 1)
-      ┌─────┐
-      │ a   │
-      │ --- │
-      │ i64 │
-      ╞═════╡
-      │ 1   │
-      └─────┘
-
----
-
-    Code
-      pl$scan_csv(empty, has_header = FALSE, schema = list(a = pl$Int64),
-      infer_schema_files = NULL)$collect()
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default value of `raise_if_empty` will change in polars 2.0.
-      i When `has_header = FALSE` and `schema` is supplied, the default will change from `TRUE` to `FALSE` in Polars 2.0. Use `raise_if_empty = TRUE` to keep the current behavior.
-    Condition <rlang_error>
-      Error:
-      ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! no data: empty CSV
-
----
+# read/scan: CSV defaults use the 2.0 behavior
 
     Code
       pl$scan_csv(empty, has_header = FALSE, schema = list(a = pl$Int64),
       raise_if_empty = TRUE, infer_schema_files = NULL)$collect()
     Condition <rlang_error>
       Error:
-      ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! no data: empty CSV
-
----
-
-    Code
-      pl$read_csv(empty, has_header = FALSE, schema = list(a = pl$Int64),
-      infer_schema_files = NULL)
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default value of `raise_if_empty` will change in polars 2.0.
-      i When `has_header = FALSE` and `schema` is supplied, the default will change from `TRUE` to `FALSE` in Polars 2.0. Use `raise_if_empty = TRUE` to keep the current behavior.
-    Condition <rlang_error>
-      Error in `pl$read_csv()`:
-      ! Evaluation failed in `$read_csv()`.
-      Caused by error in `do.call(pl$scan_csv, .args)$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! no data: empty CSV

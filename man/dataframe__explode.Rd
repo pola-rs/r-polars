@@ -4,7 +4,7 @@
 \alias{dataframe__explode}
 \title{Explode the frame to long format by exploding the given columns}
 \usage{
-dataframe__explode(..., empty_as_null = TRUE, keep_nulls = TRUE)
+dataframe__explode(..., empty_as_null = FALSE, keep_nulls = TRUE)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column names or \link[=polars_selector]{selectors}
@@ -12,7 +12,7 @@ defining them. The underlying columns being exploded must be of
 the \code{List} or \code{Array} data type.}
 
 \item{empty_as_null}{Indicates to explode an empty list/array into a \code{null}.
-Defaults to \code{TRUE}.}
+Defaults to \code{FALSE}.}
 
 \item{keep_nulls}{Indicates to explode a \code{null} list/array into a \code{null}.}
 }

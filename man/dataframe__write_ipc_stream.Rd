@@ -7,7 +7,7 @@
 dataframe__write_ipc_stream(
   path,
   ...,
-  compression = c("zstd", "lz4", "uncompressed"),
+  compression = c("uncompressed", "lz4", "zstd"),
   compat_level = c("newest", "oldest")
 )
 }
@@ -17,9 +17,6 @@ dataframe__write_ipc_stream(
 \item{...}{These dots are for future extensions and must be empty.}
 
 \item{compression}{Determines the compression algorithm.
-In Polars 1.16, omitting this argument uses \code{"zstd"} and emits a
-deprecation warning. The default changes to \code{"uncompressed"} in Polars 2.0;
-pass an explicit value to choose either behavior without a warning.
 Must be one of:
 \itemize{
 \item \code{"uncompressed"} or \code{NULL}: Write an uncompressed Arrow file.

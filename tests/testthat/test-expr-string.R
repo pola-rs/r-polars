@@ -863,11 +863,6 @@ test_that("str$reverse", {
 test_that("str$contains_any", {
   dat <- pl$DataFrame(x = c("HELLO there", "hi there", "good bye", NA))
 
-  expect_snapshot(
-    dat$select(pl$col("x")$str$contains_any(c("hi", "hello"))),
-    cnd_class = TRUE
-  )
-
   actual <- NULL
   expect_no_condition(
     actual <- dat$select(
@@ -887,6 +882,13 @@ test_that("str$contains_any", {
     )
   )
   expect_equal(actual, pl$DataFrame(x = TRUE))
+  expect_equal(
+    patterns$select(
+      bare = pl$col("x")$str$contains_any("patterns"),
+      explicit = pl$col("x")$str$contains_any(pl$col("patterns"))
+    ),
+    pl$DataFrame(bare = TRUE, explicit = TRUE)
+  )
 
   expect_no_condition(
     pl$col("x")$str$contains_any(list(c("hi", "hello")))
@@ -908,13 +910,6 @@ test_that("str$contains_any", {
 
 test_that("str$replace_many", {
   dat <- pl$DataFrame(x = c("HELLO there", "hi there", "good bye", NA))
-
-  expect_snapshot(
-    dat$select(
-      pl$col("x")$str$replace_many(c("hello", "he"), list(c("foo")))
-    ),
-    cnd_class = TRUE
-  )
 
   actual <- NULL
   expect_no_condition(
@@ -944,6 +939,13 @@ test_that("str$replace_many", {
     )
   )
   expect_equal(actual, pl$DataFrame(x = "Xllo tXre"))
+  expect_equal(
+    patterns$select(
+      bare = pl$col("x")$str$replace_many("patterns", list(c("X"))),
+      explicit = pl$col("x")$str$replace_many(pl$col("patterns"), list(c("X")))
+    ),
+    pl$DataFrame(bare = "Xllo tXre", explicit = "Xllo tXre")
+  )
 
   expect_equal(
     dat$select(

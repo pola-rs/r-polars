@@ -1451,6 +1451,10 @@ test_that("explode", {
     pl$DataFrame(a = list(NULL, NA))
   )
   expect_equal(
+    df$select(pl$col("a")$explode()),
+    df$select(pl$col("a")$explode(empty_as_null = FALSE))
+  )
+  expect_equal(
     df$select(pl$col("a")$explode(empty_as_null = TRUE, keep_nulls = FALSE)),
     pl$DataFrame(a = list(NA, NULL))
   )

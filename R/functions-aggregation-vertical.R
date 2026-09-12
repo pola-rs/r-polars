@@ -1,24 +1,3 @@
-# TODO: @2.0 Replace the dynamic-dots `...` interface with a single `names`
-# argument and remove this compatibility helper.
-parse_vertical_agg_input <- function(...) {
-  check_dots_unnamed()
-  dots <- list2(...)
-
-  if (length(dots) == 0L) {
-    return(character())
-  }
-
-  if (all(vapply(dots, is_character, logical(1L)))) {
-    return(unlist(dots, use.names = FALSE))
-  }
-
-  if (length(dots) == 1L) {
-    return(dots[[1L]])
-  }
-
-  dots
-}
-
 #' Either return an expression representing all columns, or evaluate a bitwise
 #' AND operation
 #'
@@ -26,7 +5,8 @@ parse_vertical_agg_input <- function(...) {
 #' Otherwise, this function is syntactic sugar for `col(names)$all()`.
 #'
 #' @inheritParams expr__all
-#' @param ... Name(s) of the columns to use in the aggregation.
+#' @inheritParams rlang::args_dots_empty
+#' @param names Name(s) of the columns to use in the aggregation.
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -40,11 +20,12 @@ parse_vertical_agg_input <- function(...) {
 #'
 #' # Evaluate bitwise AND for a column.
 #' df$select(pl$all("a"))
-pl__all <- function(..., ignore_nulls = TRUE) {
-  if (missing(...)) {
+pl__all <- function(names, ..., ignore_nulls = TRUE) {
+  check_dots_empty0(...)
+  if (missing(names)) {
     pl$col("*")
   } else {
-    pl$col(names = parse_vertical_agg_input(...))$all(
+    pl$col(names)$all(
       ignore_nulls = ignore_nulls
     )
   }
@@ -54,7 +35,8 @@ pl__all <- function(..., ignore_nulls = TRUE) {
 #'
 #' This function is syntactic sugar for `col(names)$any()`.
 #'
-#' @param ... Name(s) of the columns to use in the aggregation.
+#' @param names Name(s) of the columns to use in the aggregation.
+#' @inheritParams rlang::args_dots_empty
 #' @inheritParams expr__any
 #'
 #' @inherit as_polars_expr return
@@ -65,8 +47,9 @@ pl__all <- function(..., ignore_nulls = TRUE) {
 #' )
 #'
 #' df$select(pl$any("a"))
-pl__any <- function(..., ignore_nulls = TRUE) {
-  pl$col(names = parse_vertical_agg_input(...))$any(
+pl__any <- function(names, ..., ignore_nulls = TRUE) {
+  check_dots_empty0(...)
+  pl$col(names)$any(
     ignore_nulls = ignore_nulls
   )
 }
@@ -75,7 +58,8 @@ pl__any <- function(..., ignore_nulls = TRUE) {
 #'
 #' This function is syntactic sugar for `col(names)$max()`.
 #'
-#' @inheritParams pl__all
+#' @param names Name(s) of the columns to use in the aggregation.
+#' @inheritParams rlang::args_dots_empty
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(
@@ -88,16 +72,18 @@ pl__any <- function(..., ignore_nulls = TRUE) {
 #' df$select(pl$max("a"))
 #'
 #' # Get the maximum value of multiple columns
-#' df$select(pl$max("a", "b"))
-pl__max <- function(...) {
-  pl$col(names = parse_vertical_agg_input(...))$max()
+#' df$select(pl$max(c("a", "b")))
+pl__max <- function(names, ...) {
+  check_dots_empty0(...)
+  pl$col(names)$max()
 }
 
 #' Get the minimum value
 #'
 #' This function is syntactic sugar for `col(names)$min()`.
 #'
-#' @inheritParams pl__all
+#' @param names Name(s) of the columns to use in the aggregation.
+#' @inheritParams rlang::args_dots_empty
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(
@@ -110,16 +96,18 @@ pl__max <- function(...) {
 #' df$select(pl$min("a"))
 #'
 #' # Get the minimum value of multiple columns
-#' df$select(pl$min("a", "b"))
-pl__min <- function(...) {
-  pl$col(names = parse_vertical_agg_input(...))$min()
+#' df$select(pl$min(c("a", "b")))
+pl__min <- function(names, ...) {
+  check_dots_empty0(...)
+  pl$col(names)$min()
 }
 
 #' Sum all values
 #'
 #' This function is syntactic sugar for `col(names)$sum()`.
 #'
-#' @inheritParams pl__all
+#' @param names Name(s) of the columns to use in the aggregation.
+#' @inheritParams rlang::args_dots_empty
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(
@@ -132,16 +120,18 @@ pl__min <- function(...) {
 #' df$select(pl$sum("a"))
 #'
 #' # Get the sum of multiple columns
-#' df$select(pl$sum("a", "b"))
-pl__sum <- function(...) {
-  pl$col(names = parse_vertical_agg_input(...))$sum()
+#' df$select(pl$sum(c("a", "b")))
+pl__sum <- function(names, ...) {
+  check_dots_empty0(...)
+  pl$col(names)$sum()
 }
 
 #' Cumulatively sum all values
 #'
 #' This function is syntactic sugar for `col(names)$cum_sum()`.
 #'
-#' @inheritParams pl__all
+#' @param names Name(s) of the columns to use in the aggregation.
+#' @inheritParams rlang::args_dots_empty
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(
@@ -154,7 +144,8 @@ pl__sum <- function(...) {
 #' df$select(pl$cum_sum("a"))
 #'
 #' # Get the cum_sum of multiple columns
-#' df$select(pl$cum_sum("a", "b"))
-pl__cum_sum <- function(...) {
-  pl$col(names = parse_vertical_agg_input(...))$cum_sum()
+#' df$select(pl$cum_sum(c("a", "b")))
+pl__cum_sum <- function(names, ...) {
+  check_dots_empty0(...)
+  pl$col(names)$cum_sum()
 }

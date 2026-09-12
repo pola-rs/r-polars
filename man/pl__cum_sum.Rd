@@ -4,10 +4,12 @@
 \alias{pl__cum_sum}
 \title{Cumulatively sum all values}
 \usage{
-pl__cum_sum(...)
+pl__cum_sum(names, ...)
 }
 \arguments{
-\item{...}{Name(s) of the columns to use in the aggregation.}
+\item{names}{Name(s) of the columns to use in the aggregation.}
+
+\item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
 A polars \link{expression}
@@ -26,5 +28,5 @@ df <- pl$DataFrame(
 df$select(pl$cum_sum("a"))
 
 # Get the cum_sum of multiple columns
-df$select(pl$cum_sum("a", "b"))
+df$select(pl$cum_sum(c("a", "b")))
 }

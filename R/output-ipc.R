@@ -1,15 +1,9 @@
-# TODO: @2.0.0: Remove the migration warning branches and change the
-# default of compression to "uncompressed" in all Arrow file output functions.
-
 #' Evaluate the query in streaming mode and write to Arrow IPC File Format
 #'
 #' @inherit lazyframe__sink_parquet description params return
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams lazyframe__collect
 #' @param compression Determines the compression algorithm.
-#' In Polars 1.16, omitting this argument uses `"zstd"` and emits a
-#' deprecation warning. The default changes to `"uncompressed"` in Polars 2.0;
-#' pass an explicit value to choose either behavior without a warning.
 #' Must be one of:
 #' - `"uncompressed"` or `NULL`: Write an uncompressed Arrow file.
 #' - `"lz4"`: Fast compression/decompression.
@@ -34,7 +28,7 @@
 lazyframe__sink_ipc <- function(
   path,
   ...,
-  compression = c("zstd", "lz4", "uncompressed"),
+  compression = c("uncompressed", "lz4", "zstd"),
   compat_level = c("newest", "oldest"),
   maintain_order = TRUE,
   storage_options = NULL,
@@ -43,14 +37,8 @@ lazyframe__sink_ipc <- function(
   engine = c("auto", "in-memory", "streaming"),
   optimizations = pl$QueryOptFlags()
 ) {
-  compression_missing <- missing(compression)
   wrap({
     check_dots_empty0(...)
-
-    if (compression_missing) {
-      warn_arrow_compression_default()
-      compression <- "zstd"
-    }
 
     # Allow override by option at the downstream function
     if (missing(compat_level)) {
@@ -78,22 +66,16 @@ lazyframe__sink_ipc <- function(
 lazyframe__lazy_sink_ipc <- function(
   path,
   ...,
-  compression = c("zstd", "lz4", "uncompressed"),
+  compression = c("uncompressed", "lz4", "zstd"),
   compat_level = c("newest", "oldest"),
   maintain_order = TRUE,
   storage_options = NULL,
   sync_on_close = c("none", "data", "all"),
   mkdir = FALSE
 ) {
-  compression_missing <- missing(compression)
   wrap({
     check_dots_empty0(...)
     check_character(storage_options, allow_null = TRUE)
-
-    if (compression_missing) {
-      warn_arrow_compression_default()
-      compression <- "zstd"
-    }
 
     compat_level <- use_option_if_missing(
       compat_level,
@@ -137,18 +119,12 @@ lazyframe__lazy_sink_ipc <- function(
 dataframe__write_ipc <- function(
   path,
   ...,
-  compression = c("zstd", "lz4", "uncompressed"),
+  compression = c("uncompressed", "lz4", "zstd"),
   compat_level = c("newest", "oldest"),
   storage_options = NULL
 ) {
-  compression_missing <- missing(compression)
   wrap({
     check_dots_empty0(...)
-
-    if (compression_missing) {
-      warn_arrow_compression_default()
-      compression <- "zstd"
-    }
 
     # Allow override by option at the downstream function
     if (missing(compat_level)) {
@@ -183,17 +159,11 @@ dataframe__write_ipc <- function(
 dataframe__write_ipc_stream <- function(
   path,
   ...,
-  compression = c("zstd", "lz4", "uncompressed"),
+  compression = c("uncompressed", "lz4", "zstd"),
   compat_level = c("newest", "oldest")
 ) {
-  compression_missing <- missing(compression)
   wrap({
     check_dots_empty0(...)
-
-    if (compression_missing) {
-      warn_arrow_compression_default()
-      compression <- "zstd"
-    }
 
     # Handle missing values with use_option_if_missing (similar to lazy_sink_ipc)
     compat_level <- use_option_if_missing(

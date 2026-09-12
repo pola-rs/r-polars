@@ -4,13 +4,12 @@
 \alias{cs__by_name}
 \title{Select all columns matching the given names}
 \usage{
-cs__by_name(..., names, require_all = TRUE, expand_patterns = FALSE)
+cs__by_name(names, ..., require_all = TRUE, expand_patterns = FALSE)
 }
 \arguments{
-\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Deprecated compatibility
-interface for passing multiple column names.}
-
 \item{names}{A character vector of column names to select.}
+
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{require_all}{Whether to match all names (the default) or any of the names.}
 

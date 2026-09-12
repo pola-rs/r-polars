@@ -4,10 +4,12 @@
 \alias{pl__max}
 \title{Get the maximum value}
 \usage{
-pl__max(...)
+pl__max(names, ...)
 }
 \arguments{
-\item{...}{Name(s) of the columns to use in the aggregation.}
+\item{names}{Name(s) of the columns to use in the aggregation.}
+
+\item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
 A polars \link{expression}
@@ -26,5 +28,5 @@ df <- pl$DataFrame(
 df$select(pl$max("a"))
 
 # Get the maximum value of multiple columns
-df$select(pl$max("a", "b"))
+df$select(pl$max(c("a", "b")))
 }

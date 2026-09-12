@@ -4,10 +4,12 @@
 \alias{pl__sum}
 \title{Sum all values}
 \usage{
-pl__sum(...)
+pl__sum(names, ...)
 }
 \arguments{
-\item{...}{Name(s) of the columns to use in the aggregation.}
+\item{names}{Name(s) of the columns to use in the aggregation.}
+
+\item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
 A polars \link{expression}
@@ -26,5 +28,5 @@ df <- pl$DataFrame(
 df$select(pl$sum("a"))
 
 # Get the sum of multiple columns
-df$select(pl$sum("a", "b"))
+df$select(pl$sum(c("a", "b")))
 }

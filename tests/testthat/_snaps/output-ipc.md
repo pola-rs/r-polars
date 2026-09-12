@@ -16,44 +16,6 @@
       ╞╡
       └┘
 
-# Arrow file compression defaults are deprecated
-
-    Code
-      lf$lazy_sink_ipc(withr::local_tempfile())
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default value of `compression` is deprecated as of polars 1.16.0.
-      i The default will change from `"zstd"` to `"uncompressed"` in Polars 2.0. Use `compression = "zstd"` to keep the current behavior or `compression = "uncompressed"` to opt into the new default.
-    Output
-      <polars_lazy_frame>
-
----
-
-    Code
-      lf$sink_ipc(withr::local_tempfile())
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default value of `compression` is deprecated as of polars 1.16.0.
-      i The default will change from `"zstd"` to `"uncompressed"` in Polars 2.0. Use `compression = "zstd"` to keep the current behavior or `compression = "uncompressed"` to opt into the new default.
-
----
-
-    Code
-      df$write_ipc(withr::local_tempfile())
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default value of `compression` is deprecated as of polars 1.16.0.
-      i The default will change from `"zstd"` to `"uncompressed"` in Polars 2.0. Use `compression = "zstd"` to keep the current behavior or `compression = "uncompressed"` to opt into the new default.
-
----
-
-    Code
-      df$write_ipc_stream(withr::local_tempfile())
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default value of `compression` is deprecated as of polars 1.16.0.
-      i The default will change from `"zstd"` to `"uncompressed"` in Polars 2.0. Use `compression = "zstd"` to keep the current behavior or `compression = "uncompressed"` to opt into the new default.
-
 # Test writing data to Arrow file "uncompressed" - 0
 
     Code

@@ -4,13 +4,13 @@
 \alias{expr_list_explode}
 \title{Returns a column with a separate row for every list element}
 \usage{
-expr_list_explode(..., empty_as_null = TRUE, keep_nulls = TRUE)
+expr_list_explode(..., empty_as_null = FALSE, keep_nulls = TRUE)
 }
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
 
 \item{empty_as_null}{Indicates to explode an empty list/array into a \code{null}.
-Defaults to \code{TRUE}.}
+Defaults to \code{FALSE}.}
 
 \item{keep_nulls}{Indicates to explode a \code{null} list/array into a \code{null}.}
 }

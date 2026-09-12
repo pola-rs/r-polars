@@ -92,76 +92,34 @@ test_that("read/scan: arg raise_if_empty works", {
   expect_equal(dim(out), c(0L, 0L))
 })
 
-test_that("read/scan: CSV default migrations preserve missingness", {
-  local_lifecycle_warnings()
+test_that("read/scan: CSV defaults use the 2.0 behavior", {
   tmpf <- withr::local_tempfile()
   writeLines("a\n1", tmpf)
 
-  expect_snapshot(
-    pl$scan_csv(tmpf),
-    cnd_class = TRUE
-  )
-  expect_no_condition(pl$scan_csv(tmpf, infer_schema_files = NULL))
+  expect_no_condition(pl$scan_csv(tmpf))
   expect_no_condition(pl$scan_csv(tmpf, infer_schema_files = 10))
-
-  expect_snapshot(
-    pl$read_csv(tmpf),
-    cnd_class = TRUE
-  )
-  expect_no_condition(pl$read_csv(tmpf, infer_schema_files = NULL))
+  expect_no_condition(pl$read_csv(tmpf))
 
   empty <- withr::local_tempfile()
   file.create(empty)
-  expect_snapshot(
-    pl$scan_csv(
-      empty,
-      has_header = FALSE,
-      schema = list(a = pl$Int64),
-      infer_schema_files = NULL
-    )$collect(),
-    error = TRUE,
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    pl$scan_csv(
-      empty,
-      has_header = FALSE,
-      schema = list(a = pl$Int64),
-      raise_if_empty = TRUE,
-      infer_schema_files = NULL
-    )$collect(),
-    error = TRUE,
-    cnd_class = TRUE
-  )
   scan_out <- expect_no_condition(
     pl$scan_csv(
       empty,
       has_header = FALSE,
       schema = list(a = pl$Int64),
-      raise_if_empty = FALSE,
       infer_schema_files = NULL
     )$collect()
   )
   expect_equal(dim(scan_out), c(0L, 1L))
   expect_equal(scan_out$schema, list(a = pl$Int64))
   expect_snapshot(
-    pl$read_csv(
-      empty,
-      has_header = FALSE,
-      schema = list(a = pl$Int64),
-      infer_schema_files = NULL
-    ),
-    error = TRUE,
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    pl$read_csv(
+    pl$scan_csv(
       empty,
       has_header = FALSE,
       schema = list(a = pl$Int64),
       raise_if_empty = TRUE,
       infer_schema_files = NULL
-    ),
+    )$collect(),
     error = TRUE,
     cnd_class = TRUE
   )
@@ -170,12 +128,22 @@ test_that("read/scan: CSV default migrations preserve missingness", {
       empty,
       has_header = FALSE,
       schema = list(a = pl$Int64),
-      raise_if_empty = FALSE,
       infer_schema_files = NULL
     )
   )
   expect_equal(dim(out), c(0L, 1L))
   expect_equal(out$schema, list(a = pl$Int64))
+  expect_snapshot(
+    pl$read_csv(
+      empty,
+      has_header = FALSE,
+      schema = list(a = pl$Int64),
+      raise_if_empty = TRUE,
+      infer_schema_files = NULL
+    ),
+    error = TRUE,
+    cnd_class = TRUE
+  )
 })
 
 test_that("read/scan: arg glob works", {
@@ -486,11 +454,10 @@ test_that("read/scan: arg infer_schema_files works", {
   writeLines(c("a", "x", "y"), file.path(tmpdir, "11.csv"))
   glob <- file.path(tmpdir, "*.csv")
 
-  # The 1.16 default uses all files for inference, so the common type is String.
-  local_lifecycle_silence()
+  # The default uses the first 10 files for inference.
   expect_equal(
     pl$scan_csv(glob)$collect_schema(),
-    list(a = pl$String)
+    list(a = pl$Int64)
   )
 
   expect_equal(

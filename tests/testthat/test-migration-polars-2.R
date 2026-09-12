@@ -13,6 +13,10 @@ test_that("CSV preserves the current ragged-line default", {
     "found more fields than defined"
   )
   expect_error(
+    pl$read_csv(tmpf, truncate_ragged_lines = NULL, infer_schema_files = NULL),
+    "found more fields than defined"
+  )
+  expect_error(
     pl$read_csv(tmpf, truncate_ragged_lines = FALSE, infer_schema_files = NULL),
     "found more fields than defined"
   )
@@ -21,8 +25,8 @@ test_that("CSV preserves the current ragged-line default", {
     pl$DataFrame(a = c(1L, 4L), b = c(2L, 5L))$cast(pl$Int64)
   )
 
-  # TODO: @2.0: update the omitted default to Polars 2.0's `extra_columns`
-  # behavior and retain the explicit TRUE regression test.
+  # TODO: Add `extra_columns` coverage when that parameter is supported by the
+  # R API. Keep the explicit TRUE regression test for truncation behavior.
 })
 
 test_that("CSV preserves current generated names for headerless input", {

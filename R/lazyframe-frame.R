@@ -1619,7 +1619,7 @@ lazyframe__rename <- function(..., .strict = TRUE) {
 #' )
 #'
 #' lf$explode("numbers")$collect()
-lazyframe__explode <- function(..., empty_as_null = TRUE, keep_nulls = TRUE) {
+lazyframe__explode <- function(..., empty_as_null = FALSE, keep_nulls = TRUE) {
   parse_into_selector(...)$`_rselector` |>
     self$`_ldf`$explode(empty_as_null = empty_as_null, keep_nulls = keep_nulls) |>
     wrap()

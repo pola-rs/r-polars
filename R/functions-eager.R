@@ -12,9 +12,8 @@
 #' * `"diagonal_relaxed"`: same as `"diagonal"`, but additionally coerces
 #'   columns to their common supertype if they are mismatched (eg: Int32 to
 #'   Int64);
-#' * `"horizontal"`: stacks Series from DataFrames horizontally and fills with
-#'   `null` if the input heights don't match (equivalent to
-#'   `"horizontal_extend"` in this compatibility release);
+#' * `"horizontal"`: stacks Series from DataFrames horizontally. All input
+#'   frames must have the same height; raises an error otherwise;
 #' * `"horizontal_extend"`: stacks Series from DataFrames horizontally and
 #'   fills with `null` if the lengths don't match;
 #' * `"align"`, `"align_full"`, `"align_left"`, `"align_right"`: Combines
@@ -81,11 +80,6 @@ pl__concat <- function(
       "align_right"
     )
   )
-
-  # Preserve the pre-2.0 padding behavior until the final default switch.
-  if (how == "horizontal") {
-    how <- "horizontal_extend"
-  }
 
   if (length(dots) == 0L) {
     abort("`...` must not be empty.")

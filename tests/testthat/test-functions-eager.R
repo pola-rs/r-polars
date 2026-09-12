@@ -116,24 +116,16 @@ test_that("how = 'horizontal' works", {
   df <- pl$DataFrame(a = 1:2, b = letters[1:2])
   df2 <- pl$DataFrame(a2 = 1:2, b2 = letters[1:2])
   df3 <- pl$DataFrame(a3 = 1, b3 = letters[1])
-  df4 <- pl$DataFrame(
-    a = 1:2,
-    b = letters[1:2],
-    a2 = 1:2,
-    b2 = letters[1:2],
-    a3 = c(1, NA),
-    b3 = c(letters[1], NA)
-  )
-
   # works with lazy
   lf <- df$lazy()
   lf2 <- df2$lazy()
   lf3 <- df3$lazy()
 
   expect_equal(
-    pl$concat(lf, lf2, lf3, how = "horizontal")$collect(),
-    df4
+    pl$concat(lf, lf2, how = "horizontal")$collect(),
+    pl$DataFrame(a = 1:2, b = letters[1:2], a2 = 1:2, b2 = letters[1:2])
   )
+  expect_error(pl$concat(lf, lf2, lf3, how = "horizontal")$collect())
 
   # doesn't work with Series
   expect_snapshot(
