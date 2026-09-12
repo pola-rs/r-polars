@@ -2437,12 +2437,19 @@ test_that("sample", {
   df <- pl$DataFrame(a = 1:10)
 
   # Numerical checks
+  expect_equal(nrow(df$select(pl$col("a")$sample(n = 2))), 2L)
+  for (shuffle in list(NULL, FALSE, TRUE)) {
+    expect_equal(
+      nrow(df$select(pl$col("a")$sample(n = 2, shuffle = shuffle, seed = 1))),
+      2L
+    )
+  }
   expect_equal(
-    df$select(pl$col("a")$sample(fraction = 0.2, seed = 1)),
+    df$select(pl$col("a")$sample(fraction = 0.2, shuffle = FALSE, seed = 1)),
     pl$DataFrame(a = c(8L, 10L))$cast(pl$Int32)
   )
   expect_equal(
-    df$select(pl$col("a")$sample(n = 2, seed = 1)),
+    df$select(pl$col("a")$sample(n = 2, shuffle = FALSE, seed = 1)),
     pl$DataFrame(a = c(8L, 10L))$cast(pl$Int32)
   )
 

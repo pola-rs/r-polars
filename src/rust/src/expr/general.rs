@@ -966,7 +966,7 @@ impl PlRExpr {
         &self,
         n: &PlRExpr,
         with_replacement: bool,
-        shuffle: bool,
+        shuffle: Option<bool>,
         seed: Option<NumericScalar>,
     ) -> Result<Self> {
         let seed: Option<u64> = match seed {
@@ -976,7 +976,7 @@ impl PlRExpr {
         Ok(self
             .inner
             .clone()
-            .sample_n(n.inner.clone(), with_replacement, Some(shuffle), seed)
+            .sample_n(n.inner.clone(), with_replacement, shuffle, seed)
             .into())
     }
 
@@ -984,7 +984,7 @@ impl PlRExpr {
         &self,
         frac: &PlRExpr,
         with_replacement: bool,
-        shuffle: bool,
+        shuffle: Option<bool>,
         seed: Option<NumericScalar>,
     ) -> Result<Self> {
         let seed: Option<u64> = match seed {
@@ -994,7 +994,7 @@ impl PlRExpr {
         Ok(self
             .inner
             .clone()
-            .sample_frac(frac.inner.clone(), with_replacement, Some(shuffle), seed)
+            .sample_frac(frac.inner.clone(), with_replacement, shuffle, seed)
             .into())
     }
 

@@ -1983,7 +1983,9 @@ dataframe__with_row_index <- function(name = "index", offset = 0) {
 #' @param fraction Fraction of items to return. Values are parsed as literals.
 #'   Cannot be used with `n`.
 #' @param with_replacement Allow values to be sampled more than once.
-#' @param shuffle Shuffle the order of sampled data points.
+#' @param shuffle If `TRUE`, explicitly shuffle the sampled data points. If
+#'   `FALSE`, maintain their relative order. If `NULL` (default), use a
+#'   high-performance algorithm without guaranteeing an order.
 #' @param seed Seed for the random number generator. If `NULL` (default), a
 #'   random seed is generated for each sample operation.
 #' @inherit as_polars_df return
@@ -1999,7 +2001,7 @@ dataframe__sample <- function(
   ...,
   fraction = NULL,
   with_replacement = FALSE,
-  shuffle = FALSE,
+  shuffle = NULL,
   seed = NULL
 ) {
   wrap({

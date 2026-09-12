@@ -639,8 +639,19 @@ test_that("$list$sample() works", {
   )
 
   expect_equal(
+    df$select(pl$col("values")$list$sample(seed = 1)$list$len()),
+    pl$DataFrame(values = c(1L, 1L, 1L, 1L))$cast(values = pl$UInt32)
+  )
+  for (shuffle in list(NULL, FALSE, TRUE)) {
+    expect_equal(
+      df$select(pl$col("values")$list$sample(n = 1, shuffle = shuffle, seed = 1)$list$len()),
+      pl$DataFrame(values = c(1L, 1L, 1L, 1L))$cast(values = pl$UInt32)
+    )
+  }
+
+  expect_equal(
     df$select(
-      sample = pl$col("values")$list$sample(n = pl$col("n"), seed = 1)
+      sample = pl$col("values")$list$sample(n = pl$col("n"), shuffle = FALSE, seed = 1)
     ),
     pl$DataFrame(sample = list(3L, NA, 3L, c(6L, 7L)))
   )
@@ -649,7 +660,12 @@ test_that("$list$sample() works", {
 
   expect_equal(
     df$select(
-      sample = pl$col("values")$list$sample(fraction = 2, with_replacement = TRUE, seed = 1)
+      sample = pl$col("values")$list$sample(
+        fraction = 2,
+        with_replacement = TRUE,
+        shuffle = FALSE,
+        seed = 1
+      )
     ),
     pl$DataFrame(
       sample = list(

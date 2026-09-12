@@ -626,14 +626,14 @@ class(`PlRChainedWhen`) <- c("polars::PlRChainedWhen__bundle", "savvy_polars__se
 }
 
 `PlRDataFrame_sample_frac` <- function(self) {
-  function(`frac`, `with_replacement`, `shuffle`, `seed` = NULL) {
+  function(`frac`, `with_replacement`, `shuffle` = NULL, `seed` = NULL) {
     `frac` <- .savvy_extract_ptr(`frac`, "polars::PlRSeries")
     .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_sample_frac__impl, `self`, `frac`, `with_replacement`, `shuffle`, `seed`))
   }
 }
 
 `PlRDataFrame_sample_n` <- function(self) {
-  function(`n`, `with_replacement`, `shuffle`, `seed` = NULL) {
+  function(`n`, `with_replacement`, `shuffle` = NULL, `seed` = NULL) {
     `n` <- .savvy_extract_ptr(`n`, "polars::PlRSeries")
     .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_sample_n__impl, `self`, `n`, `with_replacement`, `shuffle`, `seed`))
   }
@@ -2291,14 +2291,14 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 }
 
 `PlRExpr_list_sample_frac` <- function(self) {
-  function(`frac`, `with_replacement`, `shuffle`, `seed` = NULL) {
+  function(`frac`, `with_replacement`, `shuffle` = NULL, `seed` = NULL) {
     `frac` <- .savvy_extract_ptr(`frac`, "polars::PlRExpr")
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_sample_frac__impl, `self`, `frac`, `with_replacement`, `shuffle`, `seed`))
   }
 }
 
 `PlRExpr_list_sample_n` <- function(self) {
-  function(`n`, `with_replacement`, `shuffle`, `seed` = NULL) {
+  function(`n`, `with_replacement`, `shuffle` = NULL, `seed` = NULL) {
     `n` <- .savvy_extract_ptr(`n`, "polars::PlRExpr")
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_sample_n__impl, `self`, `n`, `with_replacement`, `shuffle`, `seed`))
   }
@@ -2900,14 +2900,14 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 }
 
 `PlRExpr_sample_frac` <- function(self) {
-  function(`frac`, `with_replacement`, `shuffle`, `seed` = NULL) {
+  function(`frac`, `with_replacement`, `shuffle` = NULL, `seed` = NULL) {
     `frac` <- .savvy_extract_ptr(`frac`, "polars::PlRExpr")
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_sample_frac__impl, `self`, `frac`, `with_replacement`, `shuffle`, `seed`))
   }
 }
 
 `PlRExpr_sample_n` <- function(self) {
-  function(`n`, `with_replacement`, `shuffle`, `seed` = NULL) {
+  function(`n`, `with_replacement`, `shuffle` = NULL, `seed` = NULL) {
     `n` <- .savvy_extract_ptr(`n`, "polars::PlRExpr")
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_sample_n__impl, `self`, `n`, `with_replacement`, `shuffle`, `seed`))
   }

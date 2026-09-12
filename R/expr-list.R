@@ -667,18 +667,24 @@ expr_list_sample <- function(
   ...,
   fraction = NULL,
   with_replacement = FALSE,
-  shuffle = FALSE,
+  shuffle = NULL,
   seed = NULL
 ) {
   wrap({
     check_dots_empty0(...)
     if (!is.null(n) && !is.null(fraction)) {
       abort("Provide either `n` or `fraction`, not both.")
-    } else if (!is.null(n)) {
-      self$`_rexpr`$list_sample_n(as_polars_expr(n)$`_rexpr`, with_replacement, shuffle, seed)
-    } else {
+    } else if (!is.null(fraction)) {
       self$`_rexpr`$list_sample_frac(
-        as_polars_expr(fraction %||% 1)$`_rexpr`,
+        as_polars_expr(fraction)$`_rexpr`,
+        with_replacement,
+        shuffle,
+        seed
+      )
+    } else {
+      n <- n %||% 1
+      self$`_rexpr`$list_sample_n(
+        as_polars_expr(n)$`_rexpr`,
         with_replacement,
         shuffle,
         seed

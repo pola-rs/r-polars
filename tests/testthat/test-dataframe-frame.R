@@ -625,9 +625,12 @@ test_that("sample() works", {
     bar = 6:8,
     ham = c("a", "b", "c")
   )
-  expect_silent(df$sample(n = 2))
+  expect_equal(nrow(df$sample(n = 2)), 2L)
+  for (shuffle in list(NULL, FALSE, TRUE)) {
+    expect_equal(nrow(df$sample(n = 2, shuffle = shuffle, seed = 0)), 2L)
+  }
   expect_equal(
-    df$sample(n = 2, seed = 0),
+    df$sample(n = 2, shuffle = FALSE, seed = 0),
     pl$DataFrame(
       foo = 1:2,
       bar = 6:7,
@@ -635,7 +638,7 @@ test_that("sample() works", {
     )
   )
   expect_equal(
-    df$sample(fraction = 0.5, seed = 0),
+    df$sample(fraction = 0.5, shuffle = FALSE, seed = 0),
     pl$DataFrame(foo = 1L, bar = 6L, ham = "a")
   )
   expect_snapshot(df$sample(n = 2, fraction = 0.1), error = TRUE)

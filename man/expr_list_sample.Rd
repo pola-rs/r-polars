@@ -9,7 +9,7 @@ expr_list_sample(
   ...,
   fraction = NULL,
   with_replacement = FALSE,
-  shuffle = FALSE,
+  shuffle = NULL,
   seed = NULL
 )
 }
@@ -25,7 +25,9 @@ parsed as column names. Cannot be used with \code{n}.}
 
 \item{with_replacement}{Allow values to be sampled more than once.}
 
-\item{shuffle}{Shuffle the order of sampled data points.}
+\item{shuffle}{If \code{TRUE}, explicitly shuffle the sampled data points. If
+\code{FALSE}, maintain their relative order. If \code{NULL} (default), use a
+high-performance algorithm without guaranteeing an order.}
 
 \item{seed}{Seed for the random number generator. If \code{NULL} (default), a
 random seed is generated for each sample operation.}

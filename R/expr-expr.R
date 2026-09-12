@@ -4587,7 +4587,9 @@ expr__rle_id <- function() {
 #' @param fraction Fraction of items to return. Can be an Expr. Strings are
 #'  parsed as column names. Cannot be used with `n`.
 #' @param with_replacement Allow values to be sampled more than once.
-#' @param shuffle Shuffle the order of sampled data points.
+#' @param shuffle If `TRUE`, explicitly shuffle the sampled data points. If
+#'   `FALSE`, maintain their relative order. If `NULL` (default), use a
+#'   high-performance algorithm without guaranteeing an order.
 #' @param seed Seed for the random number generator. If `NULL` (default), a
 #' random seed is generated for each sample operation.
 #'
@@ -4602,7 +4604,7 @@ expr__sample <- function(
   ...,
   fraction = NULL,
   with_replacement = FALSE,
-  shuffle = FALSE,
+  shuffle = NULL,
   seed = NULL
 ) {
   wrap({
