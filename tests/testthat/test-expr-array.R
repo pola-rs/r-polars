@@ -155,8 +155,8 @@ test_that("arr$contains", {
     item = 0:2
   )$cast(values = pl$Array(pl$Float64, 3))
   out <- df$select(
-    with_expr = pl$col("values")$arr$contains(pl$col("item")),
-    with_lit = pl$col("values")$arr$contains(4)
+    with_expr = pl$col("values")$arr$contains(pl$col("item")$cast(pl$Float64)),
+    with_lit = pl$col("values")$arr$contains(pl$lit(4)$cast(pl$Float64))
   )
   expect_equal(
     out,

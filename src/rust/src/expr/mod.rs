@@ -2,7 +2,7 @@ mod array;
 mod binary;
 mod bitwise;
 mod categorical;
-mod datatype;
+pub(crate) mod datatype;
 mod datetime;
 mod general;
 mod list;

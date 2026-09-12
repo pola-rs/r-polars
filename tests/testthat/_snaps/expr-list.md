@@ -192,3 +192,53 @@
       
       This error occurred in the following expression:
       	col("values").list.sample_fraction([2.0])
+
+# list$to_struct with explicit fields = "a"
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
+        values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields))$
+        unnest("values")
+    Output
+      shape: (3, 1)
+      ┌─────┐
+      │ a   │
+      │ --- │
+      │ i64 │
+      ╞═════╡
+      │ 1   │
+      │ 1   │
+      │ 1   │
+      └─────┘
+
+# list$to_struct with explicit fields = c("a", "b", "c", "d")
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
+        values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields))$
+        unnest("values")
+    Output
+      shape: (3, 4)
+      ┌─────┬──────┬──────┬──────┐
+      │ a   ┆ b    ┆ c    ┆ d    │
+      │ --- ┆ ---  ┆ ---  ┆ ---  │
+      │ i64 ┆ i64  ┆ i64  ┆ i64  │
+      ╞═════╪══════╪══════╪══════╡
+      │ 1   ┆ 2    ┆ null ┆ null │
+      │ 1   ┆ 2    ┆ 3    ┆ null │
+      │ 1   ┆ null ┆ null ┆ null │
+      └─────┴──────┴──────┴──────┘
+
+# list$agg() works
+
+    Code
+      df$select(pl$col("a")$list$agg(1))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error in `pl$col("a")$list$agg()`:
+      ! Evaluation failed in `$agg()`.
+      Caused by error in `pl$col("a")$list$agg()`:
+      ! `expr` must be a polars expression, not the number 1.

@@ -1067,12 +1067,21 @@ expr__filter <- function(...) {
 #'
 #' The output of this custom function is presumed to be either a Series, or an
 #' R vector that will be converted into a Series by [as_polars_series()].
+#' By default, the function is applied to the complete Series, rather than
+#' element by element. Set `is_elementwise` to `TRUE` when the function can be
+#' safely applied element by element.
 #' @inheritParams rlang::args_dots_empty
 #' @param lambda Function to apply.
-#' @param return_dtype Dtype of the output Series.
+#' @param return_dtype Dtype of the output Series. Can be a [DataType][polars_dtype]
+#'   or [DataTypeExpr][polars_datatype_expr].
 #'   It is recommended to set this whenever possible. If this is `NULL`, it tries
 #'   to infer the datatype by calling the function with dummy data and looking at
 #'   the output.
+#' @param is_elementwise Whether the function can be applied element by element.
+#'   If `TRUE`, the function may be optimized by the query engine. Defaults to
+#'   `FALSE`.
+#' @param returns_scalar Whether the function returns a single scalar value.
+#'   Defaults to `FALSE`.
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -1099,18 +1108,28 @@ expr__filter <- function(...) {
 expr__map_batches <- function(
   lambda,
   return_dtype = NULL,
-  ...
+  ...,
+  is_elementwise = FALSE,
+  returns_scalar = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
-    check_polars_dtype(return_dtype, allow_null = TRUE)
+    return_dtype <- if (is.null(return_dtype)) {
+      NULL
+    } else {
+      as_polars_dtype_expr(return_dtype)
+    }
+    check_bool(is_elementwise)
+    check_bool(returns_scalar)
     lambda <- as_function(lambda)
 
     self$`_rexpr`$map_batches(
       lambda = function(series) {
         as_polars_series(lambda(wrap(.savvy_wrap_PlRSeries(series))))$`_s`
       },
-      output_type = return_dtype$`_dt`
+      is_elementwise = is_elementwise,
+      returns_scalar = returns_scalar,
+      output_type = return_dtype$`_datatype_expr`
     )
   })
 }

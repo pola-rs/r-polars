@@ -653,10 +653,10 @@ test_that("$list$sample() works", {
     ),
     pl$DataFrame(
       sample = list(
-        c(3L, 3L, 1L, 3L, 1L, 2L),
+        c(1L, 1L, 2L, 3L, 3L, 3L),
         c(NA, NA),
-        c(3L, 3L, NA, 3L),
-        c(7L, 7L, 5L, 7L, 5L, 6L)
+        c(NA, 3L, 3L, 3L),
+        c(5L, 5L, 6L, 7L, 7L, 7L)
       )
     )
   )

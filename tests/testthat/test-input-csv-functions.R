@@ -326,7 +326,7 @@ test_that("read/scan: arg 'schema_overrides' works", {
   )
 
   # Unnamed overrides target every column by position.
-  writeLines("a,,c\n1.5,a,2\n2,,", tmpf)
+  writeLines("a,b,c\n1.5,a,2\n2,,", tmpf)
   expect_equal(
     pl$read_csv(
       tmpf,

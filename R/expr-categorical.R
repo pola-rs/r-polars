@@ -16,8 +16,8 @@ namespace_expr_cat <- function(x) {
 #' Convert to a Categorical or Enum data type
 #'
 #' `r lifecycle::badge("experimental")`
-#' Convert physical values to a Categorical or Enum data type. The input must
-#' be of the physical type of the target data type, i.e. `UInt32` for
+#' Convert integer values to a Categorical or Enum data type. The input is
+#' converted to the physical type of the target data type, i.e. `UInt32` for
 #' [Categorical][polars_dtype] and `UInt8`, `UInt16` or `UInt32` for
 #' [Enum][polars_dtype] (depending on the number of categories).
 #'

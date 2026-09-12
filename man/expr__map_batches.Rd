@@ -4,17 +4,31 @@
 \alias{expr__map_batches}
 \title{Apply a custom R function to a whole Series or sequence of Series.}
 \usage{
-expr__map_batches(lambda, return_dtype = NULL, ...)
+expr__map_batches(
+  lambda,
+  return_dtype = NULL,
+  ...,
+  is_elementwise = FALSE,
+  returns_scalar = FALSE
+)
 }
 \arguments{
 \item{lambda}{Function to apply.}
 
-\item{return_dtype}{Dtype of the output Series.
+\item{return_dtype}{Dtype of the output Series. Can be a \link[=polars_dtype]{DataType}
+or \link[=polars_datatype_expr]{DataTypeExpr}.
 It is recommended to set this whenever possible. If this is \code{NULL}, it tries
 to infer the datatype by calling the function with dummy data and looking at
 the output.}
 
 \item{...}{These dots are for future extensions and must be empty.}
+
+\item{is_elementwise}{Whether the function can be applied element by element.
+If \code{TRUE}, the function may be optimized by the query engine. Defaults to
+\code{FALSE}.}
+
+\item{returns_scalar}{Whether the function returns a single scalar value.
+Defaults to \code{FALSE}.}
 }
 \value{
 A polars \link{expression}
@@ -24,6 +38,9 @@ A polars \link{expression}
 
 The output of this custom function is presumed to be either a Series, or an
 R vector that will be converted into a Series by \code{\link[=as_polars_series]{as_polars_series()}}.
+By default, the function is applied to the complete Series, rather than
+element by element. Set \code{is_elementwise} to \code{TRUE} when the function can be
+safely applied element by element.
 }
 \examples{
 df <- pl$DataFrame(

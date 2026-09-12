@@ -24,9 +24,6 @@ test_that("CSV preserves the current ragged-line default", {
     pl$read_csv(tmpf, truncate_ragged_lines = TRUE, infer_schema_files = NULL),
     pl$DataFrame(a = c(1L, 4L), b = c(2L, 5L))$cast(pl$Int64)
   )
-
-  # TODO: Add `extra_columns` coverage when that parameter is supported by the
-  # R API. Keep the explicit TRUE regression test for truncation behavior.
 })
 
 test_that("CSV uses zero-based generated names for headerless input", {
@@ -68,23 +65,26 @@ test_that("numeric is_in rejects lossy comparisons", {
 
 test_that("strict Struct casts enforce the 2.0 field contract", {
   input <- pl$DataFrame(a = 1:2, b = c("x", "y"))$select(s = pl$struct("a", "b"))
+  input <- input$to_series()
   target <- pl$Struct(a = pl$Int64, c = pl$String)
 
   expect_snapshot(
-    input$select(pl$col("s")$cast(target, strict = TRUE)),
+    input$cast(target, strict = TRUE),
+    transform = normalize_migration_snapshot,
     error = TRUE
   )
   count_mismatch <- pl$Struct(a = pl$Int64)
   expect_snapshot(
-    input$select(pl$col("s")$cast(count_mismatch, strict = TRUE)),
+    input$cast(count_mismatch, strict = TRUE),
+    transform = normalize_migration_snapshot,
     error = TRUE
   )
-  out <- input$select(pl$col("s")$cast(target, strict = FALSE))
+  out <- input$cast(target, strict = FALSE)
   expect_equal(
-    out$unnest("s"),
-    pl$DataFrame(a = c(1L, 2L), c = c("x", "y"))
+    out$struct$unnest(),
+    pl$DataFrame(a = c(1L, 2L), c = rep(NA_character_, 2))$cast(a = pl$Int64)
   )
-  expect_equal(out$schema, list(s = target))
+  expect_equal(out$dtype, target)
 })
 
 test_that("Duration statistics reject duration input", {

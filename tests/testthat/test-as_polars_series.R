@@ -56,7 +56,7 @@ patrick::with_parameters_test_that(
   },
   code = {
     withr::with_timezone("UTC", {
-      pl_series <- as_polars_series(x, argument_should_be_ignored = "foo")
+      pl_series <- as_polars_series(x)
       expect_s3_class(pl_series, "polars_series")
       expect_snapshot(print(pl_series))
 
@@ -67,6 +67,27 @@ patrick::with_parameters_test_that(
     })
   }
 )
+
+test_that("as_polars_series.polars_data_frame ignores dots", {
+  expect_equal(
+    as_polars_series(
+      pl$DataFrame(a = 1L),
+      argument_should_be_ignored = "foo"
+    )$dtype,
+    pl$Struct(a = pl$Int32)
+  )
+})
+
+test_that("as_polars_series.polars_lazy_frame passes collect options", {
+  expect_equal(
+    as_polars_series(
+      pl$LazyFrame(a = 1L),
+      engine = "in-memory",
+      optimizations = pl$QueryOptFlags()
+    )$dtype,
+    pl$Struct(a = pl$Int32)
+  )
+})
 
 test_that("as_polars_series.default throws an error", {
   x <- 1

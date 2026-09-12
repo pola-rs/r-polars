@@ -2396,9 +2396,9 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 }
 
 `PlRExpr_map_batches` <- function(self) {
-  function(`lambda`, `output_type` = NULL) {
-    `output_type` <- .savvy_extract_ptr(`output_type`, "polars::PlRDataType")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_map_batches__impl, `self`, `lambda`, `output_type`))
+  function(`lambda`, `is_elementwise`, `returns_scalar`, `output_type` = NULL) {
+    `output_type` <- .savvy_extract_ptr(`output_type`, "polars::PlRDataTypeExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_map_batches__impl, `self`, `lambda`, `is_elementwise`, `returns_scalar`, `output_type`))
   }
 }
 

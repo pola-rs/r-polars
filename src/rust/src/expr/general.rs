@@ -295,10 +295,16 @@ impl PlRExpr {
         Ok(self.inner.clone().all(ignore_nulls).into())
     }
 
-    fn map_batches(&self, lambda: FunctionSexp, output_type: Option<&PlRDataType>) -> Result<Self> {
+    fn map_batches(
+        &self,
+        lambda: FunctionSexp,
+        is_elementwise: bool,
+        returns_scalar: bool,
+        output_type: Option<&PlRDataTypeExpr>,
+    ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            crate::map::lazy::map_expr(self, lambda, output_type)
+            crate::map::lazy::map_expr(self, lambda, output_type, is_elementwise, returns_scalar)
         }
         #[cfg(target_arch = "wasm32")]
         {

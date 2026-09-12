@@ -80,7 +80,8 @@ as_nanoarrow_array_stream.polars_series <- function(
         # TODO: needs warnings? needs fallback to the default method (use `arrow` to cast)?
         target_dtype <- nanoarrow::basic_array_stream(list(), schema) |>
           infer_polars_dtype()
-        x$`_s`$cast(target_dtype$`_dt`, strict = TRUE)
+        # This adapter intentionally permits partial and empty Struct schemas.
+        x$`_s`$cast(target_dtype$`_dt`, strict = FALSE)
       } else {
         x$`_s`
       }

@@ -1789,8 +1789,8 @@ SEXP savvy_PlRExpr_lt_eq__impl(SEXP self__, SEXP c_arg__other) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_map_batches__impl(SEXP self__, SEXP c_arg__lambda, SEXP c_arg__output_type) {
-    SEXP res = savvy_PlRExpr_map_batches__ffi(self__, c_arg__lambda, c_arg__output_type);
+SEXP savvy_PlRExpr_map_batches__impl(SEXP self__, SEXP c_arg__lambda, SEXP c_arg__is_elementwise, SEXP c_arg__returns_scalar, SEXP c_arg__output_type) {
+    SEXP res = savvy_PlRExpr_map_batches__ffi(self__, c_arg__lambda, c_arg__is_elementwise, c_arg__returns_scalar, c_arg__output_type);
     return handle_result(res);
 }
 
@@ -3775,7 +3775,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_lower_bound__impl", (DL_FUNC) &savvy_PlRExpr_lower_bound__impl, 1},
     {"savvy_PlRExpr_lt__impl", (DL_FUNC) &savvy_PlRExpr_lt__impl, 2},
     {"savvy_PlRExpr_lt_eq__impl", (DL_FUNC) &savvy_PlRExpr_lt_eq__impl, 2},
-    {"savvy_PlRExpr_map_batches__impl", (DL_FUNC) &savvy_PlRExpr_map_batches__impl, 3},
+    {"savvy_PlRExpr_map_batches__impl", (DL_FUNC) &savvy_PlRExpr_map_batches__impl, 5},
     {"savvy_PlRExpr_max__impl", (DL_FUNC) &savvy_PlRExpr_max__impl, 1},
     {"savvy_PlRExpr_max_by__impl", (DL_FUNC) &savvy_PlRExpr_max_by__impl, 2},
     {"savvy_PlRExpr_mean__impl", (DL_FUNC) &savvy_PlRExpr_mean__impl, 1},

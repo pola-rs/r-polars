@@ -151,9 +151,7 @@
 ---
 
     Code
-      cat(lazy_query$explain(
-        optimizations = pl$QueryOptFlags(predicate_pushdown = FALSE)
-      ))
+      cat(lazy_query$explain(optimizations = pl$QueryOptFlags(predicate_pushdown = FALSE)))
     Output
       FILTER (col("Species") != "setosa")
       FROM
@@ -344,6 +342,16 @@
       │ 75%        ┆ null │
       │ max        ┆ zz   │
       └────────────┴──────┘
+
+# sql() works
+
+    Code
+      lf$sql(query = "SELECT a FROM wrong_name", table_name = "foobar")$collect()
+    Condition
+      Error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! relation 'wrong_name' was not found
 
 # error and warning from collect engines
 

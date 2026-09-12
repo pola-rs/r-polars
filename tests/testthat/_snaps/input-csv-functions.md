@@ -103,10 +103,12 @@
 ---
 
     Code
-      pl$read_csv(tmpf, schema_overrides = list(a = pl$Float64, pl$Categorical(),
-      c = pl$Int32), infer_schema_files = NULL)
+      pl$read_csv(tmpf, schema_overrides = list(a = pl$Float64, pl$Categorical(), c = pl$
+        Int32), infer_schema_files = NULL)
     Condition
       Error in `pl$read_csv()`:
+      ! Evaluation failed in `$read_csv()`.
+      Caused by error:
       ! `schema_overrides` must be either fully named or fully unnamed.
 
 ---
@@ -115,6 +117,8 @@
       pl$read_csv(tmpf, schema_overrides = mixed_na, infer_schema_files = NULL)
     Condition
       Error in `pl$read_csv()`:
+      ! Evaluation failed in `$read_csv()`.
+      Caused by error:
       ! `schema_overrides` must be either fully named or fully unnamed.
 
 # read/scan: arg 'extra_columns' works
@@ -133,9 +137,11 @@
 
     Code
       pl$read_csv(ragged, schema = schema, extra_columns = "ignore",
-      truncate_ragged_lines = FALSE, infer_schema_files = NULL)
+        truncate_ragged_lines = FALSE, infer_schema_files = NULL)
     Condition
       Error in `pl$read_csv()`:
+      ! Evaluation failed in `$read_csv()`.
+      Caused by error:
       ! `truncate_ragged_lines` must be `TRUE` when `extra_columns = 'ignore'`.
 
 ---
@@ -144,6 +150,8 @@
       pl$read_csv(tmpf, extra_columns = "invalid", infer_schema_files = NULL)
     Condition
       Error in `pl$read_csv()`:
+      ! Evaluation failed in `$read_csv()`.
+      Caused by error:
       ! `extra_columns` must be one of "raise" or "ignore", not "invalid".
 
 # read/scan: arg 'schema' works

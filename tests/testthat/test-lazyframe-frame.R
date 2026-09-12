@@ -1423,21 +1423,19 @@ test_that("quantile", {
 
 test_that("drop() works", {
   df <- pl$DataFrame(x = c(1, NA, 2), y = c(NA, 1, 2))
+  expect_empty_drop <- function(out) {
+    expect_equal(dim(out), c(3L, 0L))
+    expect_named(out, character())
+  }
   expect_query_equal(
     .input$drop("x"),
     df,
     pl$DataFrame(y = c(NA, 1, 2))
   )
-  expect_query_equal(
-    .input$drop("x", "y"),
-    df,
-    pl$DataFrame()
-  )
-  expect_query_equal(
-    .input$drop(cs$numeric()),
-    df,
-    pl$DataFrame()
-  )
+  expect_empty_drop(df$drop("x", "y"))
+  expect_empty_drop(df$lazy()$drop("x", "y")$collect())
+  expect_empty_drop(df$drop(cs$numeric()))
+  expect_empty_drop(df$lazy()$drop(cs$numeric())$collect())
 
   # arg 'strict' works
   expect_query_error(
@@ -2644,12 +2642,12 @@ test_that("sql() works", {
     )$collect(),
     pl$DataFrame(a = 1:3)
   )
-  expect_error(
+  expect_snapshot(
     lf$sql(
       query = "SELECT a FROM wrong_name",
       table_name = "foobar"
-    ),
-    "relation 'wrong_name' was not found"
+    )$collect(),
+    error = TRUE
   )
 
   expect_error(

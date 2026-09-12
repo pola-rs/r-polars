@@ -362,7 +362,7 @@ SEXP savvy_PlRExpr_log1p__ffi(SEXP self__);
 SEXP savvy_PlRExpr_lower_bound__ffi(SEXP self__);
 SEXP savvy_PlRExpr_lt__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRExpr_lt_eq__ffi(SEXP self__, SEXP c_arg__other);
-SEXP savvy_PlRExpr_map_batches__ffi(SEXP self__, SEXP c_arg__lambda, SEXP c_arg__output_type);
+SEXP savvy_PlRExpr_map_batches__ffi(SEXP self__, SEXP c_arg__lambda, SEXP c_arg__is_elementwise, SEXP c_arg__returns_scalar, SEXP c_arg__output_type);
 SEXP savvy_PlRExpr_max__ffi(SEXP self__);
 SEXP savvy_PlRExpr_max_by__ffi(SEXP self__, SEXP c_arg__by);
 SEXP savvy_PlRExpr_mean__ffi(SEXP self__);

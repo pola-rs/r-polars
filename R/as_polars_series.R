@@ -199,12 +199,14 @@ as_polars_series.polars_series <- function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.polars_data_frame <- function(x, name = NULL, ...) {
-  as_polars_df(x, ...)$to_struct(name = name %||% "")
+  as_polars_df(x)$to_struct(name = name %||% "")
 }
 
 #' @rdname as_polars_series
 #' @export
-as_polars_series.polars_lazy_frame <- as_polars_series.polars_data_frame
+as_polars_series.polars_lazy_frame <- function(x, name = NULL, ...) {
+  as_polars_df(x, ...)$to_struct(name = name %||% "")
+}
 
 # This is only used for showing the special error message.
 # So, this method is not documented.
@@ -456,7 +458,9 @@ as_polars_series.AsIs <- function(x, name = NULL, ...) {
 
 #' @rdname as_polars_series
 #' @export
-as_polars_series.data.frame <- as_polars_series.polars_data_frame
+as_polars_series.data.frame <- function(x, name = NULL, ...) {
+  as_polars_df(x, ...)$to_struct(name = name %||% "")
+}
 
 #' @rdname as_polars_series
 #' @export

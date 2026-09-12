@@ -16,8 +16,26 @@ test_that("map_batches works", {
     pl$DataFrame(a = "a", b = "b")
   )
   expect_query_equal(
+    .input$select(
+      pl$col("a")$map_batches(
+        \(x) x + 1,
+        return_dtype = pl$dtype_of("a"),
+        is_elementwise = TRUE
+      )
+    ),
+    .data,
+    pl$DataFrame(a = c(1, 2, 1, 2))
+  )
+  expect_query_equal(
+    .input$select(
+      pl$col("a")$map_batches(\(x) 1, returns_scalar = TRUE)
+    ),
+    .data,
+    pl$DataFrame(a = 1)
+  )
+  expect_query_equal(
     .input$group_by("a")$agg(
-      pl$col("b")$map_batches(\(x) x + 2)
+      pl$col("b")$map_batches(\(x) x + 2, return_dtype = pl$Float64)
     )$sort("a"),
     .data,
     pl$DataFrame(a = c(0, 1), b = list(c(3, 5), c(4, 6)))
@@ -499,16 +517,17 @@ test_that("is_in", {
     pl$DataFrame(a = c(rep(FALSE, 4), TRUE))
   )
 
-  # can compare NA_int with NA_real
+  # Polars 2.0 requires an explicit cast for Int32 and Float64 operands.
   expect_equal(
-    pl$DataFrame(a = c(1:4, NA_integer_))$select(pl$col("a")$is_in(list(NA_real_))),
+    pl$DataFrame(a = c(1:4, NA_integer_))$select(
+      pl$col("a")$cast(pl$Float64)$is_in(list(NA_real_))
+    ),
     pl$DataFrame(a = c(rep(FALSE, 4), NA))
   )
   expect_equal(
-    pl$DataFrame(a = c(1:4, NA_integer_))$select(pl$col("a")$is_in(
-      list(NA_real_),
-      nulls_equal = TRUE
-    )),
+    pl$DataFrame(a = c(1:4, NA_integer_))$select(
+      pl$col("a")$cast(pl$Float64)$is_in(list(NA_real_), nulls_equal = TRUE)
+    ),
     pl$DataFrame(a = c(rep(FALSE, 4), TRUE))
   )
 

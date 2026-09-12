@@ -39,10 +39,10 @@ test_that("cat$to() works", {
     pl$DataFrame(x = c("foo", "bar", NA))$cast(dtype)
   )
 
-  # the input must have the physical type of the target dtype
-  expect_snapshot(
+  # integer input is converted to the physical type of the target dtype
+  expect_equal(
     pl$DataFrame(x = c(1, 0))$cast(pl$UInt16)$select(pl$col("x")$cat$to(dtype)),
-    error = TRUE
+    pl$DataFrame(x = c("foo", "bar"))$cast(dtype)
   )
 
   # the target dtype must be a Categorical or an Enum
