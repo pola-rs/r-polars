@@ -12,7 +12,7 @@ expr__search_sorted(
 )
 }
 \arguments{
-\item{element}{Expression or scalar value.}
+\item{element}{Expression or scalar value. Strings are parsed as literals.}
 
 \item{side}{Must be one of the following:
 \itemize{

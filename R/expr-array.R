@@ -317,7 +317,9 @@ expr_arr_any <- function(..., ignore_nulls = TRUE) {
 
 #' Shift values in every sub-array by the given number of indices
 #'
-#' @inheritParams dataframe__shift
+#' @param n Number of indices to shift forward. Can be an Expr. Strings are
+#'  parsed as column names. If a negative value is passed, values are shifted
+#'  in the opposite direction instead.
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -330,7 +332,7 @@ expr_arr_any <- function(..., ignore_nulls = TRUE) {
 #'   shift_by_lit = pl$col("values")$arr$shift(2)
 #' )
 expr_arr_shift <- function(n = 1) {
-  self$`_rexpr`$arr_shift(as_polars_expr(n, as_lit = TRUE)$`_rexpr`) |>
+  self$`_rexpr`$arr_shift(as_polars_expr(n)$`_rexpr`) |>
     wrap()
 }
 

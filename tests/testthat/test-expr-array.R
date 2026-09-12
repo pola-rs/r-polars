@@ -283,7 +283,8 @@ test_that("arr$median", {
 
 test_that("arr$shift", {
   df <- pl$DataFrame(
-    strings = list(c("a", "b"), c("c", "d"))
+    strings = list(c("a", "b"), c("c", "d")),
+    n = c(1L, 2L)
   )$cast(strings = pl$Array(pl$String, 2))
   expect_equal(
     df$select(pl$col("strings")$arr$shift()),
@@ -292,6 +293,17 @@ test_that("arr$shift", {
   expect_equal(
     df$select(pl$col("strings")$arr$shift(-1)),
     pl$DataFrame(strings = list(c("b", NA), c("d", NA)))$cast(strings = pl$Array(pl$String, 2))
+  )
+  expect_equal(
+    df$select(pl$col("strings")$arr$shift(pl$col("n"))),
+    pl$DataFrame(strings = list(c(NA, "a"), c(NA, NA)))$cast(strings = pl$Array(pl$String, 2))
+  )
+  df_single <- pl$DataFrame(strings = list(c("a", "b")), n = 1L)$cast(
+    strings = pl$Array(pl$String, 2)
+  )
+  expect_equal(
+    df_single$select(pl$col("strings")$arr$shift("n")),
+    pl$DataFrame(strings = list(c(NA, "a")))$cast(strings = pl$Array(pl$String, 2))
   )
 })
 

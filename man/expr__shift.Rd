@@ -7,12 +7,14 @@
 expr__shift(n = 1, ..., fill_value = NULL)
 }
 \arguments{
-\item{n}{Number of indices to shift forward. If a negative value is
-passed, values are shifted in the opposite direction instead.}
+\item{n}{Number of indices to shift forward. Can be an Expr. Strings are
+parsed as column names. If a negative value is passed, values are shifted
+in the opposite direction instead.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{fill_value}{Fill the resulting null values with this value.}
+\item{fill_value}{Fill the resulting null values with this value. Strings
+are parsed as literals.}
 }
 \value{
 A polars \link{expression}

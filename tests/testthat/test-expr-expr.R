@@ -1055,9 +1055,17 @@ test_that("arg_min arg_max arg_sort", {
 })
 
 test_that("search_sorted", {
+  df <- pl$DataFrame(
+    values = c("a", "c", "e"),
+    element = c("b", "d", "f")
+  )
   expect_equal(
-    pl$DataFrame(a = 0:100)$select(pl$col("a")$search_sorted(pl$lit(42L))),
-    pl$DataFrame(a = 42)$cast(pl$UInt32)
+    df$select(pl$col("values")$search_sorted("b")),
+    pl$DataFrame(values = 1L)$cast(pl$UInt32)
+  )
+  expect_equal(
+    df$select(pl$col("values")$search_sorted(pl$col("element"))),
+    pl$DataFrame(values = c(1L, 2L, 3L))$cast(pl$UInt32)
   )
 })
 
@@ -1169,6 +1177,20 @@ test_that("shift", {
       sm2 = r_shift_and_fill(0:3, -2, 42),
       sp2 = r_shift_and_fill(0:3, 2, 21)
     )
+  )
+
+  df <- pl$DataFrame(
+    values = c("a", "b", "c"),
+    n = c(1L, 2L, 1L),
+    fill = c("x", "y", "z")
+  )
+  expect_equal(
+    df$select(pl$col("values")$shift(fill_value = "x")),
+    pl$DataFrame(values = c("x", "a", "b"))
+  )
+  expect_equal(
+    df$select(pl$col("values")$shift(pl$col("n")$first(), fill_value = pl$col("fill")$first())),
+    pl$DataFrame(values = c("x", "a", "b"))
   )
 })
 
@@ -2370,6 +2392,28 @@ test_that("sample", {
     df$select(pl$col("a")$sample(fraction = 2, with_replacement = TRUE)) |>
       nrow(),
     20
+  )
+
+  df_dynamic <- df$with_columns(
+    n = pl$lit(2L),
+    fraction = pl$lit(0.2)
+  )
+  expect_equal(
+    df$select(pl$col("a")$sample(n = 2, seed = 1)),
+    df_dynamic$select(pl$col("a")$sample(n = pl$col("n")$first(), seed = 1))
+  )
+  expect_equal(
+    df$select(pl$col("a")$sample(fraction = 0.2, seed = 1)),
+    df_dynamic$select(pl$col("a")$sample(fraction = pl$col("fraction")$first(), seed = 1))
+  )
+  df_single <- pl$DataFrame(a = 7L, n = 1L, fraction = 1)
+  expect_equal(
+    df_single$select(pl$col("a")$sample(n = "n")),
+    pl$DataFrame(a = 7L)
+  )
+  expect_equal(
+    df_single$select(pl$col("a")$sample(fraction = "fraction")),
+    pl$DataFrame(a = 7L)
   )
 })
 

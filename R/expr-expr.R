@@ -2395,7 +2395,7 @@ expr__sign <- function() {
 #' than 0.
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param element Expression or scalar value.
+#' @param element Expression or scalar value. Strings are parsed as literals.
 #' @param side Must be one of the following:
 #' * `"any"`: the index of the first suitable location found is given;
 #' * `"left"`: the index of the leftmost suitable location found is given;
@@ -2418,7 +2418,7 @@ expr__search_sorted <- function(
   wrap({
     check_dots_empty0(...)
     side <- arg_match0(side, values = c("any", "left", "right"))
-    self$`_rexpr`$search_sorted(as_polars_expr(element)$`_rexpr`, side, descending)
+    self$`_rexpr`$search_sorted(as_polars_expr(element, as_lit = TRUE)$`_rexpr`, side, descending)
   })
 }
 
@@ -4558,9 +4558,11 @@ expr__rle_id <- function() {
 #' Sample from this expression
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param n Number of items to return. Cannot be used with `fraction.` Defaults
-#' to 1 if `fraction` is `NULL`.
-#' @param fraction Fraction of items to return. Cannot be used with `n`.
+#' @param n Number of items to return. Can be an Expr. Strings are parsed as
+#'  column names. Cannot be used with `fraction`. Defaults to 1 if `fraction`
+#'  is `NULL`.
+#' @param fraction Fraction of items to return. Can be an Expr. Strings are
+#'  parsed as column names. Cannot be used with `n`.
 #' @param with_replacement Allow values to be sampled more than once.
 #' @param shuffle Shuffle the order of sampled data points.
 #' @param seed Seed for the random number generator. If `NULL` (default), a
@@ -4587,7 +4589,7 @@ expr__sample <- function(
         abort("Can't specify both `n` and `fraction`.")
       }
       self$`_rexpr`$sample_frac(
-        as_polars_expr(fraction, as_lit = TRUE)$`_rexpr`,
+        as_polars_expr(fraction)$`_rexpr`,
         with_replacement = with_replacement,
         shuffle = shuffle,
         seed = seed
@@ -4597,7 +4599,7 @@ expr__sample <- function(
         n <- 1
       }
       self$`_rexpr`$sample_n(
-        as_polars_expr(n, as_lit = TRUE)$`_rexpr`,
+        as_polars_expr(n)$`_rexpr`,
         with_replacement = with_replacement,
         shuffle = shuffle,
         seed = seed
@@ -4699,9 +4701,11 @@ expr__truncate <- function(decimals = 0L) {
 #' Shift values by the given number of indices
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param n Number of indices to shift forward. If a negative value is
-#' passed, values are shifted in the opposite direction instead.
-#' @param fill_value Fill the resulting null values with this value.
+#' @param n Number of indices to shift forward. Can be an Expr. Strings are
+#'  parsed as column names. If a negative value is passed, values are shifted
+#'  in the opposite direction instead.
+#' @param fill_value Fill the resulting null values with this value. Strings
+#'  are parsed as literals.
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -4719,7 +4723,7 @@ expr__shift <- function(n = 1, ..., fill_value = NULL) {
     check_dots_empty0(...)
     self$`_rexpr`$shift(
       as_polars_expr(n)$`_rexpr`,
-      as_polars_expr(fill_value)$`_rexpr`
+      as_polars_expr(fill_value, as_lit = TRUE)$`_rexpr`
     )
   })
 }

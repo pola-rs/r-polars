@@ -14,12 +14,14 @@ expr_list_sample(
 )
 }
 \arguments{
-\item{n}{Number of items to return. Cannot be used with \code{fraction.} Defaults
-to 1 if \code{fraction} is \code{NULL}.}
+\item{n}{Number of items to return. Can be an Expr. Strings are parsed as
+column names. Cannot be used with \code{fraction}. Defaults to 1 if \code{fraction}
+is \code{NULL}.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{fraction}{Fraction of items to return. Cannot be used with \code{n}.}
+\item{fraction}{Fraction of items to return. Can be an Expr. Strings are
+parsed as column names. Cannot be used with \code{n}.}
 
 \item{with_replacement}{Allow values to be sampled more than once.}
 
