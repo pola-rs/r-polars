@@ -1024,7 +1024,7 @@ patrick::with_parameters_test_that(
   }
 )
 
-test_that("str$strptime's deprecated operation", {
+test_that("str$strptime rejects timezone data without a format", {
   expect_snapshot(
     pl$select(pl$lit("2020-01-01T01:00:00+09:00")$str$strptime(pl$Datetime())),
     error = TRUE

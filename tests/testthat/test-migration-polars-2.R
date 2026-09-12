@@ -1,6 +1,6 @@
-normalize_warning_snapshot <- function(lines) {
-  # Drop platform-specific blank warning lines after normalizing line endings.
+normalize_migration_snapshot <- function(lines) {
   lines <- sub("\\r$", "", lines)
+  lines <- gsub("\t", "  ", lines, fixed = TRUE)
   lines[!grepl("^[[:blank:]]*$", lines)]
 }
 
@@ -29,17 +29,15 @@ test_that("CSV preserves the current ragged-line default", {
   # R API. Keep the explicit TRUE regression test for truncation behavior.
 })
 
-test_that("CSV preserves current generated names for headerless input", {
+test_that("CSV uses zero-based generated names for headerless input", {
   tmpf <- withr::local_tempfile(fileext = ".csv")
   writeLines(c("1,2", "3,4"), tmpf)
 
   out <- pl$read_csv(tmpf, has_header = FALSE, infer_schema_files = NULL)
-  expect_named(out, c("column_1", "column_2"))
-
-  # TODO: @2.0: update the expected generated names to `column_0`, `column_1`.
+  expect_named(out, c("column_0", "column_1"))
 })
 
-test_that("datetime and repeat retain current generated names", {
+test_that("datetime and repeat use their 2.0 output names", {
   datetime_from_columns <- pl$DataFrame(
     year = 2024L,
     month = 1L,
@@ -47,33 +45,25 @@ test_that("datetime and repeat retain current generated names", {
   )$select(pl$datetime(pl$col("year"), pl$col("month"), pl$col("day")))
   repeated <- pl$select(pl$repeat_("x", n = 2))
 
-  expect_named(datetime_from_columns, "datetime")
-  expect_named(repeated, "repeat")
-
-  # TODO: @2.0: update the datetime expectations to the leftmost argument
-  # name (`year`) and the repeat expectation to `literal`; prefer `$alias()`
-  # for names that are part of a user contract.
+  expect_named(datetime_from_columns, "year")
+  expect_named(repeated, "literal")
 })
 
-test_that("signed integer and UInt64 retain the current supertype", {
+test_that("signed integer and UInt64 use the Int128 supertype", {
   uint64 <- pl$Series("uint64", c("1", "2"))$cast(pl$UInt64)
   out <- pl$select(pl$lit(-1L) + pl$lit(uint64))
 
-  expect_equal(out$schema, list(literal = pl$Float64))
+  expect_equal(out$schema, list(literal = pl$Int128))
   expect_equal(out$to_series()$to_r_vector(), c(0, 1))
-
-  # TODO: @2.0: update the expected supertype to Int128.
 })
 
-test_that("numeric is_in preserves the current lossy comparison", {
+test_that("numeric is_in rejects lossy comparisons", {
   input <- pl$DataFrame(value = 1L)$cast(value = pl$Int64)
 
-  expect_equal(
+  expect_error(
     input$select(pl$col("value")$is_in(list(1.99))),
-    pl$DataFrame(value = FALSE)
+    "cannot check for Int64 values in List\\(Float64\\)"
   )
-
-  # TODO: @2.0: expect this lossy Int64-to-Float64 coercion to raise an error.
 })
 
 test_that("strict Struct casts preserve current behavior", {
@@ -88,32 +78,39 @@ test_that("strict Struct casts preserve current behavior", {
       c = pl$Int64
     )
   )
-  expect_equal(
-    out$schema,
-    list(s = target)
-  )
+  expect_equal(out$schema, list(s = target))
 
-  # TODO: @2.0: expect strict = TRUE to reject the extra field instead of
-  # silently inserting a null field.
+  # TODO: Update this expectation when the Polars 2.0 strict Struct contract
+  # is exposed by the R API.
 })
 
-test_that("Duration statistics preserve current behavior", {
+test_that("Duration statistics reject duration input", {
   input <- pl$DataFrame(x = as_polars_series(1:3)$cast(pl$Duration("ms")))
 
-  expect_equal(input$select(pl$col("x")$std())$schema, list(x = pl$Duration("ms")))
-  expect_snapshot(input$select(pl$col("x")$var()), error = TRUE)
-  expect_snapshot(input$select(pl$col("x")$ewm_std(com = 1)))
-  expect_snapshot(input$select(pl$col("x")$ewm_var(com = 1)), error = TRUE)
-
-  # TODO: @2.0: expect all four operations (std(), var(), ewm_std(), and
-  # ewm_var()) to raise an error; var() and ewm_var() already do so today.
+  expect_snapshot(
+    input$select(pl$col("x")$std()),
+    transform = normalize_migration_snapshot,
+    error = TRUE
+  )
+  expect_snapshot(
+    input$select(pl$col("x")$var()),
+    transform = normalize_migration_snapshot,
+    error = TRUE
+  )
+  expect_snapshot(
+    input$select(pl$col("x")$ewm_std(com = 1)),
+    transform = normalize_migration_snapshot,
+    error = TRUE
+  )
+  expect_snapshot(
+    input$select(pl$col("x")$ewm_var(com = 1)),
+    transform = normalize_migration_snapshot,
+    error = TRUE
+  )
 })
 
-test_that("empty DataFrame transpose preserves the current error", {
-  expect_snapshot(pl$DataFrame()$transpose(), error = TRUE)
-
-  # TODO: @2.0: replace this error snapshot with the supported empty-frame
-  # transpose result.
+test_that("empty DataFrame transpose is supported", {
+  expect_equal(pl$DataFrame()$transpose(), pl$DataFrame())
 })
 
 test_that("selecting no columns preserves the current zero-width height", {
@@ -121,8 +118,8 @@ test_that("selecting no columns preserves the current zero-width height", {
 
   expect_equal(dim(out), c(0L, 0L))
 
-  # TODO: @2.0: expect zero-width frames to preserve their input height, so
-  # this result should have dimensions c(3L, 0L).
+  # TODO: Update the expected height when the Polars 2.0 zero-width selection
+  # behavior is exposed by the R API.
 })
 
 test_that("list and array to_struct preserve outer nulls", {
@@ -153,52 +150,67 @@ test_that("list and array to_struct preserve outer nulls", {
   )
 })
 
-test_that("Rust deprecation warnings are routed to R snapshots", {
+test_that("Rust 2.0 behavior changes are routed to R snapshots", {
   local_lifecycle_warnings()
 
   expect_snapshot(
     pl$DataFrame(x = 1:3)$select(pl$col("x")$cast(pl$List(pl$Int32))),
-    cnd_class = TRUE
+    transform = normalize_migration_snapshot,
+    error = TRUE
   )
   expect_snapshot(
     pl$select(pl$lit(c(TRUE, FALSE)) & pl$lit(c(1L, 0L))),
-    cnd_class = TRUE
+    transform = normalize_migration_snapshot,
+    error = TRUE
   )
   expect_snapshot(
     pl$select(pl$lit(c(TRUE, FALSE)) | pl$lit(c(1L, 0L))),
-    cnd_class = TRUE
+    transform = normalize_migration_snapshot,
+    error = TRUE
   )
   expect_snapshot(
     pl$select(pl$lit(c(TRUE, FALSE))$xor(pl$lit(c(1L, 0L)))),
-    cnd_class = TRUE
+    transform = normalize_migration_snapshot,
+    error = TRUE
   )
   expect_snapshot(
     pl$DataFrame(x = list(c(1L, 2L), c(3L, 4L)))$select(
       pl$col("x")$list$gather(c(0L, 1L))
     ),
-    transform = normalize_warning_snapshot,
-    cnd_class = TRUE
+    transform = normalize_migration_snapshot,
+    error = TRUE
   )
   expect_snapshot(
     pl$DataFrame(x = 1:3)$select(pl$col("x")$is_in(pl$lit(1:3))),
-    transform = normalize_warning_snapshot,
+    transform = normalize_migration_snapshot,
     cnd_class = TRUE
   )
   expect_snapshot(
     pl$DataFrame(x = 1:3)$select(pl$col("x")$shift(NULL)),
-    cnd_class = TRUE
+    transform = normalize_migration_snapshot,
+    error = TRUE
   )
 
   categorical <- pl$DataFrame(x = c("a", "b"))$cast(x = pl$Categorical())
   enum <- pl$DataFrame(x = c("a", "b"))$cast(x = pl$Enum(c("a", "b")))
-  expect_snapshot(categorical$select(pl$col("x")$cast(pl$UInt32)), cnd_class = TRUE)
-  expect_snapshot(enum$select(pl$col("x")$cast(pl$UInt32)), cnd_class = TRUE)
+  expect_snapshot(
+    categorical$select(pl$col("x")$cast(pl$UInt32)),
+    transform = normalize_migration_snapshot,
+    error = TRUE
+  )
+  expect_snapshot(
+    enum$select(pl$col("x")$cast(pl$UInt32)),
+    transform = normalize_migration_snapshot,
+    error = TRUE
+  )
   expect_snapshot(
     pl$DataFrame(x = 0:1)$select(pl$col("x")$cast(pl$Categorical())),
-    cnd_class = TRUE
+    transform = normalize_migration_snapshot,
+    error = TRUE
   )
   expect_snapshot(
     pl$DataFrame(x = 0:1)$select(pl$col("x")$cast(pl$Enum(c("a", "b")))),
-    cnd_class = TRUE
+    transform = normalize_migration_snapshot,
+    error = TRUE
   )
 })

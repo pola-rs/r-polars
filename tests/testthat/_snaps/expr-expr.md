@@ -86,32 +86,24 @@
 
     Code
       as_polars_series(c("2020-01-01", "2021-06-15"))$cast(pl$Date)
-    Condition <polars_deprecation_warning>
-      Warning:
-      Casting from String to Date is deprecated and will be removed in Polars 2.0. Use `str.to_date()` instead.
-    Output
-      shape: (2,)
-      Series: '' [date]
-      [
-      	2020-01-01
-      	2021-06-15
-      ]
+    Condition
+      Error in `as_polars_series(c("2020-01-01", "2021-06-15"))$cast()`:
+      ! Evaluation failed in `$cast()`.
+      Caused by error:
+      ! Invalid operation: casting from string to date is not supported.
+      It was removed in Polars 2.0. Use `str.to_date()` instead.
 
 ---
 
     Code
       as_polars_series(c("2020-01-01T12:00:00", "2021-06-15T08:30:00"))$cast(pl$
         Datetime("us"))
-    Condition <polars_deprecation_warning>
-      Warning:
-      Casting from String to DateTime is deprecated and will be removed in Polars 2.0. Use `str.to_datetime()` instead.
-    Output
-      shape: (2,)
-      Series: '' [datetime[μs]]
-      [
-      	2020-01-01 12:00:00
-      	2021-06-15 08:30:00
-      ]
+    Condition
+      Error in `as_polars_series(c("2020-01-01T12:00:00", "2021-06-15T08:30:00"))$cast()`:
+      ! Evaluation failed in `$cast()`.
+      Caused by error:
+      ! Invalid operation: casting from string to datetime is not supported.
+      It was removed in Polars 2.0. Use `str.to_datetime()` instead.
 
 # exclude
 

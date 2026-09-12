@@ -98,7 +98,7 @@
       Caused by error in `do.call(pl$scan_csv, .args)$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! provided schema does not match number of columns in file (2 != 3 in file)
+      ! CSV file contained column names not specified in schema (n_extra = 1). Specify these names in the schema, or pass `extra_columns='ignore'` to ignore these columns. (extra names: ["a"])
 
 ---
 

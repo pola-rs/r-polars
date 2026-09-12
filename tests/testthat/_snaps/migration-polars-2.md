@@ -1,4 +1,18 @@
-# Duration statistics preserve current behavior
+# Duration statistics reject duration input
+
+    Code
+      input$select(pl$col("x")$std())
+    Condition
+      Error in `input$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! `std` operation not supported for dtype `duration[ms]`
+      This error occurred in the following expression:
+        col("x").std()
+
+---
 
     Code
       input$select(pl$col("x")$var())
@@ -8,23 +22,21 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: operation `var` is not supported for `duration[ms]`
+      ! `var` operation not supported for dtype `duration[ms]`
+      This error occurred in the following expression:
+        col("x").var()
 
 ---
 
     Code
       input$select(pl$col("x")$ewm_std(com = 1))
-    Output
-      shape: (3, 1)
-      ┌──────────┐
-      │ x        │
-      │ ---      │
-      │ f64      │
-      ╞══════════╡
-      │ null     │
-      │ 0.707107 │
-      │ 0.963624 │
-      └──────────┘
+    Condition
+      Error in `input$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: operation `ewm_std` is not supported for `duration[ms]`
 
 ---
 
@@ -36,110 +48,74 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: operation `var` is not supported for `duration[ms]`
+      ! Invalid operation: operation `ewm_var` is not supported for `duration[ms]`
 
-# empty DataFrame transpose preserves the current error
-
-    Code
-      pl$DataFrame()$transpose()
-    Condition
-      Error:
-      ! Evaluation failed in `$transpose()`.
-      Caused by error:
-      ! no data: unable to transpose an empty DataFrame
-
-# Rust deprecation warnings are routed to R snapshots
+# Rust 2.0 behavior changes are routed to R snapshots
 
     Code
       pl$DataFrame(x = 1:3)$select(pl$col("x")$cast(pl$List(pl$Int32)))
-    Condition <polars_deprecation_warning>
-      Warning:
-      casting from Int32 to list type is deprecated Hint: Use pl.list(expr) to turn the Int32 column into a column of single-element lists.
-    Output
-      shape: (3, 1)
-      ┌───────────┐
-      │ x         │
-      │ ---       │
-      │ list[i32] │
-      ╞═══════════╡
-      │ [1]       │
-      │ [2]       │
-      │ [3]       │
-      └───────────┘
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! casting from Int32 to list type is not supported
+      Hint: Use pl.list(expr) to turn the Int32 column into a column of single-element lists.
+      This error occurred in the following expression:
+        col("x").strict_cast(List(Int32))
 
 ---
 
     Code
       pl$select(pl$lit(c(TRUE, FALSE)) & pl$lit(c(1L, 0L)))
-    Condition <polars_deprecation_warning>
-      Warning:
-      & on Boolean and Int32 is deprecated and will raise a ComputeError in Polars 2.0 Hint: cast the Boolean to Int32 using pl.Expr.cast().
-    Output
-      shape: (2, 1)
-      ┌─────────┐
-      │ literal │
-      │ ---     │
-      │ i32     │
-      ╞═════════╡
-      │ 1       │
-      │ 0       │
-      └─────────┘
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! & on Boolean and Int32 is not supported
+      Hint: cast the Boolean to Int32 using pl.Expr.cast().
 
 ---
 
     Code
       pl$select(pl$lit(c(TRUE, FALSE)) | pl$lit(c(1L, 0L)))
-    Condition <polars_deprecation_warning>
-      Warning:
-      | on Boolean and Int32 is deprecated and will raise a ComputeError in Polars 2.0 Hint: cast the Boolean to Int32 using pl.Expr.cast().
-    Output
-      shape: (2, 1)
-      ┌─────────┐
-      │ literal │
-      │ ---     │
-      │ i32     │
-      ╞═════════╡
-      │ 1       │
-      │ 0       │
-      └─────────┘
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! | on Boolean and Int32 is not supported
+      Hint: cast the Boolean to Int32 using pl.Expr.cast().
 
 ---
 
     Code
       pl$select(pl$lit(c(TRUE, FALSE))$xor(pl$lit(c(1L, 0L))))
-    Condition <polars_deprecation_warning>
-      Warning:
-      ^ on Boolean and Int32 is deprecated and will raise a ComputeError in Polars 2.0 Hint: cast the Boolean to Int32 using pl.Expr.cast().
-    Output
-      shape: (2, 1)
-      ┌─────────┐
-      │ literal │
-      │ ---     │
-      │ i32     │
-      ╞═════════╡
-      │ 0       │
-      │ 0       │
-      └─────────┘
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! ^ on Boolean and Int32 is not supported
+      Hint: cast the Boolean to Int32 using pl.Expr.cast().
 
 ---
 
     Code
       pl$DataFrame(x = list(c(1L, 2L), c(3L, 4L)))$select(pl$col("x")$list$gather(c(
         0L, 1L)))
-    Condition <polars_deprecation_warning>
-      Warning:
-      `list.gather` with a flat datatype is deprecated. Please use `implode` to return to previous behavior.
-      See https://github.com/pola-rs/polars/issues/22149 for more information.
-    Output
-      shape: (2, 1)
-      ┌───────────┐
-      │ x         │
-      │ ---       │
-      │ list[i32] │
-      ╞═══════════╡
-      │ [1, 2]    │
-      │ [3, 4]    │
-      └───────────┘
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: `list.gather` indices must be a list of integers, not a flat i32. Use `implode` to wrap the flat value into a list.
 
 ---
 
@@ -165,89 +141,72 @@
 
     Code
       pl$DataFrame(x = 1:3)$select(pl$col("x")$shift(NULL))
-    Condition <polars_deprecation_warning>
-      Warning:
-      shift value 'n' is null, which currently returns a column of null values. This will become an error in the future.
-    Output
-      shape: (3, 1)
-      ┌──────┐
-      │ x    │
-      │ ---  │
-      │ i32  │
-      ╞══════╡
-      │ null │
-      │ null │
-      │ null │
-      └──────┘
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! shift value 'n' must not be null.
+      This error occurred in the following expression:
+        col("x").shift_and_fill([null, null.cast(Int32)])
 
 ---
 
     Code
       categorical$select(pl$col("x")$cast(pl$UInt32))
-    Condition <polars_deprecation_warning>
-      Warning:
-      casting from Categorical to UInt32 is deprecated. Instead of `.cast(UInt32)`, use `.cat.physical()`.
-    Output
-      shape: (2, 1)
-      ┌─────┐
-      │ x   │
-      │ --- │
-      │ u32 │
-      ╞═════╡
-      │ 0   │
-      │ 1   │
-      └─────┘
+    Condition
+      Error in `categorical$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! cannot cast categorical types to UInt32.
+      Instead of `.cast(UInt32)`, use `.cat.physical()`.
+      This error occurred in the following expression:
+        col("x").strict_cast(UInt32)
 
 ---
 
     Code
       enum$select(pl$col("x")$cast(pl$UInt32))
-    Condition <polars_deprecation_warning>
-      Warning:
-      casting from Enum([...]) to UInt32 is deprecated. Instead of `.cast(UInt32)`, use `.cat.physical()`.
-    Output
-      shape: (2, 1)
-      ┌─────┐
-      │ x   │
-      │ --- │
-      │ u32 │
-      ╞═════╡
-      │ 0   │
-      │ 1   │
-      └─────┘
+    Condition
+      Error in `enum$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! cannot cast categorical types to UInt32.
+      Instead of `.cast(UInt32)`, use `.cat.physical()`.
+      This error occurred in the following expression:
+        col("x").strict_cast(UInt32)
 
 ---
 
     Code
       pl$DataFrame(x = 0:1)$select(pl$col("x")$cast(pl$Categorical()))
-    Condition <polars_deprecation_warning>
-      Warning:
-      casting from Int32 to Categorical is deprecated. Instead of `.cast(Categorical`, use `.cat.to(Categorical)`.
-    Output
-      shape: (2, 1)
-      ┌─────┐
-      │ x   │
-      │ --- │
-      │ cat │
-      ╞═════╡
-      │ a   │
-      │ b   │
-      └─────┘
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! casting from i32 to cat is not supported.
+      Instead of `.cast(Categorical`, use `.cat.to(Categorical)`.
+      This error occurred in the following expression:
+        col("x").strict_cast(Categorical)
 
 ---
 
     Code
       pl$DataFrame(x = 0:1)$select(pl$col("x")$cast(pl$Enum(c("a", "b"))))
-    Condition <polars_deprecation_warning>
-      Warning:
-      casting from Int32 to Enum([...]) is deprecated. Instead of `.cast(Enum([...])`, use `.cat.to(Enum([...]))`.
-    Output
-      shape: (2, 1)
-      ┌──────┐
-      │ x    │
-      │ ---  │
-      │ enum │
-      ╞══════╡
-      │ a    │
-      │ b    │
-      └──────┘
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! casting from i32 to enum is not supported.
+      Instead of `.cast(Enum([...])`, use `.cat.to(Enum([...]))`.
+      This error occurred in the following expression:
+        col("x").strict_cast(Enum([...]))

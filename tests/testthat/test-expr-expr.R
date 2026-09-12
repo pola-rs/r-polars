@@ -569,14 +569,14 @@ test_that("cast", {
     pl$DataFrame(big = NA_integer_)
   )
 
-  # casting String to Date/Datetime emits a Polars deprecation warning routed to R
+  # Casting String to Date/Datetime is rejected in Polars 2.0.
   expect_snapshot(
     as_polars_series(c("2020-01-01", "2021-06-15"))$cast(pl$Date),
-    cnd_class = TRUE
+    error = TRUE
   )
   expect_snapshot(
     as_polars_series(c("2020-01-01T12:00:00", "2021-06-15T08:30:00"))$cast(pl$Datetime("us")),
-    cnd_class = TRUE
+    error = TRUE
   )
 
   # no overflow to Int64

@@ -325,14 +325,15 @@ test_that("read/scan: arg 'schema_overrides' works", {
     error = TRUE
   )
 
-  # works with unnamed elements
+  # Unnamed overrides can still target a positional column in a partial
+  # override. Named elements should be used when overriding named columns.
   writeLines("a,,c\n1.5,a,2\n2,,", tmpf)
   expect_equal(
     pl$read_csv(tmpf, schema_overrides = list(pl$Categorical()), infer_schema_files = NULL),
     pl$DataFrame(a = c(1.5, 2), factor(c("a", NA)), c = c(2L, NA))$cast(c = pl$Int64)
   )
-  # TODO: @2.0: require unnamed schema overrides to cover every column; use
-  # a named list for partial overrides.
+  # TODO: Revisit unnamed partial schema overrides when the 2.0 contract is
+  # exposed by the R API.
 })
 
 test_that("read/scan: arg 'schema' works", {
@@ -347,14 +348,14 @@ test_that("read/scan: arg 'schema' works", {
     pl$DataFrame(a = c(1.5, 2), b = factor(c("a", NA)), c = c(2L, NA))$cast(a = pl$Float32)
   )
 
-  # works with unnamed elements
+  # Schema fields must be named to match the CSV header.
   expect_equal(
     pl$read_csv(
       tmpf,
-      schema = list(a = pl$Float64, pl$Categorical(), c = pl$Int32),
+      schema = list(a = pl$Float64, b = pl$Categorical(), c = pl$Int32),
       infer_schema_files = NULL
     ),
-    pl$DataFrame(a = c(1.5, 2), factor(c("a", NA)), c = c(2L, NA))
+    pl$DataFrame(a = c(1.5, 2), b = factor(c("a", NA)), c = c(2L, NA))
   )
   expect_snapshot(
     pl$read_csv(tmpf, schema = list(b = pl$Categorical(), c = pl$Int32), infer_schema_files = NULL),
@@ -370,13 +371,12 @@ test_that("read/scan: arg 'schema' works", {
   )
 })
 
-test_that("read/scan: schema currently matches columns positionally", {
+test_that("read/scan: schema matches columns by name", {
   tmpf <- withr::local_tempfile()
   writeLines("a,b\nA,B", tmpf)
   schema <- list(b = pl$String, a = pl$String)
 
-  # TODO: @2.0: schema fields will match by name, so expect b = "B" and a = "A".
-  expected <- pl$DataFrame(b = "A", a = "B")
+  expected <- pl$DataFrame(b = "B", a = "A")
   expect_equal(
     pl$scan_csv(tmpf, schema = schema, infer_schema_files = NULL)$collect(),
     expected

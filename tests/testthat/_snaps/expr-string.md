@@ -514,7 +514,7 @@
       This error occurred with the following context stack:
       	[1] expected the same amount of patterns as replacement strings
 
-# str$strptime's deprecated operation
+# str$strptime rejects timezone data without a format
 
     Code
       pl$select(pl$lit("2020-01-01T01:00:00+09:00")$str$strptime(pl$Datetime()))
