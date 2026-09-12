@@ -379,6 +379,15 @@ test_that("read/scan: arg 'schema_overrides' works", {
     pl$read_csv(tmpf, schema_overrides = list(pl$Categorical()), infer_schema_files = NULL),
     pl$DataFrame(a = c(1.5, 2), factor(c("a", NA)), c = c(2L, NA))$cast(c = pl$Int64)
   )
+
+  # A fully unnamed schema override remains valid in Polars 2.0.
+  expect_no_warning(
+    pl$read_csv(
+      tmpf,
+      schema_overrides = list(pl$String, pl$String, pl$String),
+      infer_schema_files = NULL
+    )
+  )
   # TODO: @2.0: require unnamed schema overrides to cover every column; use
   # a named list for partial overrides.
 })
@@ -397,11 +406,11 @@ test_that("read/scan: arg 'schema' works", {
 
   # works with unnamed elements
   expect_equal(
-    pl$read_csv(
+    with_lifecycle_silence(pl$read_csv(
       tmpf,
       schema = list(a = pl$Float64, pl$Categorical(), c = pl$Int32),
       infer_schema_files = NULL
-    ),
+    )),
     pl$DataFrame(a = c(1.5, 2), factor(c("a", NA)), c = c(2L, NA))
   )
   expect_snapshot(
@@ -415,6 +424,96 @@ test_that("read/scan: arg 'schema' works", {
       infer_schema_files = NULL
     ),
     error = TRUE
+  )
+})
+
+test_that("read/scan: unnamed schema elements are deprecated", {
+  local_lifecycle_warnings()
+  tmpf <- withr::local_tempfile()
+  writeLines("a,b,c\n1.5,a,2\n2,,", tmpf)
+  schema <- list(a = pl$Float64, pl$Categorical(), c = pl$Int32)
+  fully_named_schema <- structure(schema, names = c("a", "b", "c"))
+
+  # The fully unnamed form is checked at lazy-frame construction time only.
+  full_unnamed <- list(pl$Int32, pl$Int32)
+  expect_snapshot(
+    invisible(
+      pl$scan_csv(
+        tmpf,
+        schema = full_unnamed,
+        infer_schema_files = NULL
+      )
+    ),
+    cnd_class = TRUE
+  )
+
+  # A mixed named/unnamed schema exercises the warning and a successful read.
+  expect_snapshot(
+    invisible(pl$scan_csv(tmpf, schema = schema, infer_schema_files = NULL)),
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    invisible(pl$read_csv(tmpf, schema = schema, infer_schema_files = NULL)),
+    cnd_class = TRUE
+  )
+
+  # The 1.16 positional behavior remains unchanged.
+  expected <- pl$DataFrame(
+    a = c(1.5, 2),
+    factor(c("a", NA)),
+    c = c(2L, NA)
+  )
+  expect_equal(
+    with_lifecycle_silence(pl$scan_csv(tmpf, schema = schema, infer_schema_files = NULL)$collect()),
+    expected
+  )
+  expect_equal(
+    with_lifecycle_silence(pl$read_csv(tmpf, schema = schema, infer_schema_files = NULL)),
+    expected
+  )
+
+  # Empty and fully named schemas are not using the positional compatibility path.
+  empty <- withr::local_tempfile()
+  writeLines("", empty)
+  expect_no_warning(pl$scan_csv(empty, schema = list(), infer_schema_files = NULL))
+  expect_no_warning(
+    pl$read_csv(
+      empty,
+      schema = list(),
+      raise_if_empty = FALSE,
+      infer_schema_files = NULL
+    )
+  )
+  expect_no_warning(
+    pl$scan_csv(
+      tmpf,
+      schema = fully_named_schema,
+      infer_schema_files = NULL
+    )
+  )
+  expect_no_warning(
+    pl$read_csv(
+      tmpf,
+      schema = fully_named_schema,
+      infer_schema_files = NULL
+    )
+  )
+
+  mixed_blank <- structure(
+    list(pl$Float64, pl$Categorical(), pl$Int32),
+    names = c("a", "", "c")
+  )
+  mixed_na <- structure(
+    list(pl$Float64, pl$Categorical(), pl$Int32),
+    names = c("a", NA_character_, "c")
+  )
+  expect_snapshot(
+    invisible(pl$scan_csv(tmpf, schema = mixed_blank, infer_schema_files = NULL)),
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    invisible(pl$scan_csv(tmpf, schema = mixed_na, infer_schema_files = NULL)),
+    cnd_class = TRUE
   )
 })
 

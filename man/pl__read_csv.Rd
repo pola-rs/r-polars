@@ -134,8 +134,8 @@ encountering a file with Windows line endings (\code{"\\r\\n"}), one can go with
 default \code{"\\n"}. The extra \code{"\\r"} will be removed when processed.}
 
 \item{raise_if_empty}{If \code{FALSE}, parsing an empty file returns an empty
-DataFrame or LazyFrame. In Polars 1.16, the default is \code{TRUE}. Starting with
-Polars 2.0, the default will be conditional: it will be \code{FALSE} when
+DataFrame or LazyFrame. Omitting this argument is deprecated because the
+default changes conditionally in Polars 2.0: it will be \code{FALSE} when
 \code{has_header = FALSE} and \code{schema} is supplied, and \code{TRUE} otherwise. Pass an
 explicit value to select the desired behavior.}
 
@@ -190,6 +190,14 @@ A polars \link{DataFrame}
 }
 \description{
 New DataFrame from CSV
+}
+\details{
+In Polars 2.0, fields supplied through \code{schema} are matched to CSV columns
+by name and the file's column order is preserved. Name all elements of a
+complete \code{schema} to prepare for this behavior. For \code{schema_overrides}, partial
+overrides must be fully named, while a fully unnamed list must contain one
+override for every CSV column; a mixture of named and unnamed elements is
+not supported.
 }
 \examples{
 my_file <- tempfile()

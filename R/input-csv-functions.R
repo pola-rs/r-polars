@@ -5,6 +5,14 @@
 #' This allows the query optimizer to push down predicates and projections to
 #' the scan level, thereby potentially reducing memory overhead.
 #'
+#' @details
+#' In Polars 2.0, fields supplied through `schema` are matched to CSV columns
+#' by name and the file's column order is preserved. Name all elements of a
+#' complete `schema` to prepare for this behavior. For `schema_overrides`, partial
+#' overrides must be fully named, while a fully unnamed list must contain one
+#' override for every CSV column; a mixture of named and unnamed elements is
+#' not supported.
+#'
 #' @inherit as_polars_lf return
 #' @inheritParams pl__scan_ipc
 #' @inheritParams pl__scan_parquet
@@ -76,8 +84,8 @@
 #  their original name.
 #'
 #' @param raise_if_empty If `FALSE`, parsing an empty file returns an empty
-#' DataFrame or LazyFrame. In Polars 1.16, the default is `TRUE`. Starting with
-#' Polars 2.0, the default will be conditional: it will be `FALSE` when
+#' DataFrame or LazyFrame. Omitting this argument is deprecated because the
+#' default changes conditionally in Polars 2.0: it will be `FALSE` when
 #' `has_header = FALSE` and `schema` is supplied, and `TRUE` otherwise. Pass an
 #' explicit value to select the desired behavior.
 #' @param truncate_ragged_lines Truncate lines that are longer than the schema.
@@ -143,6 +151,27 @@ pl__scan_csv <- function(
   check_number_whole(infer_schema_files, min = 1, allow_null = TRUE)
   encoding <- arg_match0(encoding, values = c("utf8", "utf8-lossy"))
   missing_columns <- arg_match0(missing_columns, values = c("insert", "raise"))
+
+  if (
+    length(schema) > 0L &&
+      (is.null(names(schema)) ||
+        anyNA(names(schema)) ||
+        !all(nzchar(names(schema))))
+  ) {
+    deprecate_warn(
+      c(
+        `!` = sprintf(
+          "Unnamed elements of %s are deprecated as of %s 1.16.0.",
+          format_arg("schema"),
+          format_pkg("polars")
+        ),
+        i = paste0(
+          "In Polars 2.0, CSV schema fields will be matched to columns by name. ",
+          "Name all elements of `schema` with the corresponding CSV column names."
+        )
+      )
+    )
+  }
 
   if (infer_schema_files_missing) {
     # TODO: @2.0: default omitted values to 10 and remove this migration path.
@@ -259,6 +288,7 @@ pl__scan_csv <- function(
 
 #' New DataFrame from CSV
 #' @inheritParams pl__scan_csv
+#' @inherit pl__scan_csv details
 #' @inherit as_polars_df return
 #' @examples
 #' my_file <- tempfile()
