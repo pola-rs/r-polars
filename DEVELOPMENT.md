@@ -674,11 +674,13 @@ Key points:
 
 ##### Deprecating a method
 
+The following is a historical example of a former implementation; `expr__shrink_dtype()` was removed in Polars 2.0.
+
 Add a `lifecycle::badge("deprecated")` to the roxygen documentation, emit a warning,
 and either delegate to the replacement method or return a no-op as appropriate:
 
 ```r
-#' Shrink numeric columns to the minimal required datatype
+#' Former implementation: shrink numeric columns to the minimal required datatype
 #'
 #' `r lifecycle::badge("deprecated")`
 #' Deprecated as of polars 1.3.0 and turned into a no-op.
@@ -696,7 +698,7 @@ expr__shrink_dtype <- function() {
 }
 ```
 
-_source: `R/expr-expr.R` of this repository_
+_source: historical former implementation from `R/expr-expr.R`_
 
 ##### Deprecating a class
 

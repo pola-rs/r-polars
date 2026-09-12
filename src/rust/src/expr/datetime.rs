@@ -127,15 +127,6 @@ impl PlRExpr {
             .into())
     }
 
-    fn dt_with_time_unit(&self, time_unit: &str) -> Result<Self> {
-        Ok(self
-            .inner
-            .clone()
-            .dt()
-            .with_time_unit(<Wrap<TimeUnit>>::try_from(time_unit)?.0)
-            .into())
-    }
-
     fn dt_cast_time_unit(&self, time_unit: &str) -> Result<Self> {
         Ok(self
             .inner

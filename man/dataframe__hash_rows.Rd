@@ -4,19 +4,10 @@
 \alias{dataframe__hash_rows}
 \title{Hash and combine the rows in this DataFrame}
 \usage{
-dataframe__hash_rows(
-  seed = 0,
-  seed_1 = deprecated(),
-  seed_2 = deprecated(),
-  seed_3 = deprecated()
-)
+dataframe__hash_rows(seed = 0)
 }
 \arguments{
 \item{seed}{Random seed parameter. Defaults to 0.}
-
-\item{seed_1, seed_2, seed_3}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Random seed
-parameters. Defaults to \code{seed} if not set. These arguments will be removed
-in Polars 2.0; only \code{seed} will remain, and hash values may change.}
 }
 \value{
 A \link[=Series]{polars Series}

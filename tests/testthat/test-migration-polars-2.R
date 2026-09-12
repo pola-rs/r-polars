@@ -139,17 +139,14 @@ test_that("list and array to_struct preserve outer nulls", {
     list_input$select(pl$col("x")$list$to_struct(fields = c("a", "b")))$select(
       pl$col("x")$is_null()
     ),
-    pl$DataFrame(x = c(FALSE, FALSE))
+    pl$DataFrame(x = c(TRUE, FALSE))
   )
   expect_equal(
     array_input$select(pl$col("x")$arr$to_struct(fields = c("a", "b")))$select(
       pl$col("x")$is_null()
     ),
-    pl$DataFrame(x = c(FALSE, FALSE))
+    pl$DataFrame(x = c(FALSE, TRUE))
   )
-
-  # TODO: @2.0: update the null masks to c(TRUE, FALSE) and c(FALSE, TRUE)
-  # when an outer null remains a null Struct.
 })
 
 test_that("Rust deprecation warnings are routed to R snapshots", {

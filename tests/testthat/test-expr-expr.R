@@ -764,46 +764,6 @@ test_that("Expr_append", {
   )
 })
 
-test_that("agg_groups is deprecated", {
-  local_lifecycle_warnings()
-  df <- pl$DataFrame(
-    group = rep(c("one", "two"), each = 3),
-    value = c(94, 95, 96, 97, 97, 99)
-  )
-
-  expect_snapshot(
-    df$group_by("group", .maintain_order = TRUE)$agg(pl$col("value")$agg_groups()),
-    cnd_class = TRUE
-  )
-
-  old <- suppressWarnings(
-    df$group_by("group", .maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
-  )
-  expect_no_condition(
-    df$with_row_index()$group_by("group", .maintain_order = TRUE)$agg(pl$col("index"))
-  )
-  recommended <- df$with_row_index()$group_by("group", .maintain_order = TRUE)$agg(pl$col("index"))
-  expect_equal(old$get_column("group"), recommended$get_column("group"))
-  expect_equal(
-    unclass(old$get_column("value")$to_r_vector()),
-    unclass(recommended$get_column("index")$to_r_vector())
-  )
-})
-
-test_that("rechunk() works but is deprecated", {
-  expect_deprecated(pl$col("a")$rechunk())
-
-  local_lifecycle_silence()
-  series_list <- pl$DataFrame(a = 1:3, b = 4:6)$select(
-    a_chunked = pl$col("a")$append(pl$col("b")),
-    a_rechunked = pl$col("a")$append(pl$col("b"))$rechunk()
-  )$get_columns()
-  expect_identical(
-    lapply(series_list, \(x) x$chunk_lengths()),
-    list(a_chunked = c(3L, 3L), a_rechunked = 6L)
-  )
-})
-
 test_that("cum_sum cum_prod cum_min cum_max cum_count", {
   l_actual <- pl$DataFrame(a = 1:4)$select(
     cum_sum = pl$col("a")$cum_sum(),
@@ -1464,26 +1424,15 @@ test_that("filter", {
   )
 })
 
-test_that("explode/flatten", {
+test_that("explode", {
   local_lifecycle_warnings()
   expect_equal(
     pl$DataFrame(a = list(letters))$select(pl$col("a")$explode(empty_as_null = TRUE)),
     pl$DataFrame(a = letters)
   )
-  expect_snapshot(
-    pl$DataFrame(a = list(letters))$select(pl$col("a")$flatten()),
-    cnd_class = TRUE
-  )
   expect_warning(
     pl$DataFrame(a = list(letters))$select(pl$col("a")$explode()),
     "will change"
-  )
-  local_lifecycle_silence()
-  expect_equal(
-    pl$DataFrame(a = list(letters))$select(pl$col("a")$flatten()),
-    pl$DataFrame(a = list(letters))$select(
-      pl$col("a")$list$explode(empty_as_null = TRUE, keep_nulls = TRUE)
-    )
   )
   expect_equal(
     pl$DataFrame(a = list(letters))$select(
@@ -1494,15 +1443,6 @@ test_that("explode/flatten", {
 
   # empty and null handling
   df <- pl$DataFrame(a = list(NULL, list(NA), list()))
-  old_flatten <- df$select(pl$col("a")$flatten())
-  expect_equal(
-    old_flatten,
-    df$select(pl$col("a")$list$explode(empty_as_null = TRUE, keep_nulls = TRUE))
-  )
-  future_flatten <- df$select(
-    pl$col("a")$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)
-  )
-  expect_gt(old_flatten$height, future_flatten$height)
   expect_equal(
     df$select(pl$col("a")$explode(empty_as_null = TRUE)),
     pl$DataFrame(a = list(NULL, NA, NULL))
@@ -1616,40 +1556,13 @@ test_that("hash", {
     pl$col(c("Sepal.Width", "Species"))$unique()$hash()$implode()
   )
   hash_values2 <- df$select(
-    suppressWarnings(pl$col(c("Sepal.Width", "Species"))$unique()$hash(1, 2, 3, 4))$implode()
+    pl$col(c("Sepal.Width", "Species"))$unique()$hash(seed = 42)$implode()
   )
 
   expect_false(
     identical(as.list(hash_values1, as_series = FALSE), as.list(hash_values2, as_series = FALSE))
   )
   expect_false(anyDuplicated(as.list(hash_values1, as_series = FALSE)$Sepal.Width) > 0)
-})
-
-test_that("hash additional seeds are deprecated", {
-  local_lifecycle_warnings()
-  expr <- pl$col("a")
-
-  expect_snapshot(invisible(expr$hash(seed_1 = 1)), cnd_class = TRUE)
-  expect_snapshot(invisible(expr$hash(seed_2 = 2)), cnd_class = TRUE)
-  expect_snapshot(invisible(expr$hash(seed_3 = 3)), cnd_class = TRUE)
-  expect_snapshot(
-    invisible(expr$hash(seed_1 = 1, seed_2 = 2, seed_3 = 3)),
-    cnd_class = TRUE
-  )
-  expect_snapshot(invisible(expr$hash(seed_1 = NULL)), cnd_class = TRUE)
-
-  expect_no_condition(expr$hash())
-  expect_no_condition(expr$hash(seed = 42))
-
-  df <- pl$DataFrame(a = 1:3)
-  old <- suppressWarnings(df$select(pl$col("a")$hash(42, 1, 2, 3)))
-  explicit <- suppressWarnings(
-    df$select(pl$col("a")$hash(seed = 42, seed_1 = 1, seed_2 = 2, seed_3 = 3))
-  )
-  expect_equal(old, explicit)
-
-  null_seed <- suppressWarnings(df$select(pl$col("a")$hash(seed = 42, seed_1 = NULL)))
-  expect_equal(null_seed, df$select(pl$col("a")$hash(seed = 42)))
 })
 
 test_that("reinterpret", {
@@ -3129,10 +3042,6 @@ test_that("index_of works", {
   # Test deprecation and error
   expect_snapshot(df$select(na = pl$col("a")$index_of(NA)))
   expect_snapshot(df$select(na = pl$col("a")$index_of(NA_character_)), error = TRUE)
-})
-
-test_that("Deprecated shrink_dtype", {
-  expect_snapshot(pl$col("foo")$shrink_dtype(), cnd_class = TRUE)
 })
 
 test_that("is_close works", {

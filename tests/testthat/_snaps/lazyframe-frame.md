@@ -3,10 +3,10 @@
     Code
       serialized
     Output
-        [1] 44 53 4c 5f 56 45 52 53 49 4f 4e 18 00 00 00 39 62 66 63 64 31 38 32 32 36
-       [26] 32 36 39 33 62 65 36 63 62 38 37 32 62 66 63 36 32 62 65 65 62 61 33 38 64
-       [51] 65 30 38 30 66 39 61 61 38 33 37 36 37 65 62 36 39 33 30 34 34 30 30 39 65
-       [76] 65 36 66 63 83 a4 72 6f 6f 74 82 a3 69 64 78 01 a7 76 65 72 73 69 6f 6e 01
+        [1] 44 53 4c 5f 56 45 52 53 49 4f 4e 18 00 00 00 36 33 37 35 63 66 31 63 66 35
+       [26] 63 36 32 61 64 63 65 32 30 34 64 36 31 61 30 66 63 62 63 32 62 34 33 37 65
+       [51] 33 64 36 66 34 36 64 63 66 32 38 37 36 30 63 39 34 30 33 61 62 31 64 66 63
+       [76] 64 62 64 39 83 a4 72 6f 6f 74 82 a3 69 64 78 01 a7 76 65 72 73 69 6f 6e 01
       [101] aa 64 61 74 61 66 72 61 6d 65 73 92 82 a5 76 61 6c 75 65 c0 a7 76 65 72 73
       [126] 69 6f 6e 00 82 a5 76 61 6c 75 65 91 dc 00 80 cc ff cc ff cc ff cc ff 70 00
       [151] 00 00 04 00 00 00 cc f2 cc ff cc ff cc ff 14 00 00 00 04 00 01 00 00 00 0a
@@ -26,10 +26,10 @@
     Code
       serialized
     Output
-        [1] 44 53 4c 5f 56 45 52 53 49 4f 4e 18 00 00 00 39 62 66 63 64 31 38 32 32 36
-       [26] 32 36 39 33 62 65 36 63 62 38 37 32 62 66 63 36 32 62 65 65 62 61 33 38 64
-       [51] 65 30 38 30 66 39 61 61 38 33 37 36 37 65 62 36 39 33 30 34 34 30 30 39 65
-       [76] 65 36 66 63 83 a4 72 6f 6f 74 82 a3 69 64 78 01 a7 76 65 72 73 69 6f 6e 01
+        [1] 44 53 4c 5f 56 45 52 53 49 4f 4e 18 00 00 00 36 33 37 35 63 66 31 63 66 35
+       [26] 63 36 32 61 64 63 65 32 30 34 64 36 31 61 30 66 63 62 63 32 62 34 33 37 65
+       [51] 33 64 36 66 34 36 64 63 66 32 38 37 36 30 63 39 34 30 33 61 62 31 64 66 63
+       [76] 64 62 64 39 83 a4 72 6f 6f 74 82 a3 69 64 78 01 a7 76 65 72 73 69 6f 6e 01
       [101] aa 64 61 74 61 66 72 61 6d 65 73 92 82 a5 76 61 6c 75 65 c0 a7 76 65 72 73
       [126] 69 6f 6e 00 82 a5 76 61 6c 75 65 91 dc 02 48 cc ff cc ff cc ff cc ff cc e8
       [151] 00 00 00 04 00 00 00 cc f2 cc ff cc ff cc ff 14 00 00 00 04 00 01 00 00 00
@@ -127,15 +127,6 @@
         node [fontname="Monospace", shape="box"]
         p1[label="TABLE\nπ 1/11"]
       }
-
-# $profile() is deprecated
-
-    Code
-      invisible(pl$LazyFrame(a = 1:3)$profile())
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! `profile()` is deprecated as of polars 1.14.0.
-      i Starting with Polars 2.0, engine = "auto" will use the streaming engine by default. Due to the concurrent nature of the streaming engine, the profiling information from this method would be misleading.
 
 # $unique's argument deprecation NULL
 
@@ -715,4 +706,3 @@
       ! Evaluation failed in `$alias()`.
       Caused by error:
       ! Argument `name` must be character, not logical
-

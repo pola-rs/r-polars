@@ -5,7 +5,7 @@ use savvy::{
     ListSexp, NumericScalar, OwnedIntegerSexp, OwnedListSexp, Result, Sexp, StringSexp, TypedSexp,
     savvy,
 };
-use std::{cmp::Ordering, hash::BuildHasher};
+use std::cmp::Ordering;
 
 #[savvy]
 impl PlRDataFrame {
@@ -348,18 +348,8 @@ impl PlRDataFrame {
             .into())
     }
 
-    pub fn hash_rows(
-        &mut self,
-        seed: NumericScalar,
-        seed_1: NumericScalar,
-        seed_2: NumericScalar,
-        seed_3: NumericScalar,
-    ) -> Result<PlRSeries> {
-        let k0 = <Wrap<u64>>::try_from(seed)?.0;
-        let k1 = <Wrap<u64>>::try_from(seed_1)?.0;
-        let k2 = <Wrap<u64>>::try_from(seed_2)?.0;
-        let k3 = <Wrap<u64>>::try_from(seed_3)?.0;
-        let seed = PlFixedStateQuality::default().hash_one((k0, k1, k2, k3));
+    pub fn hash_rows(&mut self, seed: NumericScalar) -> Result<PlRSeries> {
+        let seed = <Wrap<u64>>::try_from(seed)?.0;
         let hb = PlSeedableRandomStateQuality::seed_from_u64(seed);
         let series = self
             .df

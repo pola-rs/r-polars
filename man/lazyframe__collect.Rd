@@ -100,8 +100,6 @@ lf$group_by("a")$agg(pl$all()$sum())$collect(
 }
 \seealso{
 \itemize{
-\item \code{\link[=lazyframe__profile]{$profile()}} - same as \verb{$collect()} but also returns
-a table with each operation profiled.
 \item \code{\link[=lazyframe__sink_parquet]{$sink_parquet()}} streams query to a parquet file.
 \item \code{\link[=lazyframe__sink_ipc]{$sink_ipc()}} streams query to a arrow file.
 }

@@ -566,8 +566,8 @@ class(`PlRChainedWhen`) <- c("polars::PlRChainedWhen__bundle", "savvy_polars__se
 }
 
 `PlRDataFrame_hash_rows` <- function(self) {
-  function(`seed`, `seed_1`, `seed_2`, `seed_3`) {
-    .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_hash_rows__impl, `self`, `seed`, `seed_1`, `seed_2`, `seed_3`))
+  function(`seed`) {
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_hash_rows__impl, `self`, `seed`))
   }
 }
 
@@ -1086,12 +1086,6 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   }
 }
 
-`PlRExpr_agg_groups` <- function(self) {
-  function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_agg_groups__impl, `self`))
-  }
-}
-
 `PlRExpr_alias` <- function(self) {
   function(`name`) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_alias__impl, `self`, `name`))
@@ -1314,8 +1308,8 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 }
 
 `PlRExpr_arr_to_struct` <- function(self) {
-  function(`name_gen` = NULL) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arr_to_struct__impl, `self`, `name_gen`))
+  function(`fields` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arr_to_struct__impl, `self`, `fields`))
   }
 }
 
@@ -1468,12 +1462,6 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   function(`dtype`, `strict`, `wrap_numerical`) {
     `dtype` <- .savvy_extract_ptr(`dtype`, "polars::PlRDataType")
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cast__impl, `self`, `dtype`, `strict`, `wrap_numerical`))
-  }
-}
-
-`PlRExpr_cat_get_categories` <- function(self) {
-  function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cat_get_categories__impl, `self`))
   }
 }
 
@@ -1889,12 +1877,6 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   }
 }
 
-`PlRExpr_dt_with_time_unit` <- function(self) {
-  function(`time_unit`) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_with_time_unit__impl, `self`, `time_unit`))
-  }
-}
-
 `PlRExpr_dt_year` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_year__impl, `self`))
@@ -2047,8 +2029,8 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 }
 
 `PlRExpr_hash` <- function(self) {
-  function(`seed`, `seed_1`, `seed_2`, `seed_3`) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_hash__impl, `self`, `seed`, `seed_1`, `seed_2`, `seed_3`))
+  function(`seed`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_hash__impl, `self`, `seed`))
   }
 }
 
@@ -2703,12 +2685,6 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 `PlRExpr_rank` <- function(self) {
   function(`method`, `descending`, `seed` = NULL) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rank__impl, `self`, `method`, `descending`, `seed`))
-  }
-}
-
-`PlRExpr_rechunk` <- function(self) {
-  function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rechunk__impl, `self`))
   }
 }
 
@@ -3518,7 +3494,6 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   e$.ptr <- ptr
   e$`abs` <- `PlRExpr_abs`(ptr)
   e$`add` <- `PlRExpr_add`(ptr)
-  e$`agg_groups` <- `PlRExpr_agg_groups`(ptr)
   e$`alias` <- `PlRExpr_alias`(ptr)
   e$`all` <- `PlRExpr_all`(ptr)
   e$`and` <- `PlRExpr_and`(ptr)
@@ -3579,7 +3554,6 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   e$`bottom_k` <- `PlRExpr_bottom_k`(ptr)
   e$`bottom_k_by` <- `PlRExpr_bottom_k_by`(ptr)
   e$`cast` <- `PlRExpr_cast`(ptr)
-  e$`cat_get_categories` <- `PlRExpr_cat_get_categories`(ptr)
   e$`cat_physical` <- `PlRExpr_cat_physical`(ptr)
   e$`cat_to` <- `PlRExpr_cat_to`(ptr)
   e$`cbrt` <- `PlRExpr_cbrt`(ptr)
@@ -3645,7 +3619,6 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   e$`dt_truncate` <- `PlRExpr_dt_truncate`(ptr)
   e$`dt_week` <- `PlRExpr_dt_week`(ptr)
   e$`dt_weekday` <- `PlRExpr_dt_weekday`(ptr)
-  e$`dt_with_time_unit` <- `PlRExpr_dt_with_time_unit`(ptr)
   e$`dt_year` <- `PlRExpr_dt_year`(ptr)
   e$`entropy` <- `PlRExpr_entropy`(ptr)
   e$`eq` <- `PlRExpr_eq`(ptr)
@@ -3773,7 +3746,6 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   e$`quantile` <- `PlRExpr_quantile`(ptr)
   e$`radians` <- `PlRExpr_radians`(ptr)
   e$`rank` <- `PlRExpr_rank`(ptr)
-  e$`rechunk` <- `PlRExpr_rechunk`(ptr)
   e$`reinterpret` <- `PlRExpr_reinterpret`(ptr)
   e$`rem` <- `PlRExpr_rem`(ptr)
   e$`repeat_by` <- `PlRExpr_repeat_by`(ptr)
@@ -4130,12 +4102,6 @@ class(`PlRExpr`) <- c("polars::PlRExpr__bundle", "savvy_polars__sealed")
   }
 }
 
-`PlRLazyFrame_profile` <- function(self) {
-  function() {
-    .Call(savvy_PlRLazyFrame_profile__impl, `self`)
-  }
-}
-
 `PlRLazyFrame_quantile` <- function(self) {
   function(`quantile`, `interpolation`) {
     `quantile` <- .savvy_extract_ptr(`quantile`, "polars::PlRExpr")
@@ -4369,7 +4335,6 @@ class(`PlRExpr`) <- c("polars::PlRExpr__bundle", "savvy_polars__sealed")
   e$`min` <- `PlRLazyFrame_min`(ptr)
   e$`null_count` <- `PlRLazyFrame_null_count`(ptr)
   e$`pivot` <- `PlRLazyFrame_pivot`(ptr)
-  e$`profile` <- `PlRLazyFrame_profile`(ptr)
   e$`quantile` <- `PlRLazyFrame_quantile`(ptr)
   e$`remove` <- `PlRLazyFrame_remove`(ptr)
   e$`rename` <- `PlRLazyFrame_rename`(ptr)
@@ -4740,24 +4705,6 @@ class(`PlRSelector`) <- c("polars::PlRSelector__bundle", "savvy_polars__sealed")
   }
 }
 
-`PlRSeries_cat_is_local` <- function(self) {
-  function() {
-    .Call(savvy_PlRSeries_cat_is_local__impl, `self`)
-  }
-}
-
-`PlRSeries_cat_to_local` <- function(self) {
-  function() {
-    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_cat_to_local__impl, `self`))
-  }
-}
-
-`PlRSeries_cat_uses_lexical_ordering` <- function(self) {
-  function() {
-    .Call(savvy_PlRSeries_cat_uses_lexical_ordering__impl, `self`)
-  }
-}
-
 `PlRSeries_chunk_lengths` <- function(self) {
   function() {
     .Call(savvy_PlRSeries_chunk_lengths__impl, `self`)
@@ -4839,8 +4786,8 @@ class(`PlRSelector`) <- c("polars::PlRSelector__bundle", "savvy_polars__sealed")
 }
 
 `PlRSeries_list_to_struct` <- function(self) {
-  function(`n_field_strategy`, `name_gen` = NULL) {
-    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_list_to_struct__impl, `self`, `n_field_strategy`, `name_gen`))
+  function(`fields`) {
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_list_to_struct__impl, `self`, `fields`))
   }
 }
 
@@ -4964,9 +4911,6 @@ class(`PlRSelector`) <- c("polars::PlRSelector__bundle", "savvy_polars__sealed")
   e$`as_str` <- `PlRSeries_as_str`(ptr)
   e$`can_fast_explode_flag` <- `PlRSeries_can_fast_explode_flag`(ptr)
   e$`cast` <- `PlRSeries_cast`(ptr)
-  e$`cat_is_local` <- `PlRSeries_cat_is_local`(ptr)
-  e$`cat_to_local` <- `PlRSeries_cat_to_local`(ptr)
-  e$`cat_uses_lexical_ordering` <- `PlRSeries_cat_uses_lexical_ordering`(ptr)
   e$`chunk_lengths` <- `PlRSeries_chunk_lengths`(ptr)
   e$`clone` <- `PlRSeries_clone`(ptr)
   e$`div` <- `PlRSeries_div`(ptr)

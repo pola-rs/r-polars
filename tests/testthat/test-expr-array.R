@@ -378,44 +378,17 @@ test_that("arr$len", {
   )
 })
 
-patrick::with_parameters_test_that(
-  "arr$to_struct with fields = {rlang::quo_text(fields)}",
-  .cases = {
-    tibble::tribble(
-      ~.test_name, ~fields,
-      "default", NULL,
-      "short chr", c("a"),
-      "long chr", c("a", "b", "c", "d"),
-      "function", \(x) sprintf("field_%s", x),
-      "purrr style", ~ paste0("field_", .),
-    )
-  },
-  code = {
-    expect_snapshot(
-      pl$DataFrame(
-        values = list(c(1, 2), c(1, 1), c(2, 2)),
-        .schema_overrides = list(values = pl$Array(pl$Int64, 2))
-      )$select(
-        pl$col("values")$arr$to_struct(fields = fields)
-      )$unnest("values")
-    )
-  }
-)
-
-test_that("arr$to_struct deprecates dynamic field names", {
+test_that("arr$to_struct accepts NULL or character fields", {
   df <- pl$DataFrame(
-    values = list(c(1, 2), c(1, 1)),
+    values = list(c(1, 2), c(1, 1), c(2, 2)),
     .schema_overrides = list(values = pl$Array(pl$Int64, 2))
   )
 
   expect_no_warning(
-    df$select(pl$col("values")$arr$to_struct(fields = c("a", "b")))
+    df$select(pl$col("values")$arr$to_struct())
   )
-  expect_snapshot(
-    df$select(
-      pl$col("values")$arr$to_struct(fields = \(idx) paste0("field_", idx))
-    ),
-    cnd_class = TRUE
+  expect_no_warning(
+    df$select(pl$col("values")$arr$to_struct(fields = c("a", "b")))
   )
 })
 
@@ -426,14 +399,6 @@ test_that("series arr$to_struct delegates to the expression API", {
   )$cast(pl$Array(pl$Int64, 2))
   expect_no_warning(series$arr$to_struct())
   expect_no_warning(series$arr$to_struct(fields = c("a", "b")))
-  expect_snapshot(
-    as_polars_df(series$arr$to_struct(fields = \(idx) paste0("field_", idx))),
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    as_polars_df(series$arr$to_struct(fields = ~ paste0("field_", .))),
-    cnd_class = TRUE
-  )
 })
 
 test_that("arr$eval()", {

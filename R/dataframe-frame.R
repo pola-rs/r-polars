@@ -2128,9 +2128,6 @@ dataframe__group_by_dynamic <- function(
 #' The hash value is of type [UInt64][polars_dtype].
 #'
 #' @param seed Random seed parameter. Defaults to 0.
-#' @param seed_1,seed_2,seed_3 `r lifecycle::badge("deprecated")` Random seed
-#' parameters. Defaults to `seed` if not set. These arguments will be removed
-#' in Polars 2.0; only `seed` will remain, and hash values may change.
 #'
 #' @details
 #' This implementation does not guarantee stable results across different
@@ -2143,43 +2140,10 @@ dataframe__group_by_dynamic <- function(
 #'   ham = c("a", "b", NA, "d")
 #' )
 #' df$hash_rows(seed = 42)
-dataframe__hash_rows <- function(
-  seed = 0,
-  seed_1 = deprecated(),
-  seed_2 = deprecated(),
-  seed_3 = deprecated()
-) {
-  if (is_present(seed_1) || is_present(seed_2) || is_present(seed_3)) {
-    warn_deprecated_hash_seeds("<dataframe>$hash_rows")
-  }
-
+dataframe__hash_rows <- function(seed = 0) {
   wrap({
     check_number_whole(seed, min = 0)
-    seed_1 <- if (is_present(seed_1)) {
-      check_number_whole(seed_1, min = 0, allow_null = TRUE)
-      seed_1 %||% seed
-    } else {
-      seed
-    }
-    seed_2 <- if (is_present(seed_2)) {
-      check_number_whole(seed_2, min = 0, allow_null = TRUE)
-      seed_2 %||% seed
-    } else {
-      seed
-    }
-    seed_3 <- if (is_present(seed_3)) {
-      check_number_whole(seed_3, min = 0, allow_null = TRUE)
-      seed_3 %||% seed
-    } else {
-      seed
-    }
-
-    self$`_df`$hash_rows(
-      seed,
-      seed_1,
-      seed_2,
-      seed_3
-    )
+    self$`_df`$hash_rows(seed)
   })
 }
 

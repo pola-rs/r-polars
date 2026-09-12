@@ -276,8 +276,6 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 #'   Use the `optimizations` argument with
 #'   [`pl$QueryOptFlags()$no_optimizations()`][QueryOptFlags] instead.
 #' @seealso
-#'  - [`$profile()`][lazyframe__profile] - same as `$collect()` but also returns
-#'    a table with each operation profiled.
 #'  - [`$sink_parquet()`][lazyframe__sink_parquet()] streams query to a parquet file.
 #'  - [`$sink_ipc()`][lazyframe__sink_ipc()] streams query to a arrow file.
 #'
@@ -330,111 +328,6 @@ lazyframe__collect <- function(
     ldf <- self$`_ldf`$with_optimizations(optimizations)
 
     ldf$collect(engine)
-  })
-}
-
-#' Collect and profile a lazy query
-#'
-#' @description
-#' `r lifecycle::badge("deprecated")`
-#'
-#' `$profile()` is deprecated. Starting with Polars 2.0, `engine = "auto"` will
-#' use the streaming engine by default. Due to the concurrent nature of the
-#' streaming engine, the profiling information from this method would be
-#' misleading.
-#'
-#' This will run the query and return a list containing the
-#' materialized DataFrame and a DataFrame that contains profiling information
-#' of each node that is executed.
-#'
-#' @inheritParams rlang::args_dots_empty
-#' @inheritParams lazyframe__collect
-#' @param show_plot Show a Gantt chart of the profiling result
-#' @param truncate_nodes Truncate the label lengths in the Gantt chart to this
-#' number of characters. If `0` (default), do not truncate.
-#'
-#' @details The units of the timings are microseconds.
-#'
-#' @return List of two `DataFrame`s: one with the collected result, the other
-#' with the timings of each step. If `show_plot = TRUE`, then the plot is
-#' also stored in the list.
-#' @seealso
-#'  - [`$collect()`][lazyframe__collect] - regular collect.
-#'  - [`$sink_parquet()`][lazyframe__sink_parquet()] streams query to a parquet file.
-#'  - [`$sink_ipc()`][lazyframe__sink_ipc()] streams query to a arrow file.
-#' @examples
-#' lf <- pl$LazyFrame(
-#'   a = c("a", "b", "a", "b", "b", "c"),
-#'   b = 1:6,
-#'   c = 6:1,
-#' )
-#'
-#' lf$group_by("a", .maintain_order = TRUE)$agg(
-#'   pl$all()$sum()
-#' )$sort("a")$profile()
-lazyframe__profile <- function(
-  ...,
-  show_plot = FALSE,
-  truncate_nodes = 0,
-  engine = c("auto", "in-memory", "streaming"),
-  optimizations = pl$QueryOptFlags(),
-  type_coercion = deprecated(),
-  predicate_pushdown = deprecated(),
-  projection_pushdown = deprecated(),
-  simplify_expression = deprecated(),
-  slice_pushdown = deprecated(),
-  comm_subplan_elim = deprecated(),
-  comm_subexpr_elim = deprecated(),
-  cluster_with_columns = deprecated(),
-  collapse_joins = deprecated(),
-  no_optimization = deprecated()
-) {
-  wrap({
-    check_dots_empty0(...)
-    deprecate_warn(
-      c(
-        `!` = sprintf(
-          "%s is deprecated as of %s 1.14.0.",
-          format_fn("profile"),
-          format_pkg("polars")
-        ),
-        i = paste0(
-          "Starting with Polars 2.0, engine = \"auto\" will use the streaming ",
-          "engine by default. Due to the concurrent nature of the streaming ",
-          "engine, the profiling information from this method would be misleading."
-        )
-      )
-    )
-    engine <- arg_match0(engine, c("auto", "in-memory", "streaming"))
-    check_is_S7(optimizations, QueryOptFlags)
-
-    optimizations <- forward_old_opt_flags(
-      optimizations,
-      type_coercion = type_coercion,
-      predicate_pushdown = predicate_pushdown,
-      projection_pushdown = projection_pushdown,
-      simplify_expression = simplify_expression,
-      slice_pushdown = slice_pushdown,
-      comm_subplan_elim = comm_subplan_elim,
-      comm_subexpr_elim = comm_subexpr_elim,
-      cluster_with_columns = cluster_with_columns,
-      collapse_joins = collapse_joins,
-      no_optimization = no_optimization
-    )
-
-    ldf <- self$`_ldf`$with_optimizations(optimizations)
-
-    out <- lapply(ldf$profile(), \(x) {
-      x |>
-        .savvy_wrap_PlRDataFrame() |>
-        wrap()
-    })
-
-    if (isTRUE(show_plot)) {
-      out[["plot"]] <- make_profile_plot(out, truncate_nodes)
-    }
-
-    out
   })
 }
 

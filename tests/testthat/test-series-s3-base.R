@@ -5,11 +5,9 @@ test_that("Expr methods works for Series", {
   )
 })
 
-test_that("Series hash uses the Expr seed deprecation", {
-  local_lifecycle_warnings()
+test_that("Series hash accepts a single seed", {
   series <- as_polars_series(1:3)
 
-  expect_snapshot(invisible(series$hash(seed_1 = 1)), cnd_class = TRUE)
   expect_no_condition(series$hash(seed = 42))
 })
 

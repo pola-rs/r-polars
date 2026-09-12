@@ -130,23 +130,6 @@ warn_arrow_compression_default <- function(user_env = caller_env(2)) {
   )
 }
 
-warn_deprecated_hash_seeds <- function(fn, user_env = caller_env(2)) {
-  deprecate_warn(
-    c(
-      `!` = sprintf(
-        "The `seed_1`, `seed_2`, and `seed_3` arguments of %s are deprecated as of %s 1.16.0.",
-        format_fn(fn),
-        format_pkg("polars")
-      ),
-      i = paste0(
-        "The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in ",
-        "Polars 2.0; only `seed` will remain. Hash values may change."
-      )
-    ),
-    user_env = user_env
-  )
-}
-
 warn_deprecated_selector_dots <- function(
   fn,
   argument,
@@ -199,23 +182,6 @@ warn_deprecated_selector_col <- function(
         "Use %s for set operations or %s for element-wise operations.",
         format_code("cs$by_name(...)"),
         format_code("<selector>$as_expr()")
-      )
-    ),
-    user_env = user_env
-  )
-}
-
-warn_deprecated_to_struct <- function(method, user_env = caller_env(2)) {
-  deprecate_warn(
-    c(
-      `!` = sprintf(
-        "Legacy arguments of %s are deprecated as of %s 1.16.0.",
-        format_code(method),
-        format_pkg("polars")
-      ),
-      i = sprintf(
-        "Use an explicit character vector for %s.",
-        format_arg("fields")
       )
     ),
     user_env = user_env

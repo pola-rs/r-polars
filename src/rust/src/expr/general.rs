@@ -326,10 +326,6 @@ impl PlRExpr {
         Ok(self.inner.clone().cum_count(reverse).into())
     }
 
-    fn agg_groups(&self) -> Result<Self> {
-        Ok(self.inner.clone().agg_groups().into())
-    }
-
     fn count(&self) -> Result<Self> {
         Ok(self.inner.clone().count().into())
     }
@@ -557,18 +553,9 @@ impl PlRExpr {
         Ok(self.inner.clone().entropy(base, normalize).into())
     }
 
-    fn hash(
-        &self,
-        seed: NumericScalar,
-        seed_1: NumericScalar,
-        seed_2: NumericScalar,
-        seed_3: NumericScalar,
-    ) -> Result<Self> {
+    fn hash(&self, seed: NumericScalar) -> Result<Self> {
         let seed = <Wrap<u64>>::try_from(seed)?.0;
-        let seed_1 = <Wrap<u64>>::try_from(seed_1)?.0;
-        let seed_2 = <Wrap<u64>>::try_from(seed_2)?.0;
-        let seed_3 = <Wrap<u64>>::try_from(seed_3)?.0;
-        Ok(self.inner.clone().hash(seed, seed_1, seed_2, seed_3).into())
+        Ok(self.inner.clone().hash(seed).into())
     }
 
     fn pct_change(&self, n: &PlRExpr) -> Result<Self> {
@@ -739,14 +726,6 @@ impl PlRExpr {
             .inner
             .clone()
             .append(other.inner.clone(), upcast)
-            .into())
-    }
-
-    fn rechunk(&self) -> Result<Self> {
-        Ok(self
-            .inner
-            .clone()
-            .map(|s| Ok(s.rechunk()), |_, f| Ok(f.clone()))
             .into())
     }
 

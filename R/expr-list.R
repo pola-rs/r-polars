@@ -752,28 +752,9 @@ expr_list_to_array <- function(width) {
 #' Convert the Series of type List to a Series of type Struct
 #'
 #' @details
-#' As of polars 1.3.0, the `n_field_strategy` argument is ignored and deprecated.
-#' Use an explicit character vector for `fields`; this form is warning-free and
-#' will be required in Polars 2.0. The `upper_bound` argument is deprecated.
-#'
-#' If inferring field length is needed, [`<series>$list$to_struct()`][series_list_to_struct]
-#' can be used, which inspects the data at runtime.
+#' The field names must be supplied explicitly.
 #' @inherit as_polars_expr return
-#' @param fields Character vector of field names. `NULL` (default) and
-#'   function-valued fields are deprecated; use an explicit character vector,
-#'   which will be required in Polars 2.0.
-#' @param ... A character vector of field names can be supplied as the first
-#'   positional argument. Scalar `"first_non_null"` and `"max_width"` values
-#'   are interpreted as legacy `n_field_strategy`; use `fields = ...` when
-#'   either is a field name. Additional positional arguments are deprecated
-#'   compatibility arguments.
-#' @param n_field_strategy `r lifecycle::badge("deprecated")`
-#'   Ignored.
-#' @param upper_bound `r lifecycle::badge("deprecated")` Single positive
-#'   integer value or `NULL` (default).
-#'   A [polars expression][Expr] needs to be able to evaluate the output datatype at all
-#'   times, so the caller must provide an upper bound of the number of struct
-#'   fields that will be created if `fields` is not a character vector of field names.
+#' @param fields A character vector of field names.
 #' @seealso
 #' - [`<expr>$arr$to_struct()`][expr_arr_to_struct]
 #' - [`<series>$list$to_struct()`][series_list_to_struct]
@@ -784,152 +765,16 @@ expr_list_to_array <- function(width) {
 #'
 #' df$select(pl$col("n")$list$to_struct(c("one", "two", "three")))$unnest("n")
 #'
-#' # Dynamic field-name functions are deprecated:
-#' df$select(
-#'   pl$col("n")$list$to_struct(
-#'     fields = \(idx) paste0("n", idx + 1),
-#'     upper_bound = 2
-#'   )
-#' )$unnest("n")
-#'
 #' # Convert list to struct with field name assignment by
 #' # index from a list of names:
 #' df$select(pl$col("n")$list$to_struct(
 #'   fields = c("one", "two", "three"))
 #' )$unnest("n")
-expr_list_to_struct <- function(
-  ...,
-  fields = NULL,
-  n_field_strategy = deprecated(),
-  upper_bound = deprecated()
-) {
-  fields_present <- !missing(fields)
+expr_list_to_struct <- function(fields) {
   wrap({
-    args <- parse_to_struct_args(
-      ...,
-      fields = fields,
-      fields_present = fields_present,
-      n_field_strategy = n_field_strategy,
-      upper_bound = upper_bound,
-      method = "<expr>$list$to_struct()"
-    )
-    fields <- args$fields
-    upper_bound <- args$upper_bound
-
-    if (args$deprecated) {
-      warn_deprecated_to_struct("<expr>$list$to_struct()")
-    }
-
-    check_number_whole(upper_bound, min = 1, allow_null = TRUE)
-
-    fields <- if (is_character(fields)) {
-      fields
-    } else {
-      if (is.null(upper_bound)) {
-        # Python Polars does not allow `upper_bound` to be empty,
-        # but avoiding breaking change for the API, this is needed.
-        upper_bound <- 1L
-      }
-      idx <- seq(0L, upper_bound - 1L)
-
-      if (is.null(fields)) {
-        sprintf("field_%d", idx)
-      } else {
-        fields <- as_function(fields)
-        fields(idx)
-      }
-    }
-
-    if (anyNA(fields)) {
-      abort("`fields` must not contain `NA` values.")
-    }
+    check_character(fields, allow_na = FALSE, allow_null = FALSE)
     self$`_rexpr`$list_to_struct(fields)
   })
-}
-
-parse_to_struct_args <- function(
-  ...,
-  fields = NULL,
-  n_field_strategy = deprecated(),
-  upper_bound = deprecated(),
-  method,
-  max_positional = 3L,
-  fields_present = !missing(fields),
-  allow_upper_bound = TRUE
-) {
-  check_dots_unnamed()
-  dots <- list2(...)
-  if (length(dots) > max_positional) {
-    abort(sprintf("Too many positional arguments supplied to %s.", method))
-  }
-
-  strategy_present <- is_present(n_field_strategy)
-  upper_bound_present <- is_present(upper_bound)
-
-  if (!allow_upper_bound && upper_bound_present) {
-    abort(sprintf("`upper_bound` is not supported by %s.", method))
-  }
-
-  if (
-    length(dots) == 1L &&
-      !fields_present &&
-      !upper_bound_present &&
-      is_character(dots[[1L]]) &&
-      length(dots[[1L]]) == 1L &&
-      !is.na(dots[[1L]]) &&
-      dots[[1L]] %in% c("first_non_null", "max_width") &&
-      !strategy_present
-  ) {
-    n_field_strategy <- dots[[1L]]
-    strategy_present <- TRUE
-    dots <- list()
-  } else if (
-    length(dots) == 1L &&
-      !fields_present &&
-      !strategy_present &&
-      !upper_bound_present &&
-      is_character(dots[[1L]])
-  ) {
-    fields <- dots[[1L]]
-    fields_present <- TRUE
-    dots <- list()
-  } else if (length(dots) > 0L) {
-    slots <- c(!strategy_present, !fields_present)
-    if (allow_upper_bound) {
-      slots <- c(slots, !upper_bound_present)
-    }
-    if (length(dots) > sum(slots)) {
-      abort(sprintf("Arguments were supplied more than once to %s.", method))
-    }
-    for (i in seq_along(dots)) {
-      slot <- which(slots)[[1L]]
-      if (slot == 1L) {
-        n_field_strategy <- dots[[i]]
-        strategy_present <- TRUE
-      } else if (slot == 2L) {
-        fields <- dots[[i]]
-        fields_present <- TRUE
-      } else {
-        upper_bound <- dots[[i]]
-        upper_bound_present <- TRUE
-      }
-      slots[[slot]] <- FALSE
-    }
-  }
-
-  if (!fields_present) {
-    fields <- NULL
-  }
-  if (!upper_bound_present) {
-    upper_bound <- NULL
-  }
-
-  list(
-    fields = fields,
-    n_field_strategy = n_field_strategy,
-    upper_bound = upper_bound,
-    deprecated = strategy_present || upper_bound_present || !is_character(fields)
-  )
 }
 
 #' Drop all null values in every sub-list

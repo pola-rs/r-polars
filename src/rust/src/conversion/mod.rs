@@ -548,19 +548,6 @@ impl TryFrom<&str> for Wrap<SetOperation> {
     }
 }
 
-impl TryFrom<&str> for Wrap<ListToStructWidthStrategy> {
-    type Error = String;
-
-    fn try_from(operation: &str) -> Result<Self, String> {
-        let parsed = match operation {
-            "first_non_null" => ListToStructWidthStrategy::FirstNonNull,
-            "max_width" => ListToStructWidthStrategy::MaxWidth,
-            _ => return Err("unreachable".to_string()),
-        };
-        Ok(Wrap(parsed))
-    }
-}
-
 impl TryFrom<&str> for Wrap<ClosedWindow> {
     type Error = String;
 

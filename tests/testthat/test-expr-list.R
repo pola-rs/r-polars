@@ -720,20 +720,9 @@ test_that("list$count_matches", {
 })
 
 patrick::with_parameters_test_that(
-  "list$to_struct with field = {rlang::quo_text(fields)}, upper_bound = {rlang::quo_text(upper_bound)}", # nolint: line_length_linter
+  "list$to_struct with explicit fields = {rlang::quo_text(fields)}", # nolint: line_length_linter
   .cases = {
-    expand.grid(
-      fields = list(
-        NULL,
-        \(x) sprintf("field-%s", x + 1),
-        ~ paste0("field-", . + 1),
-        "a",
-        c("a", "b", "c", "d")
-      ),
-      upper_bound = c(1, 5),
-      stringsAsFactors = FALSE
-    ) |>
-      tibble::as_tibble()
+    tibble::tibble(fields = list("a", c("a", "b", "c", "d")))
   },
   code = {
     expect_snapshot(
@@ -742,68 +731,17 @@ patrick::with_parameters_test_that(
         .schema_overrides = list(values = pl$List(pl$Int64))
       )$select(
         pl$col("values")$list$to_struct(
-          fields = fields,
-          upper_bound = upper_bound
+          fields = fields
         )
       )$unnest("values")
     )
   }
 )
 
-test_that("list$to_struct's deprecated argument", {
-  expect_snapshot(
-    pl$col("foo")$list$to_struct("foo", fields = "a"),
-    cnd_class = TRUE
-  )
-  expect_snapshot(pl$col("foo")$list$to_struct(), cnd_class = TRUE)
-  expect_snapshot(
-    pl$col("foo")$list$to_struct(fields = NULL),
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    pl$col("foo")$list$to_struct(
-      fields = \(idx) paste0("field_", idx),
-      upper_bound = 2
-    ),
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    pl$col("foo")$list$to_struct(fields = c("a"), upper_bound = 1),
-    cnd_class = TRUE
-  )
-})
-
 test_that("list$to_struct accepts future-compatible fields", {
   expect_no_warning(pl$col("foo")$list$to_struct(c("a", "b")))
   expect_no_warning(
     pl$col("foo")$list$to_struct(fields = c("a", "b"))
-  )
-  expect_no_warning(
-    pl$col("foo")$list$to_struct(fields = "max_width")
-  )
-  expect_snapshot(
-    pl$col("foo")$list$to_struct("max_width"),
-    cnd_class = TRUE
-  )
-})
-
-test_that("list$to_struct preserves mixed legacy positional forms", {
-  df <- pl$DataFrame(values = list(c(1, 2), c(1, 2, 3)))
-
-  expect_snapshot(
-    df$select(
-      pl$col("values")$list$to_struct(c("a", "b"), upper_bound = 2)
-    ),
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    df$select(
-      pl$col("values")$list$to_struct(
-        n_field_strategy = "ignored",
-        c("a", "b")
-      )
-    ),
-    cnd_class = TRUE
   )
 })
 

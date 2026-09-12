@@ -1427,45 +1427,6 @@ expr__cumulative_eval <- function(expr, ..., min_samples = 1) {
   })
 }
 
-#' Get the group indexes of the group by operation
-#'
-#' `r lifecycle::badge("deprecated")`
-#'
-#' `agg_groups()` is deprecated as of polars 1.16.0. Use
-#' `df$with_row_index()$group_by(..., .maintain_order = TRUE)$agg(pl$col("index"))`
-#' instead.
-#'
-#' Should be used in aggregation context only.
-#' @inherit as_polars_expr return
-#' @examples
-#' df <- pl$DataFrame(
-#'   group = rep(c("one", "two"), each = 3),
-#'   value = c(94, 95, 96, 97, 97, 99)
-#' )
-#'
-#' df$group_by("group", .maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
-#'
-#' # Recommended approach
-#' df$with_row_index()$group_by("group", .maintain_order = TRUE)$agg(pl$col("index"))
-expr__agg_groups <- function() {
-  deprecate_warn(
-    c(
-      `!` = sprintf(
-        "%s is deprecated as of %s 1.16.0.",
-        format_fn("agg_groups"),
-        format_pkg("polars")
-      ),
-      i = sprintf(
-        "Use %s instead.",
-        format_code(
-          'df$with_row_index()$group_by(..., .maintain_order = TRUE)$agg(pl$col("index"))'
-        )
-      )
-    )
-  )
-  self$`_rexpr`$agg_groups() |>
-    wrap()
-}
 
 #' Get the index of the maximal value
 #'
@@ -2063,10 +2024,6 @@ expr__log1p <- function() {
 #' Hash elements
 #'
 #' @param seed Integer, random seed parameter. Defaults to 0.
-#' @param seed_1,seed_2,seed_3 `r lifecycle::badge("deprecated")` Integer,
-#' random seed parameters. Default to `seed` if not set. These arguments will
-#' be removed in Polars 2.0; only `seed` will remain, and hash values may
-#' change.
 #' @inherit as_polars_expr return
 #'
 #' @details
@@ -2077,21 +2034,10 @@ expr__log1p <- function() {
 #' @examples
 #' df <- pl$DataFrame(a = c(1, 2, NA), b = c("x", NA, "z"))
 #' df$with_columns(pl$all()$hash(seed = 10))
-expr__hash <- function(
-  seed = 0,
-  seed_1 = deprecated(),
-  seed_2 = deprecated(),
-  seed_3 = deprecated()
-) {
-  if (is_present(seed_1) || is_present(seed_2) || is_present(seed_3)) {
-    warn_deprecated_hash_seeds("<expr>$hash")
-  }
-
+expr__hash <- function(seed = 0) {
   wrap({
-    seed_1 <- if (is_present(seed_1)) seed_1 %||% seed else seed
-    seed_2 <- if (is_present(seed_2)) seed_2 %||% seed else seed
-    seed_3 <- if (is_present(seed_3)) seed_3 %||% seed else seed
-    self$`_rexpr`$hash(seed, seed_1, seed_2, seed_3)
+    check_number_whole(seed, min = 0)
+    self$`_rexpr`$hash(seed)
   })
 }
 
@@ -4041,44 +3987,6 @@ expr__explode <- function(..., empty_as_null = NULL, keep_nulls = TRUE) {
 # The document is in expr-array.R
 expr_arr_explode <- expr__explode
 
-#' Flatten a list or string column
-#'
-#' @description
-#' `r lifecycle::badge("deprecated")`
-#'
-#' `$flatten()` is deprecated. For Polars 2.0-compatible behavior, use
-#' `$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)`. To preserve the
-#' legacy behavior exactly, use `$list$explode(empty_as_null = TRUE,
-#' keep_nulls = TRUE)`; the null handling differs between these forms.
-#'
-#' @inherit as_polars_expr return
-#' @examples
-#' df <- pl$DataFrame(
-#'   group = c("a", "b", "b"),
-#'   values = list(1:2, 2:3, 4)
-#' )
-#'
-#' df$group_by("group")$agg(pl$col("values")$list$explode())
-expr__flatten <- function() {
-  deprecate_warn(
-    c(
-      `!` = sprintf(
-        "%s is deprecated as of %s 1.9.0.",
-        format_fn("flatten"),
-        format_pkg("polars")
-      ),
-      i = paste0(
-        "Use `$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)` for ",
-        "Polars 2.0-compatible behavior. Use ",
-        "`$list$explode(empty_as_null = TRUE, keep_nulls = TRUE)` to preserve ",
-        "the legacy behavior exactly."
-      )
-    )
-  )
-  wrap({
-    self$explode(empty_as_null = TRUE)
-  })
-}
 
 #' Extend the Series with `n` copies of a value
 #'
@@ -4405,39 +4313,6 @@ expr__qcut <- function(
   })
 }
 
-#' Create a single chunk of memory for this Series
-#'
-#' @description
-#' `r lifecycle::badge("deprecated")`
-#'
-#' `<expr>$rechunk()` is deprecated. Rechunking within a query is not
-#' well-defined. Use `$rechunk()` on the DataFrame after collecting the results
-#' instead.
-#'
-#' @inherit as_polars_expr return
-#' @examples
-#' df <- pl$DataFrame(a = c(1, 1, 2))
-#'
-#' # Create a Series with 3 nulls, append column a then rechunk
-#' df$select(pl$repeat_(NA, 3)$append(pl$col("a"))$rechunk())
-expr__rechunk <- function() {
-  wrap({
-    deprecate_warn(
-      c(
-        `!` = sprintf(
-          "%s is deprecated as of %s 1.15.0.",
-          format_fn("rechunk"),
-          format_pkg("polars")
-        ),
-        i = sprintf(
-          "Rechunking within a query is not well-defined. Call %s on the DataFrame after collecting the results instead.", # nolint: line_length_linter
-          format_code("$rechunk()")
-        )
-      )
-    )
-    self$`_rexpr`$rechunk()
-  })
-}
 
 #' Reinterpret the underlying bits as a signed/unsigned integer
 #'
@@ -4840,22 +4715,6 @@ expr__shift <- function(n = 1, ..., fill_value = NULL) {
   })
 }
 
-#' Shrink numeric columns to the minimal required datatype
-#'
-#' `r lifecycle::badge("deprecated")`
-#' Deprecated as of polars 1.3.0 and turned into a no-op.
-#' Use [`<series>$shrink_dtype`][series__shrink_dtype] instead.
-#'
-#' @inherit as_polars_expr return
-expr__shrink_dtype <- function() {
-  deprecate_warn(
-    c(
-      `!` = sprintf("%s is deprecated and is a no-op.", format_code("<expr>$shrink_dtype()")),
-      `i` = sprintf("Use %s instead.", format_code("<series>$shrink_dtype()"))
-    )
-  )
-  self
-}
 
 #' Shuffle the contents of this expression
 #'

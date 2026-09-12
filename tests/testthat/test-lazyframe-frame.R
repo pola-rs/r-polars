@@ -390,14 +390,6 @@ test_that("$to_dot() works", {
   expect_snapshot(cat(lf$select("am")$to_dot()))
 })
 
-test_that("$profile() is deprecated", {
-  local_lifecycle_warnings()
-  expect_snapshot(
-    invisible(pl$LazyFrame(a = 1:3)$profile()),
-    cnd_class = TRUE
-  )
-})
-
 test_that("set_sorted works", {
   df1 <- pl$DataFrame(
     name = c("steve", "elise", "bob"),

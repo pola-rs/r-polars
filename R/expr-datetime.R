@@ -722,31 +722,6 @@ expr_dt_timestamp <- function(time_unit = c("us", "ns", "ms")) {
   })
 }
 
-#' Set time unit of a Series of dtype Datetime or Duration
-#' @description
-#' `r lifecycle::badge("deprecated")`
-#' Cast to Int64 and then to the desired Datetime or Duration dtype and time
-#' unit instead.
-#'
-#' @inheritParams expr_dt_timestamp
-#' @inherit as_polars_expr return
-#' @keywords internal
-expr_dt_with_time_unit <- function(time_unit = c("ns", "us", "ms")) {
-  wrap({
-    deprecate_warn(
-      c(
-        `!` = "`$dt$with_time_unit()` is deprecated.",
-        i = paste0(
-          "Cast to Int64 and then to the desired Datetime or Duration dtype ",
-          "and time unit instead."
-        )
-      )
-    )
-    time_unit <- arg_match0(time_unit, values = c("ns", "us", "ms"))
-    self$`_rexpr`$dt_with_time_unit(time_unit)
-  })
-}
-
 
 #' Change time unit
 #' @description

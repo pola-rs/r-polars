@@ -160,25 +160,6 @@
       Caused by error:
       ! type bool is incompatible with expected type str
 
-# agg_groups is deprecated
-
-    Code
-      df$group_by("group", .maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! `agg_groups()` is deprecated as of polars 1.16.0.
-      i Use `df$with_row_index()$group_by(..., .maintain_order = TRUE)$agg(pl$col("index"))` instead.
-    Output
-      shape: (2, 2)
-      ┌───────┬───────────┐
-      │ group ┆ value     │
-      │ ---   ┆ ---       │
-      │ str   ┆ list[u32] │
-      ╞═══════╪═══════════╡
-      │ one   ┆ [0, 1, 2] │
-      │ two   ┆ [3, 4, 5] │
-      └───────┴───────────┘
-
 # truncate
 
     Code
@@ -287,34 +268,6 @@
       Caused by error:
       ! -1.0 is out of range that can be safely converted to u8
 
-# explode/flatten
-
-    Code
-      pl$DataFrame(a = list(letters))$select(pl$col("a")$flatten())
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! `flatten()` is deprecated as of polars 1.9.0.
-      i Use `$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)` for Polars 2.0-compatible behavior. Use `$list$explode(empty_as_null = TRUE, keep_nulls = TRUE)` to preserve the legacy behavior exactly.
-    Output
-      shape: (26, 1)
-      ┌─────┐
-      │ a   │
-      │ --- │
-      │ str │
-      ╞═════╡
-      │ a   │
-      │ b   │
-      │ c   │
-      │ d   │
-      │ e   │
-      │ …   │
-      │ v   │
-      │ w   │
-      │ x   │
-      │ y   │
-      │ z   │
-      └─────┘
-
 # is_between errors if wrong 'closed' arg
 
     Code
@@ -328,51 +281,6 @@
       ! Evaluation failed in `$is_between()`.
       Caused by error:
       ! `closed` must be one of "both", "left", "right", or "none", not "foo".
-
-# hash additional seeds are deprecated
-
-    Code
-      invisible(expr$hash(seed_1 = 1))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
-      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
-
----
-
-    Code
-      invisible(expr$hash(seed_2 = 2))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
-      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
-
----
-
-    Code
-      invisible(expr$hash(seed_3 = 3))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
-      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
-
----
-
-    Code
-      invisible(expr$hash(seed_1 = 1, seed_2 = 2, seed_3 = 3))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
-      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
-
----
-
-    Code
-      invisible(expr$hash(seed_1 = NULL))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
-      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
 
 # rolling_*_by only works with date, datetime, or integers
 
@@ -841,17 +749,6 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid operation: cannot cast losslessly from str to f64
-
-# Deprecated shrink_dtype
-
-    Code
-      pl$col("foo")$shrink_dtype()
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! `<expr>$shrink_dtype()` is deprecated and is a no-op.
-      i Use `<series>$shrink_dtype()` instead.
-    Output
-      col("foo")
 
 # is_close works
 

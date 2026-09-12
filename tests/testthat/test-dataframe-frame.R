@@ -637,48 +637,6 @@ test_that("hash_rows() works", {
     df$hash_rows(seed = 42)$dtype,
     pl$UInt64
   )
-  expect_error(
-    suppressWarnings(df$hash_rows(seed = 42, seed_1 = "a")),
-    "`seed_1` must be a whole number or `NULL`, not the string"
-  )
-  expect_error(
-    suppressWarnings(df$hash_rows(seed = 42, seed_1 = 1.5)),
-    "`seed_1` must be a whole number or `NULL`"
-  )
-  expect_error(
-    suppressWarnings(df$hash_rows(seed = 42, seed_1 = 1:2)),
-    "`seed_1` must be a whole number or `NULL`"
-  )
-  expect_error(
-    suppressWarnings(df$hash_rows(seed = 42, seed_1 = -1)),
-    "`seed_1` must be a whole number larger than or equal to 0 or `NULL`"
-  )
-})
-
-test_that("hash_rows additional seeds are deprecated", {
-  local_lifecycle_warnings()
-  df <- pl$DataFrame(foo = 1:3, bar = c("a", "b", "c"))
-
-  expect_snapshot(invisible(df$hash_rows(seed_1 = 1)), cnd_class = TRUE)
-  expect_snapshot(invisible(df$hash_rows(seed_2 = 2)), cnd_class = TRUE)
-  expect_snapshot(invisible(df$hash_rows(seed_3 = 3)), cnd_class = TRUE)
-  expect_snapshot(
-    invisible(df$hash_rows(seed_1 = 1, seed_2 = 2, seed_3 = 3)),
-    cnd_class = TRUE
-  )
-  expect_snapshot(invisible(df$hash_rows(seed_1 = NULL)), cnd_class = TRUE)
-
-  expect_no_condition(df$hash_rows())
-  expect_no_condition(df$hash_rows(seed = 42))
-
-  old <- suppressWarnings(df$hash_rows(42, 1, 2, 3))
-  explicit <- suppressWarnings(
-    df$hash_rows(seed = 42, seed_1 = 1, seed_2 = 2, seed_3 = 3)
-  )
-  expect_equal(old, explicit)
-
-  null_seed <- suppressWarnings(df$hash_rows(seed = 42, seed_1 = NULL))
-  expect_equal(null_seed, df$hash_rows(seed = 42))
 })
 
 test_that("unstack() works", {

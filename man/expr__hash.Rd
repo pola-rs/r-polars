@@ -4,20 +4,10 @@
 \alias{expr__hash}
 \title{Hash elements}
 \usage{
-expr__hash(
-  seed = 0,
-  seed_1 = deprecated(),
-  seed_2 = deprecated(),
-  seed_3 = deprecated()
-)
+expr__hash(seed = 0)
 }
 \arguments{
 \item{seed}{Integer, random seed parameter. Defaults to 0.}
-
-\item{seed_1, seed_2, seed_3}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Integer,
-random seed parameters. Default to \code{seed} if not set. These arguments will
-be removed in Polars 2.0; only \code{seed} will remain, and hash values may
-change.}
 }
 \value{
 A polars \link{expression}

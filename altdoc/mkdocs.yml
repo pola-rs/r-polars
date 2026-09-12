@@ -216,7 +216,6 @@ nav:
             - collect: man/lazyframe__collect.md
             - collect_schema: man/lazyframe__collect_schema.md
             - sink_batches: man/lazyframe__sink_batches.md
-            - profile: man/lazyframe__profile.md
             - serialize: man/lazyframe__serialize.md
       Series:
         - Series: man/pl__Series.md
@@ -241,7 +240,6 @@ nav:
         - All others:
             - abs: man/expr__abs.md
             - add: man/expr__add.md
-            - agg_groups: man/expr__agg_groups.md
             - all: man/expr__all.md
             - and: man/expr__and.md
             - any: man/expr__any.md
@@ -304,7 +302,6 @@ nav:
             - fill_null: man/expr__fill_null.md
             - filter: man/expr__filter.md
             - first: man/expr__first.md
-            - flatten: man/expr__flatten.md
             - floor_div: man/expr__floor_div.md
             - floor: man/expr__floor.md
             - forward_fill: man/expr__forward_fill.md
@@ -372,7 +369,6 @@ nav:
             - quantile: man/expr__quantile.md
             - radians: man/expr__radians.md
             - rank: man/expr__rank.md
-            - rechunk: man/expr__rechunk.md
             - reinterpret: man/expr__reinterpret.md
             - repeat_: man/pl__repeat_.md
             - repeat_by: man/expr__repeat_by.md
@@ -408,7 +404,6 @@ nav:
             - search_sorted: man/expr__search_sorted.md
             - set_sorted: man/expr__set_sorted.md
             - shift: man/expr__shift.md
-            - shrink_dtype: man/expr__shrink_dtype.md
             - shuffle: man/expr__shuffle.md
             - sign: man/expr__sign.md
             - sin: man/expr__sin.md
@@ -474,7 +469,6 @@ nav:
             - bin_size: man/expr_bin_size.md
             - bin_starts_with: man/expr_bin_starts_with.md
         - Categories:
-            - cat_get_categories: man/expr_cat_get_categories.md
             - cat_physical: man/expr_cat_physical.md
             - cat_to: man/expr_cat_to.md
         - Columns / names:
