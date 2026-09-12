@@ -4,7 +4,13 @@
 \alias{pl__concat}
 \title{Combine multiple DataFrames, LazyFrames, or Series into a single object}
 \usage{
-pl__concat(..., how = "vertical", rechunk = FALSE, parallel = TRUE)
+pl__concat(
+  ...,
+  how = "vertical",
+  rechunk = FALSE,
+  parallel = TRUE,
+  strict = deprecated()
+)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> \link[=DataFrame]{DataFrames},
@@ -41,6 +47,8 @@ more control over this you should use a suitable \code{join} method directly).
 
 \item{parallel}{Only relevant for \link[=LazyFrame]{LazyFrames}. This determines if the
 concatenated lazy computations may be executed in parallel.}
+
+\item{strict}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Deprecated. \code{how = "horizontal"} already requires equal heights. Use \code{how = "horizontal_extend"} to pad shorter frames with null.}
 }
 \value{
 The same class (\code{polars_data_frame}, \code{polars_lazy_frame} or

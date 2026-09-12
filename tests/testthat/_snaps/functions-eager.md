@@ -28,6 +28,74 @@
       x Problematic argument:
       * x = as_polars_df(mtcars)
 
+# concat() singleton shortcut validates explicit strict
+
+    Code
+      invisible(pl$concat(df, how = "horizontal", strict = TRUE))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The argument `strict` of `pl$concat()` is deprecated as of polars 2.0.0.
+      i Omit the `strict` argument. To pad shorter frames with nulls, use `how = "horizontal_extend"`.
+
+---
+
+    Code
+      pl$concat(df$lazy(), how = "horizontal", strict = FALSE)
+    Condition
+      Warning:
+      ! The argument `strict` of `pl$concat()` is deprecated as of polars 2.0.0.
+      i Omit the `strict` argument. To pad shorter frames with nulls, use `how = "horizontal_extend"`.
+      Error in `pl$concat()`:
+      ! The argument `strict` cannot be `FALSE` when `how = "horizontal"`.
+      i Use `how = "horizontal_extend"` instead.
+
+---
+
+    Code
+      pl$concat(df$lazy(), how = "horizontal_extend", strict = NULL)
+    Condition
+      Warning:
+      ! The argument `strict` of `pl$concat()` is deprecated as of polars 2.0.0.
+      i Omit the `strict` argument. To pad shorter frames with nulls, use `how = "horizontal_extend"`.
+      Error in `pl$concat()`:
+      ! The argument `strict` must be omitted when `how = "horizontal_extend"`.
+
+# concat() warns when explicit strict is ignored
+
+    Code
+      invisible(pl$concat(df, df, how = "vertical", strict = TRUE))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The argument `strict` of `pl$concat()` is deprecated as of polars 2.0.0.
+      i Omit the `strict` argument. To pad shorter frames with nulls, use `how = "horizontal_extend"`.
+
+---
+
+    Code
+      invisible(pl$concat(lf, lf, how = "diagonal", strict = FALSE))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The argument `strict` of `pl$concat()` is deprecated as of polars 2.0.0.
+      i Omit the `strict` argument. To pad shorter frames with nulls, use `how = "horizontal_extend"`.
+
+---
+
+    Code
+      invisible(pl$concat(series, series, how = "vertical", strict = TRUE))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The argument `strict` of `pl$concat()` is deprecated as of polars 2.0.0.
+      i Omit the `strict` argument. To pad shorter frames with nulls, use `how = "horizontal_extend"`.
+
+---
+
+    Code
+      invisible(pl$concat(df, df, how = "vertical", strict = 1))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The argument `strict` of `pl$concat()` is deprecated as of polars 2.0.0.
+      i Omit the `strict` argument. To pad shorter frames with nulls, use `how = "horizontal_extend"`.
+
 # how = 'vertical_relaxed' works
 
     Code
@@ -44,12 +112,58 @@
 # how = 'horizontal' works
 
     Code
+      pl$concat(df, df2, how = "horizontal", strict = FALSE)
+    Condition
+      Warning:
+      ! The argument `strict` of `pl$concat()` is deprecated as of polars 2.0.0.
+      i Omit the `strict` argument. To pad shorter frames with nulls, use `how = "horizontal_extend"`.
+      Error in `pl$concat()`:
+      ! The argument `strict` cannot be `FALSE` when `how = "horizontal"`.
+      i Use `how = "horizontal_extend"` instead.
+
+---
+
+    Code
+      pl$concat(lf, lf2, how = "horizontal", strict = FALSE)
+    Condition
+      Warning:
+      ! The argument `strict` of `pl$concat()` is deprecated as of polars 2.0.0.
+      i Omit the `strict` argument. To pad shorter frames with nulls, use `how = "horizontal_extend"`.
+      Error in `pl$concat()`:
+      ! The argument `strict` cannot be `FALSE` when `how = "horizontal"`.
+      i Use `how = "horizontal_extend"` instead.
+
+---
+
+    Code
       pl$concat(as_polars_series(1:2, "a"), as_polars_series(5:1, "b"), how = "horizontal_extend")
     Condition
       Error in `pl$concat()`:
       ! Series only supports `how = "vertical"`.
 
 # how = 'horizontal_extend' works
+
+    Code
+      pl$concat(df, df2, how = "horizontal_extend", strict = TRUE)
+    Condition
+      Warning:
+      ! The argument `strict` of `pl$concat()` is deprecated as of polars 2.0.0.
+      i Omit the `strict` argument. To pad shorter frames with nulls, use `how = "horizontal_extend"`.
+      Error in `pl$concat()`:
+      ! The argument `strict` must be omitted when `how = "horizontal_extend"`.
+
+---
+
+    Code
+      pl$concat(df$lazy(), df2$lazy(), how = "horizontal_extend", strict = FALSE)
+    Condition
+      Warning:
+      ! The argument `strict` of `pl$concat()` is deprecated as of polars 2.0.0.
+      i Omit the `strict` argument. To pad shorter frames with nulls, use `how = "horizontal_extend"`.
+      Error in `pl$concat()`:
+      ! The argument `strict` must be omitted when `how = "horizontal_extend"`.
+
+---
 
     Code
       pl$concat(df, df, how = "horizontal_extend")

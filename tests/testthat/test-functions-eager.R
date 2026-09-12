@@ -48,6 +48,47 @@ test_that("concat() on length-1 input return input for Series", {
   expect_equal(input, output)
 })
 
+test_that("concat() singleton shortcut validates explicit strict", {
+  local_lifecycle_warnings()
+  df <- pl$DataFrame(a = 1:2)
+  expect_snapshot(
+    invisible(pl$concat(df, how = "horizontal", strict = TRUE)),
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    pl$concat(df$lazy(), how = "horizontal", strict = FALSE),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$concat(df$lazy(), how = "horizontal_extend", strict = NULL),
+    error = TRUE
+  )
+})
+
+test_that("concat() warns when explicit strict is ignored", {
+  local_lifecycle_warnings()
+  df <- pl$DataFrame(a = 1:2)
+  lf <- df$lazy()
+  series <- pl$Series("a", 1:2)
+
+  expect_snapshot(
+    invisible(pl$concat(df, df, how = "vertical", strict = TRUE)),
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    invisible(pl$concat(lf, lf, how = "diagonal", strict = FALSE)),
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    invisible(pl$concat(series, series, how = "vertical", strict = TRUE)),
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    invisible(pl$concat(df, df, how = "vertical", strict = 1)),
+    cnd_class = TRUE
+  )
+})
+
 test_that("arg 'rechunk' works", {
   df <- as_polars_df(mtcars)
   expect_equal(
@@ -70,7 +111,6 @@ test_that("how = 'vertical' works", {
       !!!do.call(rbind, lapply(list(df, df, df), as.data.frame))
     )
   )
-
   # works with lazy
   lf <- pl$LazyFrame(a = 1:2, b = letters[1:2])
   expect_equal(
@@ -79,7 +119,6 @@ test_that("how = 'vertical' works", {
       !!!do.call(rbind, lapply(list(lf, lf, lf), as.data.frame))
     )
   )
-
   # works with Series
   expect_equal(
     pl$concat(
@@ -127,6 +166,26 @@ test_that("how = 'horizontal' works", {
   )
   expect_error(pl$concat(lf, lf2, lf3, how = "horizontal")$collect())
 
+  # `strict = TRUE` is equivalent to the default for DataFrames and LazyFrames
+  expect_equal(
+    with_lifecycle_silence(pl$concat(df, df2, how = "horizontal", strict = TRUE)),
+    pl$DataFrame(a = 1:2, b = letters[1:2], a2 = 1:2, b2 = letters[1:2])
+  )
+  expect_equal(
+    with_lifecycle_silence(pl$concat(lf, lf2, how = "horizontal", strict = TRUE)$collect()),
+    pl$DataFrame(a = 1:2, b = letters[1:2], a2 = 1:2, b2 = letters[1:2])
+  )
+
+  # `strict = FALSE` has been replaced by `how = "horizontal_extend"`
+  expect_snapshot(
+    pl$concat(df, df2, how = "horizontal", strict = FALSE),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$concat(lf, lf2, how = "horizontal", strict = FALSE),
+    error = TRUE
+  )
+
   # doesn't work with Series
   expect_snapshot(
     pl$concat(as_polars_series(1:2, "a"), as_polars_series(5:1, "b"), how = "horizontal_extend"),
@@ -151,6 +210,15 @@ test_that("how = 'horizontal_extend' works", {
   expect_equal(
     pl$concat(df, df2, df3, how = "horizontal_extend"),
     df4
+  )
+
+  expect_snapshot(
+    pl$concat(df, df2, how = "horizontal_extend", strict = TRUE),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$concat(df$lazy(), df2$lazy(), how = "horizontal_extend", strict = FALSE),
+    error = TRUE
   )
 
   # Duplicated columns
