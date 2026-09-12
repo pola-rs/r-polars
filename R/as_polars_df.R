@@ -149,7 +149,6 @@ as_polars_df.polars_lazy_frame <- function(
   engine = c("auto", "in-memory", "streaming"),
   optimizations = pl$QueryOptFlags()
 ) {
-  check_dots_empty0(...)
   x$collect(
     engine = engine,
     optimizations = optimizations
