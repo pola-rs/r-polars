@@ -841,6 +841,24 @@ test_that("$gather_every() does not collide with a user column name", {
   )
 })
 
+test_that("$gather_every() keeps map_batches lazy", {
+  calls <- 0L
+  lf <- pl$LazyFrame(a = 1:5)$select(
+    a = pl$col("a")$map_batches(
+      \(x) {
+        calls <<- calls + 1L
+        x
+      }
+    )
+  )
+
+  gathered <- lf$gather_every(2)
+  expect_equal(calls, 0L)
+
+  gathered$collect()
+  expect_gt(calls, 0L)
+})
+
 test_that("fill_null(): basic usage", {
   df <- pl$DataFrame(
     a = c(1.5, 2, NA, NaN),
