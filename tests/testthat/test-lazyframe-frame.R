@@ -93,56 +93,6 @@ test_that("select_seq() works", {
   )
 })
 
-test_that("POLARS_AUTO_STRUCTIFY works for select", {
-  expect_deprecated(
-    withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
-      pl$LazyFrame()$select(pl$lit(1L))
-    })
-  )
-
-  # This feature is deprecated
-  local_lifecycle_silence()
-
-  .data <- pl$DataFrame(
-    foo = 1:3,
-    bar = 6:8,
-    ham = letters[1:3],
-  )
-
-  withr::with_envvar(
-    c(POLARS_AUTO_STRUCTIFY = "foo"),
-    {
-      expect_query_error(
-        .input$select(1),
-        .data,
-        r"(Environment variable `POLARS_AUTO_STRUCTIFY` must be one of \('0', '1'\), got 'foo')"
-      )
-    }
-  )
-
-  withr::with_envvar(
-    c(POLARS_AUTO_STRUCTIFY = "0"),
-    {
-      expect_query_error(
-        .input$select(is_odd = ((pl$col(pl$Int32) %% 2) == 1)$name$suffix("_is_odd")),
-        .data,
-        "duplicate",
-        fixed = TRUE
-      )
-
-      expect_query_equal(
-        withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
-          .input$select(is_odd = ((pl$col(pl$Int32) %% 2) == 1)$name$suffix("_is_odd"))
-        }),
-        .data,
-        as_polars_lf(.data)$select(
-          is_odd = pl$struct((pl$col(pl$Int32) %% 2)$name$suffix("_is_odd") == 1),
-        )$collect()
-      )
-    }
-  )
-})
-
 test_that("slice/head/tail works lazy/eager", {
   .data <- pl$DataFrame(
     foo = 1:5,
@@ -458,32 +408,6 @@ test_that("unique works", {
   )
 })
 
-patrick::with_parameters_test_that(
-  "$unique's argument deprecation",
-  .cases = {
-    tibble::tribble(
-      ~.test_name, ~value,
-      "NULL", NULL,
-      "list of strings", list("bar", "ham"),
-      "expr", pl$col(c("bar", "ham"))
-    )
-  },
-  code = {
-    df <- pl$DataFrame(
-      foo = c(1, 2, 3, 1),
-      bar = c("a", "a", "a", "a"),
-      ham = c("b", "b", "b", "b"),
-    )
-
-    expect_snapshot(df$lazy()$unique(subset = value, maintain_order = TRUE))
-    expect_snapshot(df$unique(subset = value, maintain_order = TRUE))
-    expect_snapshot(df$lazy()$unique("foo", subset = value, maintain_order = TRUE), error = TRUE)
-    expect_snapshot(df$unique("foo", subset = value, maintain_order = TRUE), error = TRUE)
-    expect_snapshot(df$lazy()$unique(value, maintain_order = TRUE))
-    expect_snapshot(df$unique(value, maintain_order = TRUE))
-  }
-)
-
 test_that("join: basic usage", {
   df <- pl$DataFrame(
     foo = 1:3,
@@ -788,8 +712,6 @@ test_that("explain() works", {
   expect_snapshot(cat(lazy_query$explain(
     optimizations = pl$QueryOptFlags(predicate_pushdown = FALSE)
   )))
-  expect_snapshot(cat(lazy_query$explain(predicate_pushdown = FALSE)))
-
   expect_snapshot(cat(lazy_query$explain(format = "tree", optimized = FALSE)))
   expect_snapshot(cat(lazy_query$explain(format = "tree", )))
 })
@@ -1058,9 +980,6 @@ test_that("explode() works", {
     df,
     expected_df
   )
-
-  # default warns that empty_as_null will change to FALSE in 2.0
-  expect_warning(df$lazy()$explode("numbers"), "will change")
 
   # empty and null handlings
   df <- pl$DataFrame(

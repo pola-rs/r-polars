@@ -25,11 +25,22 @@ patrick::with_parameters_test_that(
     )
   },
   code = {
-    pl_df <- as_polars_df(x, argument_should_be_ignored = "foo")
+    pl_df <- if (is_polars_lf(x)) {
+      as_polars_df(x)
+    } else {
+      as_polars_df(x, argument_should_be_ignored = "foo")
+    }
     expect_s3_class(pl_df, "polars_data_frame")
     expect_snapshot(print(pl_df))
   }
 )
+
+test_that("as_polars_df.lazy_frame rejects unknown arguments", {
+  expect_error(
+    as_polars_df(pl$DataFrame(x = 1)$lazy(), type_coercion = FALSE),
+    "`...` must be empty"
+  )
+})
 
 test_that("as_polars_df.default throws an error", {
   expect_snapshot(as_polars_df(1), error = TRUE)

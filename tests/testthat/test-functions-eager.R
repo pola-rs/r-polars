@@ -125,36 +125,14 @@ test_that("how = 'horizontal' works", {
     b3 = c(letters[1], NA)
   )
 
-  # strict = TRUE raises an error when heights differ
-  expect_snapshot(
-    pl$concat(df, df2, df3, how = "horizontal", strict = TRUE),
-    error = TRUE
-  )
-
-  # Duplicated columns error
-  expect_snapshot(
-    pl$concat(df, df, how = "horizontal", strict = TRUE),
-    error = TRUE
-  )
-
-  # how = "horizontal" without strict is deprecated
-  expect_deprecated(pl$concat(df, df2, df3, how = "horizontal"))
-  expect_deprecated(pl$concat(df, df2, df3, how = "horizontal", strict = FALSE))
-
-  # invalid strict values produce type errors
-  expect_snapshot(pl$concat(df, df2, how = "horizontal", strict = NULL), error = TRUE)
-  expect_snapshot(pl$concat(df, df2, how = "horizontal", strict = NA), error = TRUE)
-  expect_snapshot(pl$concat(df, df2, how = "horizontal", strict = "true"), error = TRUE)
-  expect_snapshot(pl$concat(df, df2, how = "horizontal", strict = c(TRUE, FALSE)), error = TRUE)
-
   # works with lazy
   lf <- df$lazy()
   lf2 <- df2$lazy()
   lf3 <- df3$lazy()
 
-  expect_snapshot(
-    pl$concat(lf, lf2, lf3, how = "horizontal", strict = TRUE)$collect(),
-    error = TRUE
+  expect_equal(
+    pl$concat(lf, lf2, lf3, how = "horizontal")$collect(),
+    df4
   )
 
   # doesn't work with Series

@@ -91,12 +91,10 @@ impl TryFrom<ObjSexp> for Wrap<SinkDestination> {
     fn try_from(obj: ObjSexp) -> Result<Self, savvy::Error> {
         let class_name = get_s7_class_name(&obj);
 
-        // Check if this is the new PartitionBy class or legacy SinkDirectory-based classes
         if class_name.as_deref() == Some("PartitionBy") {
             extract_partition_by(&obj)
         } else {
-            // TODO: remove legacy support later
-            extract_sink_directory(&obj)
+            Err(savvy_err!("expected a PartitionBy object"))
         }
     }
 }
@@ -127,46 +125,5 @@ fn extract_partition_by(obj: &ObjSexp) -> savvy::Result<Wrap<SinkDestination>> {
         approximate_bytes_per_file: approximate_bytes_per_file
             .map(|wrap| wrap.0)
             .unwrap_or(u64::MAX),
-    }))
-}
-
-/// Extract from legacy SinkDirectory-based classes (PartitionMaxSize, PartitionByKey, PartitionParted)
-fn extract_sink_directory(obj: &ObjSexp) -> savvy::Result<Wrap<SinkDestination>> {
-    let base_path: &str = try_extract_prop(obj, "base_path")?;
-    let partition_by: Option<Wrap<Vec<Expr>>> = try_extract_opt_prop(obj, "partition_by")?;
-    let partition_keys_sorted: Option<bool> = try_extract_opt_prop(obj, "partition_keys_sorted")?;
-    let include_keys: Option<bool> = try_extract_opt_prop(obj, "include_keys")?;
-    let max_rows_per_file: Option<Wrap<u32>> = try_extract_opt_prop(obj, "max_rows_per_file")?;
-
-    let partition_strategy: PartitionStrategy = if let Some(partition_by) = &partition_by {
-        PartitionStrategy::Keyed {
-            keys: partition_by.0.clone(),
-            include_keys: include_keys.unwrap_or(true),
-            keys_pre_grouped: partition_keys_sorted.unwrap_or(false),
-        }
-    } else if let Some(parameter_name) = partition_keys_sorted
-        .is_some()
-        .then_some("partition_keys_sorted")
-        .or(include_keys.is_some().then_some("include_keys"))
-    {
-        return Err(savvy_err!(
-            "cannot use `{parameter_name}` without specifying `partition_by`"
-        ));
-    } else if max_rows_per_file.is_some() {
-        PartitionStrategy::FileSize
-    } else {
-        return Err(savvy_err!(
-            "at least one of (`partition_by`, `max_rows_per_file`) \
-             must be specified for SinkPartitioned",
-        ));
-    };
-
-    Ok(Wrap(SinkDestination::Partitioned {
-        base_path: PlRefPath::new(base_path),
-        file_path_provider: None,
-        partition_strategy,
-        max_rows_per_file: max_rows_per_file.map(|wrap| wrap.0).unwrap_or(IdxSize::MAX),
-        // Legacy classes don't support approximate_bytes_per_file
-        approximate_bytes_per_file: u64::MAX,
     }))
 }

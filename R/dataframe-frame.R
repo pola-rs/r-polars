@@ -858,12 +858,10 @@ dataframe__set_sorted <- function(column, ..., descending = FALSE) {
 dataframe__unique <- function(
   ...,
   keep = c("any", "none", "first", "last"),
-  maintain_order = FALSE,
-  subset = deprecated()
+  maintain_order = FALSE
 ) {
   self$lazy()$unique(
     ...,
-    subset = subset,
     keep = keep,
     maintain_order = maintain_order
   )$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
@@ -1023,10 +1021,11 @@ dataframe__drop_nulls <- function(...) {
 #' )
 #'
 #' # Apply `<series>$str$json_decode()` to both the "a" and "b" columns
-#' df2$map_columns(c("a", "b"), \(s) s$str$json_decode())
+#' dtype <- pl$Struct(value = pl$Int64)
+#' df2$map_columns(c("a", "b"), \(s) s$str$json_decode(dtype))
 #'
 #' # Use a selector to apply the function to all columns
-#' df2$map_columns(cs$all(), \(s) s$str$json_decode())
+#' df2$map_columns(cs$all(), \(s) s$str$json_decode(dtype))
 dataframe__map_columns <- function(column_names, lambda) {
   wrap({
     lambda <- as_function(lambda)
@@ -1109,7 +1108,7 @@ dataframe__fill_null <- function(
 #' )
 #'
 #' df$explode("numbers")
-dataframe__explode <- function(..., empty_as_null = NULL, keep_nulls = TRUE) {
+dataframe__explode <- function(..., empty_as_null = TRUE, keep_nulls = TRUE) {
   self$lazy()$explode(..., empty_as_null = empty_as_null, keep_nulls = keep_nulls)$collect(
     optimizations = DEFAULT_EAGER_OPT_FLAGS
   ) |>

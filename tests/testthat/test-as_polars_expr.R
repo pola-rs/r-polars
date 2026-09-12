@@ -2,20 +2,6 @@ test_that("x argument can't be missing", {
   expect_error(as_polars_expr(), r"(The `x` argument of `as_polars_expr\(\)` can't be missing)")
 })
 
-test_that("as_polars_expr for polars_expr `structify=TRUE`", {
-  expect_deprecated(as_polars_expr(pl$col(c("a", "b")), structify = TRUE))
-
-  # This feature is deprecated
-  local_lifecycle_silence()
-
-  as_func <- function(x) {
-    as_polars_expr(x, structify = TRUE)
-  }
-  expect_equal(as_func(pl$col("a")), pl$col("a"))
-  expect_equal(as_func(pl$col(c("a", "b"))), pl$struct(pl$col(c("a", "b"))))
-  expect_equal(as_func(pl$col("*")), pl$struct(pl$col("*")))
-})
-
 test_that("as_polars_expr for character `as_lit=FALSE`", {
   invalid_error_message <- r"(Invalid input for `pl\$col\(\)`)"
 

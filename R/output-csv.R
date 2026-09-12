@@ -81,18 +81,10 @@ lazyframe__sink_csv <- function(
   quote_style = c("necessary", "always", "never", "non_numeric"),
   maintain_order = TRUE,
   storage_options = NULL,
-  retries = deprecated(),
   sync_on_close = c("none", "data", "all"),
   mkdir = FALSE,
   engine = c("auto", "in-memory", "streaming"),
-  optimizations = pl$QueryOptFlags(),
-  type_coercion = deprecated(),
-  predicate_pushdown = deprecated(),
-  projection_pushdown = deprecated(),
-  simplify_expression = deprecated(),
-  slice_pushdown = deprecated(),
-  collapse_joins = deprecated(),
-  no_optimization = deprecated()
+  optimizations = pl$QueryOptFlags()
 ) {
   wrap({
     check_dots_empty0(...)
@@ -118,19 +110,11 @@ lazyframe__sink_csv <- function(
       quote_style = quote_style,
       maintain_order = maintain_order,
       storage_options = storage_options,
-      retries = retries,
       sync_on_close = sync_on_close,
       mkdir = mkdir
     )$collect(
       engine = engine,
-      optimizations = optimizations,
-      type_coercion = type_coercion,
-      predicate_pushdown = predicate_pushdown,
-      projection_pushdown = projection_pushdown,
-      simplify_expression = simplify_expression,
-      slice_pushdown = slice_pushdown,
-      collapse_joins = collapse_joins,
-      no_optimization = no_optimization
+      optimizations = optimizations
     )
   })
 
@@ -160,7 +144,6 @@ lazyframe__lazy_sink_csv <- function(
   quote_style = c("necessary", "always", "never", "non_numeric"),
   maintain_order = TRUE,
   storage_options = NULL,
-  retries = deprecated(),
   sync_on_close = c("none", "data", "all"),
   mkdir = FALSE
 ) {
@@ -168,25 +151,6 @@ lazyframe__lazy_sink_csv <- function(
     check_dots_empty0(...)
     check_character(storage_options, allow_null = TRUE)
     compression <- arg_match0(compression, values = c("uncompressed", "gzip", "zstd"))
-
-    if (is_present(retries)) {
-      deprecate_warn(
-        c(
-          `!` = sprintf(
-            "The %s argument is deprecated as of %s 1.9.0.",
-            format_arg("retries"),
-            format_pkg("polars")
-          ),
-          i = sprintf(
-            "Specify %s in %s instead.",
-            format_code("max_retries"),
-            format_arg("storage_options")
-          )
-        )
-      )
-      storage_options <- storage_options %||% character()
-      storage_options[["max_retries"]] <- as.character(retries)
-    }
 
     target <- arg_to_sink_target(path)
     check_arg_is_1byte("separator", separator)
@@ -260,8 +224,7 @@ dataframe__write_csv <- function(
   decimal_comma = FALSE,
   null_value = "",
   quote_style = c("necessary", "always", "never", "non_numeric"),
-  storage_options = NULL,
-  retries = deprecated()
+  storage_options = NULL
 ) {
   wrap({
     check_dots_empty0(...)
@@ -286,7 +249,6 @@ dataframe__write_csv <- function(
       null_value = null_value,
       quote_style = quote_style,
       storage_options = storage_options,
-      retries = retries,
       optimizations = DEFAULT_EAGER_OPT_FLAGS,
       engine = "in-memory"
     )

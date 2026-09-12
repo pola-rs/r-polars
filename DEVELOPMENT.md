@@ -286,6 +286,10 @@ pl$lit(1)$any(TRUE)
 
 #### Dynamic Dots
 
+The following example is a historical implementation from before Polars 2.0.
+The `POLARS_AUTO_STRUCTIFY` environment variable and the internal
+`__structify` parameter were removed from R Polars 2.0.0.
+
 Variable length arguments in Python (like `*args` or `**kwargs`) can be implemented in R using `...`.
 In R, we can use `rlang::list2()` to handle these arguments, which is a feature known as Dynamic Dots.
 
@@ -305,7 +309,7 @@ class LazyFrame:
         return self._from_pyldf(self._ldf.select(pyexprs))
 ```
 
-_source: `py-polars/src/polars/lazyframe/frame.py` of <https://github.com/pola-rs/polars>_
+_source: historical `py-polars/src/polars/lazyframe/frame.py` implementation from <https://github.com/pola-rs/polars>_
 
 The `parse_into_list_of_expressions` function is responsible for converting the variable-length arguments
 (`*exprs` and `**named_exprs`) into a list of expressions.
@@ -319,7 +323,7 @@ parse_into_list_of_expressions <- function(..., `__structify` = FALSE) {
 }
 ```
 
-_source: `R/utils-parse-expr.R` of this repository_
+_source: historical former implementation from `R/utils-parse-expr.R`_
 
 This function is called in the `select` method, handling variable-length arguments,
 as same as in Python Polars:
@@ -335,7 +339,7 @@ lazyframe__select <- function(...) {
 }
 ```
 
-_source: `R/lazyframe-frame.R` of this repository_
+_source: historical former implementation from `R/lazyframe-frame.R`_
 
 ## Value Conversion between Polars and R
 
@@ -628,7 +632,8 @@ When py-polars deprecates a parameter or method, add corresponding deprecation w
 
 Use `deprecated()` as the default value and `is_present()` to detect usage.
 These helpers are defined in `R/utils-deprecation.R` (wrapping the lifecycle package).
-Here is the pattern used for the `allow_missing_columns` parameter:
+The following is a historical example from before Polars 2.0; the
+`allow_missing_columns` parameter is removed from R Polars 2.0.0.
 
 ```r
 pl__scan_parquet <- function(
@@ -663,7 +668,7 @@ pl__scan_parquet <- function(
 }
 ```
 
-_source: `R/input-parquet-functions.R` of this repository_
+_source: historical former implementation from `R/input-parquet-functions.R`_
 
 Key points:
 
@@ -702,6 +707,9 @@ _source: historical former implementation from `R/expr-expr.R`_
 
 ##### Deprecating a class
 
+The following is a historical example from before Polars 2.0; the legacy
+partition classes shown here are removed from R Polars 2.0.0.
+
 When upstream replaces one class with another, use a deprecated constructor that delegates
 to the replacement class:
 
@@ -733,7 +741,7 @@ PartitionMaxSize <- new_class(
 )
 ```
 
-_source: `R/output-partition.R` of this repository_
+_source: historical former implementation from `R/output-partition.R`_
 
 #### 6. Update documentation
 

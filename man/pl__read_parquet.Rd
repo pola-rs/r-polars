@@ -17,14 +17,11 @@ pl__read_parquet(
   schema = NULL,
   hive_schema = NULL,
   try_parse_hive_dates = TRUE,
-  rechunk = deprecated(),
   low_memory = FALSE,
   cache = TRUE,
   storage_options = NULL,
-  retries = deprecated(),
   include_file_paths = NULL,
-  missing_columns = c("raise", "insert"),
-  allow_missing_columns = deprecated()
+  missing_columns = c("raise", "insert")
 )
 }
 \arguments{
@@ -78,10 +75,6 @@ If \code{NULL} (default), the schema of the Hive partitions is inferred.}
 \item{try_parse_hive_dates}{Whether to try parsing hive values as date /
 datetime types.}
 
-\item{rechunk}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Reallocate to contiguous
-memory when all chunks/files are parsed. Call \verb{$rechunk()} on the output
-instead.}
-
 \item{low_memory}{Reduce memory pressure at the expense of performance}
 
 \item{cache}{Cache the result after reading.}
@@ -102,10 +95,6 @@ variable.
 If \code{storage_options} is not provided, Polars will try to infer the
 information from environment variables.}
 
-\item{retries}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Number of retries if
-accessing a cloud instance fails. Specify \code{max_retries} in
-\code{storage_options} instead.}
-
 \item{include_file_paths}{Include the path of the source file(s) as a column
 with this name.}
 
@@ -115,14 +104,6 @@ are missing from the data:
 \item \code{"raise"} (default): Raises an error.
 \item \code{"insert"}:  Inserts the missing columns using NULLs as the row values.
 }}
-
-\item{allow_missing_columns}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-Deprecated in favor of \code{missing_columns}.
-When reading a list of parquet files, if a
-column existing in the first file cannot be found in subsequent files, the
-default behavior is to raise an error. However, if \code{allow_missing_columns}
-is set to \code{TRUE}, a full-NULL column is returned instead of erroring for the
-files that do not contain the column.}
 }
 \value{
 A polars \link{DataFrame}

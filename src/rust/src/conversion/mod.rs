@@ -1167,7 +1167,7 @@ impl TryFrom<Sexp> for Wrap<SinkDestination> {
                 Ok(Wrap(target))
             }
             TypedSexp::Obj(o) => <Wrap<SinkDestination>>::try_from(o),
-            _ => Err("Only accept a path string or a SinkDirectory object"
+            _ => Err("Only accept a path string or a PartitionBy object"
                 .to_string()
                 .into()),
         }

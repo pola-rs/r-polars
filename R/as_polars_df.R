@@ -147,29 +147,12 @@ as_polars_df.polars_lazy_frame <- function(
   x,
   ...,
   engine = c("auto", "in-memory", "streaming"),
-  optimizations = pl$QueryOptFlags(),
-  type_coercion = deprecated(),
-  predicate_pushdown = deprecated(),
-  projection_pushdown = deprecated(),
-  simplify_expression = deprecated(),
-  slice_pushdown = deprecated(),
-  comm_subplan_elim = deprecated(),
-  comm_subexpr_elim = deprecated(),
-  cluster_with_columns = deprecated(),
-  no_optimization = deprecated()
+  optimizations = pl$QueryOptFlags()
 ) {
+  check_dots_empty0(...)
   x$collect(
     engine = engine,
-    optimizations = optimizations,
-    type_coercion = type_coercion,
-    predicate_pushdown = predicate_pushdown,
-    projection_pushdown = projection_pushdown,
-    simplify_expression = simplify_expression,
-    slice_pushdown = slice_pushdown,
-    comm_subplan_elim = comm_subplan_elim,
-    comm_subexpr_elim = comm_subexpr_elim,
-    cluster_with_columns = cluster_with_columns,
-    no_optimization = no_optimization
+    optimizations = optimizations
   )
 }
 

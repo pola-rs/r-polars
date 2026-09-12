@@ -45,8 +45,9 @@ df2 <- pl$DataFrame(
 )
 
 # Apply `<series>$str$json_decode()` to both the "a" and "b" columns
-df2$map_columns(c("a", "b"), \\(s) s$str$json_decode())
+dtype <- pl$Struct(value = pl$Int64)
+df2$map_columns(c("a", "b"), \\(s) s$str$json_decode(dtype))
 
 # Use a selector to apply the function to all columns
-df2$map_columns(cs$all(), \\(s) s$str$json_decode())
+df2$map_columns(cs$all(), \\(s) s$str$json_decode(dtype))
 }

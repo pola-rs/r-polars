@@ -1425,14 +1425,13 @@ test_that("filter", {
 })
 
 test_that("explode", {
-  local_lifecycle_warnings()
   expect_equal(
     pl$DataFrame(a = list(letters))$select(pl$col("a")$explode(empty_as_null = TRUE)),
     pl$DataFrame(a = letters)
   )
-  expect_warning(
+  expect_equal(
     pl$DataFrame(a = list(letters))$select(pl$col("a")$explode()),
-    "will change"
+    pl$DataFrame(a = letters)
   )
   expect_equal(
     pl$DataFrame(a = list(letters))$select(
@@ -3039,8 +3038,7 @@ test_that("index_of works", {
     )$cast(pl$UInt32)
   )
 
-  # Test deprecation and error
-  expect_snapshot(df$select(na = pl$col("a")$index_of(NA)))
+  # Test invalid dtype error
   expect_snapshot(df$select(na = pl$col("a")$index_of(NA_character_)), error = TRUE)
 })
 

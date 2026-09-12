@@ -2859,11 +2859,6 @@ SEXP savvy_PlRLazyFrame_serialize_binary__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_serialize_json__impl(SEXP self__) {
-    SEXP res = savvy_PlRLazyFrame_serialize_json__ffi(self__);
-    return handle_result(res);
-}
-
 SEXP savvy_PlRLazyFrame_shift__impl(SEXP self__, SEXP c_arg__n, SEXP c_arg__fill_value) {
     SEXP res = savvy_PlRLazyFrame_shift__ffi(self__, c_arg__n, c_arg__fill_value);
     return handle_result(res);
@@ -3994,7 +3989,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_select__impl", (DL_FUNC) &savvy_PlRLazyFrame_select__impl, 2},
     {"savvy_PlRLazyFrame_select_seq__impl", (DL_FUNC) &savvy_PlRLazyFrame_select_seq__impl, 2},
     {"savvy_PlRLazyFrame_serialize_binary__impl", (DL_FUNC) &savvy_PlRLazyFrame_serialize_binary__impl, 1},
-    {"savvy_PlRLazyFrame_serialize_json__impl", (DL_FUNC) &savvy_PlRLazyFrame_serialize_json__impl, 1},
     {"savvy_PlRLazyFrame_shift__impl", (DL_FUNC) &savvy_PlRLazyFrame_shift__impl, 3},
     {"savvy_PlRLazyFrame_sink_batches__impl", (DL_FUNC) &savvy_PlRLazyFrame_sink_batches__impl, 4},
     {"savvy_PlRLazyFrame_sink_csv__impl", (DL_FUNC) &savvy_PlRLazyFrame_sink_csv__impl, 23},

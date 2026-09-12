@@ -4,13 +4,7 @@
 \alias{pl__concat}
 \title{Combine multiple DataFrames, LazyFrames, or Series into a single object}
 \usage{
-pl__concat(
-  ...,
-  how = "vertical",
-  rechunk = FALSE,
-  parallel = TRUE,
-  strict = deprecated()
-)
+pl__concat(..., how = "vertical", rechunk = FALSE, parallel = TRUE)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> \link[=DataFrame]{DataFrames},
@@ -27,10 +21,9 @@ column values with \code{null};
 \item \code{"diagonal_relaxed"}: same as \code{"diagonal"}, but additionally coerces
 columns to their common supertype if they are mismatched (eg: Int32 to
 Int64);
-\item \code{"horizontal"}: stacks Series from DataFrames horizontally. All input
-frames must have the same height; raises an error otherwise
-(currently, omitting the deprecated \code{strict} argument warns and redirects
-to \code{"horizontal_extend"} instead; pass \code{strict = TRUE} to opt in early);
+\item \code{"horizontal"}: stacks Series from DataFrames horizontally and fills with
+\code{null} if the input heights don't match (equivalent to
+\code{"horizontal_extend"} in this compatibility release);
 \item \code{"horizontal_extend"}: stacks Series from DataFrames horizontally and
 fills with \code{null} if the lengths don't match;
 \item \code{"align"}, \code{"align_full"}, \code{"align_left"}, \code{"align_right"}: Combines
@@ -49,10 +42,6 @@ more control over this you should use a suitable \code{join} method directly).
 
 \item{parallel}{Only relevant for \link[=LazyFrame]{LazyFrames}. This determines if the
 concatenated lazy computations may be executed in parallel.}
-
-\item{strict}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{how = "horizontal_extend"} (pad with null) instead of \code{strict = FALSE}. To opt
-into requiring equal heights (the future default of \code{how = "horizontal"}),
-pass \code{strict = TRUE}.}
 }
 \value{
 The same class (\code{polars_data_frame}, \code{polars_lazy_frame} or

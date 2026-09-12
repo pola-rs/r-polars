@@ -8,13 +8,9 @@ pl__read_ipc(
   source,
   ...,
   n_rows = NULL,
-  cache = deprecated(),
-  rechunk = deprecated(),
   row_index_name = NULL,
   row_index_offset = 0L,
   storage_options = NULL,
-  retries = deprecated(),
-  file_cache_ttl = deprecated(),
   hive_partitioning = NULL,
   hive_schema = NULL,
   try_parse_hive_dates = TRUE,
@@ -28,14 +24,6 @@ for scanning cloud locations, see the \code{storage_options} parameter.}
 \item{...}{These dots are for future extensions and must be empty.}
 
 \item{n_rows}{Stop reading from the source after reading \code{n_rows}.}
-
-\item{cache}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} The Polars 2.0 streaming
-readers do not use the file cache, and this argument has no direct
-replacement.}
-
-\item{rechunk}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Reallocate to contiguous
-memory when all chunks/files are parsed. Call \verb{$rechunk()} on the output
-instead.}
 
 \item{row_index_name}{If not \code{NULL}, this will insert a row index column with
 the given name.}
@@ -58,14 +46,6 @@ variable.
 
 If \code{storage_options} is not provided, Polars will try to infer the
 information from environment variables.}
-
-\item{retries}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Number of retries if
-accessing a cloud instance fails. Specify \code{max_retries} in
-\code{storage_options} instead.}
-
-\item{file_cache_ttl}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Deprecated and
-ignored. The Polars 2.0 streaming readers do not use the file cache, and
-this argument has no direct replacement.}
 
 \item{hive_partitioning}{Infer statistics and schema from Hive partitioned
 sources and use them to prune reads. If \code{NULL} (default), it is automatically

@@ -3,12 +3,6 @@
 \name{pl__PartitionBy}
 \alias{pl__PartitionBy}
 \alias{PartitionBy}
-\alias{pl__PartitionByKey}
-\alias{PartitionByKey}
-\alias{pl__PartitionMaxSize}
-\alias{PartitionMaxSize}
-\alias{pl__PartitionParted}
-\alias{PartitionParted}
 \alias{polars_partitioning_scheme}
 \title{Partitioning scheme to write files}
 \usage{
@@ -20,12 +14,6 @@ pl__PartitionBy(
   max_rows_per_file = NULL,
   approximate_bytes_per_file = NULL
 )
-
-pl__PartitionByKey(base_path, ..., by, include_key = TRUE)
-
-pl__PartitionMaxSize(base_path, ..., max_size)
-
-pl__PartitionParted(base_path, ..., by, include_key = TRUE)
 }
 \arguments{
 \item{base_path}{The base path for the output files.
@@ -46,14 +34,6 @@ Can only be used if \code{key} is specified, otherwise should be \code{NULL}.}
 This is measured as the estimated size of the DataFrame in memory.
 Defaults to approximately 4GB when \code{key} is specified without \code{max_rows_per_file};
 otherwise unlimited.}
-
-\item{by}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-Something that can be coerced to a list of \link[=polars_expr]{expressions}.
-Used to partition by. Use the \code{key} property of \code{pl$PartitionBy} instead.}
-
-\item{max_size}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-An integer-ish value indicating the maximum size in rows of each of the generated files.
-Use the \code{max_rows_per_file} property of \code{pl$PartitionBy} instead.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -64,16 +44,6 @@ Partitioning schemes are used to write multiple files with \verb{sink_*} and
 \item \code{\link[=polars_partitioning_scheme]{pl$PartitionBy()}}: Configuration for writing to
 multiple output files. Supports partitioning by key expressions, file size limits,
 or both.
-}
-
-The following functions are deprecated and will be removed in a future release:
-\itemize{
-\item \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} \code{\link[=polars_partitioning_scheme]{pl$PartitionByKey()}}:
-Use \code{pl$PartitionBy(key = ...)} instead.
-\item \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} \code{\link[=polars_partitioning_scheme]{pl$PartitionMaxSize()}}:
-Use \code{pl$PartitionBy(max_rows_per_file = ...)} instead.
-\item \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} \code{\link[=polars_partitioning_scheme]{pl$PartitionParted()}}:
-Use \code{pl$PartitionBy(key = ...)} with pre-sorted data instead.
 }
 }
 \examples{

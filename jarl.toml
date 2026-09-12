@@ -24,12 +24,14 @@ operator = "<-"
 [lint.unused_function]
 skipped-functions = [
   "^chained",
+  "^deprecated$",
   "^cs_",
   "^dataframe_",
   "^datatype_",
   "^expr_",
   "^groupby_",
   "^group_by_dynamic_",
+  "^is_present$",
   "^lazyframe_",
   "^namespace_",
   "^pl_",
@@ -40,4 +42,3 @@ skipped-functions = [
   "^sql_",
   "^then_",
 ]
-

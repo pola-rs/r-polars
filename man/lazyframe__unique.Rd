@@ -7,8 +7,7 @@
 lazyframe__unique(
   ...,
   keep = c("any", "none", "first", "last"),
-  maintain_order = FALSE,
-  subset = deprecated()
+  maintain_order = FALSE
 )
 }
 \arguments{
@@ -28,8 +27,6 @@ more optimizations.
 \item{maintain_order}{Keep the same order as the original data. This is
 more expensive to compute. Setting this to \code{TRUE} blocks the possibility to
 run on the streaming engine.}
-
-\item{subset}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Replaced by \code{...} in 1.1.0.}
 }
 \value{
 A polars \link{LazyFrame}

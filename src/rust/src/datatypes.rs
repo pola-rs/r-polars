@@ -100,7 +100,7 @@ impl std::fmt::Display for PlRDataType {
             }
             DataType::Categorical(_, _) => {
                 // TODO: include categories
-                write!(f, "Categorical(ordering='lexical')")
+                write!(f, "Categorical()")
             }
             DataType::Enum(_, mapping) => {
                 let categories = unsafe {
@@ -352,9 +352,7 @@ impl PlRDataType {
             }
             DataType::Categorical(_, _) => {
                 // TODO: return categories
-                let mut out = OwnedListSexp::new(1, true)?;
-                let ordering: Sexp = "lexical".try_into()?;
-                let _ = out.set_name_and_value(0, "ordering", ordering);
+                let out = OwnedListSexp::new(0, true)?;
                 Ok(out.into())
             }
             DataType::Enum(_, mapping) => {

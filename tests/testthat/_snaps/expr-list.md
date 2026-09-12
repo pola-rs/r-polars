@@ -192,4 +192,3 @@
       
       This error occurred in the following expression:
       	col("values").list.sample_fraction([2.0])
-

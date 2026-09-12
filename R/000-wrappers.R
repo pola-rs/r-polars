@@ -4153,12 +4153,6 @@ class(`PlRExpr`) <- c("polars::PlRExpr__bundle", "savvy_polars__sealed")
   }
 }
 
-`PlRLazyFrame_serialize_json` <- function(self) {
-  function() {
-    .Call(savvy_PlRLazyFrame_serialize_json__impl, `self`)
-  }
-}
-
 `PlRLazyFrame_shift` <- function(self) {
   function(`n`, `fill_value` = NULL) {
     `n` <- .savvy_extract_ptr(`n`, "polars::PlRExpr")
@@ -4343,7 +4337,6 @@ class(`PlRExpr`) <- c("polars::PlRExpr__bundle", "savvy_polars__sealed")
   e$`select` <- `PlRLazyFrame_select`(ptr)
   e$`select_seq` <- `PlRLazyFrame_select_seq`(ptr)
   e$`serialize_binary` <- `PlRLazyFrame_serialize_binary`(ptr)
-  e$`serialize_json` <- `PlRLazyFrame_serialize_json`(ptr)
   e$`shift` <- `PlRLazyFrame_shift`(ptr)
   e$`sink_batches` <- `PlRLazyFrame_sink_batches`(ptr)
   e$`sink_csv` <- `PlRLazyFrame_sink_csv`(ptr)

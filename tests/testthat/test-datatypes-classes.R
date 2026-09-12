@@ -62,15 +62,6 @@ patrick::with_parameters_test_that(
   }
 )
 
-test_that("Categorical order deprecation", {
-  expect_deprecated(pl$Categorical("lexical"))
-  expect_deprecated(pl$Categorical("physical"))
-})
-
-test_that("Decimal deprecation", {
-  expect_snapshot(pl$Decimal(NULL, NULL))
-})
-
 patrick::with_parameters_test_that(
   "invalid decimal (precision = {precision}, scale = {scale})",
   .cases = {

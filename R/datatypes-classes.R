@@ -149,25 +149,6 @@ on_load({
 #' @param scale Single integer. Number of digits to the right of the decimal point
 #'   in each number. The default is `0`.
 pl__Decimal <- function(precision = 38L, scale = 0L) {
-  if (is.null(precision)) {
-    deprecate_warn(
-      c(
-        `!` = sprintf("%s should not be %s.", format_arg("precision"), format_code("NULL")),
-        `i` = "Use an integer between 1 and 38 instead."
-      )
-    )
-    precision <- 38L
-  }
-  if (is.null(scale)) {
-    deprecate_warn(
-      c(
-        `!` = sprintf("%s should not be %s.", format_arg("scale"), format_code("NULL")),
-        `i` = sprintf("Use an integer between 0 and %s instead.", format_arg("precision"))
-      )
-    )
-    scale <- 0L
-  }
-
   PlRDataType$new_decimal(scale = scale, precision = precision) |>
     wrap()
 }
@@ -193,27 +174,9 @@ pl__Duration <- function(time_unit = c("us", "ns", "ms")) {
 }
 
 #' @rdname polars_dtype
-#' @param ordering `r lifecycle::badge("deprecated")`
-#'   One of `"lexical"` or `"physical"`.
-#'   This argument is deprecated and ignored.
-#'   Always behaves as if `"lexical"` was passed.
-pl__Categorical <- function(ordering = deprecated()) {
+pl__Categorical <- function() {
   wrap({
-    categories <- if (is_present(ordering)) {
-      deprecate_warn(
-        c(
-          `!` = sprintf("Specifying %s is deprecated.", format_arg("ordering")),
-          `i` = 'Always behaves as if "lexical" was passed in the past versions.'
-        )
-      )
-      ordering <- arg_match0(ordering, c("lexical", "physical"))
-      PlRCategories$global_categories()
-    } else {
-      # TODO: hidden pattern, Categories object is passed
-      PlRCategories$global_categories()
-    }
-
-    PlRDataType$new_categorical(categories)
+    PlRDataType$new_categorical(PlRCategories$global_categories())
   })
 }
 

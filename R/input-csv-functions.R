@@ -32,14 +32,9 @@
 #' @param empty_string_is_null By default, a missing string value is
 #' considered to be `NA`. Setting this parameter to `FALSE` will consider
 #' missing string values as an empty character instead.
-#' @param missing_utf8_is_empty_string `r lifecycle::badge("deprecated")` Use
-#' `empty_string_is_null` instead (note that the meaning is inverted).
 #' @param ignore_errors Keep reading the file even if some lines yield errors.
 #' You can also use `infer_schema = FALSE` to read all columns as UTF8 to
 #' check which values might cause an issue.
-#' @param cache `r lifecycle::badge("deprecated")` The Polars 2.0 streaming
-#' readers do not use the file cache, and this argument has no direct
-#' replacement.
 #  TODO: enable this parameter
 #  @param with_column_names Apply a function over the column names just in time
 #  (when they are determined). This function will receive (and should return) a
@@ -105,14 +100,12 @@ pl__scan_csv <- function(
   null_values = NULL,
   empty_string_is_null = TRUE,
   ignore_errors = FALSE,
-  cache = deprecated(),
   infer_schema = TRUE,
   infer_schema_length = 100,
   infer_schema_files = NULL,
   n_rows = NULL,
   encoding = c("utf8", "utf8-lossy"),
   low_memory = FALSE,
-  rechunk = deprecated(),
   skip_rows_after_header = 0,
   row_index_name = NULL,
   row_index_offset = 0,
@@ -123,11 +116,8 @@ pl__scan_csv <- function(
   decimal_comma = FALSE,
   glob = TRUE,
   storage_options = NULL,
-  retries = deprecated(),
-  file_cache_ttl = deprecated(),
   include_file_paths = NULL,
-  missing_columns = c("raise", "insert"),
-  missing_utf8_is_empty_string = deprecated()
+  missing_columns = c("raise", "insert")
 ) {
   check_dots_empty0(...)
   infer_schema_files_missing <- missing(infer_schema_files)
@@ -158,51 +148,7 @@ pl__scan_csv <- function(
     warn_csv_raise_if_empty()
   }
 
-  if (is_present(cache)) {
-    warn_deprecated_file_cache()
-  } else {
-    cache <- FALSE
-  }
-
-  if (is_present(missing_utf8_is_empty_string)) {
-    deprecate_warn(
-      c(
-        `!` = sprintf(
-          "The %s argument is deprecated as of %s 1.14.0.",
-          format_arg("missing_utf8_is_empty_string"),
-          format_pkg("polars")
-        ),
-        i = sprintf(
-          "Use %s instead (note that the meaning is inverted).",
-          format_arg("empty_string_is_null")
-        )
-      )
-    )
-    empty_string_is_null <- !missing_utf8_is_empty_string
-  }
-
-  if (is_present(retries)) {
-    deprecate_warn(
-      c(
-        `!` = sprintf(
-          "The %s argument is deprecated as of %s 1.9.0.",
-          format_arg("retries"),
-          format_pkg("polars")
-        ),
-        i = sprintf(
-          "Specify %s in %s instead.",
-          format_code("max_retries"),
-          format_arg("storage_options")
-        )
-      )
-    )
-    storage_options <- storage_options %||% character()
-    storage_options[["max_retries"]] <- as.character(retries)
-  }
-
-  if (is_present(file_cache_ttl)) {
-    warn_deprecated_file_cache_ttl()
-  }
+  cache <- FALSE
 
   if (isFALSE(infer_schema)) {
     infer_schema_length <- 0
@@ -214,12 +160,6 @@ pl__scan_csv <- function(
     schema <- parse_into_list_of_datatypes(!!!schema)
   }
 
-  if (is_present(rechunk)) {
-    warn_deprecated_rechunk()
-  } else {
-    rechunk <- FALSE
-  }
-
   PlRLazyFrame$new_from_csv(
     source = source,
     separator = separator,
@@ -229,7 +169,7 @@ pl__scan_csv <- function(
     cache = cache,
     missing_utf8_is_empty_string = !empty_string_is_null,
     low_memory = low_memory,
-    rechunk = rechunk,
+    rechunk = FALSE,
     skip_rows_after_header = skip_rows_after_header,
     encoding = encoding,
     try_parse_dates = try_parse_dates,
@@ -278,14 +218,12 @@ pl__read_csv <- function(
   null_values = NULL,
   empty_string_is_null = TRUE,
   ignore_errors = FALSE,
-  cache = deprecated(),
   infer_schema = TRUE,
   infer_schema_length = 100,
   infer_schema_files = NULL,
   n_rows = NULL,
   encoding = c("utf8", "utf8-lossy"),
   low_memory = FALSE,
-  rechunk = deprecated(),
   skip_rows_after_header = 0,
   row_index_name = NULL,
   row_index_offset = 0,
@@ -296,11 +234,8 @@ pl__read_csv <- function(
   decimal_comma = FALSE,
   glob = TRUE,
   storage_options = NULL,
-  retries = deprecated(),
-  file_cache_ttl = deprecated(),
   include_file_paths = NULL,
-  missing_columns = c("raise", "insert"),
-  missing_utf8_is_empty_string = deprecated()
+  missing_columns = c("raise", "insert")
 ) {
   check_dots_empty0(...)
   .args <- as.list(environment())

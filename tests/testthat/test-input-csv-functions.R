@@ -216,22 +216,6 @@ test_that("read/scan: arg empty_string_is_null works", {
   )
 })
 
-test_that("read/scan: arg missing_utf8_is_empty_string is deprecated", {
-  tmpf <- withr::local_tempfile()
-  writeLines("a,b\n1,a\n2,", tmpf)
-
-  expect_deprecated(
-    pl$read_csv(tmpf, missing_utf8_is_empty_string = TRUE, infer_schema_files = NULL)
-  )
-
-  local_lifecycle_silence()
-  out <- pl$read_csv(tmpf, missing_utf8_is_empty_string = TRUE, infer_schema_files = NULL)
-  expect_equal(
-    out$select("b"),
-    pl$DataFrame(b = c("a", ""))
-  )
-})
-
 test_that("read/scan: arg null_values works", {
   tmpf <- withr::local_tempfile()
   writeLines("a,b,c\n1.5,a,2\n2,,", tmpf)
@@ -448,90 +432,6 @@ test_that("read/scan: arg 'storage_options' throws basic errors", {
   )
 })
 
-test_that("read/scan: arg 'file_cache_ttl' is deprecated", {
-  tmpf <- withr::local_tempfile()
-  writeLines("a\n1", tmpf)
-
-  expect_warning(
-    pl$scan_csv(tmpf, file_cache_ttl = 10, infer_schema_files = NULL),
-    "do not use the file cache",
-    class = "polars_deprecation_warning"
-  )
-  expect_warning(
-    pl$read_csv(tmpf, file_cache_ttl = 10, infer_schema_files = NULL),
-    "do not use the file cache",
-    class = "polars_deprecation_warning"
-  )
-  expect_no_condition(pl$scan_csv(tmpf, infer_schema_files = NULL))
-  expect_no_condition(pl$read_csv(tmpf, infer_schema_files = NULL))
-
-  captured <- NULL
-  original <- get("PlRLazyFrame", asNamespace("polars"))$new_from_csv
-  mock <- new.env(parent = emptyenv())
-  mock$new_from_csv <- function(...) {
-    captured <<- list(...)
-    original(...)
-  }
-  testthat::local_mocked_bindings(PlRLazyFrame = mock, .package = "polars")
-
-  expect_warning(
-    pl$scan_csv(
-      tmpf,
-      file_cache_ttl = 10,
-      infer_schema_files = NULL,
-      storage_options = c(
-        endpoint_url = "https://example.com",
-        file_cache_ttl = "60"
-      )
-    ),
-    "do not use the file cache",
-    class = "polars_deprecation_warning"
-  )
-  expect_identical(
-    captured$storage_options,
-    c(endpoint_url = "https://example.com", file_cache_ttl = "60")
-  )
-})
-
-test_that("read/scan: arg 'cache' is deprecated", {
-  local_lifecycle_warnings()
-  tmpf <- withr::local_tempfile()
-  writeLines("a\n1", tmpf)
-
-  captured <- new.env(parent = emptyenv())
-  original <- get("PlRLazyFrame", asNamespace("polars"))$new_from_csv
-  mock <- new.env(parent = emptyenv())
-  mock$new_from_csv <- function(...) {
-    captured$args <- list(...)
-    original(...)
-  }
-  testthat::local_mocked_bindings(PlRLazyFrame = mock, .package = "polars")
-
-  expect_no_condition(pl$scan_csv(tmpf, infer_schema_files = NULL))
-  expect_false(captured$args$cache)
-
-  expect_snapshot(
-    {
-      pl$scan_csv(tmpf, cache = TRUE, infer_schema_files = NULL)
-      NULL
-    },
-    cnd_class = TRUE
-  )
-  expect_true(captured$args$cache)
-
-  expect_no_condition(pl$read_csv(tmpf, infer_schema_files = NULL))
-  expect_false(captured$args$cache)
-
-  expect_snapshot(
-    {
-      pl$read_csv(tmpf, cache = TRUE, infer_schema_files = NULL)
-      NULL
-    },
-    cnd_class = TRUE
-  )
-  expect_true(captured$args$cache)
-})
-
 test_that("read/scan: arg 'decimal_comma' works", {
   tmpf <- withr::local_tempfile()
   writeLines("a|b|c\n1,5|a|2\n2||", tmpf)
@@ -575,23 +475,6 @@ test_that("arg 'missing_columns' works", {
   expect_equal(
     pl$read_csv(c(tmpf, tmpf2), missing_columns = "insert", infer_schema_files = NULL),
     pl$DataFrame(a = c(1L, 1L), b = c(2L, 2L), c = c(3L, NA))$cast(pl$Int64)
-  )
-})
-
-test_that("read/scan: arg rechunk is deprecated", {
-  tmpf <- withr::local_tempfile()
-  writeLines("a,b\n1,a\n2,b", tmpf)
-
-  expect_deprecated(pl$read_csv(tmpf, rechunk = TRUE, infer_schema_files = NULL))
-  expect_deprecated(pl$scan_csv(tmpf, rechunk = TRUE, infer_schema_files = NULL))
-
-  # not deprecated when not passed
-  expect_no_condition(pl$read_csv(tmpf, infer_schema_files = NULL))
-
-  local_lifecycle_silence()
-  expect_equal(
-    pl$read_csv(tmpf, rechunk = TRUE, infer_schema_files = NULL),
-    pl$DataFrame(a = 1:2, b = c("a", "b"), .schema_overrides = list(a = pl$Int64))
   )
 })
 

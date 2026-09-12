@@ -17,14 +17,12 @@ pl__read_csv(
   null_values = NULL,
   empty_string_is_null = TRUE,
   ignore_errors = FALSE,
-  cache = deprecated(),
   infer_schema = TRUE,
   infer_schema_length = 100,
   infer_schema_files = NULL,
   n_rows = NULL,
   encoding = c("utf8", "utf8-lossy"),
   low_memory = FALSE,
-  rechunk = deprecated(),
   skip_rows_after_header = 0,
   row_index_name = NULL,
   row_index_offset = 0,
@@ -35,11 +33,8 @@ pl__read_csv(
   decimal_comma = FALSE,
   glob = TRUE,
   storage_options = NULL,
-  retries = deprecated(),
-  file_cache_ttl = deprecated(),
   include_file_paths = NULL,
-  missing_columns = c("raise", "insert"),
-  missing_utf8_is_empty_string = deprecated()
+  missing_columns = c("raise", "insert")
 )
 }
 \arguments{
@@ -85,10 +80,6 @@ missing string values as an empty character instead.}
 You can also use \code{infer_schema = FALSE} to read all columns as UTF8 to
 check which values might cause an issue.}
 
-\item{cache}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} The Polars 2.0 streaming
-readers do not use the file cache, and this argument has no direct
-replacement.}
-
 \item{infer_schema}{If \code{TRUE} (default), the schema is inferred from the
 data using the first \code{infer_schema_length} rows. When \code{FALSE}, the schema is
 not inferred and will be \code{pl$String} if not specified in \code{schema} or
@@ -111,10 +102,6 @@ new default or \code{infer_schema_files = NULL} to keep using all files.}
 UTF8 values are replaced with "?" characters.}
 
 \item{low_memory}{Reduce memory pressure at the expense of performance.}
-
-\item{rechunk}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Reallocate to contiguous
-memory when all chunks/files are parsed. Call \verb{$rechunk()} on the output
-instead.}
 
 \item{skip_rows_after_header}{Skip this number of rows when the header is
 parsed.}
@@ -164,14 +151,6 @@ variable.
 If \code{storage_options} is not provided, Polars will try to infer the
 information from environment variables.}
 
-\item{retries}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Number of retries if
-accessing a cloud instance fails. Specify \code{max_retries} in
-\code{storage_options} instead.}
-
-\item{file_cache_ttl}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Deprecated and
-ignored. The Polars 2.0 streaming readers do not use the file cache, and
-this argument has no direct replacement.}
-
 \item{include_file_paths}{Include the path of the source file(s) as a column
 with this name.}
 
@@ -181,9 +160,6 @@ are missing from the data:
 \item \code{"raise"} (default): Raises an error.
 \item \code{"insert"}:  Inserts the missing columns using NULLs as the row values.
 }}
-
-\item{missing_utf8_is_empty_string}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use
-\code{empty_string_is_null} instead (note that the meaning is inverted).}
 }
 \value{
 A polars \link{DataFrame}

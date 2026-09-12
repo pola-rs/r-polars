@@ -3948,7 +3948,7 @@ expr__drop_nulls <- function() {
 #' @inherit as_polars_expr return
 #' @inheritParams rlang::args_dots_empty
 #' @param empty_as_null Indicates to explode an empty list/array into a `null`.
-#'   Defaults to `TRUE`. In Polars 2.0, the default will change to `FALSE`.
+#'   Defaults to `TRUE`.
 #' @param keep_nulls Indicates to explode a `null` list/array into a `null`.
 #' @examples
 #' df <- pl$DataFrame(
@@ -3957,28 +3957,9 @@ expr__drop_nulls <- function() {
 #' )
 #'
 #' df$select(pl$col("values")$explode())
-expr__explode <- function(..., empty_as_null = NULL, keep_nulls = TRUE) {
+expr__explode <- function(..., empty_as_null = TRUE, keep_nulls = TRUE) {
   wrap({
     check_dots_empty0(...)
-    if (is.null(empty_as_null)) {
-      deprecate_warn(
-        c(
-          `!` = sprintf(
-            "The default value of %s in %s will change from %s to %s in Polars 2.0.",
-            format_arg("empty_as_null"),
-            format_fn("explode"),
-            "TRUE",
-            "FALSE"
-          ),
-          `i` = sprintf(
-            "Explicitly set %s to suppress this warning.",
-            format_arg("empty_as_null")
-          )
-        ),
-        always = TRUE
-      )
-      empty_as_null <- TRUE
-    }
     self$`_rexpr`$explode(empty_as_null = empty_as_null, keep_nulls = keep_nulls)
   })
 }
@@ -4949,32 +4930,6 @@ expr__bitwise_xor <- function() {
 #' )
 expr__index_of <- function(element) {
   wrap({
-    # TODO: @2.0 remove this workaround
-    # We use `NA` in examples before, but in 1.7.0,
-    # polars stricts dtype of `null` here.
-    # So users should use typed NA (like `NA_real_`) or
-    # Null dtype `null` converted from R `NULL` or
-    # `vctrs::unspecified(1)`.
-    if (identical(element, NA)) {
-      deprecate_warn(
-        c(
-          `!` = sprintf(
-            "As of %s 1.7.0, %s checks dtype strictly.",
-            format_pkg("polars"),
-            format_code("<expr>$index_of()")
-          ),
-          i = sprintf(
-            "Please use %s or %s instead of %s.",
-            format_code("NULL"),
-            format_code("vctrs::unspecified(1)"),
-            format_code("NA")
-          )
-        )
-      )
-
-      element <- NULL
-    }
-
     self$`_rexpr`$index_of(as_polars_expr(element, as_lit = TRUE)$`_rexpr`)
   })
 }

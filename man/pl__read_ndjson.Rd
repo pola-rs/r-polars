@@ -13,13 +13,10 @@ pl__read_ndjson(
   batch_size = 1024,
   n_rows = NULL,
   low_memory = FALSE,
-  rechunk = deprecated(),
   row_index_name = NULL,
   row_index_offset = 0L,
   ignore_errors = FALSE,
   storage_options = NULL,
-  retries = deprecated(),
-  file_cache_ttl = deprecated(),
   include_file_paths = NULL
 )
 }
@@ -48,10 +45,6 @@ slow). Set \code{infer_schema = FALSE} to read all columns as \code{pl$String}.}
 
 \item{low_memory}{Reduce memory pressure at the expense of performance.}
 
-\item{rechunk}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Reallocate to contiguous
-memory when all chunks/files are parsed. Call \verb{$rechunk()} on the output
-instead.}
-
 \item{row_index_name}{If not \code{NULL}, this will insert a row index column with
 the given name.}
 
@@ -77,14 +70,6 @@ variable.
 
 If \code{storage_options} is not provided, Polars will try to infer the
 information from environment variables.}
-
-\item{retries}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Number of retries if
-accessing a cloud instance fails. Specify \code{max_retries} in
-\code{storage_options} instead.}
-
-\item{file_cache_ttl}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Deprecated and
-ignored. The Polars 2.0 streaming readers do not use the file cache, and
-this argument has no direct replacement.}
 
 \item{include_file_paths}{Include the path of the source file(s) as a column
 with this name.}

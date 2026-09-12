@@ -149,42 +149,6 @@
       This error occurred in the following expression:
       	col("with_tz").str.strptime(["raise"])
 
-# str$concat
-
-    Code
-      df$select(pl$col("x")$str$concat())
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! `$str$concat()` is deprecated.
-      i Use `$str$join("-")` instead.
-    Output
-      shape: (1, 1)
-      ┌─────┐
-      │ x   │
-      │ --- │
-      │ str │
-      ╞═════╡
-      │ 1-a │
-      └─────┘
-
----
-
-    Code
-      df$select(pl$col("x")$str$concat("|"))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! `$str$concat()` is deprecated.
-      i Use `$str$join()` with the same delimiter instead.
-    Output
-      shape: (1, 1)
-      ┌─────┐
-      │ x   │
-      │ --- │
-      │ str │
-      ╞═════╡
-      │ 1|a │
-      └─────┘
-
 # zfill
 
     Code
@@ -285,42 +249,6 @@
       ! Evaluation failed in `$pad_start()`.
       Caused by error:
       ! Expected a string with one character only, currently has 14 (from "multiple_chars").
-
-# str$json_path
-
-    Code
-      df$select(pl$col("json_val")$str$json_decode(dtype, 1))
-    Condition
-      Error in `df$select()`:
-      ! Evaluation failed in `$select()`.
-      Caused by error:
-      ! Evaluation failed in `$select()`.
-      Caused by error in `pl$col("json_val")$str$json_decode()`:
-      ! Evaluation failed in `$json_decode()`.
-      Caused by error in `pl$col("json_val")$str$json_decode()`:
-      ! `...` must be empty.
-      x Problematic argument:
-      * ..1 = 1
-      i Did you forget to name an argument?
-
----
-
-    Code
-      df$select(pl$col("json_val")$str$json_decode())
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! `<expr>$str$json_decode()` without `dtype` is deprecated and set `dtype = pl$Struct()` automatically.
-    Output
-      shape: (3, 1)
-      ┌───────────┐
-      │ json_val  │
-      │ ---       │
-      │ struct[0] │
-      ╞═══════════╡
-      │ {}        │
-      │ null      │
-      │ {}        │
-      └───────────┘
 
 # encode decode
 
@@ -753,58 +681,6 @@
       │ 143.9000      │
       │ null          │
       │ 0.0010        │
-      └───────────────┘
-
----
-
-    Code
-      df$select(pl$col("x")$str$to_decimal())
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! `<expr>$str$to_decimal()` without `scale` is deprecated and set `scale = 0L` automatically.
-    Output
-      shape: (9, 1)
-      ┌───────────────┐
-      │ x             │
-      │ ---           │
-      │ decimal[38,0] │
-      ╞═══════════════╡
-      │ 40            │
-      │ 3420          │
-      │ 120134        │
-      │ 3213          │
-      │ 13            │
-      │ 143           │
-      │ 144           │
-      │ null          │
-      │ 0             │
-      └───────────────┘
-
----
-
-    Code
-      df$select(pl$col("x")$str$to_decimal(inference_length = 0))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! `<expr>$str$to_decimal()` with `inference_length` is deprecated and has no effect on execution.
-      Warning:
-      ! `<expr>$str$to_decimal()` without `scale` is deprecated and set `scale = 0L` automatically.
-    Output
-      shape: (9, 1)
-      ┌───────────────┐
-      │ x             │
-      │ ---           │
-      │ decimal[38,0] │
-      ╞═══════════════╡
-      │ 40            │
-      │ 3420          │
-      │ 120134        │
-      │ 3213          │
-      │ 13            │
-      │ 143           │
-      │ 144           │
-      │ null          │
-      │ 0             │
       └───────────────┘
 
 # str$find_many()

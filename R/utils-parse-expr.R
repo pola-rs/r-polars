@@ -1,8 +1,7 @@
 # Parse dynamic dots into a list of expressions (PlRExpr, not polars_expr)
 parse_into_list_of_expressions <- function(
   ...,
-  `__require_selectors` = FALSE,
-  `__structify` = deprecated()
+  `__require_selectors` = FALSE
 ) {
   dots <- list2(...)
   call <- caller_env()
@@ -22,7 +21,7 @@ parse_into_list_of_expressions <- function(
   }
 
   try_fetch(
-    lapply(dots, \(x) as_polars_expr(x, structify = `__structify`)$`_rexpr`),
+    lapply(dots, \(x) as_polars_expr(x)$`_rexpr`),
     error = function(cnd) {
       indices_list <- which(vapply(dots, is.list, logical(1)))
       if (length(indices_list) > 0) {
@@ -82,20 +81,6 @@ parse_into_selector <- function(..., .strict = TRUE, .arg_name = "...") {
     }
   ) %||%
     cs__empty()
-}
-
-.structify_expression <- function(expr) {
-  unaliased_expr <- expr$meta$undo_aliases()
-  if (unaliased_expr$meta$has_multiple_outputs()) {
-    expr_name <- expr$meta$output_name(raise_if_undetermined = FALSE)
-    if (is_na(expr_name)) {
-      pl$struct(expr)
-    } else {
-      pl$struct(unaliased_expr)$alias(expr_name)
-    }
-  } else {
-    expr
-  }
 }
 
 #' Parse dynamic dots into a single expression (PlRExpr, not polars-expr)

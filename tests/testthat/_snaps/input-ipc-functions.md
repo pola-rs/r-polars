@@ -41,33 +41,6 @@
 ---
 
     Code
-      pl$scan_ipc(tmpf, cache = 0L)
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `cache` argument is deprecated as of polars 1.16.0.
-      i The Polars 2.0 streaming readers do not use the file cache, and this argument has no direct replacement.
-    Condition <rlang_error>
-      Error in `pl$scan_ipc()`:
-      ! Evaluation failed in `$scan_ipc()`.
-      Caused by error:
-      ! Argument `cache` must be logical, not integer
-
----
-
-    Code
-      pl$scan_ipc(tmpf, rechunk = list())
-    Condition
-      Warning:
-      ! The `rechunk` argument is deprecated as of polars 1.15.0.
-      i Call `$rechunk()` on the output instead.
-      Error in `pl$scan_ipc()`:
-      ! Evaluation failed in `$scan_ipc()`.
-      Caused by error:
-      ! Argument `rechunk` must be logical, not list
-
----
-
-    Code
       pl$scan_ipc(tmpf, storage_options = c("foo", "bar"))
     Condition
       Error in `pl$scan_ipc()`:
@@ -94,45 +67,6 @@
       ! Evaluation failed in `$scan_ipc()`.
       Caused by error:
       ! Argument `row_index_offset` must be numeric, not list
-
-# read/scan: arg 'cache' is deprecated
-
-    Code
-      pl$scan_ipc(tmpf, cache = FALSE)
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `cache` argument is deprecated as of polars 1.16.0.
-      i The Polars 2.0 streaming readers do not use the file cache, and this argument has no direct replacement.
-    Output
-      <polars_lazy_frame>
-    Code
-      NULL
-    Output
-      NULL
-
----
-
-    Code
-      pl$read_ipc(tmpf, cache = FALSE)
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `cache` argument is deprecated as of polars 1.16.0.
-      i The Polars 2.0 streaming readers do not use the file cache, and this argument has no direct replacement.
-    Output
-      shape: (3, 1)
-      ┌─────┐
-      │ a   │
-      │ --- │
-      │ i32 │
-      ╞═════╡
-      │ 1   │
-      │ 2   │
-      │ 3   │
-      └─────┘
-    Code
-      NULL
-    Output
-      NULL
 
 # scanning from hive partition works
 

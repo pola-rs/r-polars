@@ -4,15 +4,12 @@
 \alias{expr_str_json_decode}
 \title{Parse string values as JSON.}
 \usage{
-expr_str_json_decode(dtype, ..., infer_schema_length = deprecated())
+expr_str_json_decode(dtype, ...)
 }
 \arguments{
 \item{dtype}{The dtype to cast the extracted value to.}
 
 \item{...}{These dots are for future extensions and must be empty.}
-
-\item{infer_schema_length}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-Ignored.}
 }
 \value{
 A polars \link{expression}
@@ -20,14 +17,6 @@ A polars \link{expression}
 \description{
 Parse string values as JSON.
 Throw errors if encounter invalid json strings.
-}
-\details{
-As of polars 1.3.0, \code{infer_schema_length} is deprecated and
-\code{dtype} must be provided to ensure that the planner can determine
-the output datatype.
-
-If inferring dtype is needed, \code{\link[=series_str_json_decode]{<series>$str$json_decode()}}
-can be used, which inspects the data at runtime.
 }
 \examples{
 df <- pl$DataFrame(

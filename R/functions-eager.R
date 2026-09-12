@@ -12,10 +12,9 @@
 #' * `"diagonal_relaxed"`: same as `"diagonal"`, but additionally coerces
 #'   columns to their common supertype if they are mismatched (eg: Int32 to
 #'   Int64);
-#' * `"horizontal"`: stacks Series from DataFrames horizontally. All input
-#'   frames must have the same height; raises an error otherwise
-#'   (currently, omitting the deprecated `strict` argument warns and redirects
-#'   to `"horizontal_extend"` instead; pass `strict = TRUE` to opt in early);
+#' * `"horizontal"`: stacks Series from DataFrames horizontally and fills with
+#'   `null` if the input heights don't match (equivalent to
+#'   `"horizontal_extend"` in this compatibility release);
 #' * `"horizontal_extend"`: stacks Series from DataFrames horizontally and
 #'   fills with `null` if the lengths don't match;
 #' * `"align"`, `"align_full"`, `"align_left"`, `"align_right"`: Combines
@@ -31,10 +30,6 @@
 #' @param rechunk Make sure that the result data is in contiguous memory.
 #' @param parallel Only relevant for [LazyFrames][LazyFrame]. This determines if the
 #' concatenated lazy computations may be executed in parallel.
-#' @param strict `r lifecycle::badge("deprecated")` Use `how =
-#'   "horizontal_extend"` (pad with null) instead of `strict = FALSE`. To opt
-#'   into requiring equal heights (the future default of `how = "horizontal"`),
-#'   pass `strict = TRUE`.
 #' @return The same class (`polars_data_frame`, `polars_lazy_frame` or
 #' `polars_series`) as the input.
 #' @examples
@@ -67,8 +62,7 @@ pl__concat <- function(
   ...,
   how = "vertical",
   rechunk = FALSE,
-  parallel = TRUE,
-  strict = deprecated()
+  parallel = TRUE
 ) {
   check_dots_unnamed()
   dots <- list2(...)
@@ -88,38 +82,9 @@ pl__concat <- function(
     )
   )
 
+  # Preserve the pre-2.0 padding behavior until the final default switch.
   if (how == "horizontal") {
-    if (is_present(strict)) {
-      check_bool(strict)
-      if (isFALSE(strict)) {
-        deprecate_warn(
-          c(
-            `!` = sprintf(
-              "The argument %s of %s is deprecated.",
-              format_arg("strict"),
-              format_fn("pl$concat")
-            ),
-            i = sprintf("Use %s instead.", format_code('how = "horizontal_extend"'))
-          )
-        )
-        how <- "horizontal_extend"
-      }
-    } else {
-      deprecate_warn(
-        c(
-          `!` = sprintf(
-            "The default behavior of %s for %s is deprecated and will require equal heights in the next breaking release.", # nolint: line_length_linter
-            format_code('how = "horizontal"'),
-            format_fn("pl$concat")
-          ),
-          i = sprintf(
-            "Use %s to keep the current behavior.",
-            format_code('how = "horizontal_extend"')
-          )
-        )
-      )
-      how <- "horizontal_extend"
-    }
+    how <- "horizontal_extend"
   }
 
   if (length(dots) == 0L) {

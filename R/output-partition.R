@@ -10,15 +10,6 @@
 #'   multiple output files. Supports partitioning by key expressions, file size limits,
 #'   or both.
 #'
-#' The following functions are deprecated and will be removed in a future release:
-#'
-#' - `r lifecycle::badge("deprecated")` [`pl$PartitionByKey()`][polars_partitioning_scheme]:
-#'   Use `pl$PartitionBy(key = ...)` instead.
-#' - `r lifecycle::badge("deprecated")` [`pl$PartitionMaxSize()`][polars_partitioning_scheme]:
-#'   Use `pl$PartitionBy(max_rows_per_file = ...)` instead.
-#' - `r lifecycle::badge("deprecated")` [`pl$PartitionParted()`][polars_partitioning_scheme]:
-#'   Use `pl$PartitionBy(key = ...)` with pre-sorted data instead.
-#'
 #' @inheritParams rlang::args_dots_empty
 #' @param base_path The base path for the output files.
 #'   Use the `mkdir` option of the `sink_*` methods to ensure directories
@@ -36,12 +27,6 @@
 #'   This is measured as the estimated size of the DataFrame in memory.
 #'   Defaults to approximately 4GB when `key` is specified without `max_rows_per_file`;
 #'   otherwise unlimited.
-#' @param by `r lifecycle::badge("deprecated")`
-#'   Something that can be coerced to a list of [expressions][polars_expr].
-#'   Used to partition by. Use the `key` property of `pl$PartitionBy` instead.
-#' @param max_size `r lifecycle::badge("deprecated")`
-#'   An integer-ish value indicating the maximum size in rows of each of the generated files.
-#'   Use the `max_rows_per_file` property of `pl$PartitionBy` instead.
 #' @examplesIf requireNamespace("withr", quietly = TRUE)
 #' # Partitioning by columns
 #' temp_dir_1 <- withr::local_tempdir()
@@ -84,7 +69,7 @@
 #' @name polars_partitioning_scheme
 NULL
 
-# New unified PartitionBy class (separate from SinkDirectory)
+# Unified partitioning configuration for file sinks.
 PartitionBy <- new_class(
   "PartitionBy",
   properties = list(
@@ -148,141 +133,3 @@ PartitionBy <- new_class(
 #' @aliases PartitionBy
 #' @order 0
 pl__PartitionBy <- PartitionBy
-
-# Legacy SinkDirectory class (for deprecated partition classes)
-SinkDirectory <- new_class(
-  "SinkDirectory",
-  properties = list(
-    base_path = prop_string(),
-    partition_by = prop_list_of_rexpr(allow_null = TRUE, names = "none"),
-    partition_keys_sorted = prop_bool(allow_null = TRUE),
-    include_keys = prop_bool(allow_null = TRUE),
-    max_rows_per_file = prop_number_whole(allow_null = TRUE)
-  ),
-  constructor = function(
-    base_path,
-    ...,
-    partition_by = NULL,
-    partition_keys_sorted = NULL,
-    include_keys = NULL,
-    max_rows_per_file = NULL
-  ) {
-    check_dots_empty0(...)
-
-    new_object(
-      S7_object(),
-      base_path = base_path,
-      partition_by = parse_to_rexpr_list(partition_by),
-      partition_keys_sorted = partition_keys_sorted,
-      include_keys = include_keys,
-      max_rows_per_file = max_rows_per_file
-    )
-  }
-)
-
-PartitionMaxSize <- new_class(
-  "PartitionMaxSize",
-  parent = SinkDirectory,
-  constructor = function(
-    base_path,
-    ...,
-    max_size
-  ) {
-    check_dots_empty0(...)
-    deprecate_warn(
-      c(
-        `!` = format_warning(sprintf(
-          "%s is deprecated as of %s 1.8.0.",
-          format_cls("PartitionMaxSize"),
-          format_pkg("polars")
-        )),
-        i = format_warning(sprintf("Use %s instead.", format_cls("PartitionBy")))
-      )
-    )
-
-    new_object(
-      SinkDirectory(
-        base_path = base_path,
-        max_rows_per_file = max_size
-      )
-    )
-  }
-)
-
-#' @rdname polars_partitioning_scheme
-#' @aliases PartitionMaxSize
-#' @order 2
-pl__PartitionMaxSize <- PartitionMaxSize
-
-PartitionByKey <- new_class(
-  "PartitionByKey",
-  parent = SinkDirectory,
-  constructor = function(
-    base_path,
-    ...,
-    by,
-    include_key = TRUE
-  ) {
-    check_dots_empty0(...)
-    deprecate_warn(
-      c(
-        `!` = format_warning(sprintf(
-          "%s is deprecated as of %s 1.8.0.",
-          format_cls("PartitionByKey"),
-          format_pkg("polars")
-        )),
-        i = format_warning(sprintf("Use %s instead.", format_cls("PartitionBy")))
-      )
-    )
-
-    new_object(
-      SinkDirectory(
-        base_path = base_path,
-        partition_by = by,
-        include_keys = include_key
-      )
-    )
-  }
-)
-
-#' @rdname polars_partitioning_scheme
-#' @aliases PartitionByKey
-#' @order 1
-pl__PartitionByKey <- PartitionByKey
-
-PartitionParted <- new_class(
-  "PartitionParted",
-  parent = SinkDirectory,
-  constructor = function(
-    base_path,
-    ...,
-    by,
-    include_key = TRUE
-  ) {
-    check_dots_empty0(...)
-    deprecate_warn(
-      c(
-        `!` = format_warning(sprintf(
-          "%s is deprecated as of %s 1.8.0.",
-          format_cls("PartitionParted"),
-          format_pkg("polars")
-        )),
-        i = format_warning(sprintf("Use %s instead.", format_cls("PartitionBy")))
-      )
-    )
-
-    new_object(
-      SinkDirectory(
-        base_path = base_path,
-        partition_by = by,
-        partition_keys_sorted = TRUE,
-        include_keys = include_key
-      )
-    )
-  }
-)
-
-#' @rdname polars_partitioning_scheme
-#' @aliases PartitionParted
-#' @order 3
-pl__PartitionParted <- PartitionParted
