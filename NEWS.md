@@ -2,6 +2,8 @@
 
 ## polars (development version)
 
+## polars 1.16.0
+
 This is the last release before R Polars 2.0. It doesn't remove any existing API
 and keeps the behaviour of Polars 1.x, except where noted below. However, it comes
 with a number of deprecation warnings and suggestions that can be applied before
