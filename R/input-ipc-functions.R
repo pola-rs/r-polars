@@ -170,7 +170,7 @@ pl__read_ipc_stream <- function(
     n_rows = n_rows,
     row_index_name = row_index_name,
     row_index_offset = row_index_offset,
-    rechunk = TRUE
+    rechunk = FALSE
   ) |>
     wrap()
 }

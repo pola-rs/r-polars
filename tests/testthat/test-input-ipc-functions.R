@@ -171,3 +171,26 @@ test_that("read_ipc_stream works", {
     as_polars_df(mtcars)$select(foo = pl$lit(1:32, pl$UInt32), "cyl")
   )
 })
+
+test_that("read_ipc_stream preserves record batch chunks", {
+  skip_if_not_installed("nanoarrow")
+
+  temp_file <- withr::local_tempfile()
+  batches <- nanoarrow::basic_array_stream(
+    list(
+      data.frame(a = 1:3, b = letters[1:3]),
+      data.frame(a = 4:6, b = letters[4:6])
+    )
+  )
+  nanoarrow::write_nanoarrow(batches, temp_file)
+
+  out <- pl$read_ipc_stream(temp_file)
+  expect_equal(
+    out,
+    pl$DataFrame(a = 1:6, b = letters[1:6])
+  )
+  expect_equal(
+    unname(out$n_chunks(strategy = "all")),
+    c(2L, 2L)
+  )
+})
