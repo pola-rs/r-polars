@@ -1073,7 +1073,7 @@ expr__filter <- function(...) {
 #' @inheritParams rlang::args_dots_empty
 #' @param lambda Function to apply.
 #' @param return_dtype Dtype of the output Series. Can be a [DataType][polars_dtype]
-#'   or [DataTypeExpr][polars_datatype_expr].
+#'   or a DataTypeExpr, such as one returned by [`pl$dtype_of()`][pl__dtype_of].
 #'   It is recommended to set this whenever possible. If this is `NULL`, it tries
 #'   to infer the datatype by calling the function with dummy data and looking at
 #'   the output.
@@ -4080,7 +4080,7 @@ expr__fill_null <- function(value = NULL, strategy = NULL, limit = NULL) {
 #'   group = c("one", "one", "one", "two", "two", "two"),
 #'   value = c(1, 98, 2, 3, 99, 4)
 #' )
-#' df$group_by("group", maintain_order = TRUE)$agg(
+#' df$group_by("group", .maintain_order = TRUE)$agg(
 #'   pl$col("value")$gather(c(2, 1))
 #' )
 expr__gather <- function(indices, ..., null_on_oob = FALSE) {
@@ -4106,7 +4106,7 @@ expr__gather <- function(indices, ..., null_on_oob = FALSE) {
 #'   group = c("one", "one", "one", "two", "two", "two"),
 #'   value = c(1, 98, 2, 3, 99, 4)
 #' )
-#' df$group_by("group", maintain_order = TRUE)$agg(
+#' df$group_by("group", .maintain_order = TRUE)$agg(
 #'   pl$col("value")$get(1)
 #' )
 expr__get <- function(index, ..., null_on_oob = FALSE) {

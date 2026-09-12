@@ -1113,9 +1113,10 @@ expr_str_contains_any <- function(
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams expr_str_contains_any
 #' @inheritParams expr_str_extract_many
-#' @param replace_with A vector of strings used as replacements. If this is of
-#' length 1, then it is applied to all matches. Otherwise, it must be of same
-#' length as the `patterns` argument.
+#' @param replace_with A list of strings, such as `list(c(...))`, or an Expr of
+#' dtype `List(String)` used as replacements. A single replacement is applied
+#' to all matches. Otherwise, the number of replacements must match the
+#' `patterns` argument.
 #' @param ascii_case_insensitive Enable ASCII-aware case insensitive matching.
 #' When this option is enabled, searching will be performed without respect to
 #' case for ASCII letters (a-z and A-Z) only.
@@ -1130,7 +1131,7 @@ expr_str_contains_any <- function(
 #'
 #' # a replacement of length 1 is applied to all matches
 #' df$with_columns(
-#'   remove_pronouns = pl$col("lyrics")$str$replace_many(list(c("you", "me")), "")
+#'   remove_pronouns = pl$col("lyrics")$str$replace_many(list(c("you", "me")), list(c("")))
 #' )
 #'
 #' # if there are more than one replacement, the patterns and replacements are

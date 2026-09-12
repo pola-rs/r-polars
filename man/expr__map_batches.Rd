@@ -16,7 +16,7 @@ expr__map_batches(
 \item{lambda}{Function to apply.}
 
 \item{return_dtype}{Dtype of the output Series. Can be a \link[=polars_dtype]{DataType}
-or \link[=polars_datatype_expr]{DataTypeExpr}.
+or a DataTypeExpr, such as one returned by \code{\link[=pl__dtype_of]{pl$dtype_of()}}.
 It is recommended to set this whenever possible. If this is \code{NULL}, it tries
 to infer the datatype by calling the function with dummy data and looking at
 the output.}
