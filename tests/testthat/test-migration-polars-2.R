@@ -122,6 +122,13 @@ test_that("selecting no columns returns the Polars 2.0 zero-width shape", {
   expect_equal(dim(out), c(0L, 0L))
 })
 
+test_that("dropping all columns preserves the Polars 2.0 height", {
+  df <- pl$DataFrame(a = 1:3, b = 4:6)
+
+  expect_equal(dim(df$drop(cs$all())), c(3L, 0L))
+  expect_equal(dim(df$lazy()$drop(cs$all())$collect()), c(3L, 0L))
+})
+
 test_that("list and array to_struct preserve outer nulls", {
   list_input <- pl$DataFrame(x = list(NULL, c(1L, 2L)))
   array_input <- pl$DataFrame(x = list(c(1L, 2L), NULL))$cast(

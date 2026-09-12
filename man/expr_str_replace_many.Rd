@@ -54,6 +54,6 @@ df$with_columns(
 # if there are more than one replacement, the patterns and replacements are
 # matched
 df$with_columns(
-  fake_pronouns = pl$col("lyrics")$str$replace_many(list(c("you", "me")), c("foo", "bar"))
+  fake_pronouns = pl$col("lyrics")$str$replace_many(list(c("you", "me")), list(c("foo", "bar")))
 )
 }
