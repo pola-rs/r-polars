@@ -6,6 +6,18 @@ test_that("mirai serialization works", {
   # FIXME: On GitHub Actions CI with Windows, this test hangs
   skip_on_os("windows")
 
+  sql_lf <- pl$SQLContext(data = pl$DataFrame(a = 1:3))$execute("SELECT * FROM data")
+  serialized_sql_lf <- sql_lf$serialize()
+
+  # The daemon has not constructed an SQLContext, so deserialization must use
+  # the resolver registered when the polars library was loaded.
+  expect_equal(
+    list(serialized_sql_lf) |>
+      mirai::mirai_map(\(x) polars::pl$deserialize_lf(x)$collect()) |>
+      _[][[1]],
+    pl$DataFrame(a = 1:3)
+  )
+
   series <- as_polars_series(1)$cast(pl$Int128)
   df <- pl$DataFrame(foo = series)
   lf <- df$lazy()
