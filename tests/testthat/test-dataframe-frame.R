@@ -310,6 +310,30 @@ test_that("pivot() works", {
       y = c(NA, 0.99995377060327)
     )
   )
+
+  df <- pl$DataFrame(
+    index = c("x", "x", "y"),
+    variable = c("a", "a", "a"),
+    value = c(1, NA, NA)
+  )
+  expected <- pl$DataFrame(index = c("x", "y"), a = c(2, 1))$
+    cast(a = pl$UInt32)$sort("index")
+  string_len <- df$pivot(
+    on = "variable",
+    on_columns = "a",
+    index = "index",
+    values = "value",
+    aggregate_function = "len"
+  )$sort("index")
+  expr_len <- df$pivot(
+    on = "variable",
+    on_columns = "a",
+    index = "index",
+    values = "value",
+    aggregate_function = pl$element()$len()
+  )$sort("index")
+  expect_equal(string_len, expr_len)
+  expect_equal(string_len, expected)
 })
 
 test_that("pivot args work", {
