@@ -667,7 +667,8 @@ expr__sum <- function() {
 #' Cast between DataType
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param dtype DataType to cast to.
+#' @param dtype DataType or DataTypeExpr to cast to. A DataTypeExpr can refer
+#' to the dtype of another expression.
 #' @param strict If `TRUE` (default), an error will be thrown if cast failed at
 #' resolve time.
 #' @param wrap_numerical If `TRUE`, numeric casts wrap overflowing values
@@ -698,9 +699,9 @@ expr__sum <- function() {
 expr__cast <- function(dtype, ..., strict = TRUE, wrap_numerical = FALSE) {
   wrap({
     check_dots_empty0(...)
-    check_polars_dtype(dtype)
+    dtype <- as_polars_dtype_expr(dtype)
 
-    self$`_rexpr`$cast(dtype$`_dt`, strict, wrap_numerical)
+    self$`_rexpr`$cast(dtype$`_datatype_expr`, strict, wrap_numerical)
   })
 }
 
@@ -863,11 +864,19 @@ expr__slice <- function(offset, length = NULL) {
     as_polars_expr(
       offset,
       as_lit = TRUE
-    )$`_rexpr`$cast(pl$Int64$`_dt`, strict = FALSE, wrap_numerical = TRUE),
+    )$`_rexpr`$cast(
+      as_polars_dtype_expr(pl$Int64)$`_datatype_expr`,
+      strict = FALSE,
+      wrap_numerical = TRUE
+    ),
     as_polars_expr(
       length,
       as_lit = TRUE
-    )$`_rexpr`$cast(pl$Int64$`_dt`, strict = FALSE, wrap_numerical = TRUE)
+    )$`_rexpr`$cast(
+      as_polars_dtype_expr(pl$Int64)$`_datatype_expr`,
+      strict = FALSE,
+      wrap_numerical = TRUE
+    )
   ) |>
     wrap()
 }

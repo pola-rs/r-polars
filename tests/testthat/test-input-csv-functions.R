@@ -325,15 +325,93 @@ test_that("read/scan: arg 'schema_overrides' works", {
     error = TRUE
   )
 
-  # Unnamed overrides can still target a positional column in a partial
-  # override. Named elements should be used when overriding named columns.
+  # Unnamed overrides target every column by position.
   writeLines("a,,c\n1.5,a,2\n2,,", tmpf)
   expect_equal(
-    pl$read_csv(tmpf, schema_overrides = list(pl$Categorical()), infer_schema_files = NULL),
-    pl$DataFrame(a = c(1.5, 2), factor(c("a", NA)), c = c(2L, NA))$cast(c = pl$Int64)
+    pl$read_csv(
+      tmpf,
+      schema_overrides = list(pl$Float64, pl$Categorical(), pl$Int32),
+      infer_schema_files = NULL
+    ),
+    pl$DataFrame(a = c(1.5, 2), b = factor(c("a", NA)), c = c(2L, NA))
   )
-  # TODO: Revisit unnamed partial schema overrides when the 2.0 contract is
-  # exposed by the R API.
+  expect_snapshot(
+    pl$read_csv(
+      tmpf,
+      schema_overrides = list(pl$Categorical()),
+      infer_schema_files = NULL
+    ),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$read_csv(
+      tmpf,
+      schema_overrides = list(a = pl$Float64, pl$Categorical(), c = pl$Int32),
+      infer_schema_files = NULL
+    ),
+    error = TRUE
+  )
+  mixed_na <- list(pl$Float64, pl$Int32)
+  names(mixed_na) <- c(NA_character_, "b")
+  expect_snapshot(
+    pl$read_csv(tmpf, schema_overrides = mixed_na, infer_schema_files = NULL),
+    error = TRUE
+  )
+})
+
+test_that("read/scan: arg 'extra_columns' works", {
+  tmpf <- withr::local_tempfile()
+  writeLines("a,b,c\n1,2,3", tmpf)
+  schema <- list(a = pl$Int32, b = pl$Int32)
+
+  expect_snapshot(
+    pl$read_csv(tmpf, schema = schema, infer_schema_files = NULL),
+    error = TRUE
+  )
+  expect_equal(
+    pl$read_csv(
+      tmpf,
+      schema = schema,
+      extra_columns = "ignore",
+      infer_schema_files = NULL
+    ),
+    pl$DataFrame(a = 1L, b = 2L)
+  )
+  expect_equal(
+    pl$scan_csv(
+      tmpf,
+      schema = schema,
+      extra_columns = "ignore",
+      infer_schema_files = NULL
+    )$collect(),
+    pl$DataFrame(a = 1L, b = 2L)
+  )
+
+  ragged <- withr::local_tempfile()
+  writeLines("a,b\n1,2,3", ragged)
+  expect_equal(
+    pl$read_csv(
+      ragged,
+      schema = schema,
+      extra_columns = "ignore",
+      infer_schema_files = NULL
+    ),
+    pl$DataFrame(a = 1L, b = 2L)
+  )
+  expect_snapshot(
+    pl$read_csv(
+      ragged,
+      schema = schema,
+      extra_columns = "ignore",
+      truncate_ragged_lines = FALSE,
+      infer_schema_files = NULL
+    ),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$read_csv(tmpf, extra_columns = "invalid", infer_schema_files = NULL),
+    error = TRUE
+  )
 })
 
 test_that("read/scan: arg 'schema' works", {

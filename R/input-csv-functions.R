@@ -25,7 +25,9 @@
 #' `schema_overrides` can be used to partially overwrite a schema. This must be
 #' a list. Names of list elements are used to match to inferred columns.
 #' @param schema_overrides Overwrite dtypes during inference. This must be a
-#' list. Names of list elements are used to match to inferred columns.
+#' list. A fully named list partially overwrites inferred columns by name. A
+#' fully unnamed list overwrites dtypes by position and must include one dtype
+#' for every CSV column. Mixing named and unnamed elements is not supported.
 #' @param null_values Character vector specifying the values to interpret as
 #' `NA` values. It can be named, in which case names specify the columns in
 #' which this replacement must be made (e.g. `c(col1 = "a")`).
@@ -71,7 +73,13 @@
 #' DataFrame or LazyFrame. Defaults to `FALSE` when `has_header = FALSE` and
 #' `schema` is supplied, and `TRUE` otherwise.
 #' @param truncate_ragged_lines Truncate lines that are longer than the schema.
-#' If `NULL` (the default), resolves to `FALSE`.
+#' If `NULL` (the default), resolves to `TRUE` when `extra_columns = "ignore"`
+#' and `FALSE` otherwise.
+#' @param extra_columns `r lifecycle::badge("experimental")` How to handle
+#' columns present in the CSV data but absent from the schema. The default,
+#' `"raise"`, raises an error. `"ignore"` drops extra columns. When
+#' `extra_columns = "ignore"`, `truncate_ragged_lines` must be omitted or
+#' `TRUE`; omitted truncation is enabled automatically.
 #' @param decimal_comma Parse floats using a comma as the decimal separator
 #' instead of a period.
 #' @param glob Expand path given via globbing rules.
@@ -111,7 +119,8 @@ pl__scan_csv <- function(
   glob = TRUE,
   storage_options = NULL,
   include_file_paths = NULL,
-  missing_columns = c("raise", "insert")
+  missing_columns = c("raise", "insert"),
+  extra_columns = c("raise", "ignore")
 ) {
   check_dots_empty0(...)
   check_character(source, allow_na = FALSE)
@@ -125,11 +134,31 @@ pl__scan_csv <- function(
   check_number_whole(infer_schema_files, min = 1, allow_null = TRUE)
   encoding <- arg_match0(encoding, values = c("utf8", "utf8-lossy"))
   missing_columns <- arg_match0(missing_columns, values = c("insert", "raise"))
+  extra_columns <- arg_match0(extra_columns, values = c("raise", "ignore"))
+
+  schema_overrides_names <- names(schema_overrides)
+  has_named_overrides <- FALSE
+  has_unnamed_overrides <- FALSE
+  if (!is.null(schema_overrides)) {
+    if (is.null(schema_overrides_names)) {
+      has_unnamed_overrides <- length(schema_overrides) > 0L
+    } else {
+      has_named_overrides <- any(!is.na(schema_overrides_names) & nzchar(schema_overrides_names))
+      has_unnamed_overrides <- any(is.na(schema_overrides_names) | !nzchar(schema_overrides_names))
+    }
+    if (has_named_overrides && has_unnamed_overrides) {
+      abort("`schema_overrides` must be either fully named or fully unnamed.")
+    }
+  }
 
   if (is.null(raise_if_empty)) {
     raise_if_empty <- is.null(schema) || isTRUE(has_header)
   }
-  truncate_ragged_lines <- truncate_ragged_lines %||% FALSE
+  if (is.null(truncate_ragged_lines)) {
+    truncate_ragged_lines <- identical(extra_columns, "ignore")
+  } else if (identical(extra_columns, "ignore") && isFALSE(truncate_ragged_lines)) {
+    abort("`truncate_ragged_lines` must be `TRUE` when `extra_columns = 'ignore'`.")
+  }
 
   cache <- FALSE
 
@@ -137,7 +166,16 @@ pl__scan_csv <- function(
     infer_schema_length <- 0
   }
 
-  schema_overrides <- parse_into_list_of_datatypes(!!!schema_overrides)
+  if (is.null(schema_overrides) || length(schema_overrides) == 0L) {
+    overwrite_dtype <- NULL
+    overwrite_dtype_slice <- NULL
+  } else if (has_unnamed_overrides) {
+    overwrite_dtype_slice <- parse_into_list_of_datatypes(!!!schema_overrides)
+    overwrite_dtype <- NULL
+  } else {
+    overwrite_dtype <- parse_into_list_of_datatypes(!!!schema_overrides)
+    overwrite_dtype_slice <- NULL
+  }
 
   if (!is.null(schema)) {
     schema <- parse_into_list_of_datatypes(!!!schema)
@@ -169,11 +207,13 @@ pl__scan_csv <- function(
     row_index_name = row_index_name,
     row_index_offset = row_index_offset,
     n_rows = n_rows,
-    overwrite_dtype = schema_overrides,
+    overwrite_dtype = overwrite_dtype,
+    overwrite_dtype_slice = overwrite_dtype_slice,
     schema = schema,
     storage_options = storage_options,
     include_file_paths = include_file_paths,
-    missing_columns = missing_columns
+    missing_columns = missing_columns,
+    extra_columns = extra_columns
   ) |>
     wrap()
 }
@@ -216,7 +256,8 @@ pl__read_csv <- function(
   glob = TRUE,
   storage_options = NULL,
   include_file_paths = NULL,
-  missing_columns = c("raise", "insert")
+  missing_columns = c("raise", "insert"),
+  extra_columns = c("raise", "ignore")
 ) {
   check_dots_empty0(...)
   .args <- as.list(environment())

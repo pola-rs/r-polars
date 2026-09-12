@@ -56,6 +56,8 @@ impl TryFrom<ObjSexp> for PlROptFlags {
             "cluster_with_columns",
             "check_order_observe",
             "fast_projection",
+            "join_order",
+            "row_estimate",
             "eager",
             "streaming",
         ];
@@ -75,6 +77,8 @@ impl TryFrom<ObjSexp> for PlROptFlags {
                 "cluster_with_columns" => opts.set_cluster_with_columns(attr_value),
                 "check_order_observe" => opts.set_check_order_observe(attr_value),
                 "fast_projection" => opts.set_fast_projection(attr_value),
+                "join_order" => opts.set_join_order(attr_value),
+                "row_estimate" => opts.set_row_estimate(attr_value),
                 "eager" => opts.set_eager(attr_value),
                 "streaming" => opts.set_streaming(attr_value),
                 _ => unreachable!(),

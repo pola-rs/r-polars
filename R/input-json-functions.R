@@ -5,6 +5,8 @@
 #' @inherit pl__scan_ipc description
 #' @inherit as_polars_lf return
 #' @inheritParams pl__scan_csv
+#' @param schema_overrides Overwrite dtypes during inference. This must be a
+#' list. Names of list elements are used to match to inferred columns.
 #' @param batch_size Number of rows to read in each batch.
 #' @examplesIf requireNamespace("jsonlite", quietly = TRUE)
 #' ndjson_filename <- tempfile()

@@ -546,6 +546,14 @@ test_that("is_in", {
 })
 
 test_that("cast", {
+  # DataTypeExpr targets are accepted by cast, including schema-dependent
+  # expressions.
+  input <- pl$DataFrame(x = 1:3)
+  expect_equal(
+    input$select(pl$col("x")$cast(pl$dtype_of("x"))),
+    input
+  )
+
   # cast error raised for String to Boolean
   expect_snapshot(
     as_polars_df(iris)$with_columns(

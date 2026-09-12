@@ -66,22 +66,25 @@ test_that("numeric is_in rejects lossy comparisons", {
   )
 })
 
-test_that("strict Struct casts preserve current behavior", {
+test_that("strict Struct casts enforce the 2.0 field contract", {
   input <- pl$DataFrame(a = 1:2, b = c("x", "y"))$select(s = pl$struct("a", "b"))
-  target <- pl$Struct(a = pl$Int64, b = pl$String, c = pl$Int64)
+  target <- pl$Struct(a = pl$Int64, c = pl$String)
 
-  out <- input$select(pl$col("s")$cast(target, strict = TRUE))
+  expect_snapshot(
+    input$select(pl$col("s")$cast(target, strict = TRUE)),
+    error = TRUE
+  )
+  count_mismatch <- pl$Struct(a = pl$Int64)
+  expect_snapshot(
+    input$select(pl$col("s")$cast(count_mismatch, strict = TRUE)),
+    error = TRUE
+  )
+  out <- input$select(pl$col("s")$cast(target, strict = FALSE))
   expect_equal(
     out$unnest("s"),
-    pl$DataFrame(a = c(1, 2), b = c("x", "y"), c = c(NA_real_, NA_real_))$cast(
-      a = pl$Int64,
-      c = pl$Int64
-    )
+    pl$DataFrame(a = c(1L, 2L), c = c("x", "y"))
   )
   expect_equal(out$schema, list(s = target))
-
-  # TODO: Update this expectation when the Polars 2.0 strict Struct contract
-  # is exposed by the R API.
 })
 
 test_that("Duration statistics reject duration input", {
@@ -113,13 +116,10 @@ test_that("empty DataFrame transpose is supported", {
   expect_equal(pl$DataFrame()$transpose(), pl$DataFrame())
 })
 
-test_that("selecting no columns preserves the current zero-width height", {
+test_that("selecting no columns returns the Polars 2.0 zero-width shape", {
   out <- pl$DataFrame(a = 1:3, b = 4:6)$select()
 
   expect_equal(dim(out), c(0L, 0L))
-
-  # TODO: Update the expected height when the Polars 2.0 zero-width selection
-  # behavior is exposed by the R API.
 })
 
 test_that("list and array to_struct preserve outer nulls", {

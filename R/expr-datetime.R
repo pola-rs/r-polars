@@ -688,9 +688,13 @@ expr_dt_epoch <- function(time_unit = c("us", "ns", "ms", "s", "d")) {
       "ns" = self$`_rexpr`$dt_timestamp(time_unit),
       "s" = self$`_rexpr`$dt_epoch_seconds(),
       "d" = self$`_rexpr`$cast(
-        pl$Date$`_dt`, strict = TRUE, wrap_numerical = FALSE
+        as_polars_dtype_expr(pl$Date)$`_datatype_expr`,
+        strict = TRUE,
+        wrap_numerical = FALSE
       )$cast(
-        pl$Int32$`_dt`, strict = TRUE, wrap_numerical = FALSE
+        as_polars_dtype_expr(pl$Int32)$`_datatype_expr`,
+        strict = TRUE,
+        wrap_numerical = FALSE
       ),
       abort("Unreachable")
     )

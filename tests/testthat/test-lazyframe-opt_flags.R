@@ -13,6 +13,8 @@ test_that("QueryOptFlags", {
   opt_flags <- pl$QueryOptFlags()
 
   expect_snapshot(opt_flags)
+  expect_true(opt_flags@join_order)
+  expect_true(opt_flags@row_estimate)
   expect_snapshot(eager_opt_flags())
 
   # Validation
@@ -37,6 +39,9 @@ test_that("QueryOptFlags", {
   expect_snapshot(opt_flags$type, error = TRUE, cnd_class = TRUE)
 
   expect_snapshot(opt_flags$no_optimizations())
+  no_optimizations <- opt_flags$no_optimizations()
+  expect_false(no_optimizations@join_order)
+  expect_false(no_optimizations@row_estimate)
 
   # Pre-defined
   expect_snapshot(DEFAULT_EAGER_OPT_FLAGS)

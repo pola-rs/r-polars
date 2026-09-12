@@ -899,6 +899,7 @@ impl PlRLazyFrame {
         glob: bool,
         row_index_offset: NumericScalar,
         missing_columns: &str,
+        extra_columns: &str,
         comment_prefix: Option<&str>,
         quote_char: Option<&str>,
         null_values: Option<StringSexp>,
@@ -910,6 +911,7 @@ impl PlRLazyFrame {
         schema: Option<ListSexp>,
         storage_options: Option<StringSexp>,
         include_file_paths: Option<&str>,
+        overwrite_dtype_slice: Option<ListSexp>,
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
@@ -928,6 +930,7 @@ impl PlRLazyFrame {
                 None => NonZeroUsize::MAX,
             };
             let missing_columns_policy = <Wrap<MissingColumnsPolicy>>::try_from(missing_columns)?.0;
+            let extra_columns_policy = <Wrap<ExtraColumnsPolicy>>::try_from(extra_columns)?.0;
             let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
             let n_rows = match n_rows {
                 Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
@@ -966,6 +969,10 @@ impl PlRLazyFrame {
                 Some(x) => Some(<Wrap<Schema>>::try_from(x)?.0),
                 None => None,
             };
+            let overwrite_dtype_slice = match overwrite_dtype_slice {
+                Some(x) => Some(<Wrap<Vec<DataType>>>::try_from(x)?.0),
+                None => None,
+            };
             let schema = match schema {
                 Some(x) => Some(<Wrap<Schema>>::try_from(x)?.0),
                 None => None,
@@ -1000,6 +1007,7 @@ impl PlRLazyFrame {
                 .with_n_rows(n_rows)
                 .with_cache(cache)
                 .with_dtype_overwrite(overwrite_dtype.map(Arc::new))
+                .with_dtype_overwrite_by_position(overwrite_dtype_slice.map(Arc::new))
                 .with_schema(schema.map(Arc::new))
                 .with_low_memory(low_memory)
                 .with_comment_prefix(comment_prefix.map(|x| x.into()))
@@ -1018,6 +1026,7 @@ impl PlRLazyFrame {
                 .with_raise_if_empty(raise_if_empty)
                 .with_include_file_paths(include_file_paths.map(|x| x.into()))
                 .with_missing_columns_policy(Some(missing_columns_policy))
+                .with_extra_columns_policy(extra_columns_policy)
                 .finish()
                 .map_err(RPolarsErr::from)
                 .map(PlRLazyFrame::from)

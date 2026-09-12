@@ -5,7 +5,7 @@
     Output
       <polars::QueryOptFlags> class
       @ parent     : <S7_object>
-      @ constructor: function(..., predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, cluster_with_columns, check_order_observe, fast_projection) {...}
+      @ constructor: function(..., predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, cluster_with_columns, check_order_observe, fast_projection, join_order, row_estimate) {...}
       @ validator  : <NULL>
       @ properties :
        $ type_coercion       : <logical>
@@ -19,6 +19,8 @@
        $ cluster_with_columns: <logical>
        $ check_order_observe : <logical>
        $ fast_projection     : <logical>
+       $ join_order          : <logical>
+       $ row_estimate        : <logical>
        $ eager               : <logical>
        $ streaming           : <logical>
 
@@ -39,6 +41,8 @@
        @ cluster_with_columns: logi FALSE
        @ check_order_observe : logi FALSE
        @ fast_projection     : logi FALSE
+       @ join_order          : logi FALSE
+       @ row_estimate        : logi FALSE
        @ eager               : logi TRUE
        @ streaming           : logi FALSE
 
@@ -70,6 +74,8 @@
        @ cluster_with_columns: logi TRUE
        @ check_order_observe : logi TRUE
        @ fast_projection     : logi TRUE
+       @ join_order          : logi TRUE
+       @ row_estimate        : logi TRUE
        @ eager               : logi FALSE
        @ streaming           : logi FALSE
 
@@ -90,6 +96,8 @@
        @ cluster_with_columns: logi FALSE
        @ check_order_observe : logi FALSE
        @ fast_projection     : logi FALSE
+       @ join_order          : logi FALSE
+       @ row_estimate        : logi FALSE
        @ eager               : logi TRUE
        @ streaming           : logi FALSE
 
@@ -151,6 +159,8 @@
        @ cluster_with_columns: logi FALSE
        @ check_order_observe : logi FALSE
        @ fast_projection     : logi FALSE
+       @ join_order          : logi FALSE
+       @ row_estimate        : logi FALSE
        @ eager               : logi FALSE
        @ streaming           : logi FALSE
 
@@ -171,6 +181,8 @@
        @ cluster_with_columns: logi FALSE
        @ check_order_observe : logi FALSE
        @ fast_projection     : logi FALSE
+       @ join_order          : logi FALSE
+       @ row_estimate        : logi FALSE
        @ eager               : logi TRUE
        @ streaming           : logi FALSE
 
@@ -192,4 +204,3 @@
       ! Evaluation failed in `$collect_all()`.
       Caused by error:
       ! Must be logical, not integer
-

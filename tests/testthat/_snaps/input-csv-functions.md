@@ -87,6 +87,65 @@
       Caused by error:
       ! `schema_overrides` must be a list of polars data types or `NULL`, not a list.
 
+---
+
+    Code
+      pl$read_csv(tmpf, schema_overrides = list(pl$Categorical()),
+      infer_schema_files = NULL)
+    Condition
+      Error in `pl$read_csv()`:
+      ! Evaluation failed in `$read_csv()`.
+      Caused by error in `do.call(pl$scan_csv, .args)$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! The number of dtypes in schema override must be equal to the number of fields in the file (1 != 3).
+
+---
+
+    Code
+      pl$read_csv(tmpf, schema_overrides = list(a = pl$Float64, pl$Categorical(),
+      c = pl$Int32), infer_schema_files = NULL)
+    Condition
+      Error in `pl$read_csv()`:
+      ! `schema_overrides` must be either fully named or fully unnamed.
+
+---
+
+    Code
+      pl$read_csv(tmpf, schema_overrides = mixed_na, infer_schema_files = NULL)
+    Condition
+      Error in `pl$read_csv()`:
+      ! `schema_overrides` must be either fully named or fully unnamed.
+
+# read/scan: arg 'extra_columns' works
+
+    Code
+      pl$read_csv(tmpf, schema = schema, infer_schema_files = NULL)
+    Condition
+      Error in `pl$read_csv()`:
+      ! Evaluation failed in `$read_csv()`.
+      Caused by error in `do.call(pl$scan_csv, .args)$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! CSV file contained column names not specified in schema (n_extra = 1). Specify these names in the schema, or pass `extra_columns='ignore'` to ignore these columns. (extra names: ["c"])
+
+---
+
+    Code
+      pl$read_csv(ragged, schema = schema, extra_columns = "ignore",
+      truncate_ragged_lines = FALSE, infer_schema_files = NULL)
+    Condition
+      Error in `pl$read_csv()`:
+      ! `truncate_ragged_lines` must be `TRUE` when `extra_columns = 'ignore'`.
+
+---
+
+    Code
+      pl$read_csv(tmpf, extra_columns = "invalid", infer_schema_files = NULL)
+    Condition
+      Error in `pl$read_csv()`:
+      ! `extra_columns` must be one of "raise" or "ignore", not "invalid".
+
 # read/scan: arg 'schema' works
 
     Code

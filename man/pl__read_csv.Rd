@@ -34,7 +34,8 @@ pl__read_csv(
   glob = TRUE,
   storage_options = NULL,
   include_file_paths = NULL,
-  missing_columns = c("raise", "insert")
+  missing_columns = c("raise", "insert"),
+  extra_columns = c("raise", "ignore")
 )
 }
 \arguments{
@@ -66,7 +67,9 @@ inference. This argument expects the complete schema, whereas
 a list. Names of list elements are used to match to inferred columns.}
 
 \item{schema_overrides}{Overwrite dtypes during inference. This must be a
-list. Names of list elements are used to match to inferred columns.}
+list. A fully named list partially overwrites inferred columns by name. A
+fully unnamed list overwrites dtypes by position and must include one dtype
+for every CSV column. Mixing named and unnamed elements is not supported.}
 
 \item{null_values}{Character vector specifying the values to interpret as
 \code{NA} values. It can be named, in which case names specify the columns in
@@ -122,7 +125,8 @@ DataFrame or LazyFrame. Defaults to \code{FALSE} when \code{has_header = FALSE} 
 \code{schema} is supplied, and \code{TRUE} otherwise.}
 
 \item{truncate_ragged_lines}{Truncate lines that are longer than the schema.
-If \code{NULL} (the default), resolves to \code{FALSE}.}
+If \code{NULL} (the default), resolves to \code{TRUE} when \code{extra_columns = "ignore"}
+and \code{FALSE} otherwise.}
 
 \item{decimal_comma}{Parse floats using a comma as the decimal separator
 instead of a period.}
@@ -154,6 +158,12 @@ are missing from the data:
 \item \code{"raise"} (default): Raises an error.
 \item \code{"insert"}:  Inserts the missing columns using NULLs as the row values.
 }}
+
+\item{extra_columns}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} How to handle
+columns present in the CSV data but absent from the schema. The default,
+\code{"raise"}, raises an error. \code{"ignore"} drops extra columns. When
+\code{extra_columns = "ignore"}, \code{truncate_ragged_lines} must be omitted or
+\code{TRUE}; omitted truncation is enabled automatically.}
 }
 \value{
 A polars \link{DataFrame}

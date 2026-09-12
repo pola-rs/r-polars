@@ -1,5 +1,5 @@
 use super::selector::PlRSelector;
-use crate::{PlRDataType, PlRExpr, RPolarsErr, prelude::*};
+use crate::{PlRDataType, PlRExpr, RPolarsErr, expr::datatype::PlRDataTypeExpr, prelude::*};
 use polars::lazy::dsl;
 use polars::series::ops::NullBehavior;
 use polars_core::chunked_array::cast::CastOptions;
@@ -140,8 +140,8 @@ impl PlRExpr {
         Ok(self.inner.clone().sum().into())
     }
 
-    fn cast(&self, dtype: &PlRDataType, strict: bool, wrap_numerical: bool) -> Result<Self> {
-        let dt = dtype.dt.clone();
+    fn cast(&self, dtype: &PlRDataTypeExpr, strict: bool, wrap_numerical: bool) -> Result<Self> {
+        let dt = dtype.inner.clone();
 
         let options = if wrap_numerical {
             CastOptions::Overflowing

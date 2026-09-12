@@ -965,6 +965,19 @@ impl TryFrom<&str> for Wrap<MissingColumnsPolicy> {
     }
 }
 
+impl TryFrom<&str> for Wrap<ExtraColumnsPolicy> {
+    type Error = savvy::Error;
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        let parsed = match value {
+            "raise" => ExtraColumnsPolicy::Raise,
+            "ignore" => ExtraColumnsPolicy::Ignore,
+            _ => return Err(savvy_err!("unreachable")),
+        };
+        Ok(Wrap(parsed))
+    }
+}
+
 #[cfg(not(target_arch = "wasm32"))]
 pub(crate) fn parse_parquet_compression(
     compression: &str,

@@ -1,3 +1,41 @@
+# strict Struct casts enforce the 2.0 field contract
+
+    Code
+      input$select(pl$col("s")$cast(target, strict = TRUE))
+    Condition
+      Error in `input$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: cast from `struct[2]` to `struct[2]` failed in column 's': structs field name mismatch: b vs c
+
+      Ensure that any output struct has the same number of fields as the input, and that all struct field names in the output are present in the input.
+      Use `strict=False` to force the cast, and Polars will select the first n fields from the struct.
+      This error occurred in the following expression:
+        col("s").strict_cast(Struct({'a': Int64, 'c': String}))
+
+---
+
+# strict Struct casts reject field-count mismatches
+
+    Code
+      input$select(pl$col("s")$cast(count_mismatch, strict = TRUE))
+    Condition
+      Error in `input$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: cast from `struct[2]` to `struct[1]` failed in column 's': structs do not have the same number of fields: 2 vs 1
+
+      Ensure that any output struct has the same number of fields as the input, and that all struct field names in the output are present in the input.
+      Use `strict=False` to force the cast, and Polars will select the first n fields from the struct.
+      This error occurred in the following expression:
+        col("s").strict_cast(Struct({'a': Int64}))
+
+---
+
 # Duration statistics reject duration input
 
     Code
