@@ -1,11 +1,36 @@
-# TODO: @2.0 Replace the dynamic-dots `...` interface with a single `names`
-# argument and remove this compatibility helper.
-parse_vertical_agg_input <- function(...) {
+parse_vertical_agg_input <- function(
+  ...,
+  names = NULL,
+  has_names = FALSE,
+  fn
+) {
   check_dots_unnamed()
   dots <- list2(...)
 
+  if (has_names && length(dots) > 0L) {
+    abort("Can't combine `names` with positional values in `...`.")
+  }
+
+  if (has_names) {
+    return(names)
+  }
+
   if (length(dots) == 0L) {
+    warn_deprecated_selector_dots(
+      fn,
+      "names",
+      empty = TRUE,
+      user_env = caller_env(2)
+    )
     return(character())
+  }
+
+  if (length(dots) >= 2L) {
+    warn_deprecated_selector_dots(
+      fn,
+      "names",
+      user_env = caller_env(2)
+    )
   }
 
   if (all(vapply(dots, is_character, logical(1L)))) {
@@ -25,8 +50,12 @@ parse_vertical_agg_input <- function(...) {
 #' If no arguments are passed, this function is syntactic sugar for `col("*")`.
 #' Otherwise, this function is syntactic sugar for `col(names)$all()`.
 #'
+#' @param names The name(s) or [data type][DataType] of the column(s) to use in
+#'   the aggregation. A character vector or a Polars data type/list of data
+#'   types can be supplied.
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Deprecated compatibility
+#'   interface for passing multiple names or data types.
 #' @inheritParams expr__all
-#' @param ... Name(s) of the columns to use in the aggregation.
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -39,22 +68,32 @@ parse_vertical_agg_input <- function(...) {
 #' df$select(pl$all()$sum())
 #'
 #' # Evaluate bitwise AND for a column.
-#' df$select(pl$all("a"))
-pl__all <- function(..., ignore_nulls = TRUE) {
-  if (missing(...)) {
-    pl$col("*")
-  } else {
-    pl$col(names = parse_vertical_agg_input(...))$all(
-      ignore_nulls = ignore_nulls
-    )
+#' df$select(pl$all(names = "a"))
+pl__all <- function(..., names, ignore_nulls = TRUE) {
+  if (missing(...) && missing(names)) {
+    return(pl$col("*"))
   }
+
+  selected <- parse_vertical_agg_input(
+    ...,
+    names = if (missing(names)) NULL else names,
+    has_names = !missing(names),
+    fn = "pl$all"
+  )
+  pl$col(names = selected)$all(
+    ignore_nulls = ignore_nulls
+  )
 }
 
 #' Evaluate a bitwise OR operation
 #'
 #' This function is syntactic sugar for `col(names)$any()`.
 #'
-#' @param ... Name(s) of the columns to use in the aggregation.
+#' @param names The name(s) or [data type][DataType] of the column(s) to use in
+#'   the aggregation. A character vector or a Polars data type/list of data
+#'   types can be supplied.
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Deprecated compatibility
+#'   interface for passing multiple names or data types.
 #' @inheritParams expr__any
 #'
 #' @inherit as_polars_expr return
@@ -64,9 +103,15 @@ pl__all <- function(..., ignore_nulls = TRUE) {
 #'   b = c(FALSE, FALSE, FALSE)
 #' )
 #'
-#' df$select(pl$any("a"))
-pl__any <- function(..., ignore_nulls = TRUE) {
-  pl$col(names = parse_vertical_agg_input(...))$any(
+#' df$select(pl$any(names = "a"))
+pl__any <- function(..., names, ignore_nulls = TRUE) {
+  selected <- parse_vertical_agg_input(
+    ...,
+    names = if (missing(names)) NULL else names,
+    has_names = !missing(names),
+    fn = "pl$any"
+  )
+  pl$col(names = selected)$any(
     ignore_nulls = ignore_nulls
   )
 }
@@ -85,12 +130,18 @@ pl__any <- function(..., ignore_nulls = TRUE) {
 #' )
 #'
 #' # Get the maximum value of a column
-#' df$select(pl$max("a"))
+#' df$select(pl$max(names = "a"))
 #'
 #' # Get the maximum value of multiple columns
-#' df$select(pl$max("a", "b"))
-pl__max <- function(...) {
-  pl$col(names = parse_vertical_agg_input(...))$max()
+#' df$select(pl$max(names = c("a", "b")))
+pl__max <- function(..., names) {
+  selected <- parse_vertical_agg_input(
+    ...,
+    names = if (missing(names)) NULL else names,
+    has_names = !missing(names),
+    fn = "pl$max"
+  )
+  pl$col(names = selected)$max()
 }
 
 #' Get the minimum value
@@ -107,12 +158,18 @@ pl__max <- function(...) {
 #' )
 #'
 #' # Get the minimum value of a column
-#' df$select(pl$min("a"))
+#' df$select(pl$min(names = "a"))
 #'
 #' # Get the minimum value of multiple columns
-#' df$select(pl$min("a", "b"))
-pl__min <- function(...) {
-  pl$col(names = parse_vertical_agg_input(...))$min()
+#' df$select(pl$min(names = c("a", "b")))
+pl__min <- function(..., names) {
+  selected <- parse_vertical_agg_input(
+    ...,
+    names = if (missing(names)) NULL else names,
+    has_names = !missing(names),
+    fn = "pl$min"
+  )
+  pl$col(names = selected)$min()
 }
 
 #' Sum all values
@@ -129,12 +186,18 @@ pl__min <- function(...) {
 #' )
 #'
 #' # Get the sum of a column
-#' df$select(pl$sum("a"))
+#' df$select(pl$sum(names = "a"))
 #'
 #' # Get the sum of multiple columns
-#' df$select(pl$sum("a", "b"))
-pl__sum <- function(...) {
-  pl$col(names = parse_vertical_agg_input(...))$sum()
+#' df$select(pl$sum(names = c("a", "b")))
+pl__sum <- function(..., names) {
+  selected <- parse_vertical_agg_input(
+    ...,
+    names = if (missing(names)) NULL else names,
+    has_names = !missing(names),
+    fn = "pl$sum"
+  )
+  pl$col(names = selected)$sum()
 }
 
 #' Cumulatively sum all values
@@ -151,10 +214,16 @@ pl__sum <- function(...) {
 #' )
 #'
 #' # Get the cum_sum of a column
-#' df$select(pl$cum_sum("a"))
+#' df$select(pl$cum_sum(names = "a"))
 #'
 #' # Get the cum_sum of multiple columns
-#' df$select(pl$cum_sum("a", "b"))
-pl__cum_sum <- function(...) {
-  pl$col(names = parse_vertical_agg_input(...))$cum_sum()
+#' df$select(pl$cum_sum(names = c("a", "b")))
+pl__cum_sum <- function(..., names) {
+  selected <- parse_vertical_agg_input(
+    ...,
+    names = if (missing(names)) NULL else names,
+    has_names = !missing(names),
+    fn = "pl$cum_sum"
+  )
+  pl$col(names = selected)$cum_sum()
 }

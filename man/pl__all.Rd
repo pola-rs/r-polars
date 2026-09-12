@@ -5,10 +5,15 @@
 \title{Either return an expression representing all columns, or evaluate a bitwise
 AND operation}
 \usage{
-pl__all(..., ignore_nulls = TRUE)
+pl__all(..., names, ignore_nulls = TRUE)
 }
 \arguments{
-\item{...}{Name(s) of the columns to use in the aggregation.}
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Deprecated compatibility
+interface for passing multiple names or data types.}
+
+\item{names}{The name(s) or \link[=DataType]{data type} of the column(s) to use in
+the aggregation. A character vector or a Polars data type/list of data
+types can be supplied.}
 
 \item{ignore_nulls}{If \code{TRUE} (default), ignore null values. If \code{FALSE},
 \href{https://en.wikipedia.org/wiki/Three-valued_logic}{Kleene logic} is used to
@@ -32,5 +37,5 @@ df <- pl$DataFrame(
 df$select(pl$all()$sum())
 
 # Evaluate bitwise AND for a column.
-df$select(pl$all("a"))
+df$select(pl$all(names = "a"))
 }
