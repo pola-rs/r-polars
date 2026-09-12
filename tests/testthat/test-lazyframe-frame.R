@@ -805,6 +805,42 @@ test_that("$gather_every() works", {
   )
 })
 
+test_that("$gather_every() preserves zero-width frame height", {
+  df <- pl$DataFrame(a = 1:5)$drop(cs$all())
+  lf <- df$lazy()
+
+  expect_equal(dim(df$gather_every(1)), c(5L, 0L))
+  expect_equal(dim(df$gather_every(5)), c(1L, 0L))
+  expect_equal(dim(df$gather_every(2, offset = 1)), c(2L, 0L))
+  expect_equal(dim(df$gather_every(2, offset = 4)), c(1L, 0L))
+  expect_equal(dim(lf$gather_every(1)$collect()), c(5L, 0L))
+  expect_equal(dim(lf$gather_every(5)$collect()), c(1L, 0L))
+  expect_equal(dim(lf$gather_every(2, offset = 1)$collect()), c(2L, 0L))
+  expect_equal(
+    dim(pl$DataFrame(a = integer())$drop(cs$all())$gather_every(2)),
+    c(0L, 0L)
+  )
+  expect_equal(
+    dim(pl$DataFrame(a = integer())$drop(cs$all())$lazy()$gather_every(2)$collect()),
+    c(0L, 0L)
+  )
+})
+
+test_that("$gather_every() does not collide with a user column name", {
+  df <- pl$DataFrame(
+    `__POLARS_GATHER_EVERY__` = 1:4,
+    value = 5:8
+  )
+
+  expect_equal(
+    df$gather_every(2),
+    pl$DataFrame(
+      `__POLARS_GATHER_EVERY__` = c(1L, 3L),
+      value = c(5L, 7L)
+    )
+  )
+})
+
 test_that("fill_null(): basic usage", {
   df <- pl$DataFrame(
     a = c(1.5, 2, NA, NaN),

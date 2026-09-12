@@ -2040,7 +2040,22 @@ lazyframe__clear <- function(n = 0) {
 #'
 #' lf$gather_every(2, offset = 1)$collect()
 lazyframe__gather_every <- function(n, offset = 0) {
-  self$select(pl$col("*")$gather_every(n, offset))
+  if (length(self) > 0L) {
+    return(self$select(pl$col("*")$gather_every(n, offset)))
+  }
+
+  # A zero-width frame has no column expression whose height can be gathered.
+  # Add a temporary empty Struct column to preserve the number of rows, then
+  # remove it after gathering. Choose a name that cannot collide with input
+  # columns in case this workaround is reused for a wider frame.
+  tmp_name <- "__POLARS_GATHER_EVERY__"
+  while (tmp_name %in% names(self)) {
+    tmp_name <- paste0(tmp_name, "_")
+  }
+
+  tmp <- pl$lit(NULL, dtype = pl$Struct())$alias(tmp_name)
+
+  self$with_columns(tmp)$select(pl$col(tmp_name)$gather_every(n, offset))$drop(tmp_name)
 }
 
 #' Return the number of non-null elements for each column

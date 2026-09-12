@@ -1051,7 +1051,7 @@ dataframe__map_columns <- function(column_names, lambda) {
 #'
 #' df$gather_every(2, offset = 1)
 dataframe__gather_every <- function(n, offset = 0) {
-  self$select(pl$col("*")$gather_every(n, offset)) |>
+  self$lazy()$gather_every(n, offset)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
