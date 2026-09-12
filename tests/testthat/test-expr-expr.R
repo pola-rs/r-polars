@@ -1646,12 +1646,49 @@ test_that("hash", {
 test_that("reinterpret", {
   df <- pl$DataFrame(a = c(1, 1, 2))$cast(pl$UInt64)
   expect_equal(
-    df$select(pl$col("a")$reinterpret()),
+    df$select(pl$col("a")$reinterpret(signed = TRUE)),
     pl$DataFrame(a = c(1, 1, 2))$cast(pl$Int64)
   )
   expect_equal(
     df$select(pl$col("a")$reinterpret(signed = FALSE)),
     pl$DataFrame(a = c(1, 1, 2))$cast(pl$UInt64)
+  )
+
+  expect_equal(
+    df$select(pl$col("a")$reinterpret(dtype = pl$Int64)),
+    pl$DataFrame(a = c(1, 1, 2))$cast(pl$Int64)
+  )
+  expect_equal(
+    pl$DataFrame(a = c(1, 1, 2))$cast(pl$Int64)$select(
+      pl$col("a")$reinterpret(dtype = pl$UInt64)
+    ),
+    df
+  )
+  expect_equal(
+    df$select(pl$col("a")$reinterpret(dtype = pl$Float64))$select(
+      pl$col("a")$reinterpret(dtype = pl$UInt64)
+    ),
+    df
+  )
+
+  expect_snapshot(
+    pl$col("a")$reinterpret(),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$col("a")$reinterpret(signed = TRUE, dtype = pl$Int64),
+    error = TRUE
+  )
+
+  expect_snapshot(
+    pl$col("a")$reinterpret(dtype = "Int64"),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$DataFrame(a = 1:2)$select(
+      pl$col("a")$reinterpret(dtype = pl$Int64)
+    ),
+    error = TRUE
   )
 })
 

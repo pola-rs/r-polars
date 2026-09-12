@@ -2029,8 +2029,8 @@ SEXP savvy_PlRExpr_rank__impl(SEXP self__, SEXP c_arg__method, SEXP c_arg__desce
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_reinterpret__impl(SEXP self__, SEXP c_arg__signed) {
-    SEXP res = savvy_PlRExpr_reinterpret__ffi(self__, c_arg__signed);
+SEXP savvy_PlRExpr_reinterpret__impl(SEXP self__, SEXP c_arg__signed, SEXP c_arg__dtype) {
+    SEXP res = savvy_PlRExpr_reinterpret__ffi(self__, c_arg__signed, c_arg__dtype);
     return handle_result(res);
 }
 
@@ -3823,7 +3823,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_quantile__impl", (DL_FUNC) &savvy_PlRExpr_quantile__impl, 3},
     {"savvy_PlRExpr_radians__impl", (DL_FUNC) &savvy_PlRExpr_radians__impl, 1},
     {"savvy_PlRExpr_rank__impl", (DL_FUNC) &savvy_PlRExpr_rank__impl, 4},
-    {"savvy_PlRExpr_reinterpret__impl", (DL_FUNC) &savvy_PlRExpr_reinterpret__impl, 2},
+    {"savvy_PlRExpr_reinterpret__impl", (DL_FUNC) &savvy_PlRExpr_reinterpret__impl, 3},
     {"savvy_PlRExpr_rem__impl", (DL_FUNC) &savvy_PlRExpr_rem__impl, 2},
     {"savvy_PlRExpr_repeat_by__impl", (DL_FUNC) &savvy_PlRExpr_repeat_by__impl, 2},
     {"savvy_PlRExpr_replace__impl", (DL_FUNC) &savvy_PlRExpr_replace__impl, 3},

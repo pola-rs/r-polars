@@ -4338,27 +4338,35 @@ expr__qcut <- function(
 }
 
 
-#' Reinterpret the underlying bits as a signed/unsigned integer
-#'
-#' This operation is only allowed for 64-bit integers. For lower bits integers,
-#' you can safely use the [$cast()][expr__cast] operation.
+#' Reinterpret the underlying bits of a same-size numeric type.
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param signed If `TRUE` (default), reinterpret as pl$Int64. Otherwise,
-#' reinterpret as pl$UInt64.
+#' @param signed Whether to reinterpret as a signed integer. Must specify
+#'   exactly one of `signed` and `dtype`.
+#' @param dtype Target data type for the reinterpretation. Must specify exactly
+#'   one of `signed` and `dtype`.
 #'
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(a = c(1, 1, 2))$cast(pl$UInt64)
 #'
-#' # Create a Series with 3 nulls, append column a then rechunk
+#' # Reinterpret column a as Int64
 #' df$with_columns(
-#'   reinterpreted = pl$col("a")$reinterpret()
+#'   reinterpreted = pl$col("a")$reinterpret(dtype = pl$Int64)
 #' )
-expr__reinterpret <- function(..., signed = TRUE) {
+expr__reinterpret <- function(..., signed = NULL, dtype = NULL) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$reinterpret(signed)
+    check_null_exclusive(signed, dtype)
+
+    if (is.null(signed)) {
+      check_polars_dtype(dtype)
+      dtype <- dtype$`_dt`
+    } else {
+      check_bool(signed)
+    }
+
+    self$`_rexpr`$reinterpret(signed, dtype)
   })
 }
 

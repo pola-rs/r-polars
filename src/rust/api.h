@@ -410,7 +410,7 @@ SEXP savvy_PlRExpr_qcut_uniform__ffi(SEXP self__, SEXP c_arg__n_bins, SEXP c_arg
 SEXP savvy_PlRExpr_quantile__ffi(SEXP self__, SEXP c_arg__quantile, SEXP c_arg__interpolation);
 SEXP savvy_PlRExpr_radians__ffi(SEXP self__);
 SEXP savvy_PlRExpr_rank__ffi(SEXP self__, SEXP c_arg__method, SEXP c_arg__descending, SEXP c_arg__seed);
-SEXP savvy_PlRExpr_reinterpret__ffi(SEXP self__, SEXP c_arg__signed);
+SEXP savvy_PlRExpr_reinterpret__ffi(SEXP self__, SEXP c_arg__signed, SEXP c_arg__dtype);
 SEXP savvy_PlRExpr_rem__ffi(SEXP self__, SEXP c_arg__rhs);
 SEXP savvy_PlRExpr_repeat_by__ffi(SEXP self__, SEXP c_arg__by);
 SEXP savvy_PlRExpr_replace__ffi(SEXP self__, SEXP c_arg__old, SEXP c_arg__new);

@@ -907,8 +907,12 @@ impl PlRExpr {
             .into())
     }
 
-    fn reinterpret(&self, signed: bool) -> Result<Self> {
-        Ok(self.inner.clone().reinterpret(Some(signed), None).into())
+    fn reinterpret(&self, signed: Option<bool>, dtype: Option<&PlRDataType>) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .reinterpret(signed, dtype.map(|x| x.dt.clone()))
+            .into())
     }
 
     fn repeat_by(&self, by: &PlRExpr) -> Result<Self> {

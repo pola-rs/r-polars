@@ -274,6 +274,48 @@
       Caused by error:
       ! `closed` must be one of "both", "left", "right", or "none", not "foo".
 
+# reinterpret
+
+    Code
+      pl$col("a")$reinterpret()
+    Condition
+      Error:
+      ! Evaluation failed in `$reinterpret()`.
+      Caused by error:
+      ! Must specify either `signed` or `dtype`.
+
+---
+
+    Code
+      pl$col("a")$reinterpret(signed = TRUE, dtype = pl$Int64)
+    Condition
+      Error:
+      ! Evaluation failed in `$reinterpret()`.
+      Caused by error:
+      ! Can't specify both `signed` and `dtype`.
+
+---
+
+    Code
+      pl$col("a")$reinterpret(dtype = "Int64")
+    Condition
+      Error:
+      ! Evaluation failed in `$reinterpret()`.
+      Caused by error:
+      ! `dtype` must be a polars data type, not the string "Int64".
+
+---
+
+    Code
+      pl$DataFrame(a = 1:2)$select(pl$col("a")$reinterpret(dtype = pl$Int64))
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: cannot reinterpret from Int32 to Int64
+
 # rolling_*_by only works with date, datetime, or integers
 
     Code

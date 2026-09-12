@@ -2689,8 +2689,9 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
 }
 
 `PlRExpr_reinterpret` <- function(self) {
-  function(`signed`) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_reinterpret__impl, `self`, `signed`))
+  function(`signed` = NULL, `dtype` = NULL) {
+    `dtype` <- .savvy_extract_ptr(`dtype`, "polars::PlRDataType")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_reinterpret__impl, `self`, `signed`, `dtype`))
   }
 }
 
