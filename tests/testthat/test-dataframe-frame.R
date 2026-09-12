@@ -316,8 +316,7 @@ test_that("pivot() works", {
     variable = c("a", "a", "a"),
     value = c(1, NA, NA)
   )
-  expected <- pl$DataFrame(index = c("x", "y"), a = c(2, 1))$
-    cast(a = pl$UInt32)$sort("index")
+  expected <- pl$DataFrame(index = c("x", "y"), a = c(2, 1))$cast(a = pl$UInt32)$sort("index")
   string_len <- df$pivot(
     on = "variable",
     on_columns = "a",

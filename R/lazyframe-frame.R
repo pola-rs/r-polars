@@ -2048,9 +2048,7 @@ lazyframe__gather_every <- function(n, offset = 0) {
 
   tmp <- pl$lit(NULL, dtype = pl$Struct())$alias(tmp_name)
 
-  self$with_columns(tmp)$
-    select(pl$all()$gather_every(n, offset))$
-    drop(tmp_name)
+  self$with_columns(tmp)$select(pl$all()$gather_every(n, offset))$drop(tmp_name)
 }
 
 #' Return the number of non-null elements for each column
