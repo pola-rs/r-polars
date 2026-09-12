@@ -4762,7 +4762,7 @@ expr__shuffle <- function(seed = NULL) {
 #' @examples
 #' df <- pl$DataFrame(a = 1:3)
 #' df$select(pl$col("a")$set_sorted()$max())
-expr__set_sorted <- function(..., descending = FALSE, nulls_last = !descending) {
+expr__set_sorted <- function(..., descending = FALSE, nulls_last = FALSE) {
   wrap({
     check_dots_empty0(...)
     self$`_rexpr`$set_sorted_flag(descending, nulls_last)

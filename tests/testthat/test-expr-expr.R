@@ -978,6 +978,32 @@ test_that("Expr_sort", {
   )
 })
 
+test_that("Expr_set_sorted defaults to nulls first", {
+  df <- pl$DataFrame(a = c(NA, 1L, 2L, 3L))
+
+  actual <- df$select(
+    ascending = pl$col("a")$sort()$set_sorted()$min(),
+    descending = pl$col("a")$sort(descending = TRUE)$set_sorted(descending = TRUE)$max(),
+    ascending_nulls_last = pl$col("a")$sort(nulls_last = TRUE)$set_sorted(
+      nulls_last = TRUE
+    )$min(),
+    descending_nulls_last = pl$col("a")$sort(
+      descending = TRUE,
+      nulls_last = TRUE
+    )$set_sorted(descending = TRUE, nulls_last = TRUE)$max()
+  )
+
+  expect_equal(
+    actual,
+    pl$DataFrame(
+      ascending = 1L,
+      descending = 3L,
+      ascending_nulls_last = 1L,
+      descending_nulls_last = 3L
+    )
+  )
+})
+
 test_that("$top_k() works", {
   l <- list(a = c(6, 1, 0, NA, Inf, -Inf, NaN))
 

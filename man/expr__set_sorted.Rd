@@ -4,7 +4,7 @@
 \alias{expr__set_sorted}
 \title{Flags the expression as "sorted"}
 \usage{
-expr__set_sorted(..., descending = FALSE, nulls_last = !descending)
+expr__set_sorted(..., descending = FALSE, nulls_last = FALSE)
 }
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
