@@ -1733,7 +1733,7 @@ lazyframe__pivot <- function(
         mean = pl$element()$mean(),
         median = pl$element()$median(),
         last = pl$element()$last(),
-        len = pl$element()$count(),
+        len = pl$element()$len(),
         abort("unreachable")
       )
     } else if (is_polars_expr(aggregate_function)) {

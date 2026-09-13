@@ -1985,6 +1985,34 @@ test_that("pivot() works", {
     )$sort(cs$all())
   )
 
+  # "len" counts rows containing null values, like the explicit expression.
+  df_len <- pl$DataFrame(
+    group = c("a", "a", "a", "a", "b", "b"),
+    category = c("x", "x", "x", "y", "x", "y"),
+    value = c(1, NA, 3, NA, NA, 2)
+  )
+  expected_len <- pl$DataFrame(
+    group = c("a", "b"),
+    x = c(3, 1),
+    y = c(1, 1)
+  )$cast(x = pl$UInt32, y = pl$UInt32)$sort("group")
+  string_len <- df_len$lazy()$pivot(
+    values = "value",
+    index = "group",
+    on = "category",
+    on_columns = c("x", "y"),
+    aggregate_function = "len"
+  )$collect()$sort("group")
+  explicit_len <- df_len$lazy()$pivot(
+    values = "value",
+    index = "group",
+    on = "category",
+    on_columns = c("x", "y"),
+    aggregate_function = pl$element()$len()
+  )$collect()$sort("group")
+  expect_equal(string_len, expected_len)
+  expect_equal(string_len, explicit_len)
+
   # The order of on and on_columns is important
   expect_snapshot(
     df$lazy()$pivot(
