@@ -68,13 +68,16 @@ will be parsed at this offset.}
 \item{schema}{Provide the schema. This means that polars doesn't do schema
 inference. This argument expects the complete schema, whereas
 \code{schema_overrides} can be used to partially overwrite a schema. This must be
-a list. Without a \code{names} attribute, elements are matched by position;
-otherwise, names are matched to input columns. Empty string names are valid;
-\code{NA} names are invalid.}
+a list. In Polars 1.16, elements are matched by position. In Polars 2.0,
+elements without a \code{names} attribute remain position-based, while names are
+matched to input columns. Empty string names remain valid; \code{NA} names are
+invalid.}
 
 \item{schema_overrides}{Overwrite dtypes during inference. This must be a
-list. Without a \code{names} attribute, elements are matched by position;
-otherwise, names are matched to input columns. Empty string names are valid;
+list. In Polars 1.16, named elements are matched by name, while unnamed
+elements are treated as empty string names rather than matched by position.
+In Polars 2.0, elements without a \code{names} attribute are matched by position,
+while names are matched to input columns. Empty string names remain valid;
 \code{NA} names are invalid.}
 
 \item{null_values}{Character vector specifying the values to interpret as
@@ -197,10 +200,11 @@ This allows the query optimizer to push down predicates and projections to
 the scan level, thereby potentially reducing memory overhead.
 }
 \details{
-A \code{schema} without a \code{names} attribute is matched to CSV columns by
-position. A schema with names is matched by column name. Empty string names
-are valid, while \code{NA} names are invalid. The same rules apply to
-\code{schema_overrides}.
+In Polars 1.16, \code{schema} is matched by position. Named
+\code{schema_overrides} elements are matched by name, while unnamed elements are
+treated as empty string names. In Polars 2.0, an object without a \code{names}
+attribute remains position-based, while names are matched to input columns.
+Empty string names remain valid; \code{NA} names are invalid.
 }
 \examples{
 my_file <- tempfile()

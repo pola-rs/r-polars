@@ -180,7 +180,17 @@
     Condition <lifecycle_warning_deprecated>
       Warning:
       ! NA names of `schema` are deprecated as of polars 1.16.0.
-      i In Polars 2.0, NA schema names will be invalid. Replace them with the corresponding CSV column names.
+      i In Polars 2.0, NA schema names will be invalid. Replace them with the corresponding input column names.
+
+---
+
+    Code
+      invisible(pl$scan_csv(tmpf, schema_overrides = mixed_overrides_na,
+        infer_schema_files = NULL))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! NA names of `schema_overrides` are deprecated as of polars 1.16.0.
+      i In Polars 2.0, NA schema names will be invalid. Replace them with the corresponding input column names.
 
 # read/scan: arg 'storage_options' throws basic errors
 

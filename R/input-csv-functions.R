@@ -6,10 +6,11 @@
 #' the scan level, thereby potentially reducing memory overhead.
 #'
 #' @details
-#' A `schema` without a `names` attribute is matched to CSV columns by
-#' position. A schema with names is matched by column name. Empty string names
-#' are valid, while `NA` names are invalid. The same rules apply to
-#' `schema_overrides`.
+#' In Polars 1.16, `schema` is matched by position. Named
+#' `schema_overrides` elements are matched by name, while unnamed elements are
+#' treated as empty string names. In Polars 2.0, an object without a `names`
+#' attribute remains position-based, while names are matched to input columns.
+#' Empty string names remain valid; `NA` names are invalid.
 #'
 #' @inherit as_polars_lf return
 #' @inheritParams pl__scan_ipc
@@ -29,12 +30,15 @@
 #' @param schema Provide the schema. This means that polars doesn't do schema
 #' inference. This argument expects the complete schema, whereas
 #' `schema_overrides` can be used to partially overwrite a schema. This must be
-#' a list. Without a `names` attribute, elements are matched by position;
-#' otherwise, names are matched to input columns. Empty string names are valid;
-#' `NA` names are invalid.
+#' a list. In Polars 1.16, elements are matched by position. In Polars 2.0,
+#' elements without a `names` attribute remain position-based, while names are
+#' matched to input columns. Empty string names remain valid; `NA` names are
+#' invalid.
 #' @param schema_overrides Overwrite dtypes during inference. This must be a
-#' list. Without a `names` attribute, elements are matched by position;
-#' otherwise, names are matched to input columns. Empty string names are valid;
+#' list. In Polars 1.16, named elements are matched by name, while unnamed
+#' elements are treated as empty string names rather than matched by position.
+#' In Polars 2.0, elements without a `names` attribute are matched by position,
+#' while names are matched to input columns. Empty string names remain valid;
 #' `NA` names are invalid.
 #' @param null_values Character vector specifying the values to interpret as
 #' `NA` values. It can be named, in which case names specify the columns in
@@ -154,23 +158,23 @@ pl__scan_csv <- function(
   encoding <- arg_match0(encoding, values = c("utf8", "utf8-lossy"))
   missing_columns <- arg_match0(missing_columns, values = c("insert", "raise"))
 
-  if (
-    length(schema) > 0L &&
-      anyNA(names(schema))
-  ) {
-    deprecate_warn(
-      c(
-        `!` = sprintf(
-          "NA names of %s are deprecated as of %s 1.16.0.",
-          format_arg("schema"),
-          format_pkg("polars")
-        ),
-        i = paste0(
-          "In Polars 2.0, NA schema names will be invalid. Replace them with ",
-          "the corresponding CSV column names."
+  for (schema_arg in c("schema", "schema_overrides")) {
+    schema_value <- if (schema_arg == "schema") schema else schema_overrides
+    if (length(schema_value) > 0L && anyNA(names(schema_value))) {
+      deprecate_warn(
+        c(
+          `!` = sprintf(
+            "NA names of %s are deprecated as of %s 1.16.0.",
+            format_arg(schema_arg),
+            format_pkg("polars")
+          ),
+          i = paste0(
+            "In Polars 2.0, NA schema names will be invalid. Replace them ",
+            "with the corresponding input column names."
+          )
         )
       )
-    )
+    }
   }
 
   if (infer_schema_files_missing) {

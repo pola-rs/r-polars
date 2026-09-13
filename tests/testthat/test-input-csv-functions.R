@@ -441,10 +441,24 @@ test_that("read/scan: NA schema names are deprecated", {
     mixed_schema,
     names = c("a", NA_character_, "c")
   )
+  mixed_overrides_na <- structure(
+    list(pl$Float64, pl$Categorical(), pl$Int32),
+    names = c("a", NA_character_, "c")
+  )
   fully_named_schema <- structure(mixed_schema, names = c("a", "b", "c"))
   empty_schema <- list()
   expect_snapshot(
     invisible(pl$scan_csv(tmpf, schema = mixed_na, infer_schema_files = NULL)),
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    invisible(
+      pl$scan_csv(
+        tmpf,
+        schema_overrides = mixed_overrides_na,
+        infer_schema_files = NULL
+      )
+    ),
     cnd_class = TRUE
   )
   for (candidate_schema in list(
@@ -456,6 +470,22 @@ test_that("read/scan: NA schema names are deprecated", {
     expect_no_warning(
       invisible(
         pl$scan_csv(tmpf, schema = candidate_schema, infer_schema_files = NULL)
+      )
+    )
+  }
+  for (candidate_schema in list(
+    list(pl$Float64, pl$Categorical(), pl$Int32),
+    mixed_schema,
+    fully_named_schema,
+    empty_schema
+  )) {
+    expect_no_warning(
+      invisible(
+        pl$scan_csv(
+          tmpf,
+          schema_overrides = candidate_schema,
+          infer_schema_files = NULL
+        )
       )
     )
   }
