@@ -24,8 +24,9 @@ this release.
   and `POLARS_AUTO_STRUCTIFY`, `ordering` from `pl$Categorical()`, the legacy
   `subset` compatibility argument from `$unique()`, and the extra hash seeds
   `seed_1`, `seed_2`, and `seed_3`.
-- Removed deprecated reader arguments, including `rechunk`, `cache`, `retries`,
-  `file_cache_ttl`, CSV `missing_utf8_is_empty_string`, and Parquet
+- Removed deprecated reader arguments, including `rechunk`; `cache` from CSV
+  and Arrow IPC readers; `retries` and `file_cache_ttl` from readers that
+  previously exposed them; CSV `missing_utf8_is_empty_string`; and Parquet
   `allow_missing_columns`. Removed `retries` from writers and sinks. Use
   `empty_string_is_null` and `missing_columns` for the renamed reader options.
 - Removed the individual query-optimization arguments from collection,
@@ -40,9 +41,11 @@ this release.
   `<expr>$str$replace_many()` are interpreted as column names. Wrap literal
   vectors in `list()` or use `pl$lit(...)$implode()`. `replace_with` also
   requires the list form for literal vectors.
-- List and Array `$to_struct()` methods require explicit character field names;
-  the legacy field-generating functions, `n_field_strategy`, and `upper_bound`
-  interfaces have been removed.
+- List `$to_struct()` methods require explicit character field names; their
+  legacy field-generating functions, `n_field_strategy`, and `upper_bound`
+  interfaces have been removed. Array `$to_struct()` still supports
+  `fields = NULL` to generate names from the fixed width, but no longer accepts
+  a function for `fields`.
 - `pl$concat(how = "horizontal")` requires equal-height inputs. Use
   `how = "horizontal_extend"` to pad shorter inputs with nulls. The deprecated
   `strict` argument remains only to provide migration guidance and no longer
