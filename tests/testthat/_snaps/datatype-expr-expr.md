@@ -68,3 +68,80 @@
       │     ┆     ┆     ┆        ┆      ┆      ┆        ┆        ┆        ┆       ┆ :00   ┆       ┆      │
       └─────┴─────┴─────┴────────┴──────┴──────┴────────┴────────┴────────┴───────┴───────┴───────┴──────┘
 
+# $wrap_in_list() works
+
+    Code
+      df$select(a_wrapped = pl$dtype_of("a")$wrap_in_list()$display(), b_wrapped = pl$
+        dtype_of("b")$wrap_in_list()$display(), c_wrapped = pl$dtype_of("c")$
+        wrap_in_list()$display())
+    Output
+      shape: (1, 3)
+      ┌───────────┬─────────────────┬─────────────────┐
+      │ a_wrapped ┆ b_wrapped       ┆ c_wrapped       │
+      │ ---       ┆ ---             ┆ ---             │
+      │ str       ┆ str             ┆ str             │
+      ╞═══════════╪═════════════════╪═════════════════╡
+      │ list[i32] ┆ list[list[str]] ┆ list[struct[2]] │
+      └───────────┴─────────────────┴─────────────────┘
+
+# $wrap_in_array() works
+
+    Code
+      df$select(a_wrapped = pl$dtype_of("a")$wrap_in_array(width = 1)$display(),
+      b_wrapped = pl$dtype_of("b")$wrap_in_array(width = 1)$display(), c_wrapped = pl$
+        dtype_of("c")$wrap_in_array(width = 1)$display())
+    Output
+      shape: (1, 3)
+      ┌───────────────┬─────────────────────┬─────────────────────┐
+      │ a_wrapped     ┆ b_wrapped           ┆ c_wrapped           │
+      │ ---           ┆ ---                 ┆ ---                 │
+      │ str           ┆ str                 ┆ str                 │
+      ╞═══════════════╪═════════════════════╪═════════════════════╡
+      │ array[i32, 1] ┆ array[list[str], 1] ┆ array[struct[2], 1] │
+      └───────────────┴─────────────────────┴─────────────────────┘
+
+---
+
+    Code
+      df$select(a_wrapped = pl$dtype_of("a")$wrap_in_array(foo, width = 1))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$wrap_in_array()`.
+      Caused by error:
+      ! `...` must be empty.
+      x Problematic argument:
+      * ..1 = foo
+      i Did you forget to name an argument?
+
+---
+
+    Code
+      df$select(a_wrapped = pl$dtype_of("a")$wrap_in_array(width = -1))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$wrap_in_array()`.
+      Caused by error:
+      ! -1.0 is out of range that can be safely converted to usize
+
+---
+
+    Code
+      df$select(a_wrapped = pl$dtype_of("a")$wrap_in_array(width = "a"))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$wrap_in_array()`.
+      Caused by error:
+      ! Argument `width` must be numeric, not character
+

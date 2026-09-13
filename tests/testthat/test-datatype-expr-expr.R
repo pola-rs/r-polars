@@ -142,3 +142,48 @@ test_that("$default_value(): arguments work", {
     "out of range that can be safely converted to usize"
   )
 })
+
+test_that("$wrap_in_list() works", {
+  df <- pl$DataFrame(
+    a = 1L,
+    b = list("a"),
+    c = data.frame(x = 1, y = 2)
+  )
+
+  expect_snapshot(
+    df$select(
+      a_wrapped = pl$dtype_of("a")$wrap_in_list()$display(),
+      b_wrapped = pl$dtype_of("b")$wrap_in_list()$display(),
+      c_wrapped = pl$dtype_of("c")$wrap_in_list()$display()
+    )
+  )
+})
+
+test_that("$wrap_in_array() works", {
+  df <- pl$DataFrame(
+    a = 1L,
+    b = list("a"),
+    c = data.frame(x = 1, y = 2)
+  )
+
+  expect_snapshot(
+    df$select(
+      a_wrapped = pl$dtype_of("a")$wrap_in_array(width = 1)$display(),
+      b_wrapped = pl$dtype_of("b")$wrap_in_array(width = 1)$display(),
+      c_wrapped = pl$dtype_of("c")$wrap_in_array(width = 1)$display()
+    )
+  )
+
+  expect_snapshot(
+    df$select(a_wrapped = pl$dtype_of("a")$wrap_in_array(foo, width = 1)),
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(a_wrapped = pl$dtype_of("a")$wrap_in_array(width = -1)),
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(a_wrapped = pl$dtype_of("a")$wrap_in_array(width = "a")),
+    error = TRUE
+  )
+})

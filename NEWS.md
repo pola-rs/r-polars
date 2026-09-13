@@ -104,6 +104,7 @@ this release.
   `returns_scalar`.
 - `pl$QueryOptFlags()` exposes the `join_order` and `row_estimate` optimizer
   properties.
+- `$wrap_in_list()` and `$wrap_in_array()` for `DataTypeExpr` (#1881).
 
 ### Bug fixes
 
