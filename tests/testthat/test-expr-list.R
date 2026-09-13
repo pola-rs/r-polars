@@ -635,6 +635,7 @@ test_that("$list$explode() works", {
 })
 
 test_that("$list$sample() works", {
+  local_lifecycle_warnings()
   df <- pl$DataFrame(
     values = list(1:3, NA, c(NA, 3L), 5:7),
     n = c(1, 1, 1, 2)
@@ -647,11 +648,18 @@ test_that("$list$sample() works", {
     pl$DataFrame(sample = list(3L, NA, 3L, c(6L, 7L)))
   )
 
-  expect_snapshot(df$select(pl$col("values")$list$sample(fraction = 2)), error = TRUE)
+  expect_snapshot(
+    df$select(pl$col("values")$list$sample(fraction = 2)),
+    error = TRUE
+  )
 
   expect_equal(
     df$select(
-      sample = pl$col("values")$list$sample(fraction = 2, with_replacement = TRUE, seed = 1)
+      sample = pl$col("values")$list$sample(
+        fraction = 2,
+        with_replacement = TRUE,
+        seed = 1
+      )
     ),
     pl$DataFrame(
       sample = list(
@@ -661,6 +669,26 @@ test_that("$list$sample() works", {
         c(7L, 7L, 5L, 7L, 5L, 6L)
       )
     )
+  )
+
+  # TODO: @2.0: update this expected output because sampling with replacement
+  # and shuffle disabled changes the order of the sampled values.
+
+  expect_snapshot(
+    invisible(df$select(
+      pl$col("values")$list$sample(n = NULL, fraction = NULL, seed = 1)
+    )),
+    cnd_class = TRUE
+  )
+  old <- with_lifecycle_silence(df$select(
+    pl$col("values")$list$sample(n = NULL, fraction = NULL, seed = 1)
+  ))
+  explicit_old <- expect_no_warning(
+    df$select(pl$col("values")$list$sample(fraction = 1, seed = 1))
+  )
+  expect_equal(old, explicit_old)
+  expect_no_warning(
+    df$select(pl$col("values")$list$sample(n = 1, seed = 1))
   )
 })
 

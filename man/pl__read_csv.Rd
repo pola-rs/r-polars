@@ -68,10 +68,10 @@ will be parsed at this offset.}
 \item{schema}{Provide the schema. This means that polars doesn't do schema
 inference. This argument expects the complete schema, whereas
 \code{schema_overrides} can be used to partially overwrite a schema. This must be
-a list. Names of list elements are used to match to inferred columns.}
+a list.}
 
 \item{schema_overrides}{Overwrite dtypes during inference. This must be a
-list. Names of list elements are used to match to inferred columns.}
+list.}
 
 \item{null_values}{Character vector specifying the values to interpret as
 \code{NA} values. It can be named, in which case names specify the columns in
@@ -134,8 +134,8 @@ encountering a file with Windows line endings (\code{"\\r\\n"}), one can go with
 default \code{"\\n"}. The extra \code{"\\r"} will be removed when processed.}
 
 \item{raise_if_empty}{If \code{FALSE}, parsing an empty file returns an empty
-DataFrame or LazyFrame. In Polars 1.16, the default is \code{TRUE}. Starting with
-Polars 2.0, the default will be conditional: it will be \code{FALSE} when
+DataFrame or LazyFrame. Omitting this argument is deprecated because the
+default changes conditionally in Polars 2.0: it will be \code{FALSE} when
 \code{has_header = FALSE} and \code{schema} is supplied, and \code{TRUE} otherwise. Pass an
 explicit value to select the desired behavior.}
 
@@ -190,6 +190,18 @@ A polars \link{DataFrame}
 }
 \description{
 New DataFrame from CSV
+}
+\details{
+In Polars 1.16, \code{schema} is matched by position regardless of names. In
+Polars 2.0, when \code{has_header = TRUE}, \code{schema} is matched by name and every
+schema field name must match a header name. When \code{has_header = FALSE},
+\code{schema} is matched by position and its length must match the input width.
+Empty string names remain valid; \code{NA} names are invalid.
+
+Named \code{schema_overrides} elements are matched by name, while unnamed elements
+are treated as empty string names. In Polars 2.0, an object without a \code{names}
+attribute remains position-based, while names are matched to input columns.
+Empty string names remain valid; \code{NA} names are invalid.
 }
 \examples{
 my_file <- tempfile()

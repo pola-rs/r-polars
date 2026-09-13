@@ -379,6 +379,15 @@ test_that("read/scan: arg 'schema_overrides' works", {
     pl$read_csv(tmpf, schema_overrides = list(pl$Categorical()), infer_schema_files = NULL),
     pl$DataFrame(a = c(1.5, 2), factor(c("a", NA)), c = c(2L, NA))$cast(c = pl$Int64)
   )
+
+  # A fully unnamed schema override remains valid in Polars 2.0.
+  expect_no_warning(
+    pl$read_csv(
+      tmpf,
+      schema_overrides = list(pl$String, pl$String, pl$String),
+      infer_schema_files = NULL
+    )
+  )
   # TODO: @2.0: require unnamed schema overrides to cover every column; use
   # a named list for partial overrides.
 })
@@ -416,6 +425,136 @@ test_that("read/scan: arg 'schema' works", {
     ),
     error = TRUE
   )
+})
+
+test_that("read/scan: NA schema names are deprecated", {
+  local_lifecycle_warnings()
+  tmpf <- withr::local_tempfile()
+  writeLines("a,b,c\n1.5,a,2\n2,,", tmpf)
+  mixed_schema <- list(a = pl$Float64, pl$Categorical(), c = pl$Int32)
+
+  # A fully unnamed schema with a header is deprecated because its matching
+  # behavior changes in Polars 2.0.
+  full_unnamed <- list(pl$Int32, pl$Int32, pl$Int32)
+
+  # An NA schema name is deprecated, while an empty string is a valid name.
+  mixed_na <- structure(
+    mixed_schema,
+    names = c("a", NA_character_, "c")
+  )
+  mixed_overrides_na <- structure(
+    list(pl$Float64, pl$Categorical(), pl$Int32),
+    names = c("a", NA_character_, "c")
+  )
+  fully_named_schema <- structure(mixed_schema, names = c("a", "b", "c"))
+  empty_schema <- list()
+  expect_snapshot(
+    invisible(pl$scan_csv(tmpf, schema = mixed_na, infer_schema_files = NULL)),
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    invisible(
+      pl$scan_csv(
+        tmpf,
+        schema_overrides = mixed_overrides_na,
+        infer_schema_files = NULL
+      )
+    ),
+    cnd_class = TRUE
+  )
+  expect_snapshot(
+    invisible(pl$scan_csv(tmpf, schema = full_unnamed, infer_schema_files = NULL)),
+    cnd_class = TRUE
+  )
+  for (candidate_schema in list(
+    mixed_schema,
+    fully_named_schema,
+    empty_schema
+  )) {
+    expect_no_warning(
+      invisible(
+        pl$scan_csv(tmpf, schema = candidate_schema, infer_schema_files = NULL)
+      )
+    )
+  }
+  expect_no_warning(
+    invisible(
+      pl$scan_csv(
+        tmpf,
+        has_header = FALSE,
+        schema = full_unnamed,
+        raise_if_empty = TRUE,
+        infer_schema_files = NULL
+      )
+    )
+  )
+  for (candidate_schema in list(
+    list(pl$Float64, pl$Categorical(), pl$Int32),
+    mixed_schema,
+    fully_named_schema,
+    empty_schema
+  )) {
+    expect_no_warning(
+      invisible(
+        pl$scan_csv(
+          tmpf,
+          schema_overrides = candidate_schema,
+          infer_schema_files = NULL
+        )
+      )
+    )
+  }
+
+  # The 1.16 positional behavior remains unchanged.
+  expected <- pl$DataFrame(
+    a = c(1.5, 2),
+    factor(c("a", NA)),
+    c = c(2L, NA)
+  )
+  expect_equal(
+    expect_no_warning(
+      pl$scan_csv(tmpf, schema = mixed_schema, infer_schema_files = NULL)$collect()
+    ),
+    expected
+  )
+  expect_equal(
+    expect_no_warning(
+      pl$read_csv(tmpf, schema = mixed_schema, infer_schema_files = NULL)
+    ),
+    expected
+  )
+
+  # Empty schemas do not use the positional compatibility path.
+  empty <- withr::local_tempfile()
+  writeLines("", empty)
+  expect_no_warning(pl$scan_csv(empty, schema = list(), infer_schema_files = NULL))
+  expect_no_warning(
+    pl$read_csv(
+      empty,
+      schema = list(),
+      raise_if_empty = FALSE,
+      infer_schema_files = NULL
+    )
+  )
+  # An empty CSV header is a valid column name and must not trigger a warning.
+  writeLines("a,,c\n1.5,a,2\n2,,", tmpf)
+  empty_header_schema <- structure(
+    list(pl$Float64, pl$Categorical(), pl$Int32),
+    names = c("a", "", "c")
+  )
+  scan_out <- expect_no_warning(
+    pl$scan_csv(
+      tmpf,
+      schema = empty_header_schema,
+      infer_schema_files = NULL
+    )$collect()
+  )
+  read_out <- expect_no_warning(
+    pl$read_csv(tmpf, schema = empty_header_schema, infer_schema_files = NULL)
+  )
+  expect_equal(scan_out$columns, c("a", "", "c"))
+  expect_equal(read_out$columns, c("a", "", "c"))
+  expect_equal(scan_out, read_out)
 })
 
 test_that("read/scan: schema currently matches columns positionally", {

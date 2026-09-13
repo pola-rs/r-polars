@@ -2421,7 +2421,9 @@ expr__sign <- function() {
 #' than 0.
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param element Expression or scalar value.
+#' @param element Expression or scalar value. In Polars 1.16, a bare character
+#'   string is interpreted as a column and emits a warning. Use `pl$col()` for
+#'   that interpretation or `pl$lit()` for a literal (the Polars 2.0 behavior).
 #' @param side Must be one of the following:
 #' * `"any"`: the index of the first suitable location found is given;
 #' * `"left"`: the index of the leftmost suitable location found is given;
@@ -2444,6 +2446,9 @@ expr__search_sorted <- function(
   wrap({
     check_dots_empty0(...)
     side <- arg_match0(side, values = c("any", "left", "right"))
+    if (is_string(element)) {
+      warn_deprecated_bare_string("element", "<expr>$search_sorted")
+    }
     self$`_rexpr`$search_sorted(as_polars_expr(element)$`_rexpr`, side, descending)
   })
 }
@@ -3046,8 +3051,7 @@ expr__rolling <- function(
 #' (which may not be 24 hours, due to daylight savings). Similarly for
 #' "calendar week", "calendar month", "calendar quarter", and "calendar year".
 #' @param min_samples The number of values in the window that should be
-#' non-null before computing a result. If `NULL` (default), it will be set
-#' equal to `window_size`.
+#' non-null before computing a result. Defaults to 1.
 #' @param closed Define which sides of the interval are closed (inclusive).
 #' Default is `"right"`.
 #'
@@ -3256,6 +3260,10 @@ expr__rolling_median_by <- function(
 #' Apply a rolling sum based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
+#' @param min_samples The number of values in the window that should be
+#'   non-null before computing a result. Defaults to 1 in Polars 1.16. Omitting
+#'   this argument emits a warning because the default will change to 0 in
+#'   Polars 2.0.
 #' @inherit as_polars_expr return
 #' @examples
 #' df_temporal <- pl$select(
@@ -3272,7 +3280,8 @@ expr__rolling_median_by <- function(
 #' df_temporal$with_columns(
 #'   rolling_row_sum = pl$col("index")$rolling_sum_by(
 #'     "date",
-#'     window_size = "2h"
+#'     window_size = "2h",
+#'     min_samples = 1
 #'   )
 #' )
 #'
@@ -3281,6 +3290,7 @@ expr__rolling_median_by <- function(
 #'   rolling_row_sum = pl$col("index")$rolling_sum_by(
 #'     "date",
 #'     window_size = "2h",
+#'     min_samples = 1,
 #'     closed = "both"
 #'   )
 #' )
@@ -3291,8 +3301,12 @@ expr__rolling_sum_by <- function(
   min_samples = 1,
   closed = c("right", "both", "left", "none")
 ) {
+  min_samples_missing <- missing(min_samples)
   wrap({
     check_dots_empty0(...)
+    if (min_samples_missing) {
+      warn_rolling_sum_min_samples()
+    }
     closed <- arg_match0(closed, values = c("both", "left", "right", "none"))
     self$`_rexpr`$rolling_sum_by(
       by = as_polars_expr(by)$`_rexpr`,
@@ -4445,20 +4459,25 @@ expr__rechunk <- function() {
 #' you can safely use the [$cast()][expr__cast] operation.
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param signed If `TRUE` (default), reinterpret as pl$Int64. Otherwise,
-#' reinterpret as pl$UInt64.
+#' @param signed Whether to reinterpret as a signed integer. `TRUE` reinterprets
+#'   as `pl$Int64`; `FALSE` reinterprets as `pl$UInt64`. If omitted, a warning is
+#'   emitted and `TRUE` is used for compatibility with Polars 1.16.
 #'
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(a = c(1, 1, 2))$cast(pl$UInt64)
 #'
-#' # Create a Series with 3 nulls, append column a then rechunk
+#' # Reinterpret column a as Int64
 #' df$with_columns(
-#'   reinterpreted = pl$col("a")$reinterpret()
+#'   reinterpreted = pl$col("a")$reinterpret(signed = TRUE)
 #' )
 expr__reinterpret <- function(..., signed = TRUE) {
+  signed_missing <- missing(signed)
   wrap({
     check_dots_empty0(...)
+    if (signed_missing) {
+      warn_reinterpret_signed()
+    }
     self$`_rexpr`$reinterpret(signed)
   })
 }
@@ -4674,11 +4693,15 @@ expr__rle_id <- function() {
 #' Sample from this expression
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param n Number of items to return. Cannot be used with `fraction.` Defaults
-#' to 1 if `fraction` is `NULL`.
-#' @param fraction Fraction of items to return. Cannot be used with `n`.
+#' @param n Number of items to return. Cannot be used with `fraction`. Values
+#'   are interpreted as literals in Polars 1.16; bare strings are interpreted as
+#'   columns in Polars 2.0.
+#'   Defaults to 1 if `fraction` is `NULL`.
+#' @param fraction Fraction of items to return. Cannot be used with `n`. Values
+#'   are interpreted as literals in Polars 1.16; bare strings are interpreted as
+#'   columns in Polars 2.0.
 #' @param with_replacement Allow values to be sampled more than once.
-#' @param shuffle Shuffle the order of sampled data points.
+#' @param shuffle Whether to shuffle the order of sampled data points.
 #' @param seed Seed for the random number generator. If `NULL` (default), a
 #' random seed is generated for each sample operation.
 #'
@@ -4817,7 +4840,10 @@ expr__truncate <- function(decimals = 0L) {
 #' @inheritParams rlang::args_dots_empty
 #' @param n Number of indices to shift forward. If a negative value is
 #' passed, values are shifted in the opposite direction instead.
-#' @param fill_value Fill the resulting null values with this value.
+#' @param fill_value Fill the resulting null values with this value. In Polars
+#'   1.16, a bare character string is interpreted as a column and emits a
+#'   warning. In Polars 2.0, bare strings are literals; use `pl$col()` to
+#'   preserve the old column behavior or `pl$lit()` for the new behavior.
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -4833,6 +4859,9 @@ expr__truncate <- function(decimals = 0L) {
 expr__shift <- function(n = 1, ..., fill_value = NULL) {
   wrap({
     check_dots_empty0(...)
+    if (!is.null(fill_value) && is_string(fill_value)) {
+      warn_deprecated_bare_string("fill_value", "<expr>$shift")
+    }
     self$`_rexpr`$shift(
       as_polars_expr(n)$`_rexpr`,
       as_polars_expr(fill_value)$`_rexpr`

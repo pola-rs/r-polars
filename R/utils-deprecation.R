@@ -107,6 +107,25 @@ warn_csv_raise_if_empty <- function(user_env = caller_env(2)) {
   )
 }
 
+warn_csv_schema_unnamed <- function(user_env = caller_env(2)) {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "An unnamed %s with %s is deprecated as of %s 1.16.0.",
+        format_arg("schema"),
+        format_arg("has_header = TRUE"),
+        format_pkg("polars")
+      ),
+      i = paste0(
+        "In Polars 1.16, schema fields are matched by position. In Polars 2.0, ",
+        "schema fields for CSV files with headers are matched by header name. ",
+        "Name all schema fields using the corresponding header names."
+      )
+    ),
+    user_env = user_env
+  )
+}
+
 warn_arrow_compression_default <- function(user_env = caller_env(2)) {
   deprecate_warn(
     c(
@@ -216,6 +235,87 @@ warn_deprecated_to_struct <- function(method, user_env = caller_env(2)) {
       i = sprintf(
         "Use an explicit character vector for %s.",
         format_arg("fields")
+      )
+    ),
+    user_env = user_env
+  )
+}
+
+warn_rolling_sum_min_samples <- function(user_env = caller_env(2)) {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "The default value of %s in %s will change in %s 2.0.",
+        format_arg("min_samples"),
+        format_fn("<expr>$rolling_sum_by"),
+        format_pkg("polars")
+      ),
+      i = sprintf(
+        "Use %s to retain the current behavior or %s to opt into the new default.",
+        format_code("min_samples = 1"),
+        format_code("min_samples = 0")
+      )
+    ),
+    user_env = user_env
+  )
+}
+
+warn_list_sample_default <- function(user_env = caller_env(2)) {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "The default sampling strategy of %s will change in %s 2.0.",
+        format_fn("<expr>$list$sample"),
+        format_pkg("polars")
+      ),
+      i = sprintf(
+        "Use %s to retain the current behavior or %s to opt into the new default.",
+        format_code("fraction = 1"),
+        format_code("n = 1")
+      )
+    ),
+    user_env = user_env
+  )
+}
+
+warn_reinterpret_signed <- function(user_env = caller_env(2)) {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "Calling %s without the %s argument is deprecated as of %s 1.16.0.",
+        format_fn("<expr>$reinterpret"),
+        format_arg("signed"),
+        format_pkg("polars")
+      ),
+      i = sprintf(
+        paste0(
+          "Use %s to retain the current behavior. In %s 2.0, exactly one of ",
+          "%s or %s must be supplied."
+        ),
+        format_code("signed = TRUE"),
+        format_pkg("polars"),
+        format_arg("signed"),
+        format_arg("dtype")
+      )
+    ),
+    user_env = user_env
+  )
+}
+
+warn_deprecated_bare_string <- function(argument, fn, user_env = caller_env(2)) {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "Using a bare character string as the %s argument of %s is deprecated as of %s 1.16.0.",
+        format_arg(argument),
+        format_fn(fn),
+        format_pkg("polars")
+      ),
+      i = sprintf(
+        "In %s 2.0, bare strings will be literals. Use %s for a column or %s for a literal.",
+        format_pkg("polars"),
+        format_code("pl$col(...)"),
+        format_code("pl$lit(...)")
       )
     ),
     user_env = user_env

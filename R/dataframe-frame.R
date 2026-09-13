@@ -1979,6 +1979,17 @@ dataframe__with_row_index <- function(name = "index", offset = 0) {
 #' Sample from this DataFrame
 #'
 #' @inheritParams expr__sample
+#' @param n Number of items to return. Cannot be used with `fraction`. Accepts
+#'   a scalar value or a Series; expressions are not supported. Values are
+#'   interpreted as literals in Polars 1.16. Defaults to 1 if `fraction` is
+#'   `NULL`.
+#' @param fraction Fraction of items to return. Cannot be used with `n`.
+#'   Accepts a scalar value or a Series; expressions are not supported. Values
+#'   are interpreted as literals in Polars 1.16.
+#' @param with_replacement Allow values to be sampled more than once.
+#' @param shuffle Whether to shuffle the order of sampled data points.
+#' @param seed Seed for the random number generator. If `NULL` (default), a
+#'   random seed is generated for each sample operation.
 #' @inherit as_polars_df return
 #' @examples
 #' df <- pl$DataFrame(

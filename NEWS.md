@@ -1,6 +1,6 @@
 # NEWS
 
-## polars (development version)
+## polars 1.16.0
 
 This is the last release before R Polars 2.0. It doesn't remove any existing API
 and keeps the behaviour of Polars 1.x, except where noted below. However, it comes
@@ -28,19 +28,25 @@ Pass `engine = "in-memory"` to keep the behavior from Polars 1.x.
 
 - Automatically generated column names for headerless files start at zero. For
   example, the first generated name changes from `column_1` to `column_0`.
-- When `schema` is supplied, fields are matched to file columns by name rather
-  than position, while the file's column order is preserved.
-- Partial `schema_overrides` should be passed as a named list so that overrides
-  are matched explicitly by column name.
-- The default of `raise_if_empty` becomes conditional: it is `FALSE` when
-  `has_header = FALSE` and `schema` is supplied, and `TRUE` otherwise. Pass an
-  explicit value if your code depends on either behavior.
+- In Polars 1.16, `schema` is matched by position regardless of names, while
+  the file's column order is preserved. In Polars 2.0, `schema` for CSV files
+  with `has_header = TRUE` is matched by name, and schema field names must
+  match the header names. With `has_header = FALSE`, `schema` remains
+  matched by position and its length must match the input width. Empty string
+  names are valid; `NA` names are invalid.
+- In Polars 1.16, named `schema_overrides` elements are matched by name, while
+  unnamed elements are treated as empty string names. In Polars 2.0, an
+  unnamed list is matched by position and must include one override for every
+  input column; a list with names is matched by name. Empty string names are
+  valid; `NA` names are invalid. The file's column order is preserved.
 
 #### Type coercion and casting become stricter
 
 - The supertype of a signed integer type and `UInt64` changes from `Float64` to
   `Int128`.
-- Lossy numeric coercion in `is_in()` becomes an error.
+- Lossy numeric coercion in `is_in()`, `<expr>$list$contains()`, and
+  `<expr>$arr$contains()` becomes an error. Cast the operands explicitly to
+  compatible numeric dtypes.
 - Strict casts to a `Struct` dtype reject mismatched fields.
 - `$std()` and `$ewm_std()` on `Duration` columns become errors.
 
@@ -48,10 +54,16 @@ Pass `engine = "in-memory"` to keep the behavior from Polars 1.x.
 
 - The output column names of `pl$datetime()` and `pl$repeat_()` change. Use
   `$alias()` if your code depends on a particular output name.
+- The default `shuffle` value for `<dataframe>$sample()`, `<expr>$sample()`,
+  and `<expr>$list$sample()` changes from `FALSE` in Polars 1.16 to `NULL` in
+  Polars 2.0, so output order is not guaranteed. Pass `shuffle = FALSE` to
+  preserve the Polars 1.16 ordering semantics.
+- Sampling list values with `with_replacement = TRUE` and `shuffle = FALSE`
+  may return values in a different order, even with a fixed `seed`.
 - Null `List` and `Array` values remain outer nulls when converted with `$to_struct()`.
-- Zero-width DataFrames and LazyFrames retain their height instead of collapsing
-  to height zero. Dropping every column of a three-row DataFrame therefore
-  returns a frame of shape `(3, 0)`. In Polars 2.0, an empty `pl$DataFrame()`
+- Dropping every column of a three-row DataFrame or LazyFrame retains its height
+  instead of collapsing to zero, returning a frame of shape `(3, 0)`. Selecting
+  no columns remains a `(0, 0)` result. In Polars 2.0, an empty `pl$DataFrame()`
   has a fixed height of `0`, so adding a longer column with `$with_columns()`
   raises instead of adopting the new column's length.
 
@@ -70,26 +82,54 @@ behavior in R Polars 1.16 but no longer retain that behavior in R Polars 2.0.
   `$xor()` is deprecated. Use `cs$by_name()` for set operations on columns, or
   `<selector>$as_expr()` for element-wise operations (#1861).
 
+#### Aggregation helpers
+
+- Supplying multiple values through `...` to `pl$all()`, `pl$any()`, `pl$max()`,
+  `pl$min()`, `pl$sum()`, and `pl$cum_sum()` is deprecated, including an empty
+  splice. A single positional scalar, vector, or list remains supported. Pass
+  multiple column names or data types in one `names` vector or list instead.
+- Empty selections for `pl$any()`, `pl$max()`, `pl$min()`, `pl$sum()`, and
+  `pl$cum_sum()` are deprecated; use `names = character()`. Calling
+  `pl$all()` without arguments remains supported as an all-column selector.
+
 #### String patterns and struct fields
 
 - Bare character vectors passed to `<expr>$str$contains_any()` and
   `<expr>$str$replace_many()` will be interpreted as column names in Polars 2.0.
   Use `pl$lit(...)$implode()` for literal patterns or `pl$col()` for column patterns.
   A shared literal vector can also be passed as `list(c(...))` (#1855).
+- Passing a flat character vector as `replace_with` to
+  `<expr>$str$replace_many()` is deprecated. Use `list(c(...))` for a literal
+  scalar or vector replacement; Polars 2.0 requires the list form.
 - For `<expr>$list$to_struct()` and `<series>$list$to_struct()`, omitting `fields`
   or passing a function as `fields` is deprecated. The `n_field_strategy` argument
   is also deprecated in all forms. Pass an explicit character vector of field
   names instead (#1863).
 - `upper_bound` is deprecated for `<expr>$list$to_struct()`. Passing a function to
-  `fields` are deprecated for `<expr>$arr$to_struct()` and `<series>$arr$to_struct()`
+  `fields` is deprecated for `<expr>$arr$to_struct()` and `<series>$arr$to_struct()`
   (#1863).
 
 #### Readers and writers
 
+- Fully unnamed `schema` values passed to CSV readers with
+  `has_header = TRUE` are deprecated because schema fields are matched by
+  position in Polars 1.16 but by header name in Polars 2.0. Name all schema
+  fields using the corresponding header names. This warning does not apply to
+  headerless CSV files, empty schemas, fully named schemas, or empty string
+  names.
+- `NA` names in CSV `schema` or `schema_overrides` are deprecated because they
+  become invalid in Polars 2.0. Replace them with the corresponding input
+  column names. With `has_header = FALSE`, unnamed schemas remain positional
+  and must follow the positional and length rules described above; empty string
+  names remain valid.
 - Omitting `infer_schema_files` in CSV readers now warns because its default
   changes from `NULL` to `10` in Polars 2.0. Pass `infer_schema_files = 10` to
   opt into the new default, or `infer_schema_files = NULL` to continue using all
   files (#1870).
+- Omitting `raise_if_empty` when reading a CSV with `has_header = FALSE` and a
+  non-`NULL` `schema` now warns because its default becomes `FALSE` in Polars
+  2.0. In other cases, the effective default remains `TRUE` without a warning.
+  Pass an explicit value to select the desired behavior.
 - Omitting `compression` in `$write_ipc()` and `$sink_ipc()` now warns because
   the default changes from `"zstd"` to `"uncompressed"` in Polars 2.0. Pass
   `compression = "zstd"` to preserve the current behavior, or `compression = "uncompressed"`
@@ -103,6 +143,22 @@ behavior in R Polars 1.16 but no longer retain that behavior in R Polars 2.0.
 
 #### Other methods and arguments
 
+- Omitting `n` and `fraction` in `<expr>$list$sample()` uses `fraction = 1` in
+  Polars 1.16 and will use `n = 1` in Polars 2.0. Pass `fraction = 1` to keep
+  the current behavior or `n = 1` to opt into the new behavior.
+- Omitting `min_samples` in `<expr>$rolling_sum_by()` uses `1` in Polars 1.16
+  and will use `0` in Polars 2.0. Pass an explicit value to select the desired
+  behavior.
+- Omitting `signed` in `<expr>$reinterpret()` uses `signed = TRUE` in Polars
+  1.16; Polars 2.0 requires exactly one of `signed` or `dtype`. Pass
+  `signed = TRUE` to preserve the current behavior or specify a target `dtype`.
+- Bare strings passed to `<expr>$search_sorted(element = ...)` or
+  `<expr>$shift(fill_value = ...)` are interpreted as columns in Polars 1.16
+  and as literals in Polars 2.0. Use `pl$col(...)` for a column or `pl$lit(...)`
+  for a literal.
+- Casting a non-list expression, including a column expression, to a `List`
+  dtype is deprecated. Use `pl$list(expr)` to construct a list expression
+  instead.
 - The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` and
   `<dataframe>$hash_rows()` are deprecated. Polars 2.0 removes them and retains
   only `seed`. Hash values are not guaranteed to remain the same across Polars
@@ -146,6 +202,8 @@ incorrect, or easy to miss.
 
 ### Bug fixes
 
+- `pivot(aggregate_function = "len")` now counts null values consistently with
+  `pl$element()$len()`.
 - Deprecated query-optimization arguments on LazyFrame methods are forwarded
   correctly again. `collapse_joins = FALSE` was previously ignored, while
   `no_optimization = TRUE` left `simplify_expression` and `fast_projection`

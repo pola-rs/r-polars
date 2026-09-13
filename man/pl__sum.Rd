@@ -4,10 +4,15 @@
 \alias{pl__sum}
 \title{Sum all values}
 \usage{
-pl__sum(...)
+pl__sum(..., names)
 }
 \arguments{
-\item{...}{Name(s) of the columns to use in the aggregation.}
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Deprecated compatibility
+interface for passing multiple names or data types.}
+
+\item{names}{The name(s) or \link[=DataType]{data type} of the column(s) to use in
+the aggregation. A character vector or a Polars data type/list of data
+types can be supplied.}
 }
 \value{
 A polars \link{expression}
@@ -23,8 +28,8 @@ df <- pl$DataFrame(
 )
 
 # Get the sum of a column
-df$select(pl$sum("a"))
+df$select(pl$sum(names = "a"))
 
 # Get the sum of multiple columns
-df$select(pl$sum("a", "b"))
+df$select(pl$sum(names = c("a", "b")))
 }

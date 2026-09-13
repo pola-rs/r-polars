@@ -8,7 +8,9 @@ expr_arr_shift(n = 1)
 }
 \arguments{
 \item{n}{Number of indices to shift forward. If a negative value is passed,
-values are shifted in the opposite direction instead.}
+values are shifted in the opposite direction instead. In Polars 1.16,
+bare strings are interpreted as literals; in Polars 2.0, they are
+interpreted as columns.}
 }
 \value{
 A polars \link{expression}

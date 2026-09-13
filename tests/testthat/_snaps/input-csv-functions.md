@@ -174,6 +174,34 @@
       Caused by error:
       ! unsupported data type when reading CSV: binary when reading CSV
 
+# read/scan: NA schema names are deprecated
+
+    Code
+      invisible(pl$scan_csv(tmpf, schema = mixed_na, infer_schema_files = NULL))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! NA names of `schema` are deprecated as of polars 1.16.0.
+      i In Polars 2.0, NA schema names will be invalid. Replace them with the corresponding input column names.
+
+---
+
+    Code
+      invisible(pl$scan_csv(tmpf, schema_overrides = mixed_overrides_na,
+        infer_schema_files = NULL))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! NA names of `schema_overrides` are deprecated as of polars 1.16.0.
+      i In Polars 2.0, NA schema names will be invalid. Replace them with the corresponding input column names.
+
+---
+
+    Code
+      invisible(pl$scan_csv(tmpf, schema = full_unnamed, infer_schema_files = NULL))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! An unnamed `schema` with `has_header = TRUE` is deprecated as of polars 1.16.0.
+      i In Polars 1.16, schema fields are matched by position. In Polars 2.0, schema fields for CSV files with headers are matched by header name. Name all schema fields using the corresponding header names.
+
 # read/scan: arg 'storage_options' throws basic errors
 
     Code

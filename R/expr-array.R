@@ -211,8 +211,12 @@ expr_arr_get <- function(index, ..., null_on_oob = TRUE) {
 #'   item = c(0L, 4L, 2L),
 #' )$cast(values = pl$Array(pl$Float64, 3))
 #' df$with_columns(
-#'   with_expr = pl$col("values")$arr$contains(pl$col("item")),
-#'   with_lit = pl$col("values")$arr$contains(1)
+#'   with_expr = pl$col("values")$arr$contains(
+#'     pl$col("item")$cast(pl$Float64)
+#'   ),
+#'   with_lit = pl$col("values")$arr$contains(
+#'     pl$lit(1L)$cast(pl$Float64)
+#'   )
 #' )
 expr_arr_contains <- function(item, ..., nulls_equal = TRUE) {
   wrap({
@@ -318,6 +322,10 @@ expr_arr_any <- function(..., ignore_nulls = TRUE) {
 #' Shift values in every sub-array by the given number of indices
 #'
 #' @inheritParams dataframe__shift
+#' @param n Number of indices to shift forward. If a negative value is passed,
+#'   values are shifted in the opposite direction instead. In Polars 1.16,
+#'   bare strings are interpreted as literals; in Polars 2.0, they are
+#'   interpreted as columns.
 #'
 #' @inherit as_polars_expr return
 #' @examples

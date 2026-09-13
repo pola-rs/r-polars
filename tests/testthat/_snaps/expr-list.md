@@ -193,6 +193,16 @@
       This error occurred in the following expression:
       	col("values").list.sample_fraction([2.0])
 
+---
+
+    Code
+      invisible(df$select(pl$col("values")$list$sample(n = NULL, fraction = NULL,
+        seed = 1)))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The default sampling strategy of `<expr>$list$sample()` will change in polars 2.0.
+      i Use `fraction = 1` to retain the current behavior or `n = 1` to opt into the new default.
+
 # list$to_struct with field = NULL, upper_bound = 1
 
     Code

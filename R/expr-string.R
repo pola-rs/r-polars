@@ -1209,9 +1209,12 @@ expr_str_contains_any <- function(
 #       column-name interpretation of bare character vectors directly.
 #' @inheritParams expr_str_contains_any
 #' @inheritParams expr_str_extract_many
-#' @param replace_with A vector of strings used as replacements. If this is of
-#' length 1, then it is applied to all matches. Otherwise, it must be of same
-#' length as the `patterns` argument.
+#' @param replace_with A list containing a vector of strings used as
+#' replacements. If this vector is of length 1, then it is applied to all
+#' matches. Otherwise, it must be of the same length as the `patterns` vector.
+#' In Polars 1.16, a flat character vector is accepted with a deprecation
+#' warning, but Polars 2.0 requires a list. Use `list(c(...))` for a literal
+#' scalar or vector replacement.
 #' @param ascii_case_insensitive Enable ASCII-aware case insensitive matching.
 #' When this option is enabled, searching will be performed without respect to
 #' case for ASCII letters (a-z and A-Z) only.
@@ -1226,13 +1229,17 @@ expr_str_contains_any <- function(
 #'
 #' # a replacement of length 1 is applied to all matches
 #' df$with_columns(
-#'   remove_pronouns = pl$col("lyrics")$str$replace_many(list(c("you", "me")), "")
+#'   remove_pronouns = pl$col("lyrics")$str$replace_many(
+#'     list(c("you", "me")), list(c(""))
+#'   )
 #' )
 #'
 #' # if there are more than one replacement, the patterns and replacements are
 #' # matched
 #' df$with_columns(
-#'   fake_pronouns = pl$col("lyrics")$str$replace_many(list(c("you", "me")), c("foo", "bar"))
+#'   fake_pronouns = pl$col("lyrics")$str$replace_many(
+#'     list(c("you", "me")), list(c("foo", "bar"))
+#'   )
 #' )
 expr_str_replace_many <- function(
   patterns,

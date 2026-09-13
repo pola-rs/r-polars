@@ -38,16 +38,6 @@
       Caused by error:
       ! Invalid operation: operation `var` is not supported for `duration[ms]`
 
-# empty DataFrame transpose preserves the current error
-
-    Code
-      pl$DataFrame()$transpose()
-    Condition
-      Error:
-      ! Evaluation failed in `$transpose()`.
-      Caused by error:
-      ! no data: unable to transpose an empty DataFrame
-
 # Rust deprecation warnings are routed to R snapshots
 
     Code
@@ -129,6 +119,7 @@
     Condition <polars_deprecation_warning>
       Warning:
       `list.gather` with a flat datatype is deprecated. Please use `implode` to return to previous behavior.
+      
       See https://github.com/pola-rs/polars/issues/22149 for more information.
     Output
       shape: (2, 1)
@@ -148,6 +139,7 @@
     Condition <polars_deprecation_warning>
       Warning:
       `is_in` with a collection of the same datatype is ambiguous and deprecated. Please use `implode` to return to previous behavior.
+      
       See https://github.com/pola-rs/polars/issues/22149 for more information.
     Output
       shape: (3, 1)
@@ -251,3 +243,4 @@
       │ a    │
       │ b    │
       └──────┘
+

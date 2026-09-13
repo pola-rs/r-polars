@@ -312,6 +312,36 @@ test_that("pivot() works", {
   )
 })
 
+test_that("pivot len counts null rows", {
+  df <- pl$DataFrame(
+    group = c("a", "a", "a", "a", "b", "b"),
+    category = c("x", "x", "x", "y", "x", "y"),
+    value = c(1, NA, 3, NA, NA, 2)
+  )
+  expected <- pl$DataFrame(
+    group = c("a", "b"),
+    x = c(3, 1),
+    y = c(1, 1)
+  )$cast(x = pl$UInt32, y = pl$UInt32)$sort("group")
+
+  string_len <- df$pivot(
+    values = "value",
+    index = "group",
+    on = "category",
+    on_columns = c("x", "y"),
+    aggregate_function = "len"
+  )$sort("group")
+  explicit_len <- df$pivot(
+    values = "value",
+    index = "group",
+    on = "category",
+    on_columns = c("x", "y"),
+    aggregate_function = pl$element()$len()
+  )$sort("group")
+  expect_equal(string_len, expected)
+  expect_equal(string_len, explicit_len)
+})
+
 test_that("pivot args work", {
   df_1 <- pl$DataFrame(
     foo = c("one", "one", "one", "two", "two", "two"),
@@ -602,7 +632,6 @@ test_that("sample() works", {
     bar = 6:8,
     ham = c("a", "b", "c")
   )
-  expect_silent(df$sample(n = 2))
   expect_equal(
     df$sample(n = 2, seed = 0),
     pl$DataFrame(

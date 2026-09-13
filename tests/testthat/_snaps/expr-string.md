@@ -626,6 +626,26 @@
       This error occurred with the following context stack:
       	[1] expected the same amount of patterns as replacement strings
 
+# str$replace_many flat replacement is deprecated
+
+    Code
+      dat$select(pl$col("x")$str$replace_many(list(c("hello", "he")), ""))
+    Condition <polars_deprecation_warning>
+      Warning:
+      `str.replace_many` with a flat string datatype is deprecated. please use `implode` to return to previous behavior. See https://github.com/pola-rs/polars/issues/22149 for more information.
+    Output
+      shape: (4, 1)
+      ┌───────────┐
+      │ x         │
+      │ ---       │
+      │ str       │
+      ╞═══════════╡
+      │ HELLO tre │
+      │ hi tre    │
+      │ good bye  │
+      │ null      │
+      └───────────┘
+
 # str$strptime's deprecated operation
 
     Code

@@ -12,7 +12,9 @@ expr__search_sorted(
 )
 }
 \arguments{
-\item{element}{Expression or scalar value.}
+\item{element}{Expression or scalar value. In Polars 1.16, a bare character
+string is interpreted as a column and emits a warning. Use \code{pl$col()} for
+that interpretation or \code{pl$lit()} for a literal (the Polars 2.0 behavior).}
 
 \item{side}{Must be one of the following:
 \itemize{

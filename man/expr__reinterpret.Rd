@@ -9,8 +9,9 @@ expr__reinterpret(..., signed = TRUE)
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{signed}{If \code{TRUE} (default), reinterpret as pl$Int64. Otherwise,
-reinterpret as pl$UInt64.}
+\item{signed}{Whether to reinterpret as a signed integer. \code{TRUE} reinterprets
+as \code{pl$Int64}; \code{FALSE} reinterprets as \code{pl$UInt64}. If omitted, a warning is
+emitted and \code{TRUE} is used for compatibility with Polars 1.16.}
 }
 \value{
 A polars \link{expression}
@@ -22,8 +23,8 @@ you can safely use the \link[=expr__cast]{$cast()} operation.
 \examples{
 df <- pl$DataFrame(a = c(1, 1, 2))$cast(pl$UInt64)
 
-# Create a Series with 3 nulls, append column a then rechunk
+# Reinterpret column a as Int64
 df$with_columns(
-  reinterpreted = pl$col("a")$reinterpret()
+  reinterpreted = pl$col("a")$reinterpret(signed = TRUE)
 )
 }

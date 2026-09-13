@@ -12,7 +12,10 @@ passed, values are shifted in the opposite direction instead.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{fill_value}{Fill the resulting null values with this value.}
+\item{fill_value}{Fill the resulting null values with this value. In Polars
+1.16, a bare character string is interpreted as a column and emits a
+warning. In Polars 2.0, bare strings are literals; use \code{pl$col()} to
+preserve the old column behavior or \code{pl$lit()} for the new behavior.}
 }
 \value{
 A polars \link{expression}

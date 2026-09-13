@@ -969,10 +969,7 @@ test_that("Expr_sort", {
     sort_nulls_last = pl$col("a")$sort(nulls_last = TRUE),
     sort_reverse = pl$col("a")$sort(descending = TRUE),
     sort_reverse_nulls_last = pl$col("a")$sort(descending = TRUE, nulls_last = TRUE),
-    fake_sort_nulls_last = pl$col("a")$set_sorted(descending = FALSE)$sort(
-      descending = FALSE,
-      nulls_last = TRUE
-    ),
+    fake_sort_nulls_last = pl$col("a")$set_sorted()$sort(nulls_last = TRUE),
     fake_sort_reverse_nulls_last = pl$col("a")$set_sorted(descending = TRUE)$sort(
       descending = TRUE,
       nulls_last = TRUE
@@ -1046,6 +1043,25 @@ test_that("search_sorted", {
     pl$DataFrame(a = 0:100)$select(pl$col("a")$search_sorted(pl$lit(42L))),
     pl$DataFrame(a = 42)$cast(pl$UInt32)
   )
+})
+
+test_that("search_sorted warns for bare character strings", {
+  local_lifecycle_warnings()
+  df <- pl$DataFrame(a = 0:3)
+
+  expect_snapshot(
+    invisible(df$select(pl$col("a")$search_sorted("a"))),
+    cnd_class = TRUE
+  )
+  old <- with_lifecycle_silence(df$select(pl$col("a")$search_sorted("a")))
+  explicit <- expect_no_warning(df$select(pl$col("a")$search_sorted(pl$col("a"))))
+  expect_equal(old, explicit)
+
+  literal_df <- pl$DataFrame(a = c("a", "b", "c"))
+  literal <- expect_no_warning(
+    literal_df$select(pl$col("a")$search_sorted(pl$lit("b")))
+  )
+  expect_equal(literal, pl$DataFrame(a = 1L)$cast(pl$UInt32))
 })
 
 test_that("sort_by", {
@@ -1157,6 +1173,23 @@ test_that("shift", {
       sp2 = r_shift_and_fill(0:3, 2, 21)
     )
   )
+})
+
+test_that("shift warns for bare character fill values", {
+  local_lifecycle_warnings()
+  df <- pl$DataFrame(a = c("a", "b", "c"))
+
+  expect_snapshot(
+    invisible(pl$col("a")$shift(1, fill_value = "fill")),
+    cnd_class = TRUE
+  )
+  expect_no_warning(
+    pl$col("a")$shift(1, fill_value = pl$col("fill"))
+  )
+  literal <- expect_no_warning(
+    df$select(pl$col("a")$shift(1, fill_value = pl$lit("fill")))
+  )
+  expect_equal(literal, pl$DataFrame(a = c("fill", "a", "b")))
 })
 
 test_that("fill_null", {
@@ -1653,15 +1686,22 @@ test_that("hash additional seeds are deprecated", {
 })
 
 test_that("reinterpret", {
+  local_lifecycle_warnings()
   df <- pl$DataFrame(a = c(1, 1, 2))$cast(pl$UInt64)
+  expect_snapshot(
+    invisible(df$select(pl$col("a")$reinterpret())),
+    cnd_class = TRUE
+  )
   expect_equal(
-    df$select(pl$col("a")$reinterpret()),
+    df$select(pl$col("a")$reinterpret(signed = TRUE)),
     pl$DataFrame(a = c(1, 1, 2))$cast(pl$Int64)
   )
+  expect_no_warning(df$select(pl$col("a")$reinterpret(signed = TRUE)))
   expect_equal(
     df$select(pl$col("a")$reinterpret(signed = FALSE)),
     pl$DataFrame(a = c(1, 1, 2))$cast(pl$UInt64)
   )
+  expect_no_warning(df$select(pl$col("a")$reinterpret(signed = FALSE)))
 })
 
 # test_that("inspect", {
@@ -1815,7 +1855,7 @@ patrick::with_parameters_test_that(
         min = pl$col("a")$rolling_min_by("date", window_size = "2d"),
         max = pl$col("a")$rolling_max_by("date", window_size = "2d"),
         mean = pl$col("a")$rolling_mean_by("date", window_size = "2d"),
-        sum = pl$col("a")$rolling_sum_by("date", window_size = "2d"),
+        sum = pl$col("a")$rolling_sum_by("date", window_size = "2d", min_samples = 1),
         std = pl$col("a")$rolling_std_by("date", window_size = "2d"),
         var = pl$col("a")$rolling_var_by("date", window_size = "2d"),
         median = pl$col("a")$rolling_median_by("date", window_size = "2d"),
@@ -1858,7 +1898,7 @@ patrick::with_parameters_test_that(
         min = pl$col("a")$rolling_min_by("id", window_size = "2i"),
         max = pl$col("a")$rolling_max_by("id", window_size = "2i"),
         mean = pl$col("a")$rolling_mean_by("id", window_size = "2i"),
-        sum = pl$col("a")$rolling_sum_by("id", window_size = "2i"),
+        sum = pl$col("a")$rolling_sum_by("id", window_size = "2i", min_samples = 1),
         std = pl$col("a")$rolling_std_by("id", window_size = "2i"),
         var = pl$col("a")$rolling_var_by("id", window_size = "2i"),
         median = pl$col("a")$rolling_median_by("id", window_size = "2i"),
@@ -1929,6 +1969,29 @@ test_that("rolling_*_by: arg 'min_samples'", {
   )
 })
 
+test_that("rolling_sum_by warns when min_samples is omitted", {
+  local_lifecycle_warnings()
+  df <- pl$select(
+    a = 1:3,
+    date = pl$date_range(as.Date("2001-01-01"), as.Date("2001-01-03"), "1d")
+  )
+
+  expect_snapshot(
+    invisible(df$select(pl$col("a")$rolling_sum_by("date", window_size = "2d"))),
+    cnd_class = TRUE
+  )
+  old <- with_lifecycle_silence(
+    df$select(pl$col("a")$rolling_sum_by("date", window_size = "2d"))
+  )
+  explicit_old <- expect_no_warning(
+    df$select(pl$col("a")$rolling_sum_by("date", window_size = "2d", min_samples = 1))
+  )
+  expect_equal(old, explicit_old)
+  expect_no_warning(
+    df$select(pl$col("a")$rolling_sum_by("date", window_size = "2d", min_samples = 0))
+  )
+})
+
 test_that("rolling_*_by: arg 'closed'", {
   df <- pl$select(
     a = 1:6,
@@ -1951,7 +2014,12 @@ test_that("rolling_*_by: arg 'closed'", {
       min = pl$col("a")$rolling_min_by("date", window_size = "2d", closed = "left"),
       max = pl$col("a")$rolling_max_by("date", window_size = "2d", closed = "left"),
       mean = pl$col("a")$rolling_mean_by("date", window_size = "2d", closed = "left"),
-      sum = pl$col("a")$rolling_sum_by("date", window_size = "2d", closed = "left"),
+      sum = pl$col("a")$rolling_sum_by(
+        "date",
+        window_size = "2d",
+        min_samples = 1,
+        closed = "left"
+      ),
       std = pl$col("a")$rolling_std_by("date", window_size = "2d", closed = "left"),
       var = pl$col("a")$rolling_var_by("date", window_size = "2d", closed = "left"),
       median = pl$col("a")$rolling_median_by("date", window_size = "2d", closed = "left"),
@@ -2403,7 +2471,6 @@ test_that("sample", {
     20
   )
 })
-
 
 test_that("ewm_", {
   df <- pl$DataFrame(a = c(1, rep(0, 10)))

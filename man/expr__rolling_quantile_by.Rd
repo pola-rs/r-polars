@@ -57,8 +57,7 @@ By "calendar day", we mean the corresponding time on the next day
 \code{"higher"}, \code{"lower"}, \code{"midpoint"}, \code{"linear"}.}
 
 \item{min_samples}{The number of values in the window that should be
-non-null before computing a result. If \code{NULL} (default), it will be set
-equal to \code{window_size}.}
+non-null before computing a result. Defaults to 1.}
 
 \item{closed}{Define which sides of the interval are closed (inclusive).
 Default is \code{"right"}.}

@@ -5,6 +5,18 @@
 #' This allows the query optimizer to push down predicates and projections to
 #' the scan level, thereby potentially reducing memory overhead.
 #'
+#' @details
+#' In Polars 1.16, `schema` is matched by position regardless of names. In
+#' Polars 2.0, when `has_header = TRUE`, `schema` is matched by name and every
+#' schema field name must match a header name. When `has_header = FALSE`,
+#' `schema` is matched by position and its length must match the input width.
+#' Empty string names remain valid; `NA` names are invalid.
+#'
+#' Named `schema_overrides` elements are matched by name, while unnamed elements
+#' are treated as empty string names. In Polars 2.0, an object without a `names`
+#' attribute remains position-based, while names are matched to input columns.
+#' Empty string names remain valid; `NA` names are invalid.
+#'
 #' @inherit as_polars_lf return
 #' @inheritParams pl__scan_ipc
 #' @inheritParams pl__scan_parquet
@@ -23,9 +35,9 @@
 #' @param schema Provide the schema. This means that polars doesn't do schema
 #' inference. This argument expects the complete schema, whereas
 #' `schema_overrides` can be used to partially overwrite a schema. This must be
-#' a list. Names of list elements are used to match to inferred columns.
+#' a list.
 #' @param schema_overrides Overwrite dtypes during inference. This must be a
-#' list. Names of list elements are used to match to inferred columns.
+#' list.
 #' @param null_values Character vector specifying the values to interpret as
 #' `NA` values. It can be named, in which case names specify the columns in
 #' which this replacement must be made (e.g. `c(col1 = "a")`).
@@ -76,8 +88,8 @@
 #  their original name.
 #'
 #' @param raise_if_empty If `FALSE`, parsing an empty file returns an empty
-#' DataFrame or LazyFrame. In Polars 1.16, the default is `TRUE`. Starting with
-#' Polars 2.0, the default will be conditional: it will be `FALSE` when
+#' DataFrame or LazyFrame. Omitting this argument is deprecated because the
+#' default changes conditionally in Polars 2.0: it will be `FALSE` when
 #' `has_header = FALSE` and `schema` is supplied, and `TRUE` otherwise. Pass an
 #' explicit value to select the desired behavior.
 #' @param truncate_ragged_lines Truncate lines that are longer than the schema.
@@ -143,6 +155,29 @@ pl__scan_csv <- function(
   check_number_whole(infer_schema_files, min = 1, allow_null = TRUE)
   encoding <- arg_match0(encoding, values = c("utf8", "utf8-lossy"))
   missing_columns <- arg_match0(missing_columns, values = c("insert", "raise"))
+
+  for (schema_arg in c("schema", "schema_overrides")) {
+    schema_value <- if (schema_arg == "schema") schema else schema_overrides
+    if (length(schema_value) > 0L && anyNA(names(schema_value))) {
+      deprecate_warn(
+        c(
+          `!` = sprintf(
+            "NA names of %s are deprecated as of %s 1.16.0.",
+            format_arg(schema_arg),
+            format_pkg("polars")
+          ),
+          i = paste0(
+            "In Polars 2.0, NA schema names will be invalid. Replace them ",
+            "with the corresponding input column names."
+          )
+        )
+      )
+    }
+  }
+
+  if (isTRUE(has_header) && length(schema) > 0L && is.null(names(schema))) {
+    warn_csv_schema_unnamed()
+  }
 
   if (infer_schema_files_missing) {
     # TODO: @2.0: default omitted values to 10 and remove this migration path.
@@ -259,6 +294,7 @@ pl__scan_csv <- function(
 
 #' New DataFrame from CSV
 #' @inheritParams pl__scan_csv
+#' @inherit pl__scan_csv details
 #' @inherit as_polars_df return
 #' @examples
 #' my_file <- tempfile()

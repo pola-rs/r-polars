@@ -222,6 +222,15 @@
       This error occurred in the following expression:
       	col("x").truncate()
 
+# search_sorted warns for bare character strings
+
+    Code
+      invisible(df$select(pl$col("a")$search_sorted("a")))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Using a bare character string as the `element` argument of `<expr>$search_sorted()` is deprecated as of polars 1.16.0.
+      i In polars 2.0, bare strings will be literals. Use `pl$col(...)` for a column or `pl$lit(...)` for a literal.
+
 # gather that
 
     Code
@@ -251,6 +260,15 @@
       
       This error occurred in the following expression:
       	Series[literal].get(11)
+
+# shift warns for bare character fill values
+
+    Code
+      invisible(pl$col("a")$shift(1, fill_value = "fill"))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Using a bare character string as the `fill_value` argument of `<expr>$shift()` is deprecated as of polars 1.16.0.
+      i In polars 2.0, bare strings will be literals. Use `pl$col(...)` for a column or `pl$lit(...)` for a literal.
 
 # fill_nan() works
 
@@ -374,6 +392,15 @@
       ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
       i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
 
+# reinterpret
+
+    Code
+      invisible(df$select(pl$col("a")$reinterpret()))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Calling `<expr>$reinterpret()` without the `signed` argument is deprecated as of polars 1.16.0.
+      i Use `signed = TRUE` to retain the current behavior. In polars 2.0, exactly one of `signed` or `dtype` must be supplied.
+
 # rolling_*_by only works with date, datetime, or integers
 
     Code
@@ -403,6 +430,15 @@
       ! Evaluation failed in `$rolling_min_by()`.
       Caused by error:
       ! -1.0 is out of range that can be safely converted to usize
+
+# rolling_sum_by warns when min_samples is omitted
+
+    Code
+      invisible(df$select(pl$col("a")$rolling_sum_by("date", window_size = "2d")))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The default value of `min_samples` in `<expr>$rolling_sum_by()` will change in polars 2.0.
+      i Use `min_samples = 1` to retain the current behavior or `min_samples = 0` to opt into the new default.
 
 # rolling_*_by: arg 'closed'
 

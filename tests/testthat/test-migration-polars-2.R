@@ -1,9 +1,3 @@
-normalize_warning_snapshot <- function(lines) {
-  # Drop platform-specific blank warning lines after normalizing line endings.
-  lines <- sub("\\r$", "", lines)
-  lines[!grepl("^[[:blank:]]*$", lines)]
-}
-
 test_that("CSV preserves the current ragged-line default", {
   tmpf <- withr::local_tempfile(fileext = ".csv")
   writeLines(c("a,b", "1,2,3", "4,5"), tmpf)
@@ -72,6 +66,30 @@ test_that("numeric is_in preserves the current lossy comparison", {
   # TODO: @2.0: expect this lossy Int64-to-Float64 coercion to raise an error.
 })
 
+test_that("list and array membership preserve current lossy coercion", {
+  list_input <- pl$DataFrame(values = list(c(1L, 2L)))
+  expect_equal(
+    list_input$select(pl$col("values")$list$contains(1.99)),
+    pl$DataFrame(values = FALSE)
+  )
+
+  array_input <- pl$DataFrame(
+    values = list(c(1, 2)),
+    item = 1L
+  )$cast(values = pl$Array(pl$Float64, 2))
+  expect_equal(
+    array_input$select(pl$col("values")$arr$contains(pl$col("item"))),
+    pl$DataFrame(values = TRUE)
+  )
+  expect_equal(
+    array_input$select(pl$col("values")$arr$contains(1L)),
+    pl$DataFrame(values = TRUE)
+  )
+
+  # TODO: @2.0: expect all three lossy numeric membership operations to raise
+  # an error instead of coercing their operands to a common supertype.
+})
+
 test_that("strict Struct casts preserve current behavior", {
   input <- pl$DataFrame(a = 1:2, b = c("x", "y"))$select(s = pl$struct("a", "b"))
   target <- pl$Struct(a = pl$Int64, b = pl$String, c = pl$Int64)
@@ -105,20 +123,23 @@ test_that("Duration statistics preserve current behavior", {
   # ewm_var()) to raise an error; var() and ewm_var() already do so today.
 })
 
-test_that("empty DataFrame transpose preserves the current error", {
-  expect_snapshot(pl$DataFrame()$transpose(), error = TRUE)
-
-  # TODO: @2.0: replace this error snapshot with the supported empty-frame
-  # transpose result.
-})
-
 test_that("selecting no columns preserves the current zero-width height", {
   out <- pl$DataFrame(a = 1:3, b = 4:6)$select()
 
   expect_equal(dim(out), c(0L, 0L))
 
-  # TODO: @2.0: expect zero-width frames to preserve their input height, so
-  # this result should have dimensions c(3L, 0L).
+  # Selecting no columns is an empty projection and remains unchanged in
+  # Polars 2.0.
+})
+
+test_that("dropping all columns preserves the current zero-width height", {
+  input <- pl$DataFrame(a = 1:3, b = 4:6)
+
+  expect_equal(dim(input$drop(cs$all())), c(0L, 0L))
+  expect_equal(dim(input$lazy()$drop(cs$all())$collect()), c(0L, 0L))
+
+  # TODO: @2.0: expect dropping all columns to preserve the input height and
+  # return dimensions c(3L, 0L) for both DataFrame and LazyFrame.
 })
 
 test_that("list and array to_struct preserve outer nulls", {
@@ -175,12 +196,10 @@ test_that("Rust deprecation warnings are routed to R snapshots", {
     pl$DataFrame(x = list(c(1L, 2L), c(3L, 4L)))$select(
       pl$col("x")$list$gather(c(0L, 1L))
     ),
-    transform = normalize_warning_snapshot,
     cnd_class = TRUE
   )
   expect_snapshot(
     pl$DataFrame(x = 1:3)$select(pl$col("x")$is_in(pl$lit(1:3))),
-    transform = normalize_warning_snapshot,
     cnd_class = TRUE
   )
   expect_snapshot(

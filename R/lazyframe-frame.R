@@ -1733,7 +1733,7 @@ lazyframe__pivot <- function(
         mean = pl$element()$mean(),
         median = pl$element()$median(),
         last = pl$element()$last(),
-        len = pl$element()$count(),
+        len = pl$element()$len(),
         abort("unreachable")
       )
     } else if (is_polars_expr(aggregate_function)) {
@@ -2514,7 +2514,9 @@ lazyframe__set_sorted <- function(column, ..., descending = FALSE) {
     if (length(column) != 1 || !is.character(column)) {
       abort("`column` must be a single column name.")
     }
-    self$with_columns(pl$col(column)$set_sorted(descending = descending))
+    self$with_columns(
+      pl$col(column)$set_sorted(descending = descending)
+    )
   })
 }
 
