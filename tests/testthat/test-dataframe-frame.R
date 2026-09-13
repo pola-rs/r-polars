@@ -627,15 +627,13 @@ test_that("transpose() works", {
 })
 
 test_that("sample() works", {
-  local_lifecycle_warnings()
   df <- pl$DataFrame(
     foo = 1:3,
     bar = 6:8,
     ham = c("a", "b", "c")
   )
-  expect_no_warning(df$sample(n = 2, shuffle = FALSE))
   expect_equal(
-    df$sample(n = 2, shuffle = FALSE, seed = 0),
+    df$sample(n = 2, seed = 0),
     pl$DataFrame(
       foo = 1:2,
       bar = 6:7,
@@ -643,21 +641,11 @@ test_that("sample() works", {
     )
   )
   expect_equal(
-    df$sample(fraction = 0.5, shuffle = FALSE, seed = 0),
+    df$sample(fraction = 0.5, seed = 0),
     pl$DataFrame(foo = 1L, bar = 6L, ham = "a")
   )
-  expect_snapshot(df$sample(n = 2, fraction = 0.1, shuffle = FALSE), error = TRUE)
-  expect_snapshot(df$sample(frac = 0.1, shuffle = FALSE), error = TRUE)
-
-  expect_snapshot(
-    invisible(df$sample(n = 2, seed = 0)),
-    cnd_class = TRUE
-  )
-  expect_equal(
-    expect_no_warning(df$sample(n = 2, shuffle = FALSE, seed = 0)),
-    pl$DataFrame(foo = 1:2, bar = 6:7, ham = c("a", "b"))
-  )
-  expect_no_warning(df$sample(n = 2, shuffle = TRUE, seed = 0))
+  expect_snapshot(df$sample(n = 2, fraction = 0.1), error = TRUE)
+  expect_snapshot(df$sample(frac = 0.1), error = TRUE)
 
   # TODO: uncomment when https://github.com/pola-rs/polars/issues/21521
   # is resolved

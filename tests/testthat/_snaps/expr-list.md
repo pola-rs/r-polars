@@ -165,7 +165,6 @@
       ! Evaluation failed in `$eval()`.
       Caused by error in `pl$concat_list("a", "b")$list$eval()`:
       ! `expr` must be a polars expression, not the number 1.
-
 # $list$explode() works
 
     Code
@@ -181,7 +180,7 @@
 # $list$sample() works
 
     Code
-      df$select(pl$col("values")$list$sample(fraction = 2, shuffle = FALSE))
+      df$select(pl$col("values")$list$sample(fraction = 2))
     Condition
       Error in `df$select()`:
       ! Evaluation failed in `$select()`.
@@ -193,28 +192,11 @@
       This error occurred in the following expression:
       	col("values").list.sample_fraction([2.0])
 
-    Code
-      invisible(df$select(
-        pl$col("values")$list$sample(n = NULL, fraction = NULL, shuffle = FALSE, seed = 1)
-      ))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default sampling strategy of `<expr>$list$sample()` will change in polars 2.0.
-      i Use `fraction = 1` to retain the current behavior or `n = 1` to opt into the new default.
+---
 
     Code
-      invisible(df$select(pl$col("values")$list$sample(n = 1, seed = 1)))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default value of `shuffle` in `<expr>$list$sample()` will change in polars 2.0.
-      i Use `shuffle = FALSE` to retain the current behavior; sample order will not be guaranteed by default in polars 2.0.
-
-    Code
-      invisible(df$select(pl$col("values")$list$sample(seed = 1)))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default value of `shuffle` in `<expr>$list$sample()` will change in polars 2.0.
-      i Use `shuffle = FALSE` to retain the current behavior; sample order will not be guaranteed by default in polars 2.0.
+      invisible(df$select(pl$col("values")$list$sample(n = NULL, fraction = NULL,
+        seed = 1)))
     Condition <lifecycle_warning_deprecated>
       Warning:
       ! The default sampling strategy of `<expr>$list$sample()` will change in polars 2.0.

@@ -126,7 +126,6 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! schema lengths differ
-
 # read/scan: bad paths
 
     Code
@@ -174,23 +173,14 @@
       Caused by error:
       ! unsupported data type when reading CSV: binary when reading CSV
 
-# read/scan: unnamed schema elements are deprecated
-
-    Code
-      invisible(pl$scan_csv(tmpf, schema = full_unnamed, infer_schema_files = NULL))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! Unnamed elements of `schema` are deprecated as of polars 1.16.0.
-      i In Polars 2.0, CSV schema fields will be matched to columns by name. Name all elements of `schema` with the corresponding CSV column names.
-
----
+# read/scan: NA schema names are deprecated
 
     Code
       invisible(pl$scan_csv(tmpf, schema = mixed_na, infer_schema_files = NULL))
     Condition <lifecycle_warning_deprecated>
       Warning:
-      ! Unnamed elements of `schema` are deprecated as of polars 1.16.0.
-      i In Polars 2.0, CSV schema fields will be matched to columns by name. Name all elements of `schema` with the corresponding CSV column names.
+      ! NA names of `schema` are deprecated as of polars 1.16.0.
+      i In Polars 2.0, NA schema names will be invalid. Replace them with the corresponding CSV column names.
 
 # read/scan: arg 'storage_options' throws basic errors
 

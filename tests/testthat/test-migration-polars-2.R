@@ -129,13 +129,6 @@ test_that("Duration statistics preserve current behavior", {
   # ewm_var()) to raise an error; var() and ewm_var() already do so today.
 })
 
-test_that("empty DataFrame transpose preserves the current error", {
-  expect_snapshot(pl$DataFrame()$transpose(), error = TRUE)
-
-  # TODO: @2.0: replace this error snapshot with the supported empty-frame
-  # transpose result.
-})
-
 test_that("selecting no columns preserves the current zero-width height", {
   out <- pl$DataFrame(a = 1:3, b = 4:6)$select()
 

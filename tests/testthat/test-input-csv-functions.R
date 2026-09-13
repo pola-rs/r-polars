@@ -427,18 +427,14 @@ test_that("read/scan: arg 'schema' works", {
   )
 })
 
-test_that("read/scan: unnamed schema elements are deprecated", {
+test_that("read/scan: NA schema names are deprecated", {
   local_lifecycle_warnings()
   tmpf <- withr::local_tempfile()
   writeLines("a,b,c\n1.5,a,2\n2,,", tmpf)
   mixed_schema <- list(a = pl$Float64, pl$Categorical(), c = pl$Int32)
 
-  # A fully unnamed schema remains valid but is deprecated.
+  # A fully unnamed schema remains valid and is not deprecated.
   full_unnamed <- list(pl$Int32, pl$Int32)
-  expect_snapshot(
-    invisible(pl$scan_csv(tmpf, schema = full_unnamed, infer_schema_files = NULL)),
-    cnd_class = TRUE
-  )
 
   # An NA schema name is deprecated, while an empty string is a valid name.
   mixed_na <- structure(
@@ -452,6 +448,7 @@ test_that("read/scan: unnamed schema elements are deprecated", {
     cnd_class = TRUE
   )
   for (candidate_schema in list(
+    full_unnamed,
     mixed_schema,
     fully_named_schema,
     empty_schema

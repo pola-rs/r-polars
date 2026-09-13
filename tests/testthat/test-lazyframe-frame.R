@@ -416,14 +416,6 @@ test_that("set_sorted works", {
   expect_false(df1$flags[["name"]][["SORTED_DESC"]])
 })
 
-test_that("public set_sorted methods are warning-free", {
-  local_lifecycle_warnings()
-  df <- pl$DataFrame(a = 1:3)
-
-  expect_no_warning(df$set_sorted("a"))
-  expect_no_warning(df$lazy()$set_sorted("a"))
-})
-
 test_that("unique works", {
   df <- pl$DataFrame(
     foo = c(1, 2, 3, 1),

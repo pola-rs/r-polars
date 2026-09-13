@@ -3305,7 +3305,7 @@ expr__rolling_sum_by <- function(
   wrap({
     check_dots_empty0(...)
     if (min_samples_missing) {
-      warn_deprecated_rolling_sum_by_min_samples()
+      warn_rolling_sum_min_samples()
     }
     closed <- arg_match0(closed, values = c("both", "left", "right", "none"))
     self$`_rexpr`$rolling_sum_by(
@@ -4475,7 +4475,7 @@ expr__reinterpret <- function(..., signed = TRUE) {
   wrap({
     check_dots_empty0(...)
     if (signed_missing) {
-      warn_deprecated_reinterpret_signed()
+      warn_reinterpret_signed()
     }
     self$`_rexpr`$reinterpret(signed)
   })
@@ -4700,10 +4700,7 @@ expr__rle_id <- function() {
 #'   are interpreted as literals in Polars 1.16; bare strings are interpreted as
 #'   columns in Polars 2.0.
 #' @param with_replacement Allow values to be sampled more than once.
-#' @param shuffle Whether to shuffle the order of sampled data points. If
-#'   omitted, a warning is emitted and `FALSE` is used for compatibility with
-#'   Polars 1.16. Use `shuffle = FALSE` to retain the current behavior; Polars
-#'   2.0 will not guarantee sample order by default.
+#' @param shuffle Whether to shuffle the order of sampled data points.
 #' @param seed Seed for the random number generator. If `NULL` (default), a
 #' random seed is generated for each sample operation.
 #'
@@ -4711,7 +4708,7 @@ expr__rle_id <- function() {
 #' @examples
 #' df <- pl$DataFrame(a = 1:3)
 #' df$select(pl$col("a")$sample(
-#'   fraction = 1, with_replacement = TRUE, shuffle = FALSE, seed = 1
+#'   fraction = 1, with_replacement = TRUE, seed = 1
 #' ))
 expr__sample <- function(
   n = NULL,
@@ -4721,12 +4718,8 @@ expr__sample <- function(
   shuffle = FALSE,
   seed = NULL
 ) {
-  shuffle_missing <- missing(shuffle)
   wrap({
     check_dots_empty0(...)
-    if (shuffle_missing) {
-      warn_deprecated_sample_shuffle("<expr>$sample")
-    }
     if (!is.null(fraction)) {
       if (!is.null(n)) {
         abort("Can't specify both `n` and `fraction`.")
@@ -4923,20 +4916,15 @@ expr__shuffle <- function(seed = NULL) {
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @param descending Whether the Series order is descending.
-#' @param nulls_last Whether the nulls are at the end. The 1.16 default is
-#'   `!descending`; the default will change to `FALSE` in Polars 2.0.
+#' @param nulls_last Whether the nulls are at the end.
 #'
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(a = 1:3)
-#' df$select(pl$col("a")$set_sorted(nulls_last = TRUE)$max())
+#' df$select(pl$col("a")$set_sorted()$max())
 expr__set_sorted <- function(..., descending = FALSE, nulls_last = !descending) {
-  nulls_last_missing <- missing(nulls_last)
   wrap({
     check_dots_empty0(...)
-    if (nulls_last_missing && isFALSE(descending)) {
-      warn_deprecated_set_sorted_nulls_last()
-    }
     self$`_rexpr`$set_sorted_flag(descending, nulls_last)
   })
 }

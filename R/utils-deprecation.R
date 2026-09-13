@@ -222,7 +222,7 @@ warn_deprecated_to_struct <- function(method, user_env = caller_env(2)) {
   )
 }
 
-warn_deprecated_rolling_sum_by_min_samples <- function(user_env = caller_env(2)) {
+warn_rolling_sum_min_samples <- function(user_env = caller_env(2)) {
   deprecate_warn(
     c(
       `!` = sprintf(
@@ -241,26 +241,7 @@ warn_deprecated_rolling_sum_by_min_samples <- function(user_env = caller_env(2))
   )
 }
 
-warn_deprecated_sample_shuffle <- function(fn, user_env = caller_env(2)) {
-  deprecate_warn(
-    c(
-      `!` = sprintf(
-        "The default value of %s in %s will change in %s 2.0.",
-        format_arg("shuffle"),
-        format_fn(fn),
-        format_pkg("polars")
-      ),
-      i = sprintf(
-        "Use %s to retain the current behavior; sample order will not be guaranteed by default in %s 2.0.",
-        format_code("shuffle = FALSE"),
-        format_pkg("polars")
-      )
-    ),
-    user_env = user_env
-  )
-}
-
-warn_deprecated_list_sample_default <- function(user_env = caller_env(2)) {
+warn_list_sample_default <- function(user_env = caller_env(2)) {
   deprecate_warn(
     c(
       `!` = sprintf(
@@ -278,7 +259,7 @@ warn_deprecated_list_sample_default <- function(user_env = caller_env(2)) {
   )
 }
 
-warn_deprecated_reinterpret_signed <- function(user_env = caller_env(2)) {
+warn_reinterpret_signed <- function(user_env = caller_env(2)) {
   deprecate_warn(
     c(
       `!` = sprintf(
@@ -288,30 +269,14 @@ warn_deprecated_reinterpret_signed <- function(user_env = caller_env(2)) {
         format_pkg("polars")
       ),
       i = sprintf(
-        "Use %s to retain the current behavior. In %s 2.0, exactly one of %s or %s must be supplied.",
+        paste0(
+          "Use %s to retain the current behavior. In %s 2.0, exactly one of ",
+          "%s or %s must be supplied."
+        ),
         format_code("signed = TRUE"),
         format_pkg("polars"),
         format_arg("signed"),
         format_arg("dtype")
-      )
-    ),
-    user_env = user_env
-  )
-}
-
-warn_deprecated_set_sorted_nulls_last <- function(user_env = caller_env(2)) {
-  deprecate_warn(
-    c(
-      `!` = sprintf(
-        "The default value of %s in %s will change in %s 2.0.",
-        format_arg("nulls_last"),
-        format_fn("<expr>$set_sorted"),
-        format_pkg("polars")
-      ),
-      i = sprintf(
-        "Use %s to retain the current behavior or %s to opt into the new default.",
-        format_code("nulls_last = TRUE"),
-        format_code("nulls_last = FALSE")
       )
     ),
     user_env = user_env

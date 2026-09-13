@@ -222,6 +222,15 @@
       This error occurred in the following expression:
       	col("x").truncate()
 
+# search_sorted warns for bare character strings
+
+    Code
+      invisible(df$select(pl$col("a")$search_sorted("a")))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Using a bare character string as the `element` argument of `<expr>$search_sorted()` is deprecated as of polars 1.16.0.
+      i In polars 2.0, bare strings will be literals. Use `pl$col(...)` for a column or `pl$lit(...)` for a literal.
+
 # gather that
 
     Code
@@ -251,6 +260,15 @@
       
       This error occurred in the following expression:
       	Series[literal].get(11)
+
+# shift warns for bare character fill values
+
+    Code
+      invisible(pl$col("a")$shift(1, fill_value = "fill"))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Using a bare character string as the `fill_value` argument of `<expr>$shift()` is deprecated as of polars 1.16.0.
+      i In polars 2.0, bare strings will be literals. Use `pl$col(...)` for a column or `pl$lit(...)` for a literal.
 
 # fill_nan() works
 
@@ -328,33 +346,6 @@
       ! Evaluation failed in `$is_between()`.
       Caused by error:
       ! `closed` must be one of "both", "left", "right", or "none", not "foo".
-
-# set_sorted warns when nulls_last is omitted for ascending data
-
-    Code
-      invisible(expr$set_sorted())
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default value of `nulls_last` in `<expr>$set_sorted()` will change in polars 2.0.
-      i Use `nulls_last = TRUE` to retain the current behavior or `nulls_last = FALSE` to opt into the new default.
-
-# search_sorted warns for bare character strings
-
-    Code
-      invisible(df$select(pl$col("a")$search_sorted("a")))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! Using a bare character string as the `element` argument of `<expr>$search_sorted()` is deprecated as of polars 1.16.0.
-      i In polars 2.0, bare strings will be literals. Use `pl$col(...)` for a column or `pl$lit(...)` for a literal.
-
-# shift warns for bare character fill values
-
-    Code
-      invisible(df$select(pl$col("a")$shift(1, fill_value = "a")))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! Using a bare character string as the `fill_value` argument of `<expr>$shift()` is deprecated as of polars 1.16.0.
-      i In polars 2.0, bare strings will be literals. Use `pl$col(...)` for a column or `pl$lit(...)` for a literal.
 
 # hash additional seeds are deprecated
 
@@ -598,7 +589,7 @@
 # sample
 
     Code
-      df$select(pl$col("a")$sample(fraction = 2, shuffle = FALSE))
+      df$select(pl$col("a")$sample(fraction = 2))
     Condition
       Error in `df$select()`:
       ! Evaluation failed in `$select()`.
@@ -609,39 +600,6 @@
       
       This error occurred in the following expression:
       	col("a").sample([2.0])
-
-    Code
-      invisible(df$select(pl$col("a")$sample(n = 2, seed = 1)))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default value of `shuffle` in `<expr>$sample()` will change in polars 2.0.
-      i Use `shuffle = FALSE` to retain the current behavior; sample order will not be guaranteed by default in polars 2.0.
-
-# sample treats bare character sizes as literals
-
-    Code
-      df$select(pl$col("a")$sample(n = "n", shuffle = FALSE, seed = 1))
-    Condition
-      Error in `df$select()`:
-      ! Evaluation failed in `$select()`.
-      Caused by error:
-      ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! invalid series dtype: expected `UInt32`, got `str` for series with name `literal`
-      This error occurred in the following expression:
-        col("a").sample_n(["n"])
-
-    Code
-      df$select(pl$col("a")$sample(fraction = "fraction", shuffle = FALSE, seed = 1))
-    Condition
-      Error in `df$select()`:
-      ! Evaluation failed in `$select()`.
-      Caused by error:
-      ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! invalid series dtype: expected `Float64`, got `str` for series with name `literal`
-      This error occurred in the following expression:
-        col("a").sample_fraction(["fraction"])
 
 # ewm_
 

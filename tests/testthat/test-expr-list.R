@@ -643,13 +643,13 @@ test_that("$list$sample() works", {
 
   expect_equal(
     df$select(
-      sample = pl$col("values")$list$sample(n = pl$col("n"), shuffle = FALSE, seed = 1)
+      sample = pl$col("values")$list$sample(n = pl$col("n"), seed = 1)
     ),
     pl$DataFrame(sample = list(3L, NA, 3L, c(6L, 7L)))
   )
 
   expect_snapshot(
-    df$select(pl$col("values")$list$sample(fraction = 2, shuffle = FALSE)),
+    df$select(pl$col("values")$list$sample(fraction = 2)),
     error = TRUE
   )
 
@@ -658,7 +658,6 @@ test_that("$list$sample() works", {
       sample = pl$col("values")$list$sample(
         fraction = 2,
         with_replacement = TRUE,
-        shuffle = FALSE,
         seed = 1
       )
     ),
@@ -677,27 +676,19 @@ test_that("$list$sample() works", {
 
   expect_snapshot(
     invisible(df$select(
-      pl$col("values")$list$sample(n = NULL, fraction = NULL, shuffle = FALSE, seed = 1)
+      pl$col("values")$list$sample(n = NULL, fraction = NULL, seed = 1)
     )),
     cnd_class = TRUE
   )
   old <- with_lifecycle_silence(df$select(
-    pl$col("values")$list$sample(n = NULL, fraction = NULL, shuffle = FALSE, seed = 1)
+    pl$col("values")$list$sample(n = NULL, fraction = NULL, seed = 1)
   ))
   explicit_old <- expect_no_warning(
-    df$select(pl$col("values")$list$sample(fraction = 1, shuffle = FALSE, seed = 1))
+    df$select(pl$col("values")$list$sample(fraction = 1, seed = 1))
   )
   expect_equal(old, explicit_old)
-  expect_snapshot(
-    invisible(df$select(pl$col("values")$list$sample(n = 1, seed = 1))),
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    invisible(df$select(pl$col("values")$list$sample(seed = 1))),
-    cnd_class = TRUE
-  )
   expect_no_warning(
-    df$select(pl$col("values")$list$sample(n = 1, shuffle = FALSE, seed = 1))
+    df$select(pl$col("values")$list$sample(n = 1, seed = 1))
   )
 })
 

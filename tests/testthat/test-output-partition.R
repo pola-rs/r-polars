@@ -6,10 +6,11 @@ patrick::with_parameters_test_that(
     sink_ipc_sorted <- function(...) {
       lf$sort("am", "cyl")$sink_ipc(..., compression = "zstd")
     }
+    read_csv <- function(...) pl$read_csv(..., infer_schema_files = NULL)
 
     tibble::tribble(
       ~.test_name, ~fn, ~reader, ~fn_sorted,
-      "sink_csv", lf$sink_csv, pl$read_csv, lf$sort("am", "cyl")$sink_csv,
+      "sink_csv", lf$sink_csv, read_csv, lf$sort("am", "cyl")$sink_csv,
       "sink_ipc", sink_ipc, pl$read_ipc, sink_ipc_sorted,
       "sink_ndjson", lf$sink_ndjson, pl$read_ndjson, lf$sort("am", "cyl")$sink_ndjson,
       "sink_parquet", lf$sink_parquet, pl$read_parquet, lf$sort("am", "cyl")$sink_parquet,

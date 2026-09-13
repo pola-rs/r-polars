@@ -15,9 +15,9 @@ expr_list_sample(
 }
 \arguments{
 \item{n}{Number of items to return. Cannot be used with \code{fraction}. If both
-\code{n} and \code{fraction} are \code{NULL}, Polars 1.16 uses
-\code{fraction = 1} and emits a warning because Polars 2.0 will use
-\code{n = 1}. Explicitly set \code{n = 1} to opt into the new behavior.}
+\code{n} and \code{fraction} are \code{NULL}, Polars 1.16 uses \code{fraction = 1} and emits a
+warning because Polars 2.0 will use \code{n = 1}. Explicitly set \code{n = 1} to opt
+into the new behavior.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
@@ -27,10 +27,7 @@ Explicitly set \code{fraction = 1} to retain the current behavior when both
 
 \item{with_replacement}{Allow values to be sampled more than once.}
 
-\item{shuffle}{Whether to shuffle the order of sampled data points. If omitted,
-a warning is emitted and \code{FALSE} is used for compatibility with Polars 1.16.
-Use \code{shuffle = FALSE} to retain the current behavior; Polars 2.0 will not
-guarantee sample order by default.}
+\item{shuffle}{Whether to shuffle the order of sampled data points.}
 
 \item{seed}{Seed for the random number generator. If \code{NULL} (default), a
 random seed is generated for each sample operation.}
@@ -49,7 +46,7 @@ df <- pl$DataFrame(
 
 df$with_columns(
   sample = pl$col("values")$list$sample(
-    n = pl$col("n"), shuffle = FALSE, seed = 1
+    n = pl$col("n"), seed = 1
   )
 )
 }

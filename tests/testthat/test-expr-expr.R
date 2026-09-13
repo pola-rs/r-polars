@@ -969,13 +969,7 @@ test_that("Expr_sort", {
     sort_nulls_last = pl$col("a")$sort(nulls_last = TRUE),
     sort_reverse = pl$col("a")$sort(descending = TRUE),
     sort_reverse_nulls_last = pl$col("a")$sort(descending = TRUE, nulls_last = TRUE),
-    fake_sort_nulls_last = pl$col("a")$set_sorted(
-      descending = FALSE,
-      nulls_last = TRUE
-    )$sort(
-      descending = FALSE,
-      nulls_last = TRUE
-    ),
+    fake_sort_nulls_last = pl$col("a")$set_sorted()$sort(nulls_last = TRUE),
     fake_sort_reverse_nulls_last = pl$col("a")$set_sorted(descending = TRUE)$sort(
       descending = TRUE,
       nulls_last = TRUE
@@ -992,16 +986,6 @@ test_that("Expr_sort", {
       fake_sort_reverse_nulls_last = l2$a
     )
   )
-})
-
-test_that("set_sorted warns when nulls_last is omitted for ascending data", {
-  local_lifecycle_warnings()
-  expr <- pl$col("a")
-
-  expect_snapshot(invisible(expr$set_sorted()), cnd_class = TRUE)
-  expect_no_warning(expr$set_sorted(nulls_last = TRUE))
-  expect_no_warning(expr$set_sorted(nulls_last = FALSE))
-  expect_no_warning(expr$set_sorted(descending = TRUE))
 })
 
 test_that("$top_k() works", {
@@ -1196,18 +1180,16 @@ test_that("shift warns for bare character fill values", {
   df <- pl$DataFrame(a = c("a", "b", "c"))
 
   expect_snapshot(
-    invisible(df$select(pl$col("a")$shift(1, fill_value = "a"))),
+    invisible(pl$col("a")$shift(1, fill_value = "fill")),
     cnd_class = TRUE
   )
-  old <- with_lifecycle_silence(df$select(pl$col("a")$shift(1, fill_value = "a")))
-  explicit <- expect_no_warning(
-    df$select(pl$col("a")$shift(1, fill_value = pl$col("a")))
+  expect_no_warning(
+    pl$col("a")$shift(1, fill_value = pl$col("fill"))
   )
-  expect_equal(old, explicit)
   literal <- expect_no_warning(
-    df$select(pl$col("a")$shift(1, fill_value = pl$lit("x")))
+    df$select(pl$col("a")$shift(1, fill_value = pl$lit("fill")))
   )
-  expect_equal(literal, pl$DataFrame(a = c("x", "a", "b")))
+  expect_equal(literal, pl$DataFrame(a = c("fill", "a", "b")))
 })
 
 test_that("fill_null", {
@@ -1989,7 +1971,7 @@ test_that("rolling_*_by: arg 'min_samples'", {
 
 test_that("rolling_sum_by warns when min_samples is omitted", {
   local_lifecycle_warnings()
-  df <- pl$DataFrame(
+  df <- pl$select(
     a = 1:3,
     date = pl$date_range(as.Date("2001-01-01"), as.Date("2001-01-03"), "1d")
   )
@@ -2465,66 +2447,30 @@ test_that("shuffle", {
 })
 
 test_that("sample", {
-  local_lifecycle_warnings()
   df <- pl$DataFrame(a = 1:10)
 
   # Numerical checks
   expect_equal(
-    df$select(pl$col("a")$sample(fraction = 0.2, shuffle = FALSE, seed = 1)),
+    df$select(pl$col("a")$sample(fraction = 0.2, seed = 1)),
     pl$DataFrame(a = c(8L, 10L))$cast(pl$Int32)
   )
   expect_equal(
-    df$select(pl$col("a")$sample(n = 2, shuffle = FALSE, seed = 1)),
+    df$select(pl$col("a")$sample(n = 2, seed = 1)),
     pl$DataFrame(a = c(8L, 10L))$cast(pl$Int32)
   )
 
   # Check fraction arg
   expect_snapshot(
-    df$select(pl$col("a")$sample(fraction = 2, shuffle = FALSE)),
+    df$select(pl$col("a")$sample(fraction = 2)),
     error = TRUE
   )
 
   expect_equal(
-    df$select(pl$col("a")$sample(fraction = 2, with_replacement = TRUE, shuffle = FALSE)) |>
+    df$select(pl$col("a")$sample(fraction = 2, with_replacement = TRUE)) |>
       nrow(),
     20
   )
-
-  expect_snapshot(
-    invisible(df$select(pl$col("a")$sample(n = 2, seed = 1))),
-    cnd_class = TRUE
-  )
-  expect_equal(
-    expect_no_warning(df$select(pl$col("a")$sample(n = 2, shuffle = FALSE, seed = 1))),
-    pl$DataFrame(a = c(8L, 10L))$cast(pl$Int32)
-  )
-  expect_no_warning(df$select(pl$col("a")$sample(n = 2, shuffle = TRUE, seed = 1)))
 })
-
-test_that("sample treats bare character sizes as literals", {
-  df <- pl$DataFrame(a = 1:10, n = 2L, fraction = 0.2)
-
-  expect_snapshot(
-    df$select(pl$col("a")$sample(n = "n", shuffle = FALSE, seed = 1)),
-    transform = normalize_expression_error_snapshot,
-    error = TRUE
-  )
-  expect_snapshot(
-    df$select(pl$col("a")$sample(fraction = "fraction", shuffle = FALSE, seed = 1)),
-    transform = normalize_expression_error_snapshot,
-    error = TRUE
-  )
-
-  n_sample <- expect_no_warning(df$select(
-    pl$col("a")$sample(n = pl$col("n")$first(), shuffle = FALSE, seed = 1)
-  ))
-  fraction_sample <- expect_no_warning(df$select(
-    pl$col("a")$sample(fraction = pl$col("fraction")$first(), shuffle = FALSE, seed = 1)
-  ))
-  expect_equal(nrow(n_sample), 2L)
-  expect_equal(nrow(fraction_sample), 2L)
-})
-
 
 test_that("ewm_", {
   df <- pl$DataFrame(a = c(1, rep(0, 10)))

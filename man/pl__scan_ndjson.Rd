@@ -32,10 +32,14 @@ for scanning cloud locations, see the \code{storage_options} parameter.}
 \item{schema}{Provide the schema. This means that polars doesn't do schema
 inference. This argument expects the complete schema, whereas
 \code{schema_overrides} can be used to partially overwrite a schema. This must be
-a list. Names of list elements are used to match to inferred columns.}
+a list. Without a \code{names} attribute, elements are matched by position;
+otherwise, names are matched to input columns. Empty string names are valid;
+\code{NA} names are invalid.}
 
 \item{schema_overrides}{Overwrite dtypes during inference. This must be a
-list. Names of list elements are used to match to inferred columns.}
+list. Without a \code{names} attribute, elements are matched by position;
+otherwise, names are matched to input columns. Empty string names are valid;
+\code{NA} names are invalid.}
 
 \item{infer_schema_length}{The maximum number of rows to scan for schema
 inference. This applies individually to each file included according to

@@ -6,12 +6,10 @@
 #' the scan level, thereby potentially reducing memory overhead.
 #'
 #' @details
-#' In Polars 2.0, fields supplied through `schema` are matched to CSV columns
-#' by name and the file's column order is preserved. Name all elements of a
-#' complete `schema` to prepare for this behavior. For `schema_overrides`, partial
-#' overrides must be fully named, while a fully unnamed list must contain one
-#' override for every CSV column; a mixture of named and unnamed elements is
-#' not supported.
+#' A `schema` without a `names` attribute is matched to CSV columns by
+#' position. A schema with names is matched by column name. Empty string names
+#' are valid, while `NA` names are invalid. The same rules apply to
+#' `schema_overrides`.
 #'
 #' @inherit as_polars_lf return
 #' @inheritParams pl__scan_ipc
@@ -31,9 +29,13 @@
 #' @param schema Provide the schema. This means that polars doesn't do schema
 #' inference. This argument expects the complete schema, whereas
 #' `schema_overrides` can be used to partially overwrite a schema. This must be
-#' a list. Names of list elements are used to match to inferred columns.
+#' a list. Without a `names` attribute, elements are matched by position;
+#' otherwise, names are matched to input columns. Empty string names are valid;
+#' `NA` names are invalid.
 #' @param schema_overrides Overwrite dtypes during inference. This must be a
-#' list. Names of list elements are used to match to inferred columns.
+#' list. Without a `names` attribute, elements are matched by position;
+#' otherwise, names are matched to input columns. Empty string names are valid;
+#' `NA` names are invalid.
 #' @param null_values Character vector specifying the values to interpret as
 #' `NA` values. It can be named, in which case names specify the columns in
 #' which this replacement must be made (e.g. `c(col1 = "a")`).
@@ -154,18 +156,18 @@ pl__scan_csv <- function(
 
   if (
     length(schema) > 0L &&
-      (is.null(names(schema)) || anyNA(names(schema)))
+      anyNA(names(schema))
   ) {
     deprecate_warn(
       c(
         `!` = sprintf(
-          "Unnamed elements of %s are deprecated as of %s 1.16.0.",
+          "NA names of %s are deprecated as of %s 1.16.0.",
           format_arg("schema"),
           format_pkg("polars")
         ),
         i = paste0(
-          "In Polars 2.0, CSV schema fields will be matched to columns by name. ",
-          "Name all elements of `schema` with the corresponding CSV column names."
+          "In Polars 2.0, NA schema names will be invalid. Replace them with ",
+          "the corresponding CSV column names."
         )
       )
     )

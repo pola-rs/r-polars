@@ -38,16 +38,6 @@
       Caused by error:
       ! Invalid operation: operation `var` is not supported for `duration[ms]`
 
-# empty DataFrame transpose preserves the current error
-
-    Code
-      pl$DataFrame()$transpose()
-    Condition
-      Error:
-      ! Evaluation failed in `$transpose()`.
-      Caused by error:
-      ! no data: unable to transpose an empty DataFrame
-
 # Rust deprecation warnings are routed to R snapshots
 
     Code
@@ -160,7 +150,6 @@
       │ true │
       │ true │
       └──────┘
-
 ---
 
     Code

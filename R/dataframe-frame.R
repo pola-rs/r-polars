@@ -1987,10 +1987,7 @@ dataframe__with_row_index <- function(name = "index", offset = 0) {
 #'   Accepts a scalar value or a Series; expressions are not supported. Values
 #'   are interpreted as literals in Polars 1.16.
 #' @param with_replacement Allow values to be sampled more than once.
-#' @param shuffle Whether to shuffle the order of sampled data points. If
-#'   omitted, a warning is emitted and `FALSE` is used for compatibility with
-#'   Polars 1.16. Use `shuffle = FALSE` to retain the current behavior; Polars
-#'   2.0 will not guarantee sample order by default.
+#' @param shuffle Whether to shuffle the order of sampled data points.
 #' @param seed Seed for the random number generator. If `NULL` (default), a
 #'   random seed is generated for each sample operation.
 #' @inherit as_polars_df return
@@ -2000,7 +1997,7 @@ dataframe__with_row_index <- function(name = "index", offset = 0) {
 #'   bar = 6:8,
 #'   ham = c("a", "b", "c")
 #' )
-#' df$sample(n = 2, shuffle = FALSE, seed = 0)
+#' df$sample(n = 2, seed = 0)
 dataframe__sample <- function(
   n = NULL,
   ...,
@@ -2009,12 +2006,8 @@ dataframe__sample <- function(
   shuffle = FALSE,
   seed = NULL
 ) {
-  shuffle_missing <- missing(shuffle)
   wrap({
     check_dots_empty0(...)
-    if (shuffle_missing) {
-      warn_deprecated_sample_shuffle("<dataframe>$sample")
-    }
     if (!is.null(fraction) && !is.null(n)) {
       abort("Can't specify both `n` and `fraction`.")
     }

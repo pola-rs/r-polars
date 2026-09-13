@@ -68,10 +68,14 @@ will be parsed at this offset.}
 \item{schema}{Provide the schema. This means that polars doesn't do schema
 inference. This argument expects the complete schema, whereas
 \code{schema_overrides} can be used to partially overwrite a schema. This must be
-a list. Names of list elements are used to match to inferred columns.}
+a list. Without a \code{names} attribute, elements are matched by position;
+otherwise, names are matched to input columns. Empty string names are valid;
+\code{NA} names are invalid.}
 
 \item{schema_overrides}{Overwrite dtypes during inference. This must be a
-list. Names of list elements are used to match to inferred columns.}
+list. Without a \code{names} attribute, elements are matched by position;
+otherwise, names are matched to input columns. Empty string names are valid;
+\code{NA} names are invalid.}
 
 \item{null_values}{Character vector specifying the values to interpret as
 \code{NA} values. It can be named, in which case names specify the columns in
@@ -193,12 +197,10 @@ This allows the query optimizer to push down predicates and projections to
 the scan level, thereby potentially reducing memory overhead.
 }
 \details{
-In Polars 2.0, fields supplied through \code{schema} are matched to CSV columns
-by name and the file's column order is preserved. Name all elements of a
-complete \code{schema} to prepare for this behavior. For \code{schema_overrides}, partial
-overrides must be fully named, while a fully unnamed list must contain one
-override for every CSV column; a mixture of named and unnamed elements is
-not supported.
+A \code{schema} without a \code{names} attribute is matched to CSV columns by
+position. A schema with names is matched by column name. Empty string names
+are valid, while \code{NA} names are invalid. The same rules apply to
+\code{schema_overrides}.
 }
 \examples{
 my_file <- tempfile()

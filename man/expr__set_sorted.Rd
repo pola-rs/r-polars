@@ -11,8 +11,7 @@ expr__set_sorted(..., descending = FALSE, nulls_last = !descending)
 
 \item{descending}{Whether the Series order is descending.}
 
-\item{nulls_last}{Whether the nulls are at the end. The 1.16 default is
-\code{!descending}; the default will change to \code{FALSE} in Polars 2.0.}
+\item{nulls_last}{Whether the nulls are at the end.}
 }
 \value{
 A polars \link{expression}
@@ -25,5 +24,5 @@ Use with care!
 }
 \examples{
 df <- pl$DataFrame(a = 1:3)
-df$select(pl$col("a")$set_sorted(nulls_last = TRUE)$max())
+df$select(pl$col("a")$set_sorted()$max())
 }

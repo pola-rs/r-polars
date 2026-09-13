@@ -131,7 +131,7 @@
 # sample() works
 
     Code
-      df$sample(n = 2, fraction = 0.1, shuffle = FALSE)
+      df$sample(n = 2, fraction = 0.1)
     Condition
       Error in `df$sample()`:
       ! Evaluation failed in `$sample()`.
@@ -141,7 +141,7 @@
 ---
 
     Code
-      df$sample(frac = 0.1, shuffle = FALSE)
+      df$sample(frac = 0.1)
     Condition
       Error in `df$sample()`:
       ! Evaluation failed in `$sample()`.
@@ -149,13 +149,6 @@
       ! `...` must be empty.
       x Problematic argument:
       * frac = 0.1
-
-    Code
-      invisible(df$sample(n = 2, seed = 0))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default value of `shuffle` in `<dataframe>$sample()` will change in polars 2.0.
-      i Use `shuffle = FALSE` to retain the current behavior; sample order will not be guaranteed by default in polars 2.0.
 
 # hash_rows additional seeds are deprecated
 

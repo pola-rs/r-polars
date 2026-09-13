@@ -44,8 +44,8 @@ By "calendar day", we mean the corresponding time on the next day
 
 \item{min_samples}{The number of values in the window that should be
 non-null before computing a result. Defaults to 1 in Polars 1.16. Omitting
-this argument emits a warning because the default will change to 0 in Polars
-2.0.}
+this argument emits a warning because the default will change to 0 in
+Polars 2.0.}
 
 \item{closed}{Define which sides of the interval are closed (inclusive).
 Default is \code{"right"}.}
