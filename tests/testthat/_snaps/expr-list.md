@@ -165,6 +165,7 @@
       ! Evaluation failed in `$eval()`.
       Caused by error in `pl$concat_list("a", "b")$list$eval()`:
       ! `expr` must be a polars expression, not the number 1.
+
 # $list$explode() works
 
     Code
@@ -541,3 +542,4 @@
       ! Evaluation failed in `$agg()`.
       Caused by error in `pl$col("a")$list$agg()`:
       ! `expr` must be a polars expression, not the number 1.
+

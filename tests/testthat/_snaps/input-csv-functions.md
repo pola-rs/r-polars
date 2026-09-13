@@ -126,6 +126,7 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! schema lengths differ
+
 # read/scan: bad paths
 
     Code
@@ -260,3 +261,4 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! schema lengths differ
+

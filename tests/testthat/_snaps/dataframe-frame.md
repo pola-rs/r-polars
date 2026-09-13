@@ -438,3 +438,4 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Column(s) not found: "foobar" not found
+
