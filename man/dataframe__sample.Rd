@@ -14,12 +14,16 @@ dataframe__sample(
 )
 }
 \arguments{
-\item{n}{Number of items to return. Cannot be used with \code{fraction.} Defaults
-to 1 if \code{fraction} is \code{NULL}.}
+\item{n}{Number of items to return. Cannot be used with \code{fraction}.
+Accepts a scalar value or a Series; expressions are not supported. Values are
+interpreted as literals in Polars 1.16. Defaults to 1 if \code{fraction} is
+\code{NULL}.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{fraction}{Fraction of items to return. Cannot be used with \code{n}.}
+\item{fraction}{Fraction of items to return. Cannot be used with \code{n}.
+Accepts a scalar value or a Series; expressions are not supported. Values are
+interpreted as literals in Polars 1.16.}
 
 \item{with_replacement}{Allow values to be sampled more than once.}
 

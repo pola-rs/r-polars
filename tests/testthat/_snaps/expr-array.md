@@ -77,6 +77,20 @@
       Caused by error:
       ! 1000.0 is out of range that can be safely converted to u8
 
+# arr$shift treats numeric strings as literals
+
+    Code
+      df$select(pl$col("strings")$arr$shift("1"))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! invalid series dtype: expected `Int64`, got `str` for series with name `literal`
+      This error occurred in the following expression:
+        col("strings").arr.shift(["1"])
+
 # arr$count_matches
 
     Code
@@ -309,4 +323,3 @@
       ! Evaluation failed in `$agg()`.
       Caused by error in `pl$col("a")$arr$agg()`:
       ! `expr` must be a polars expression, not the number 1.
-

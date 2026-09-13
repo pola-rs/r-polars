@@ -322,6 +322,8 @@ expr_arr_any <- function(..., ignore_nulls = TRUE) {
 #' Shift values in every sub-array by the given number of indices
 #'
 #' @inheritParams dataframe__shift
+#' @param n Number of indices to shift forward. In Polars 1.16, bare strings
+#'   are interpreted as literals; in Polars 2.0, they are interpreted as columns.
 #'
 #' @inherit as_polars_expr return
 #' @examples

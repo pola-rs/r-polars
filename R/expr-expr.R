@@ -2421,7 +2421,9 @@ expr__sign <- function() {
 #' than 0.
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param element Expression or scalar value.
+#' @param element Expression or scalar value. In Polars 1.16, a bare character
+#'   string is interpreted as a column and emits a warning. Use `pl$col()` for
+#'   that interpretation or `pl$lit()` for a literal (the Polars 2.0 behavior).
 #' @param side Must be one of the following:
 #' * `"any"`: the index of the first suitable location found is given;
 #' * `"left"`: the index of the leftmost suitable location found is given;
@@ -2444,6 +2446,9 @@ expr__search_sorted <- function(
   wrap({
     check_dots_empty0(...)
     side <- arg_match0(side, values = c("any", "left", "right"))
+    if (is_string(element)) {
+      warn_deprecated_bare_string("element", "<expr>$search_sorted")
+    }
     self$`_rexpr`$search_sorted(as_polars_expr(element)$`_rexpr`, side, descending)
   })
 }
@@ -4687,9 +4692,13 @@ expr__rle_id <- function() {
 #' Sample from this expression
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param n Number of items to return. Cannot be used with `fraction.` Defaults
-#' to 1 if `fraction` is `NULL`.
-#' @param fraction Fraction of items to return. Cannot be used with `n`.
+#' @param n Number of items to return. Cannot be used with `fraction`. Values
+#'   are interpreted as literals in Polars 1.16; bare strings are interpreted as
+#'   columns in Polars 2.0.
+#'   Defaults to 1 if `fraction` is `NULL`.
+#' @param fraction Fraction of items to return. Cannot be used with `n`. Values
+#'   are interpreted as literals in Polars 1.16; bare strings are interpreted as
+#'   columns in Polars 2.0.
 #' @param with_replacement Allow values to be sampled more than once.
 #' @param shuffle Whether to shuffle the order of sampled data points. If
 #'   omitted, a warning is emitted and `FALSE` is used for compatibility with
@@ -4837,7 +4846,10 @@ expr__truncate <- function(decimals = 0L) {
 #' @inheritParams rlang::args_dots_empty
 #' @param n Number of indices to shift forward. If a negative value is
 #' passed, values are shifted in the opposite direction instead.
-#' @param fill_value Fill the resulting null values with this value.
+#' @param fill_value Fill the resulting null values with this value. In Polars
+#'   1.16, a bare character string is interpreted as a column and emits a
+#'   warning. In Polars 2.0, bare strings are literals; use `pl$col()` to
+#'   preserve the old column behavior or `pl$lit()` for the new behavior.
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -4853,6 +4865,9 @@ expr__truncate <- function(decimals = 0L) {
 expr__shift <- function(n = 1, ..., fill_value = NULL) {
   wrap({
     check_dots_empty0(...)
+    if (!is.null(fill_value) && is_string(fill_value)) {
+      warn_deprecated_bare_string("fill_value", "<expr>$shift")
+    }
     self$`_rexpr`$shift(
       as_polars_expr(n)$`_rexpr`,
       as_polars_expr(fill_value)$`_rexpr`

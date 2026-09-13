@@ -295,6 +295,26 @@ test_that("arr$shift", {
   )
 })
 
+test_that("arr$shift treats numeric strings as literals", {
+  df <- pl$DataFrame(
+    strings = list(c("a", "b"), c("c", "d")),
+    n = c(1L, 1L)
+  )$cast(strings = pl$Array(pl$String, 2))
+
+  expect_snapshot(
+    df$select(pl$col("strings")$arr$shift("1")),
+    transform = normalize_expression_error_snapshot,
+    error = TRUE
+  )
+  explicit <- expect_no_warning(
+    df$select(pl$col("strings")$arr$shift(pl$col("n")))
+  )
+  expect_equal(
+    explicit,
+    pl$DataFrame(strings = list(c(NA, "a"), c(NA, "c")))$cast(strings = pl$Array(pl$String, 2))
+  )
+})
+
 test_that("arr$to_list", {
   df <- pl$DataFrame(
     strings = list(c("a", "b"), c("c", "d"))

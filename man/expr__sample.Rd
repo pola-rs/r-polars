@@ -14,12 +14,15 @@ expr__sample(
 )
 }
 \arguments{
-\item{n}{Number of items to return. Cannot be used with \code{fraction.} Defaults
-to 1 if \code{fraction} is \code{NULL}.}
+\item{n}{Number of items to return. Cannot be used with \code{fraction}. Values
+are interpreted as literals in Polars 1.16; bare strings are interpreted as
+columns in Polars 2.0. Defaults to 1 if \code{fraction} is \code{NULL}.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{fraction}{Fraction of items to return. Cannot be used with \code{n}.}
+\item{fraction}{Fraction of items to return. Cannot be used with \code{n}. Values
+are interpreted as literals in Polars 1.16; bare strings are interpreted as
+columns in Polars 2.0.}
 
 \item{with_replacement}{Allow values to be sampled more than once.}
 

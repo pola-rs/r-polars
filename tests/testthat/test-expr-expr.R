@@ -1061,6 +1061,25 @@ test_that("search_sorted", {
   )
 })
 
+test_that("search_sorted warns for bare character strings", {
+  local_lifecycle_warnings()
+  df <- pl$DataFrame(a = 0:3)
+
+  expect_snapshot(
+    invisible(df$select(pl$col("a")$search_sorted("a"))),
+    cnd_class = TRUE
+  )
+  old <- with_lifecycle_silence(df$select(pl$col("a")$search_sorted("a")))
+  explicit <- expect_no_warning(df$select(pl$col("a")$search_sorted(pl$col("a"))))
+  expect_equal(old, explicit)
+
+  literal_df <- pl$DataFrame(a = c("a", "b", "c"))
+  literal <- expect_no_warning(
+    literal_df$select(pl$col("a")$search_sorted(pl$lit("b")))
+  )
+  expect_equal(literal, pl$DataFrame(a = 1L)$cast(pl$UInt32))
+})
+
 test_that("sort_by", {
   l <- list(
     ab = c(rep("a", 6), rep("b", 6)),
@@ -1170,6 +1189,25 @@ test_that("shift", {
       sp2 = r_shift_and_fill(0:3, 2, 21)
     )
   )
+})
+
+test_that("shift warns for bare character fill values", {
+  local_lifecycle_warnings()
+  df <- pl$DataFrame(a = c("a", "b", "c"))
+
+  expect_snapshot(
+    invisible(df$select(pl$col("a")$shift(1, fill_value = "a"))),
+    cnd_class = TRUE
+  )
+  old <- with_lifecycle_silence(df$select(pl$col("a")$shift(1, fill_value = "a")))
+  explicit <- expect_no_warning(
+    df$select(pl$col("a")$shift(1, fill_value = pl$col("a")))
+  )
+  expect_equal(old, explicit)
+  literal <- expect_no_warning(
+    df$select(pl$col("a")$shift(1, fill_value = pl$lit("x")))
+  )
+  expect_equal(literal, pl$DataFrame(a = c("x", "a", "b")))
 })
 
 test_that("fill_null", {
@@ -2461,6 +2499,30 @@ test_that("sample", {
     pl$DataFrame(a = c(8L, 10L))$cast(pl$Int32)
   )
   expect_no_warning(df$select(pl$col("a")$sample(n = 2, shuffle = TRUE, seed = 1)))
+})
+
+test_that("sample treats bare character sizes as literals", {
+  df <- pl$DataFrame(a = 1:10, n = 2L, fraction = 0.2)
+
+  expect_snapshot(
+    df$select(pl$col("a")$sample(n = "n", shuffle = FALSE, seed = 1)),
+    transform = normalize_expression_error_snapshot,
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(pl$col("a")$sample(fraction = "fraction", shuffle = FALSE, seed = 1)),
+    transform = normalize_expression_error_snapshot,
+    error = TRUE
+  )
+
+  n_sample <- expect_no_warning(df$select(
+    pl$col("a")$sample(n = pl$col("n")$first(), shuffle = FALSE, seed = 1)
+  ))
+  fraction_sample <- expect_no_warning(df$select(
+    pl$col("a")$sample(fraction = pl$col("fraction")$first(), shuffle = FALSE, seed = 1)
+  ))
+  expect_equal(nrow(n_sample), 2L)
+  expect_equal(nrow(fraction_sample), 2L)
 })
 
 

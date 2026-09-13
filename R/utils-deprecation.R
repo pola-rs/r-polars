@@ -317,3 +317,23 @@ warn_deprecated_set_sorted_nulls_last <- function(user_env = caller_env(2)) {
     user_env = user_env
   )
 }
+
+warn_deprecated_bare_string <- function(argument, fn, user_env = caller_env(2)) {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "Using a bare character string as the %s argument of %s is deprecated as of %s 1.16.0.",
+        format_arg(argument),
+        format_fn(fn),
+        format_pkg("polars")
+      ),
+      i = sprintf(
+        "In %s 2.0, bare strings will be literals. Use %s for a column or %s for a literal.",
+        format_pkg("polars"),
+        format_code("pl$col(...)"),
+        format_code("pl$lit(...)")
+      )
+    ),
+    user_env = user_env
+  )
+}
