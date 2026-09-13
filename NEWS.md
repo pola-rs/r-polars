@@ -29,9 +29,11 @@ Pass `engine = "in-memory"` to keep the behavior from Polars 1.x.
 - Automatically generated column names for headerless files start at zero. For
   example, the first generated name changes from `column_1` to `column_0`.
 - In Polars 1.16, `schema` is matched by position regardless of names, while
-  the file's column order is preserved. In Polars 2.0, a schema without a
-  `names` attribute remains positional, while a named schema is matched to
-  input columns. Empty string names are valid; `NA` names are invalid.
+  the file's column order is preserved. In Polars 2.0, `schema` for CSV files
+  with `has_header = TRUE` is matched by name, and schema field names must
+  match the header names. With `has_header = FALSE`, `schema` remains
+  matched by position and its length must match the input width. Empty string
+  names are valid; `NA` names are invalid.
 - In Polars 1.16, named `schema_overrides` elements are matched by name, while
   unnamed elements are treated as empty string names. In Polars 2.0, an
   unnamed list is matched by position and must include one override for every
@@ -104,16 +106,22 @@ behavior in R Polars 1.16 but no longer retain that behavior in R Polars 2.0.
   is also deprecated in all forms. Pass an explicit character vector of field
   names instead (#1863).
 - `upper_bound` is deprecated for `<expr>$list$to_struct()`. Passing a function to
-  `fields` are deprecated for `<expr>$arr$to_struct()` and `<series>$arr$to_struct()`
+  `fields` is deprecated for `<expr>$arr$to_struct()` and `<series>$arr$to_struct()`
   (#1863).
 
 #### Readers and writers
 
+- Fully unnamed `schema` values passed to CSV readers with
+  `has_header = TRUE` are deprecated because schema fields are matched by
+  position in Polars 1.16 but by header name in Polars 2.0. Name all schema
+  fields using the corresponding header names. This warning does not apply to
+  headerless CSV files, empty schemas, fully named schemas, or empty string
+  names.
 - `NA` names in CSV `schema` or `schema_overrides` are deprecated because they
   become invalid in Polars 2.0. Replace them with the corresponding input
-  column names. A list without a `names` attribute is not deprecated, but must
-  follow the positional and length rules described above; empty string names
-  remain valid.
+  column names. With `has_header = FALSE`, unnamed schemas remain positional
+  and must follow the positional and length rules described above; empty string
+  names remain valid.
 - Omitting `infer_schema_files` in CSV readers now warns because its default
   changes from `NULL` to `10` in Polars 2.0. Pass `infer_schema_files = 10` to
   opt into the new default, or `infer_schema_files = NULL` to continue using all
