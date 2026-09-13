@@ -193,9 +193,14 @@ This allows the query optimizer to push down predicates and projections to
 the scan level, thereby potentially reducing memory overhead.
 }
 \details{
-In Polars 1.16, \code{schema} is matched by position. Named
-\code{schema_overrides} elements are matched by name, while unnamed elements are
-treated as empty string names. In Polars 2.0, an object without a \code{names}
+In Polars 1.16, \code{schema} is matched by position regardless of names. In
+Polars 2.0, when \code{has_header = TRUE}, \code{schema} is matched by name and every
+schema field name must match a header name. When \code{has_header = FALSE},
+\code{schema} is matched by position and its length must match the input width.
+Empty string names remain valid; \code{NA} names are invalid.
+
+Named \code{schema_overrides} elements are matched by name, while unnamed elements
+are treated as empty string names. In Polars 2.0, an object without a \code{names}
 attribute remains position-based, while names are matched to input columns.
 Empty string names remain valid; \code{NA} names are invalid.
 }

@@ -433,8 +433,9 @@ test_that("read/scan: NA schema names are deprecated", {
   writeLines("a,b,c\n1.5,a,2\n2,,", tmpf)
   mixed_schema <- list(a = pl$Float64, pl$Categorical(), c = pl$Int32)
 
-  # A fully unnamed schema remains valid and is not deprecated.
-  full_unnamed <- list(pl$Int32, pl$Int32)
+  # A fully unnamed schema with a header is deprecated because its matching
+  # behavior changes in Polars 2.0.
+  full_unnamed <- list(pl$Int32, pl$Int32, pl$Int32)
 
   # An NA schema name is deprecated, while an empty string is a valid name.
   mixed_na <- structure(
@@ -461,8 +462,11 @@ test_that("read/scan: NA schema names are deprecated", {
     ),
     cnd_class = TRUE
   )
+  expect_snapshot(
+    invisible(pl$scan_csv(tmpf, schema = full_unnamed, infer_schema_files = NULL)),
+    cnd_class = TRUE
+  )
   for (candidate_schema in list(
-    full_unnamed,
     mixed_schema,
     fully_named_schema,
     empty_schema
@@ -473,6 +477,17 @@ test_that("read/scan: NA schema names are deprecated", {
       )
     )
   }
+  expect_no_warning(
+    invisible(
+      pl$scan_csv(
+        tmpf,
+        has_header = FALSE,
+        schema = full_unnamed,
+        raise_if_empty = TRUE,
+        infer_schema_files = NULL
+      )
+    )
+  )
   for (candidate_schema in list(
     list(pl$Float64, pl$Categorical(), pl$Int32),
     mixed_schema,

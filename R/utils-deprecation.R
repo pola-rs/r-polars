@@ -107,6 +107,25 @@ warn_csv_raise_if_empty <- function(user_env = caller_env(2)) {
   )
 }
 
+warn_csv_schema_unnamed <- function(user_env = caller_env(2)) {
+  deprecate_warn(
+    c(
+      `!` = sprintf(
+        "An unnamed %s with %s is deprecated as of %s 1.16.0.",
+        format_arg("schema"),
+        format_arg("has_header = TRUE"),
+        format_pkg("polars")
+      ),
+      i = paste0(
+        "In Polars 1.16, schema fields are matched by position. In Polars 2.0, ",
+        "schema fields for CSV files with headers are matched by header name. ",
+        "Name all schema fields using the corresponding header names."
+      )
+    ),
+    user_env = user_env
+  )
+}
+
 warn_arrow_compression_default <- function(user_env = caller_env(2)) {
   deprecate_warn(
     c(

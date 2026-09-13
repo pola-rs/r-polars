@@ -6,9 +6,14 @@
 #' the scan level, thereby potentially reducing memory overhead.
 #'
 #' @details
-#' In Polars 1.16, `schema` is matched by position. Named
-#' `schema_overrides` elements are matched by name, while unnamed elements are
-#' treated as empty string names. In Polars 2.0, an object without a `names`
+#' In Polars 1.16, `schema` is matched by position regardless of names. In
+#' Polars 2.0, when `has_header = TRUE`, `schema` is matched by name and every
+#' schema field name must match a header name. When `has_header = FALSE`,
+#' `schema` is matched by position and its length must match the input width.
+#' Empty string names remain valid; `NA` names are invalid.
+#'
+#' Named `schema_overrides` elements are matched by name, while unnamed elements
+#' are treated as empty string names. In Polars 2.0, an object without a `names`
 #' attribute remains position-based, while names are matched to input columns.
 #' Empty string names remain valid; `NA` names are invalid.
 #'
@@ -168,6 +173,10 @@ pl__scan_csv <- function(
         )
       )
     }
+  }
+
+  if (isTRUE(has_header) && length(schema) > 0L && is.null(names(schema))) {
+    warn_csv_schema_unnamed()
   }
 
   if (infer_schema_files_missing) {
