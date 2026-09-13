@@ -660,7 +660,9 @@ expr_list_explode <- expr__explode
 #' )
 #'
 #' df$with_columns(
-#'   sample = pl$col("values")$list$sample(n = pl$col("n"), seed = 1)
+#'   sample = pl$col("values")$list$sample(
+#'     n = pl$col("n"), seed = 1
+#'   )
 #' )
 expr_list_sample <- function(
   n = NULL,

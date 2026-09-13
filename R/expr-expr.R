@@ -4341,8 +4341,8 @@ expr__qcut <- function(
 #' Reinterpret the underlying bits of a same-size numeric type.
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param signed Whether to reinterpret as a signed integer. Must specify
-#'   exactly one of `signed` and `dtype`.
+#' @param signed Whether to reinterpret as a signed or unsigned integer of the
+#'   same width as the input. Must specify exactly one of `signed` and `dtype`.
 #' @param dtype Target data type for the reinterpretation. Must specify exactly
 #'   one of `signed` and `dtype`.
 #'

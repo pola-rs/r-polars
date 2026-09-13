@@ -7,7 +7,9 @@
 pl__cum_sum(names, ...)
 }
 \arguments{
-\item{names}{Name(s) of the columns to use in the aggregation.}
+\item{names}{The name(s) or \link[=DataType]{data type} of the column(s) to use in
+the aggregation. A character vector or a Polars data type/list of data
+types can be supplied.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 }

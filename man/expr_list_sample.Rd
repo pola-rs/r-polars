@@ -45,6 +45,8 @@ df <- pl$DataFrame(
 )
 
 df$with_columns(
-  sample = pl$col("values")$list$sample(n = pl$col("n"), seed = 1)
+  sample = pl$col("values")$list$sample(
+    n = pl$col("n"), seed = 1
+  )
 )
 }

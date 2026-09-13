@@ -6,7 +6,9 @@
 #'
 #' @inheritParams expr__all
 #' @inheritParams rlang::args_dots_empty
-#' @param names Name(s) of the columns to use in the aggregation.
+#' @param names The name(s) or [data type][DataType] of the column(s) to use in
+#'   the aggregation. A character vector or a Polars data type/list of data
+#'   types can be supplied.
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -35,7 +37,9 @@ pl__all <- function(names, ..., ignore_nulls = TRUE) {
 #'
 #' This function is syntactic sugar for `col(names)$any()`.
 #'
-#' @param names Name(s) of the columns to use in the aggregation.
+#' @param names The name(s) or [data type][DataType] of the column(s) to use in
+#'   the aggregation. A character vector or a Polars data type/list of data
+#'   types can be supplied.
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams expr__any
 #'
@@ -58,7 +62,9 @@ pl__any <- function(names, ..., ignore_nulls = TRUE) {
 #'
 #' This function is syntactic sugar for `col(names)$max()`.
 #'
-#' @param names Name(s) of the columns to use in the aggregation.
+#' @param names The name(s) or [data type][DataType] of the column(s) to use in
+#'   the aggregation. A character vector or a Polars data type/list of data
+#'   types can be supplied.
 #' @inheritParams rlang::args_dots_empty
 #' @inherit as_polars_expr return
 #' @examples
@@ -82,7 +88,9 @@ pl__max <- function(names, ...) {
 #'
 #' This function is syntactic sugar for `col(names)$min()`.
 #'
-#' @param names Name(s) of the columns to use in the aggregation.
+#' @param names The name(s) or [data type][DataType] of the column(s) to use in
+#'   the aggregation. A character vector or a Polars data type/list of data
+#'   types can be supplied.
 #' @inheritParams rlang::args_dots_empty
 #' @inherit as_polars_expr return
 #' @examples
@@ -106,7 +114,9 @@ pl__min <- function(names, ...) {
 #'
 #' This function is syntactic sugar for `col(names)$sum()`.
 #'
-#' @param names Name(s) of the columns to use in the aggregation.
+#' @param names The name(s) or [data type][DataType] of the column(s) to use in
+#'   the aggregation. A character vector or a Polars data type/list of data
+#'   types can be supplied.
 #' @inheritParams rlang::args_dots_empty
 #' @inherit as_polars_expr return
 #' @examples
@@ -130,7 +140,9 @@ pl__sum <- function(names, ...) {
 #'
 #' This function is syntactic sugar for `col(names)$cum_sum()`.
 #'
-#' @param names Name(s) of the columns to use in the aggregation.
+#' @param names The name(s) or [data type][DataType] of the column(s) to use in
+#'   the aggregation. A character vector or a Polars data type/list of data
+#'   types can be supplied.
 #' @inheritParams rlang::args_dots_empty
 #' @inherit as_polars_expr return
 #' @examples

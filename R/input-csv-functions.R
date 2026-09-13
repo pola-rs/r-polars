@@ -23,7 +23,10 @@
 #' @param schema Provide the schema. This means that polars doesn't do schema
 #' inference. This argument expects the complete schema, whereas
 #' `schema_overrides` can be used to partially overwrite a schema. This must be
-#' a list. Names of list elements are used to match to inferred columns.
+#' a list. With `has_header = TRUE`, fields are matched by name and schema names
+#' must match the CSV header. With `has_header = FALSE`, fields are matched by
+#' position and the schema length must match the input width. Empty string names
+#' are valid; names must not contain `NA` values.
 #' @param schema_overrides Overwrite dtypes during inference. This must be a
 #'  list. If the list is named, dtypes partially overwrite inferred columns by
 #'  name. An empty string is a valid column name. If the list is unnamed, dtypes
