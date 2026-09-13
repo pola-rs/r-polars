@@ -30,16 +30,9 @@
 #' @param schema Provide the schema. This means that polars doesn't do schema
 #' inference. This argument expects the complete schema, whereas
 #' `schema_overrides` can be used to partially overwrite a schema. This must be
-#' a list. In Polars 1.16, elements are matched by position. In Polars 2.0,
-#' elements without a `names` attribute remain position-based, while names are
-#' matched to input columns. Empty string names remain valid; `NA` names are
-#' invalid.
+#' a list.
 #' @param schema_overrides Overwrite dtypes during inference. This must be a
-#' list. In Polars 1.16, named elements are matched by name, while unnamed
-#' elements are treated as empty string names rather than matched by position.
-#' In Polars 2.0, elements without a `names` attribute are matched by position,
-#' while names are matched to input columns. Empty string names remain valid;
-#' `NA` names are invalid.
+#' list.
 #' @param null_values Character vector specifying the values to interpret as
 #' `NA` values. It can be named, in which case names specify the columns in
 #' which this replacement must be made (e.g. `c(col1 = "a")`).
