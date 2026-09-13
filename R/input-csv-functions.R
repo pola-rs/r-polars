@@ -154,9 +154,7 @@ pl__scan_csv <- function(
 
   if (
     length(schema) > 0L &&
-      (is.null(names(schema)) ||
-        anyNA(names(schema)) ||
-        !all(nzchar(names(schema))))
+      (is.null(names(schema)) || anyNA(names(schema)))
   ) {
     deprecate_warn(
       c(

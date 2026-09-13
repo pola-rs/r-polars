@@ -406,11 +406,11 @@ test_that("read/scan: arg 'schema' works", {
 
   # works with unnamed elements
   expect_equal(
-    with_lifecycle_silence(pl$read_csv(
+    pl$read_csv(
       tmpf,
       schema = list(a = pl$Float64, pl$Categorical(), c = pl$Int32),
       infer_schema_files = NULL
-    )),
+    ),
     pl$DataFrame(a = c(1.5, 2), factor(c("a", NA)), c = c(2L, NA))
   )
   expect_snapshot(
@@ -431,31 +431,37 @@ test_that("read/scan: unnamed schema elements are deprecated", {
   local_lifecycle_warnings()
   tmpf <- withr::local_tempfile()
   writeLines("a,b,c\n1.5,a,2\n2,,", tmpf)
-  schema <- list(a = pl$Float64, pl$Categorical(), c = pl$Int32)
-  fully_named_schema <- structure(schema, names = c("a", "b", "c"))
+  mixed_schema <- list(a = pl$Float64, pl$Categorical(), c = pl$Int32)
 
-  # The fully unnamed form is checked at lazy-frame construction time only.
+  # A fully unnamed schema remains valid but is deprecated.
   full_unnamed <- list(pl$Int32, pl$Int32)
   expect_snapshot(
-    invisible(
-      pl$scan_csv(
-        tmpf,
-        schema = full_unnamed,
-        infer_schema_files = NULL
-      )
-    ),
+    invisible(pl$scan_csv(tmpf, schema = full_unnamed, infer_schema_files = NULL)),
     cnd_class = TRUE
   )
 
-  # A mixed named/unnamed schema exercises the warning and a successful read.
+  # An NA schema name is deprecated, while an empty string is a valid name.
+  mixed_na <- structure(
+    mixed_schema,
+    names = c("a", NA_character_, "c")
+  )
+  fully_named_schema <- structure(mixed_schema, names = c("a", "b", "c"))
+  empty_schema <- list()
   expect_snapshot(
-    invisible(pl$scan_csv(tmpf, schema = schema, infer_schema_files = NULL)),
+    invisible(pl$scan_csv(tmpf, schema = mixed_na, infer_schema_files = NULL)),
     cnd_class = TRUE
   )
-  expect_snapshot(
-    invisible(pl$read_csv(tmpf, schema = schema, infer_schema_files = NULL)),
-    cnd_class = TRUE
-  )
+  for (candidate_schema in list(
+    mixed_schema,
+    fully_named_schema,
+    empty_schema
+  )) {
+    expect_no_warning(
+      invisible(
+        pl$scan_csv(tmpf, schema = candidate_schema, infer_schema_files = NULL)
+      )
+    )
+  }
 
   # The 1.16 positional behavior remains unchanged.
   expected <- pl$DataFrame(
@@ -464,15 +470,19 @@ test_that("read/scan: unnamed schema elements are deprecated", {
     c = c(2L, NA)
   )
   expect_equal(
-    with_lifecycle_silence(pl$scan_csv(tmpf, schema = schema, infer_schema_files = NULL)$collect()),
+    expect_no_warning(
+      pl$scan_csv(tmpf, schema = mixed_schema, infer_schema_files = NULL)$collect()
+    ),
     expected
   )
   expect_equal(
-    with_lifecycle_silence(pl$read_csv(tmpf, schema = schema, infer_schema_files = NULL)),
+    expect_no_warning(
+      pl$read_csv(tmpf, schema = mixed_schema, infer_schema_files = NULL)
+    ),
     expected
   )
 
-  # Empty and fully named schemas are not using the positional compatibility path.
+  # Empty schemas do not use the positional compatibility path.
   empty <- withr::local_tempfile()
   writeLines("", empty)
   expect_no_warning(pl$scan_csv(empty, schema = list(), infer_schema_files = NULL))
@@ -484,37 +494,25 @@ test_that("read/scan: unnamed schema elements are deprecated", {
       infer_schema_files = NULL
     )
   )
-  expect_no_warning(
-    pl$scan_csv(
-      tmpf,
-      schema = fully_named_schema,
-      infer_schema_files = NULL
-    )
-  )
-  expect_no_warning(
-    pl$read_csv(
-      tmpf,
-      schema = fully_named_schema,
-      infer_schema_files = NULL
-    )
-  )
-
-  mixed_blank <- structure(
+  # An empty CSV header is a valid column name and must not trigger a warning.
+  writeLines("a,,c\n1.5,a,2\n2,,", tmpf)
+  empty_header_schema <- structure(
     list(pl$Float64, pl$Categorical(), pl$Int32),
     names = c("a", "", "c")
   )
-  mixed_na <- structure(
-    list(pl$Float64, pl$Categorical(), pl$Int32),
-    names = c("a", NA_character_, "c")
+  scan_out <- expect_no_warning(
+    pl$scan_csv(
+      tmpf,
+      schema = empty_header_schema,
+      infer_schema_files = NULL
+    )$collect()
   )
-  expect_snapshot(
-    invisible(pl$scan_csv(tmpf, schema = mixed_blank, infer_schema_files = NULL)),
-    cnd_class = TRUE
+  read_out <- expect_no_warning(
+    pl$read_csv(tmpf, schema = empty_header_schema, infer_schema_files = NULL)
   )
-  expect_snapshot(
-    invisible(pl$scan_csv(tmpf, schema = mixed_na, infer_schema_files = NULL)),
-    cnd_class = TRUE
-  )
+  expect_equal(scan_out$columns, c("a", "", "c"))
+  expect_equal(read_out$columns, c("a", "", "c"))
+  expect_equal(scan_out, read_out)
 })
 
 test_that("read/scan: schema currently matches columns positionally", {
