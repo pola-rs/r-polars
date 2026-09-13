@@ -138,3 +138,56 @@ datatype_expr__default_value <- function(n = 1, ..., numeric_to_one = FALSE, num
     )
   })
 }
+
+
+#' Get the DataType wrapped in a list
+#'
+#' `r lifecycle::badge("experimental")`
+#' Get the DataType wrapped in a list.
+#'
+#' @inherit pl__dtype_of return
+#' @examples
+#' df <- pl$DataFrame(
+#'   a = 1L,
+#'   b = list("a"),
+#'   c = data.frame(x = 1, y = 2)
+#' )
+#'
+#' df$select(
+#'   a_wrapped = pl$dtype_of("a")$wrap_in_list()$display(),
+#'   b_wrapped = pl$dtype_of("b")$wrap_in_list()$display(),
+#'   c_wrapped = pl$dtype_of("c")$wrap_in_list()$display()
+#' )
+datatype_expr__wrap_in_list <- function() {
+  wrap({
+    self$`_datatype_expr`$wrap_in_list()
+  })
+}
+
+#' Get the DataType wrapped in an array
+#'
+#' `r lifecycle::badge("experimental")`
+#' Get the DataType wrapped in an array.
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @param width Width of the array.
+#'
+#' @inherit pl__dtype_of return
+#' @examples
+#' df <- pl$DataFrame(
+#'   a = 1L,
+#'   b = list("a"),
+#'   c = data.frame(x = 1, y = 2)
+#' )
+#'
+#' df$select(
+#'   a_wrapped = pl$dtype_of("a")$wrap_in_array(width = 1)$display(),
+#'   b_wrapped = pl$dtype_of("b")$wrap_in_array(width = 1)$display(),
+#'   c_wrapped = pl$dtype_of("c")$wrap_in_array(width = 1)$display()
+#' )
+datatype_expr__wrap_in_array <- function(..., width) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_datatype_expr`$wrap_in_array(width = width)
+  })
+}

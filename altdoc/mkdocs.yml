@@ -727,6 +727,8 @@ nav:
         - dtype_of: man/pl__dtype_of.md
         - inner_dtype: man/datatype_expr__inner_dtype.md
         - matches: man/datatype_expr__matches.md
+        - wrap_in_array: man/datatype_expr__wrap_in_array.md
+        - wrap_in_list: man/datatype_expr__wrap_in_list.md
       Functions:
         - collect_all: man/pl__collect_all.md
         - concat: man/pl__concat.md
