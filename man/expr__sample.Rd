@@ -23,7 +23,10 @@ to 1 if \code{fraction} is \code{NULL}.}
 
 \item{with_replacement}{Allow values to be sampled more than once.}
 
-\item{shuffle}{Shuffle the order of sampled data points.}
+\item{shuffle}{Whether to shuffle the order of sampled data points. If omitted,
+a warning is emitted and \code{FALSE} is used for compatibility with Polars 1.16.
+Use \code{shuffle = FALSE} to retain the current behavior; Polars 2.0 will not
+guarantee sample order by default.}
 
 \item{seed}{Seed for the random number generator. If \code{NULL} (default), a
 random seed is generated for each sample operation.}
@@ -37,6 +40,6 @@ Sample from this expression
 \examples{
 df <- pl$DataFrame(a = 1:3)
 df$select(pl$col("a")$sample(
-  fraction = 1, with_replacement = TRUE, seed = 1
+  fraction = 1, with_replacement = TRUE, shuffle = FALSE, seed = 1
 ))
 }

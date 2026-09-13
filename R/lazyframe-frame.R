@@ -2514,7 +2514,9 @@ lazyframe__set_sorted <- function(column, ..., descending = FALSE) {
     if (length(column) != 1 || !is.character(column)) {
       abort("`column` must be a single column name.")
     }
-    self$with_columns(pl$col(column)$set_sorted(descending = descending))
+    self$with_columns(
+      pl$col(column)$set_sorted(descending = descending, nulls_last = !descending)
+    )
   })
 }
 

@@ -969,7 +969,10 @@ test_that("Expr_sort", {
     sort_nulls_last = pl$col("a")$sort(nulls_last = TRUE),
     sort_reverse = pl$col("a")$sort(descending = TRUE),
     sort_reverse_nulls_last = pl$col("a")$sort(descending = TRUE, nulls_last = TRUE),
-    fake_sort_nulls_last = pl$col("a")$set_sorted(descending = FALSE)$sort(
+    fake_sort_nulls_last = pl$col("a")$set_sorted(
+      descending = FALSE,
+      nulls_last = TRUE
+    )$sort(
       descending = FALSE,
       nulls_last = TRUE
     ),
@@ -989,6 +992,16 @@ test_that("Expr_sort", {
       fake_sort_reverse_nulls_last = l2$a
     )
   )
+})
+
+test_that("set_sorted warns when nulls_last is omitted for ascending data", {
+  local_lifecycle_warnings()
+  expr <- pl$col("a")
+
+  expect_snapshot(invisible(expr$set_sorted()), cnd_class = TRUE)
+  expect_no_warning(expr$set_sorted(nulls_last = TRUE))
+  expect_no_warning(expr$set_sorted(nulls_last = FALSE))
+  expect_no_warning(expr$set_sorted(descending = TRUE))
 })
 
 test_that("$top_k() works", {
@@ -1653,15 +1666,22 @@ test_that("hash additional seeds are deprecated", {
 })
 
 test_that("reinterpret", {
+  local_lifecycle_warnings()
   df <- pl$DataFrame(a = c(1, 1, 2))$cast(pl$UInt64)
+  expect_snapshot(
+    invisible(df$select(pl$col("a")$reinterpret())),
+    cnd_class = TRUE
+  )
   expect_equal(
-    df$select(pl$col("a")$reinterpret()),
+    df$select(pl$col("a")$reinterpret(signed = TRUE)),
     pl$DataFrame(a = c(1, 1, 2))$cast(pl$Int64)
   )
+  expect_no_warning(df$select(pl$col("a")$reinterpret(signed = TRUE)))
   expect_equal(
     df$select(pl$col("a")$reinterpret(signed = FALSE)),
     pl$DataFrame(a = c(1, 1, 2))$cast(pl$UInt64)
   )
+  expect_no_warning(df$select(pl$col("a")$reinterpret(signed = FALSE)))
 })
 
 # test_that("inspect", {
@@ -1815,7 +1835,7 @@ patrick::with_parameters_test_that(
         min = pl$col("a")$rolling_min_by("date", window_size = "2d"),
         max = pl$col("a")$rolling_max_by("date", window_size = "2d"),
         mean = pl$col("a")$rolling_mean_by("date", window_size = "2d"),
-        sum = pl$col("a")$rolling_sum_by("date", window_size = "2d"),
+        sum = pl$col("a")$rolling_sum_by("date", window_size = "2d", min_samples = 1),
         std = pl$col("a")$rolling_std_by("date", window_size = "2d"),
         var = pl$col("a")$rolling_var_by("date", window_size = "2d"),
         median = pl$col("a")$rolling_median_by("date", window_size = "2d"),
@@ -1858,7 +1878,7 @@ patrick::with_parameters_test_that(
         min = pl$col("a")$rolling_min_by("id", window_size = "2i"),
         max = pl$col("a")$rolling_max_by("id", window_size = "2i"),
         mean = pl$col("a")$rolling_mean_by("id", window_size = "2i"),
-        sum = pl$col("a")$rolling_sum_by("id", window_size = "2i"),
+        sum = pl$col("a")$rolling_sum_by("id", window_size = "2i", min_samples = 1),
         std = pl$col("a")$rolling_std_by("id", window_size = "2i"),
         var = pl$col("a")$rolling_var_by("id", window_size = "2i"),
         median = pl$col("a")$rolling_median_by("id", window_size = "2i"),
@@ -1929,6 +1949,29 @@ test_that("rolling_*_by: arg 'min_samples'", {
   )
 })
 
+test_that("rolling_sum_by warns when min_samples is omitted", {
+  local_lifecycle_warnings()
+  df <- pl$DataFrame(
+    a = 1:3,
+    date = pl$date_range(as.Date("2001-01-01"), as.Date("2001-01-03"), "1d")
+  )
+
+  expect_snapshot(
+    invisible(df$select(pl$col("a")$rolling_sum_by("date", window_size = "2d"))),
+    cnd_class = TRUE
+  )
+  old <- with_lifecycle_silence(
+    df$select(pl$col("a")$rolling_sum_by("date", window_size = "2d"))
+  )
+  explicit_old <- expect_no_warning(
+    df$select(pl$col("a")$rolling_sum_by("date", window_size = "2d", min_samples = 1))
+  )
+  expect_equal(old, explicit_old)
+  expect_no_warning(
+    df$select(pl$col("a")$rolling_sum_by("date", window_size = "2d", min_samples = 0))
+  )
+})
+
 test_that("rolling_*_by: arg 'closed'", {
   df <- pl$select(
     a = 1:6,
@@ -1951,7 +1994,12 @@ test_that("rolling_*_by: arg 'closed'", {
       min = pl$col("a")$rolling_min_by("date", window_size = "2d", closed = "left"),
       max = pl$col("a")$rolling_max_by("date", window_size = "2d", closed = "left"),
       mean = pl$col("a")$rolling_mean_by("date", window_size = "2d", closed = "left"),
-      sum = pl$col("a")$rolling_sum_by("date", window_size = "2d", closed = "left"),
+      sum = pl$col("a")$rolling_sum_by(
+        "date",
+        window_size = "2d",
+        min_samples = 1,
+        closed = "left"
+      ),
       std = pl$col("a")$rolling_std_by("date", window_size = "2d", closed = "left"),
       var = pl$col("a")$rolling_var_by("date", window_size = "2d", closed = "left"),
       median = pl$col("a")$rolling_median_by("date", window_size = "2d", closed = "left"),
@@ -2379,29 +2427,40 @@ test_that("shuffle", {
 })
 
 test_that("sample", {
+  local_lifecycle_warnings()
   df <- pl$DataFrame(a = 1:10)
 
   # Numerical checks
   expect_equal(
-    df$select(pl$col("a")$sample(fraction = 0.2, seed = 1)),
+    df$select(pl$col("a")$sample(fraction = 0.2, shuffle = FALSE, seed = 1)),
     pl$DataFrame(a = c(8L, 10L))$cast(pl$Int32)
   )
   expect_equal(
-    df$select(pl$col("a")$sample(n = 2, seed = 1)),
+    df$select(pl$col("a")$sample(n = 2, shuffle = FALSE, seed = 1)),
     pl$DataFrame(a = c(8L, 10L))$cast(pl$Int32)
   )
 
   # Check fraction arg
   expect_snapshot(
-    df$select(pl$col("a")$sample(fraction = 2)),
+    df$select(pl$col("a")$sample(fraction = 2, shuffle = FALSE)),
     error = TRUE
   )
 
   expect_equal(
-    df$select(pl$col("a")$sample(fraction = 2, with_replacement = TRUE)) |>
+    df$select(pl$col("a")$sample(fraction = 2, with_replacement = TRUE, shuffle = FALSE)) |>
       nrow(),
     20
   )
+
+  expect_snapshot(
+    invisible(df$select(pl$col("a")$sample(n = 2, seed = 1))),
+    cnd_class = TRUE
+  )
+  expect_equal(
+    expect_no_warning(df$select(pl$col("a")$sample(n = 2, shuffle = FALSE, seed = 1))),
+    pl$DataFrame(a = c(8L, 10L))$cast(pl$Int32)
+  )
+  expect_no_warning(df$select(pl$col("a")$sample(n = 2, shuffle = TRUE, seed = 1)))
 })
 
 

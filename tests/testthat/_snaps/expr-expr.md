@@ -329,6 +329,15 @@
       Caused by error:
       ! `closed` must be one of "both", "left", "right", or "none", not "foo".
 
+# set_sorted warns when nulls_last is omitted for ascending data
+
+    Code
+      invisible(expr$set_sorted())
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The default value of `nulls_last` in `<expr>$set_sorted()` will change in polars 2.0.
+      i Use `nulls_last = TRUE` to retain the current behavior or `nulls_last = FALSE` to opt into the new default.
+
 # hash additional seeds are deprecated
 
     Code
@@ -374,6 +383,15 @@
       ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
       i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
 
+# reinterpret
+
+    Code
+      invisible(df$select(pl$col("a")$reinterpret()))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! Calling `<expr>$reinterpret()` without the `signed` argument is deprecated as of polars 1.16.0.
+      i Use `signed = TRUE` to retain the current behavior. In polars 2.0, exactly one of `signed` or `dtype` must be supplied.
+
 # rolling_*_by only works with date, datetime, or integers
 
     Code
@@ -403,6 +421,15 @@
       ! Evaluation failed in `$rolling_min_by()`.
       Caused by error:
       ! -1.0 is out of range that can be safely converted to usize
+
+# rolling_sum_by warns when min_samples is omitted
+
+    Code
+      invisible(df$select(pl$col("a")$rolling_sum_by("date", window_size = "2d")))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The default value of `min_samples` in `<expr>$rolling_sum_by()` will change in polars 2.0.
+      i Use `min_samples = 1` to retain the current behavior or `min_samples = 0` to opt into the new default.
 
 # rolling_*_by: arg 'closed'
 
@@ -553,7 +580,7 @@
 # sample
 
     Code
-      df$select(pl$col("a")$sample(fraction = 2))
+      df$select(pl$col("a")$sample(fraction = 2, shuffle = FALSE))
     Condition
       Error in `df$select()`:
       ! Evaluation failed in `$select()`.
@@ -564,6 +591,13 @@
       
       This error occurred in the following expression:
       	col("a").sample([2.0])
+
+    Code
+      invisible(df$select(pl$col("a")$sample(n = 2, seed = 1)))
+    Condition <lifecycle_warning_deprecated>
+      Warning:
+      ! The default value of `shuffle` in `<expr>$sample()` will change in polars 2.0.
+      i Use `shuffle = FALSE` to retain the current behavior; sample order will not be guaranteed by default in polars 2.0.
 
 # ewm_
 
@@ -982,4 +1016,3 @@
       ! Evaluation failed in `$item()`.
       Caused by error:
       ! Argument `allow_empty` must be logical, not double
-

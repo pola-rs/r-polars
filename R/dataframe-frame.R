@@ -1986,7 +1986,7 @@ dataframe__with_row_index <- function(name = "index", offset = 0) {
 #'   bar = 6:8,
 #'   ham = c("a", "b", "c")
 #' )
-#' df$sample(n = 2, seed = 0)
+#' df$sample(n = 2, shuffle = FALSE, seed = 0)
 dataframe__sample <- function(
   n = NULL,
   ...,
@@ -1995,8 +1995,12 @@ dataframe__sample <- function(
   shuffle = FALSE,
   seed = NULL
 ) {
+  shuffle_missing <- missing(shuffle)
   wrap({
     check_dots_empty0(...)
+    if (shuffle_missing) {
+      warn_deprecated_sample_shuffle("<dataframe>$sample")
+    }
     if (!is.null(fraction) && !is.null(n)) {
       abort("Can't specify both `n` and `fraction`.")
     }

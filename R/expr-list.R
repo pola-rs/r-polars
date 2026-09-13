@@ -648,6 +648,13 @@ expr_list_explode <- expr__explode
 #' Sample values from every sub-list
 #'
 #' @inheritParams expr__sample
+#' @param n Number of items to return. Cannot be used with `fraction`. If both
+#'   `n` and `fraction` are `NULL`, Polars 1.16 uses `fraction = 1` and emits a
+#'   warning because Polars 2.0 will use `n = 1`. Explicitly set `n = 1` to opt
+#'   into the new behavior.
+#' @param fraction Fraction of items to return. Cannot be used with `n`.
+#'   Explicitly set `fraction = 1` to retain the current behavior when both
+#'   `n` and `fraction` would otherwise be `NULL`.
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -657,7 +664,9 @@ expr_list_explode <- expr__explode
 #' )
 #'
 #' df$with_columns(
-#'   sample = pl$col("values")$list$sample(n = pl$col("n"), seed = 1)
+#'   sample = pl$col("values")$list$sample(
+#'     n = pl$col("n"), shuffle = FALSE, seed = 1
+#'   )
 #' )
 expr_list_sample <- function(
   n = NULL,
@@ -667,8 +676,15 @@ expr_list_sample <- function(
   shuffle = FALSE,
   seed = NULL
 ) {
+  shuffle_missing <- missing(shuffle)
   wrap({
     check_dots_empty0(...)
+    if (shuffle_missing) {
+      warn_deprecated_sample_shuffle("<expr>$list$sample")
+    }
+    if (is.null(n) && is.null(fraction)) {
+      warn_deprecated_list_sample_default()
+    }
     if (!is.null(n) && !is.null(fraction)) {
       abort("Provide either `n` or `fraction`, not both.")
     } else if (!is.null(n)) {
