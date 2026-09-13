@@ -495,7 +495,7 @@
     Code
       print(object)
     Output
-      Categorical(ordering='lexical')
+      Categorical()
 
 # data types print Enum(c('a', 'b', 'c'))
 
@@ -540,31 +540,6 @@
       ! Evaluation failed in `$Enum()`.
       Caused by error in `pl$Enum()`:
       ! Enum categories must be unique, found duplicated: b, a
-
-# Enum union is deprecated
-
-    Code
-      lhs$union(rhs)
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! `<Enum>$union()` is deprecated as of polars 1.16.0.
-      i Use `pl$Enum(unique(c(lhs$categories, rhs$categories)))` instead.
-    Output
-      Enum(categories=c('b', 'd', 'a'))
-
-# Decimal deprecation
-
-    Code
-      pl$Decimal(NULL, NULL)
-    Condition
-      Warning:
-      ! `precision` should not be `NULL`.
-      i Use an integer between 1 and 38 instead.
-      Warning:
-      ! `scale` should not be `NULL`.
-      i Use an integer between 0 and `precision` instead.
-    Output
-      Decimal(precision=38, scale=0)
 
 # invalid decimal (precision = 0, scale = 0)
 

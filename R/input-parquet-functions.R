@@ -31,13 +31,6 @@
 #'   are missing from the data:
 #'   - `"raise"` (default): Raises an error.
 #'   - `"insert"`:  Inserts the missing columns using NULLs as the row values.
-#' @param allow_missing_columns `r lifecycle::badge("deprecated")`
-#'   Deprecated in favor of `missing_columns`.
-#'   When reading a list of parquet files, if a
-#'   column existing in the first file cannot be found in subsequent files, the
-#'   default behavior is to raise an error. However, if `allow_missing_columns`
-#'   is set to `TRUE`, a full-NULL column is returned instead of erroring for the
-#'   files that do not contain the column.
 #' @examplesIf requireNamespace("withr", quietly = TRUE)
 #' # Write a Parquet file than we can then import as DataFrame
 #' temp_file <- withr::local_tempfile(fileext = ".parquet")
@@ -65,14 +58,11 @@ pl__scan_parquet <- function(
   schema = NULL,
   hive_schema = NULL,
   try_parse_hive_dates = TRUE,
-  rechunk = deprecated(),
   low_memory = FALSE,
   cache = TRUE,
   storage_options = NULL,
-  retries = deprecated(),
   include_file_paths = NULL,
-  missing_columns = c("raise", "insert"),
-  allow_missing_columns = deprecated()
+  missing_columns = c("raise", "insert")
 ) {
   check_dots_empty0(...)
   check_character(source, allow_na = FALSE)
@@ -80,25 +70,6 @@ pl__scan_parquet <- function(
     abort("`source` must have length > 0.")
   }
   check_character(storage_options, allow_null = TRUE)
-
-  if (is_present(retries)) {
-    deprecate_warn(
-      c(
-        `!` = sprintf(
-          "The %s argument is deprecated as of %s 1.9.0.",
-          format_arg("retries"),
-          format_pkg("polars")
-        ),
-        i = sprintf(
-          "Specify %s in %s instead.",
-          format_code("max_retries"),
-          format_arg("storage_options")
-        )
-      )
-    )
-    storage_options <- storage_options %||% character()
-    storage_options[["max_retries"]] <- as.character(retries)
-  }
 
   parallel <- arg_match0(
     parallel,
@@ -111,28 +82,8 @@ pl__scan_parquet <- function(
     values = c("insert", "raise")
   )
 
-  if (is_present(allow_missing_columns)) {
-    missing_columns <- if (allow_missing_columns) "insert" else "raise"
-    replacement <- sprintf('missing_columns = "%s"', missing_columns)
-    deprecate_warn(
-      c(
-        `!` = sprintf(
-          "The argument %s is deprecated.",
-          format_arg("allow_missing_columns")
-        ),
-        i = sprintf("Use %s instead.", format_code(replacement))
-      )
-    )
-  }
-
   if (!is.null(hive_schema)) {
     hive_schema <- parse_into_list_of_datatypes(!!!hive_schema)
-  }
-
-  if (is_present(rechunk)) {
-    warn_deprecated_rechunk()
-  } else {
-    rechunk <- FALSE
   }
 
   PlRLazyFrame$new_from_parquet(
@@ -147,7 +98,7 @@ pl__scan_parquet <- function(
     schema = schema,
     hive_schema = hive_schema,
     try_parse_hive_dates = try_parse_hive_dates,
-    rechunk = rechunk,
+    rechunk = FALSE,
     low_memory = low_memory,
     cache = cache,
     storage_options = storage_options,
@@ -189,14 +140,11 @@ pl__read_parquet <- function(
   schema = NULL,
   hive_schema = NULL,
   try_parse_hive_dates = TRUE,
-  rechunk = deprecated(),
   low_memory = FALSE,
   cache = TRUE,
   storage_options = NULL,
-  retries = deprecated(),
   include_file_paths = NULL,
-  missing_columns = c("raise", "insert"),
-  allow_missing_columns = deprecated()
+  missing_columns = c("raise", "insert")
 ) {
   check_dots_empty0(...)
   .args <- as.list(environment())

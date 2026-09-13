@@ -1,3 +1,65 @@
+.normalize_horizontal_concat <- function(how, strict) {
+  strict_is_present <- is_present(strict)
+
+  if (strict_is_present) {
+    deprecate_warn(
+      c(
+        `!` = sprintf(
+          "The argument %s of %s is deprecated as of %s 2.0.0.",
+          format_arg("strict"),
+          format_fn("pl$concat"),
+          format_pkg("polars")
+        ),
+        i = sprintf(
+          "Omit the %s argument. To pad shorter frames with nulls, use %s.",
+          format_arg("strict"),
+          format_code('how = "horizontal_extend"')
+        )
+      )
+    )
+  }
+
+  if (how == "horizontal") {
+    if (strict_is_present) {
+      check_bool(strict, call = caller_env())
+      if (!isTRUE(strict)) {
+        abort(
+          c(
+            `!` = sprintf(
+              "The argument %s cannot be %s when %s.",
+              format_arg("strict"),
+              format_code("FALSE"),
+              format_code('how = "horizontal"')
+            ),
+            i = sprintf(
+              "Use %s instead.",
+              format_code('how = "horizontal_extend"')
+            )
+          ),
+          call = caller_env()
+        )
+      }
+    }
+    return(TRUE)
+  }
+
+  if (how == "horizontal_extend") {
+    if (strict_is_present) {
+      abort(
+        sprintf(
+          "The argument %s must be omitted when %s.",
+          format_arg("strict"),
+          format_code('how = "horizontal_extend"')
+        ),
+        call = caller_env()
+      )
+    }
+    return(FALSE)
+  }
+
+  NULL
+}
+
 #' Combine multiple DataFrames, LazyFrames, or Series into a single object
 #'
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> [DataFrames][DataFrame],
@@ -13,9 +75,7 @@
 #'   columns to their common supertype if they are mismatched (eg: Int32 to
 #'   Int64);
 #' * `"horizontal"`: stacks Series from DataFrames horizontally. All input
-#'   frames must have the same height; raises an error otherwise
-#'   (currently, omitting the deprecated `strict` argument warns and redirects
-#'   to `"horizontal_extend"` instead; pass `strict = TRUE` to opt in early);
+#'   frames must have the same height; raises an error otherwise;
 #' * `"horizontal_extend"`: stacks Series from DataFrames horizontally and
 #'   fills with `null` if the lengths don't match;
 #' * `"align"`, `"align_full"`, `"align_left"`, `"align_right"`: Combines
@@ -28,13 +88,12 @@
 #'   more control over this you should use a suitable `join` method directly).
 #'
 #' [Series] only support the `"vertical"` strategy.
+#' @param strict `r lifecycle::badge("deprecated")` Deprecated. `how =
+#'   "horizontal"` already requires equal heights. Use `how =
+#'   "horizontal_extend"` to pad shorter frames with null.
 #' @param rechunk Make sure that the result data is in contiguous memory.
 #' @param parallel Only relevant for [LazyFrames][LazyFrame]. This determines if the
 #' concatenated lazy computations may be executed in parallel.
-#' @param strict `r lifecycle::badge("deprecated")` Use `how =
-#'   "horizontal_extend"` (pad with null) instead of `strict = FALSE`. To opt
-#'   into requiring equal heights (the future default of `how = "horizontal"`),
-#'   pass `strict = TRUE`.
 #' @return The same class (`polars_data_frame`, `polars_lazy_frame` or
 #' `polars_series`) as the input.
 #' @examples
@@ -88,43 +147,11 @@ pl__concat <- function(
     )
   )
 
-  if (how == "horizontal") {
-    if (is_present(strict)) {
-      check_bool(strict)
-      if (isFALSE(strict)) {
-        deprecate_warn(
-          c(
-            `!` = sprintf(
-              "The argument %s of %s is deprecated.",
-              format_arg("strict"),
-              format_fn("pl$concat")
-            ),
-            i = sprintf("Use %s instead.", format_code('how = "horizontal_extend"'))
-          )
-        )
-        how <- "horizontal_extend"
-      }
-    } else {
-      deprecate_warn(
-        c(
-          `!` = sprintf(
-            "The default behavior of %s for %s is deprecated and will require equal heights in the next breaking release.", # nolint: line_length_linter
-            format_code('how = "horizontal"'),
-            format_fn("pl$concat")
-          ),
-          i = sprintf(
-            "Use %s to keep the current behavior.",
-            format_code('how = "horizontal_extend"')
-          )
-        )
-      )
-      how <- "horizontal_extend"
-    }
-  }
-
   if (length(dots) == 0L) {
     abort("`...` must not be empty.")
   }
+
+  strict <- .normalize_horizontal_concat(how, strict)
 
   first <- dots[[1]]
 
@@ -233,13 +260,13 @@ pl__concat <- function(
       horizontal = {
         dots |>
           lapply(\(x) x$`_df`) |>
-          concat_df_horizontal(strict = TRUE) |>
+          concat_df_horizontal(strict = strict) |>
           wrap()
       },
       horizontal_extend = {
         dots |>
           lapply(\(x) x$`_df`) |>
-          concat_df_horizontal(strict = FALSE) |>
+          concat_df_horizontal(strict = strict) |>
           wrap()
       },
       abort("Unreachable")
@@ -270,12 +297,12 @@ pl__concat <- function(
       horizontal = {
         dots |>
           lapply(\(x) x$`_ldf`) |>
-          concat_lf_horizontal(parallel = parallel, strict = TRUE)
+          concat_lf_horizontal(parallel = parallel, strict = strict)
       },
       horizontal_extend = {
         dots |>
           lapply(\(x) x$`_ldf`) |>
-          concat_lf_horizontal(parallel = parallel, strict = FALSE)
+          concat_lf_horizontal(parallel = parallel, strict = strict)
       },
       abort("Unreachable")
     ) |>

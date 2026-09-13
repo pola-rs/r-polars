@@ -7,7 +7,8 @@
 expr__cast(dtype, ..., strict = TRUE, wrap_numerical = FALSE)
 }
 \arguments{
-\item{dtype}{DataType to cast to.}
+\item{dtype}{DataType or DataTypeExpr to cast to. A DataTypeExpr can refer
+to the dtype of another expression.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 

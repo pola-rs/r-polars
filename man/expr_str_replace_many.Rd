@@ -13,19 +13,14 @@ expr_str_replace_many(
 )
 }
 \arguments{
-\item{patterns}{String patterns to search. Accepts expression input. In
-Polars 1.16, bare character vectors are interpreted as literal patterns;
-in Polars 2.0, they will be interpreted as column names. Use
-\code{pl$lit(...)$implode()} for literal patterns or \code{pl$col()} for column
-patterns. To use the same character vector for all rows, use
-\code{list(c(...))} instead of \code{c(...)} (see Examples).}
+\item{patterns}{String patterns to search. Accepts expression input. Bare
+character vectors are interpreted as column names. For literal patterns,
+use a list or an expression such as \code{pl$lit(...)$implode()}.}
 
-\item{replace_with}{A list containing a vector of strings used as
-replacements. If this vector is of length 1, then it is applied to all
-matches. Otherwise, it must be of the same length as the \code{patterns} vector.
-In Polars 1.16, a flat character vector is accepted with a deprecation
-warning, but Polars 2.0 requires a list. Use \code{list(c(...))} for a literal
-scalar or vector replacement.}
+\item{replace_with}{A list of strings, such as \code{list(c(...))}, or an Expr of
+dtype \code{List(String)} used as replacements. A single replacement is applied
+to all matches. Otherwise, the number of replacements must match the
+\code{patterns} argument.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
@@ -54,16 +49,12 @@ df <- pl$DataFrame(
 
 # a replacement of length 1 is applied to all matches
 df$with_columns(
-  remove_pronouns = pl$col("lyrics")$str$replace_many(
-    list(c("you", "me")), list(c(""))
-  )
+  remove_pronouns = pl$col("lyrics")$str$replace_many(list(c("you", "me")), list(c("")))
 )
 
 # if there are more than one replacement, the patterns and replacements are
 # matched
 df$with_columns(
-  fake_pronouns = pl$col("lyrics")$str$replace_many(
-    list(c("you", "me")), list(c("foo", "bar"))
-  )
+  fake_pronouns = pl$col("lyrics")$str$replace_many(list(c("you", "me")), list(c("foo", "bar")))
 )
 }

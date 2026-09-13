@@ -16,7 +16,7 @@
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams lazyframe__collect
 #' @param path A character. File path to which the file should be written.
-#' @param compression The compression method. Must be one of:
+#' @param compression The compression method. Defaults to `"lz4"`. Must be one of:
 #' * `"lz4"`: fast compression/decompression.
 #' * `"uncompressed"`
 #' * `"snappy"`: this guarantees that the parquet file will be compatible with
@@ -84,18 +84,10 @@ lazyframe__sink_parquet <- function(
   data_page_size = NULL,
   maintain_order = TRUE,
   storage_options = NULL,
-  retries = deprecated(),
   sync_on_close = c("none", "data", "all"),
   mkdir = FALSE,
   engine = c("auto", "in-memory", "streaming"),
-  optimizations = pl$QueryOptFlags(),
-  type_coercion = deprecated(),
-  predicate_pushdown = deprecated(),
-  projection_pushdown = deprecated(),
-  simplify_expression = deprecated(),
-  slice_pushdown = deprecated(),
-  collapse_joins = deprecated(),
-  no_optimization = deprecated()
+  optimizations = pl$QueryOptFlags()
 ) {
   wrap({
     check_dots_empty0(...)
@@ -109,19 +101,11 @@ lazyframe__sink_parquet <- function(
       data_page_size = data_page_size,
       maintain_order = maintain_order,
       storage_options = storage_options,
-      retries = retries,
       sync_on_close = sync_on_close,
       mkdir = mkdir
     )$collect(
       engine = engine,
-      optimizations = optimizations,
-      type_coercion = type_coercion,
-      predicate_pushdown = predicate_pushdown,
-      projection_pushdown = projection_pushdown,
-      simplify_expression = simplify_expression,
-      slice_pushdown = slice_pushdown,
-      collapse_joins = collapse_joins,
-      no_optimization = no_optimization
+      optimizations = optimizations
     )
   })
   invisible(NULL)
@@ -138,32 +122,12 @@ lazyframe__lazy_sink_parquet <- function(
   data_page_size = NULL,
   maintain_order = TRUE,
   storage_options = NULL,
-  retries = deprecated(),
   sync_on_close = c("none", "data", "all"),
   mkdir = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
     check_character(storage_options, allow_null = TRUE)
-
-    if (is_present(retries)) {
-      deprecate_warn(
-        c(
-          `!` = sprintf(
-            "The %s argument is deprecated as of %s 1.9.0.",
-            format_arg("retries"),
-            format_pkg("polars")
-          ),
-          i = sprintf(
-            "Specify %s in %s instead.",
-            format_code("max_retries"),
-            format_arg("storage_options")
-          )
-        )
-      )
-      storage_options <- storage_options %||% character()
-      storage_options[["max_retries"]] <- as.character(retries)
-    }
 
     target <- arg_to_sink_target(path)
     compression <- arg_match0(
@@ -249,7 +213,6 @@ dataframe__write_parquet <- function(
   partition_by = NULL,
   partition_chunk_size_bytes = 4294967296,
   storage_options = NULL,
-  retries = deprecated(),
   mkdir = FALSE
 ) {
   wrap({
@@ -277,7 +240,6 @@ dataframe__write_parquet <- function(
       row_group_size = row_group_size,
       data_page_size = data_page_size,
       storage_options = storage_options,
-      retries = retries,
       mkdir = mkdir,
       optimizations = DEFAULT_EAGER_OPT_FLAGS,
       engine = "in-memory"

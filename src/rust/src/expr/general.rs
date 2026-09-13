@@ -1,5 +1,5 @@
 use super::selector::PlRSelector;
-use crate::{PlRDataType, PlRExpr, RPolarsErr, prelude::*};
+use crate::{PlRDataType, PlRExpr, RPolarsErr, expr::datatype::PlRDataTypeExpr, prelude::*};
 use polars::lazy::dsl;
 use polars::series::ops::NullBehavior;
 use polars_core::chunked_array::cast::CastOptions;
@@ -140,8 +140,8 @@ impl PlRExpr {
         Ok(self.inner.clone().sum().into())
     }
 
-    fn cast(&self, dtype: &PlRDataType, strict: bool, wrap_numerical: bool) -> Result<Self> {
-        let dt = dtype.dt.clone();
+    fn cast(&self, dtype: &PlRDataTypeExpr, strict: bool, wrap_numerical: bool) -> Result<Self> {
+        let dt = dtype.inner.clone();
 
         let options = if wrap_numerical {
             CastOptions::Overflowing
@@ -295,10 +295,16 @@ impl PlRExpr {
         Ok(self.inner.clone().all(ignore_nulls).into())
     }
 
-    fn map_batches(&self, lambda: FunctionSexp, output_type: Option<&PlRDataType>) -> Result<Self> {
+    fn map_batches(
+        &self,
+        lambda: FunctionSexp,
+        is_elementwise: bool,
+        returns_scalar: bool,
+        output_type: Option<&PlRDataTypeExpr>,
+    ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            crate::map::lazy::map_expr(self, lambda, output_type)
+            crate::map::lazy::map_expr(self, lambda, output_type, is_elementwise, returns_scalar)
         }
         #[cfg(target_arch = "wasm32")]
         {
@@ -324,10 +330,6 @@ impl PlRExpr {
 
     fn cum_count(&self, reverse: bool) -> Result<Self> {
         Ok(self.inner.clone().cum_count(reverse).into())
-    }
-
-    fn agg_groups(&self) -> Result<Self> {
-        Ok(self.inner.clone().agg_groups().into())
     }
 
     fn count(&self) -> Result<Self> {
@@ -557,18 +559,9 @@ impl PlRExpr {
         Ok(self.inner.clone().entropy(base, normalize).into())
     }
 
-    fn hash(
-        &self,
-        seed: NumericScalar,
-        seed_1: NumericScalar,
-        seed_2: NumericScalar,
-        seed_3: NumericScalar,
-    ) -> Result<Self> {
+    fn hash(&self, seed: NumericScalar) -> Result<Self> {
         let seed = <Wrap<u64>>::try_from(seed)?.0;
-        let seed_1 = <Wrap<u64>>::try_from(seed_1)?.0;
-        let seed_2 = <Wrap<u64>>::try_from(seed_2)?.0;
-        let seed_3 = <Wrap<u64>>::try_from(seed_3)?.0;
-        Ok(self.inner.clone().hash(seed, seed_1, seed_2, seed_3).into())
+        Ok(self.inner.clone().hash(seed).into())
     }
 
     fn pct_change(&self, n: &PlRExpr) -> Result<Self> {
@@ -739,14 +732,6 @@ impl PlRExpr {
             .inner
             .clone()
             .append(other.inner.clone(), upcast)
-            .into())
-    }
-
-    fn rechunk(&self) -> Result<Self> {
-        Ok(self
-            .inner
-            .clone()
-            .map(|s| Ok(s.rechunk()), |_, f| Ok(f.clone()))
             .into())
     }
 
@@ -922,8 +907,12 @@ impl PlRExpr {
             .into())
     }
 
-    fn reinterpret(&self, signed: bool) -> Result<Self> {
-        Ok(self.inner.clone().reinterpret(Some(signed), None).into())
+    fn reinterpret(&self, signed: Option<bool>, dtype: Option<&PlRDataType>) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .reinterpret(signed, dtype.map(|x| x.dt.clone()))
+            .into())
     }
 
     fn repeat_by(&self, by: &PlRExpr) -> Result<Self> {
@@ -977,7 +966,7 @@ impl PlRExpr {
         &self,
         n: &PlRExpr,
         with_replacement: bool,
-        shuffle: bool,
+        shuffle: Option<bool>,
         seed: Option<NumericScalar>,
     ) -> Result<Self> {
         let seed: Option<u64> = match seed {
@@ -987,7 +976,7 @@ impl PlRExpr {
         Ok(self
             .inner
             .clone()
-            .sample_n(n.inner.clone(), with_replacement, Some(shuffle), seed)
+            .sample_n(n.inner.clone(), with_replacement, shuffle, seed)
             .into())
     }
 
@@ -995,7 +984,7 @@ impl PlRExpr {
         &self,
         frac: &PlRExpr,
         with_replacement: bool,
-        shuffle: bool,
+        shuffle: Option<bool>,
         seed: Option<NumericScalar>,
     ) -> Result<Self> {
         let seed: Option<u64> = match seed {
@@ -1005,7 +994,7 @@ impl PlRExpr {
         Ok(self
             .inner
             .clone()
-            .sample_frac(frac.inner.clone(), with_replacement, Some(shuffle), seed)
+            .sample_frac(frac.inner.clone(), with_replacement, shuffle, seed)
             .into())
     }
 

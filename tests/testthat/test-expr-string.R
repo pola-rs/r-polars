@@ -186,8 +186,7 @@ test_that("str$len_bytes str$len_chars", {
   )
 })
 
-test_that("str$concat", {
-  local_lifecycle_warnings()
+test_that("str$join", {
   df <- pl$DataFrame(x = c("1", "a", NA))
   expect_equal(
     df$select(pl$col("x")$str$join()),
@@ -201,33 +200,6 @@ test_that("str$concat", {
     df$select(pl$col("x")$str$join(ignore_nulls = FALSE)),
     pl$DataFrame(x = NA_character_)
   )
-  # deprecated
-  expect_snapshot(
-    df$select(pl$col("x")$str$concat()),
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    df$select(pl$col("x")$str$concat("|")),
-    cnd_class = TRUE
-  )
-  local_lifecycle_silence()
-  expect_equal(
-    df$select(pl$col("x")$str$concat()),
-    pl$DataFrame(x = "1-a")
-  )
-  expect_equal(
-    df$select(pl$col("x")$str$concat("|")),
-    pl$DataFrame(x = "1|a")
-  )
-  expect_equal(
-    df$select(pl$col("x")$str$concat()),
-    df$select(pl$col("x")$str$join("-"))
-  )
-  expect_equal(
-    df$select(pl$col("x")$str$concat("|")),
-    df$select(pl$col("x")$str$join("|"))
-  )
-
   df <- pl$DataFrame(x = list(c("a", "b", "c"), c("1", "2", "æ")))
   expect_equal(
     df$select(pl$col("x")$list$eval(pl$element()$str$join())$list$first()),
@@ -497,15 +469,6 @@ test_that("str$json_path", {
   expect_equal(
     actual$select(pl$col("json_val")$struct$unnest()),
     pl$DataFrame(a = c(1, NA, 2), b = c(TRUE, NA, FALSE))
-  )
-
-  expect_snapshot(
-    df$select(pl$col("json_val")$str$json_decode(dtype, 1)),
-    error = TRUE
-  )
-  expect_snapshot(
-    df$select(pl$col("json_val")$str$json_decode()),
-    cnd_class = TRUE
   )
 })
 
@@ -900,11 +863,6 @@ test_that("str$reverse", {
 test_that("str$contains_any", {
   dat <- pl$DataFrame(x = c("HELLO there", "hi there", "good bye", NA))
 
-  expect_snapshot(
-    dat$select(pl$col("x")$str$contains_any(c("hi", "hello"))),
-    cnd_class = TRUE
-  )
-
   actual <- NULL
   expect_no_condition(
     actual <- dat$select(
@@ -924,6 +882,13 @@ test_that("str$contains_any", {
     )
   )
   expect_equal(actual, pl$DataFrame(x = TRUE))
+  expect_equal(
+    patterns$select(
+      bare = pl$col("x")$str$contains_any("patterns"),
+      explicit = pl$col("x")$str$contains_any(pl$col("patterns"))
+    ),
+    pl$DataFrame(bare = TRUE, explicit = TRUE)
+  )
 
   expect_no_condition(
     pl$col("x")$str$contains_any(list(c("hi", "hello")))
@@ -945,13 +910,6 @@ test_that("str$contains_any", {
 
 test_that("str$replace_many", {
   dat <- pl$DataFrame(x = c("HELLO there", "hi there", "good bye", NA))
-
-  expect_snapshot(
-    dat$select(
-      pl$col("x")$str$replace_many(c("hello", "he"), list(c("foo")))
-    ),
-    cnd_class = TRUE
-  )
 
   actual <- NULL
   expect_no_condition(
@@ -981,6 +939,13 @@ test_that("str$replace_many", {
     )
   )
   expect_equal(actual, pl$DataFrame(x = "Xllo tXre"))
+  expect_equal(
+    patterns$select(
+      bare = pl$col("x")$str$replace_many("patterns", list(c("X"))),
+      explicit = pl$col("x")$str$replace_many(pl$col("patterns"), list(c("X")))
+    ),
+    pl$DataFrame(bare = "Xllo tXre", explicit = "Xllo tXre")
+  )
 
   expect_equal(
     dat$select(
@@ -1031,17 +996,6 @@ test_that("str$replace_many", {
   )
 })
 
-test_that("str$replace_many flat replacement is deprecated", {
-  dat <- pl$DataFrame(x = c("HELLO there", "hi there", "good bye", NA))
-
-  expect_snapshot(
-    dat$select(
-      pl$col("x")$str$replace_many(list(c("hello", "he")), "")
-    ),
-    cnd_class = TRUE
-  )
-})
-
 patrick::with_parameters_test_that(
   "str$strptime without format specified",
   .cases = {
@@ -1070,7 +1024,7 @@ patrick::with_parameters_test_that(
   }
 )
 
-test_that("str$strptime's deprecated operation", {
+test_that("str$strptime rejects timezone data without a format", {
   expect_snapshot(
     pl$select(pl$lit("2020-01-01T01:00:00+09:00")$str$strptime(pl$Datetime())),
     error = TRUE
@@ -1268,10 +1222,6 @@ test_that("to_decimal", {
   )
   expect_snapshot(df$select(pl$col("x")$str$to_decimal(scale = 2)))
   expect_snapshot(df$select(pl$col("x")$str$to_decimal(scale = 4)))
-
-  # Deprecated usage
-  expect_snapshot(df$select(pl$col("x")$str$to_decimal()), cnd_class = TRUE)
-  expect_snapshot(df$select(pl$col("x")$str$to_decimal(inference_length = 0)), cnd_class = TRUE)
 })
 
 make_normalize_cases <- function() {

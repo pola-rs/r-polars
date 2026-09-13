@@ -20,13 +20,10 @@
 #'
 #' Note that Python Polars uses `~` instead of `!` to invert selectors.
 #'
-#' If we want to apply operators on the data instead of the selector sets,
-#' `<selector>$as_expr()` can be used to materialize the selector as a normal
-#' expression.
-#'
-#' Using a bare `pl$col()` expression as the right-hand operand of `&`, `|`,
-#' or `$xor()` on a selector is deprecated. Use `cs$by_name()` for set
-#' operations or `<selector>$as_expr()` for element-wise operations.
+#' Selector operators combine selectors as sets. When one operand is a normal
+#' expression, the selector is materialized automatically and the operation is
+#' applied element-wise to the selected values. `<selector>$as_expr()` can be
+#' used to materialize a selector explicitly.
 #'
 #' @examples
 #' cs
@@ -65,10 +62,6 @@ polars_selector__methods <- new.env(parent = emptyenv())
   self
 }
 
-is_column <- function(obj) {
-  is_polars_expr(obj) && obj$meta$is_column()
-}
-
 selector__invert <- function() {
   cs__all() - self
 }
@@ -85,10 +78,6 @@ selector__sub <- function(other) {
 
 selector__or <- function(other) {
   wrap({
-    if (is_column(other)) {
-      warn_deprecated_selector_col("|")
-      other <- cs__by_name(other$meta$output_name())
-    }
     if (is_polars_selector(other)) {
       self$`_rselector`$union(other$`_rselector`)
     } else {
@@ -99,11 +88,6 @@ selector__or <- function(other) {
 
 selector__and <- function(other) {
   wrap({
-    if (is_column(other)) {
-      warn_deprecated_selector_col("&")
-      colname <- other$meta$output_name()
-      other <- cs__by_name(colname)
-    }
     if (is_polars_selector(other)) {
       self$`_rselector`$intersect(other$`_rselector`)
     } else {
@@ -114,10 +98,6 @@ selector__and <- function(other) {
 
 selector__xor <- function(other) {
   wrap({
-    if (is_column(other)) {
-      warn_deprecated_selector_col("$xor()")
-      other <- cs$by_name(other$meta$output_name())
-    }
     if (is_polars_selector(other)) {
       self$`_rselector`$exclusive_or(other$`_rselector`)
     } else {
@@ -328,8 +308,7 @@ cs__boolean <- function() {
 #' Select all columns matching the given dtypes
 #'
 #' @param dtypes A Polars data type or list of Polars data types to select.
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Deprecated compatibility
-#' interface for passing multiple data types.
+#' @inheritParams rlang::args_dots_empty
 #'
 #' @inherit cs__empty return seealso
 #' @examples
@@ -347,37 +326,15 @@ cs__boolean <- function() {
 #'
 #' # Group by string columns and sum the numeric columns:
 #' df$group_by(cs$string())$agg(cs$numeric()$sum())$sort("other")
-cs__by_dtype <- function(..., dtypes) {
+cs__by_dtype <- function(dtypes, ...) {
   wrap({
-    check_dots_unnamed()
-    has_dtypes <- !missing(dtypes)
-    dots <- list2(...)
-
-    if (has_dtypes && length(dots) > 0L) {
-      abort("Can't combine `dtypes` with positional values in `...`.")
+    check_dots_empty0(...)
+    selected <- dtypes
+    if (is_polars_dtype(selected)) {
+      selected <- list(selected)
     }
-
-    if (!has_dtypes && length(dots) >= 2L) {
-      warn_deprecated_selector_dots("cs$by_dtype", "dtypes")
-      legacy_dtypes <- dots
-      parse_into_list_of_datatypes(!!!legacy_dtypes) |>
-        PlRSelector$by_dtype()
-    } else {
-      selected <- if (has_dtypes) {
-        dtypes
-      } else if (length(dots) == 0L) {
-        warn_deprecated_selector_dots("cs$by_dtype", "dtypes", empty = TRUE)
-        list()
-      } else {
-        dots[[1L]]
-      }
-
-      if (is_polars_dtype(selected)) {
-        selected <- list(selected)
-      }
-      parse_list_of_datatypes(selected) |>
-        PlRSelector$by_dtype()
-    }
+    parse_list_of_datatypes(selected) |>
+      PlRSelector$by_dtype()
   })
 }
 
@@ -421,8 +378,7 @@ cs__by_index <- function(indices, ..., require_all = TRUE) {
 #' Select all columns matching the given names
 #'
 #' @param names A character vector of column names to select.
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Deprecated compatibility
-#' interface for passing multiple column names.
+#' @inheritParams rlang::args_dots_empty
 #' @param require_all Whether to match all names (the default) or any of the names.
 #' @param expand_patterns Whether to expand regex patterns (`^...$`) and
 #'   wildcards (`*`) in names. Default is `FALSE` (treat names as literals).
@@ -445,40 +401,13 @@ cs__by_index <- function(indices, ..., require_all = TRUE) {
 #'
 #' # Match all columns except for those given:
 #' df$select(!cs$by_name(c("foo", "bar")))
-cs__by_name <- function(..., names, require_all = TRUE, expand_patterns = FALSE) {
+cs__by_name <- function(names, ..., require_all = TRUE, expand_patterns = FALSE) {
   wrap({
-    check_dots_unnamed()
-    has_names <- !missing(names)
-    dots <- list2(...)
-
-    if (has_names && length(dots) > 0L) {
-      abort("Can't combine `names` with positional values in `...`.")
+    check_dots_empty0(...)
+    if (!is_character(names) || anyNA(names)) {
+      abort("`names` must be a character vector.")
     }
-
-    if (!has_names && length(dots) >= 2L) {
-      warn_deprecated_selector_dots("cs$by_name", "names")
-      legacy_names <- dots
-      check_list_of_string(legacy_names, arg = "...")
-      PlRSelector$by_name(
-        vapply(legacy_names, `[[`, character(1L), 1L),
-        require_all,
-        expand_patterns
-      )
-    } else {
-      selected <- if (has_names) {
-        names
-      } else if (length(dots) == 0L) {
-        warn_deprecated_selector_dots("cs$by_name", "names", empty = TRUE)
-        character()
-      } else {
-        dots[[1L]]
-      }
-
-      if (!is_character(selected) || anyNA(selected)) {
-        abort("`names` must be a character vector.")
-      }
-      PlRSelector$by_name(selected, require_all, expand_patterns)
-    }
+    PlRSelector$by_name(names, require_all, expand_patterns)
   })
 }
 

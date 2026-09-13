@@ -12,12 +12,6 @@
 #' @param source Path(s) to a file or directory. When needing to authenticate
 #'   for scanning cloud locations, see the `storage_options` parameter.
 #' @param n_rows Stop reading from the source after reading `n_rows`.
-#' @param cache `r lifecycle::badge("deprecated")` The Polars 2.0 streaming
-#' readers do not use the file cache, and this argument has no direct
-#' replacement.
-#' @param rechunk `r lifecycle::badge("deprecated")` Reallocate to contiguous
-#'   memory when all chunks/files are parsed. Call `$rechunk()` on the output
-#'   instead.
 #' @param row_index_name If not `NULL`, this will insert a row index column with
 #'   the given name.
 #' @param row_index_offset Offset to start the row index column (only used if
@@ -36,12 +30,6 @@
 #'
 #'   If `storage_options` is not provided, Polars will try to infer the
 #'   information from environment variables.
-#' @param retries `r lifecycle::badge("deprecated")` Number of retries if
-#'   accessing a cloud instance fails. Specify `max_retries` in
-#'   `storage_options` instead.
-#' @param file_cache_ttl `r lifecycle::badge("deprecated")` Deprecated and
-#'   ignored. The Polars 2.0 streaming readers do not use the file cache, and
-#'   this argument has no direct replacement.
 #' @param hive_partitioning Infer statistics and schema from Hive partitioned
 #' sources and use them to prune reads. If `NULL` (default), it is automatically
 #' enabled when a single directory is passed, and otherwise disabled.
@@ -75,13 +63,9 @@ pl__scan_ipc <- function(
   source,
   ...,
   n_rows = NULL,
-  cache = deprecated(),
-  rechunk = deprecated(),
   row_index_name = NULL,
   row_index_offset = 0L,
   storage_options = NULL,
-  retries = deprecated(),
-  file_cache_ttl = deprecated(),
   hive_partitioning = NULL,
   hive_schema = NULL,
   try_parse_hive_dates = TRUE,
@@ -91,50 +75,17 @@ pl__scan_ipc <- function(
   check_list_of_polars_dtype(hive_schema, allow_null = TRUE)
   check_character(storage_options, allow_null = TRUE)
 
-  if (is_present(cache)) {
-    warn_deprecated_file_cache()
-  } else {
-    cache <- TRUE
-  }
-
-  if (is_present(retries)) {
-    deprecate_warn(
-      c(
-        `!` = sprintf(
-          "The %s argument is deprecated as of %s 1.9.0.",
-          format_arg("retries"),
-          format_pkg("polars")
-        ),
-        i = sprintf(
-          "Specify %s in %s instead.",
-          format_code("max_retries"),
-          format_arg("storage_options")
-        )
-      )
-    )
-    storage_options <- storage_options %||% character()
-    storage_options[["max_retries"]] <- as.character(retries)
-  }
-
-  if (is_present(file_cache_ttl)) {
-    warn_deprecated_file_cache_ttl()
-  }
+  cache <- FALSE
 
   if (!is.null(hive_schema)) {
     hive_schema <- parse_into_list_of_datatypes(!!!hive_schema)
-  }
-
-  if (is_present(rechunk)) {
-    warn_deprecated_rechunk()
-  } else {
-    rechunk <- FALSE
   }
 
   PlRLazyFrame$new_from_ipc(
     source = source,
     n_rows = n_rows,
     cache = cache,
-    rechunk = rechunk,
+    rechunk = FALSE,
     storage_options = storage_options,
     row_index_name = row_index_name,
     row_index_offset = row_index_offset,
@@ -173,13 +124,9 @@ pl__read_ipc <- function(
   source,
   ...,
   n_rows = NULL,
-  cache = deprecated(),
-  rechunk = deprecated(),
   row_index_name = NULL,
   row_index_offset = 0L,
   storage_options = NULL,
-  retries = deprecated(),
-  file_cache_ttl = deprecated(),
   hive_partitioning = NULL,
   hive_schema = NULL,
   try_parse_hive_dates = TRUE,
@@ -193,16 +140,12 @@ pl__read_ipc <- function(
 
 # TODO: read raw vector
 # TODO: Allow integer-ish columns
-# TODO: rechunk's default value is different from the other read functions
 #' Read into a DataFrame from Arrow IPC stream format
 #'
 #' @inherit pl__DataFrame return
 #' @inheritParams pl__scan_ipc
 #' @param source A character of the path to an Arrow IPC stream file.
 #' @param columns A character vector of column names to read.
-#' @param rechunk `r lifecycle::badge("deprecated")` A logical value to indicate
-#'   whether to make sure that all data is contiguous. Call `$rechunk()` on the
-#'   output instead.
 #' @examplesIf requireNamespace("nanoarrow", quietly = TRUE)
 #' temp_file <- tempfile(fileext = ".arrows")
 #'
@@ -216,17 +159,10 @@ pl__read_ipc_stream <- function(
   columns = NULL,
   n_rows = NULL,
   row_index_name = NULL,
-  row_index_offset = 0L,
-  rechunk = deprecated()
+  row_index_offset = 0L
 ) {
   check_dots_empty0(...)
   check_character(columns, allow_na = FALSE, allow_null = TRUE)
-
-  if (is_present(rechunk)) {
-    warn_deprecated_rechunk()
-  } else {
-    rechunk <- TRUE
-  }
 
   PlRDataFrame$read_ipc_stream(
     source = source,
@@ -234,7 +170,7 @@ pl__read_ipc_stream <- function(
     n_rows = n_rows,
     row_index_name = row_index_name,
     row_index_offset = row_index_offset,
-    rechunk = rechunk
+    rechunk = FALSE
   ) |>
     wrap()
 }

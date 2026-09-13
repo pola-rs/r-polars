@@ -149,42 +149,6 @@
       This error occurred in the following expression:
       	col("with_tz").str.strptime(["raise"])
 
-# str$concat
-
-    Code
-      df$select(pl$col("x")$str$concat())
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! `$str$concat()` is deprecated.
-      i Use `$str$join("-")` instead.
-    Output
-      shape: (1, 1)
-      ┌─────┐
-      │ x   │
-      │ --- │
-      │ str │
-      ╞═════╡
-      │ 1-a │
-      └─────┘
-
----
-
-    Code
-      df$select(pl$col("x")$str$concat("|"))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! `$str$concat()` is deprecated.
-      i Use `$str$join()` with the same delimiter instead.
-    Output
-      shape: (1, 1)
-      ┌─────┐
-      │ x   │
-      │ --- │
-      │ str │
-      ╞═════╡
-      │ 1|a │
-      └─────┘
-
 # zfill
 
     Code
@@ -285,42 +249,6 @@
       ! Evaluation failed in `$pad_start()`.
       Caused by error:
       ! Expected a string with one character only, currently has 14 (from "multiple_chars").
-
-# str$json_path
-
-    Code
-      df$select(pl$col("json_val")$str$json_decode(dtype, 1))
-    Condition
-      Error in `df$select()`:
-      ! Evaluation failed in `$select()`.
-      Caused by error:
-      ! Evaluation failed in `$select()`.
-      Caused by error in `pl$col("json_val")$str$json_decode()`:
-      ! Evaluation failed in `$json_decode()`.
-      Caused by error in `pl$col("json_val")$str$json_decode()`:
-      ! `...` must be empty.
-      x Problematic argument:
-      * ..1 = 1
-      i Did you forget to name an argument?
-
----
-
-    Code
-      df$select(pl$col("json_val")$str$json_decode())
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! `<expr>$str$json_decode()` without `dtype` is deprecated and set `dtype = pl$Struct()` automatically.
-    Output
-      shape: (3, 1)
-      ┌───────────┐
-      │ json_val  │
-      │ ---       │
-      │ struct[0] │
-      ╞═══════════╡
-      │ {}        │
-      │ null      │
-      │ {}        │
-      └───────────┘
 
 # encode decode
 
@@ -546,47 +474,7 @@
       This error occurred in the following expression:
       	col("x").str.to_integer([10.0])
 
-# str$contains_any
-
-    Code
-      dat$select(pl$col("x")$str$contains_any(c("hi", "hello")))
-    Condition <polars_deprecation_warning>
-      Warning:
-      `str.contains_any` with a flat string datatype is deprecated. Please use `implode` to return to previous behavior. See https://github.com/pola-rs/polars/issues/22149 for more information.
-    Output
-      shape: (4, 1)
-      ┌───────┐
-      │ x     │
-      │ ---   │
-      │ bool  │
-      ╞═══════╡
-      │ false │
-      │ true  │
-      │ false │
-      │ null  │
-      └───────┘
-
 # str$replace_many
-
-    Code
-      dat$select(pl$col("x")$str$replace_many(c("hello", "he"), list(c("foo"))))
-    Condition <polars_deprecation_warning>
-      Warning:
-      `str.replace_many` with a flat string datatype is deprecated. please use `implode` to return to previous behavior. See https://github.com/pola-rs/polars/issues/22149 for more information.
-    Output
-      shape: (4, 1)
-      ┌──────────────┐
-      │ x            │
-      │ ---          │
-      │ str          │
-      ╞══════════════╡
-      │ HELLO tfoore │
-      │ hi tfoore    │
-      │ good bye     │
-      │ null         │
-      └──────────────┘
-
----
 
     Code
       dat$with_columns(pl$col("x")$str$replace_many(list(c("hi", "hello")), list(c(
@@ -626,27 +514,7 @@
       This error occurred with the following context stack:
       	[1] expected the same amount of patterns as replacement strings
 
-# str$replace_many flat replacement is deprecated
-
-    Code
-      dat$select(pl$col("x")$str$replace_many(list(c("hello", "he")), ""))
-    Condition <polars_deprecation_warning>
-      Warning:
-      `str.replace_many` with a flat string datatype is deprecated. please use `implode` to return to previous behavior. See https://github.com/pola-rs/polars/issues/22149 for more information.
-    Output
-      shape: (4, 1)
-      ┌───────────┐
-      │ x         │
-      │ ---       │
-      │ str       │
-      ╞═══════════╡
-      │ HELLO tre │
-      │ hi tre    │
-      │ good bye  │
-      │ null      │
-      └───────────┘
-
-# str$strptime's deprecated operation
+# str$strptime rejects timezone data without a format
 
     Code
       pl$select(pl$lit("2020-01-01T01:00:00+09:00")$str$strptime(pl$Datetime()))
@@ -773,58 +641,6 @@
       │ 143.9000      │
       │ null          │
       │ 0.0010        │
-      └───────────────┘
-
----
-
-    Code
-      df$select(pl$col("x")$str$to_decimal())
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! `<expr>$str$to_decimal()` without `scale` is deprecated and set `scale = 0L` automatically.
-    Output
-      shape: (9, 1)
-      ┌───────────────┐
-      │ x             │
-      │ ---           │
-      │ decimal[38,0] │
-      ╞═══════════════╡
-      │ 40            │
-      │ 3420          │
-      │ 120134        │
-      │ 3213          │
-      │ 13            │
-      │ 143           │
-      │ 144           │
-      │ null          │
-      │ 0             │
-      └───────────────┘
-
----
-
-    Code
-      df$select(pl$col("x")$str$to_decimal(inference_length = 0))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! `<expr>$str$to_decimal()` with `inference_length` is deprecated and has no effect on execution.
-      Warning:
-      ! `<expr>$str$to_decimal()` without `scale` is deprecated and set `scale = 0L` automatically.
-    Output
-      shape: (9, 1)
-      ┌───────────────┐
-      │ x             │
-      │ ---           │
-      │ decimal[38,0] │
-      ╞═══════════════╡
-      │ 40            │
-      │ 3420          │
-      │ 120134        │
-      │ 3213          │
-      │ 13            │
-      │ 143           │
-      │ 144           │
-      │ null          │
-      │ 0             │
       └───────────────┘
 
 # str$find_many()

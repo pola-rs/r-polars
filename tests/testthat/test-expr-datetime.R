@@ -531,7 +531,7 @@ test_that("dt$timestamp", {
 })
 
 
-test_that("dt$with_time_unit cast_time_unit", {
+test_that("dt$cast_time_unit works", {
   suppressWarnings(
     df_time <- pl$select(
       date = pl$datetime_range(
@@ -544,10 +544,7 @@ test_that("dt$with_time_unit cast_time_unit", {
       pl$col("date"),
       pl$col("date")$dt$cast_time_unit("ns")$alias("cast_time_unit_ns"),
       pl$col("date")$dt$cast_time_unit(time_unit = "us")$alias("cast_time_unit_us"),
-      pl$col("date")$dt$cast_time_unit(time_unit = "ms")$alias("cast_time_unit_ms"),
-      pl$col("date")$dt$with_time_unit()$alias("with_time_unit_ns"),
-      pl$col("date")$dt$with_time_unit(time_unit = "us")$alias("with_time_unit_us"),
-      pl$col("date")$dt$with_time_unit(time_unit = "ms")$alias("with_time_unit_ms")
+      pl$col("date")$dt$cast_time_unit(time_unit = "ms")$alias("cast_time_unit_ms")
     )
   )
 
@@ -562,22 +559,8 @@ test_that("dt$with_time_unit cast_time_unit", {
     df_time_num$select("cast_time_unit_us"),
     df_time_num$select(cast_time_unit_us = pl$col("cast_time_unit_ms") * 1E3)
   )
-  # with does not
-  expect_equal(
-    df_time_num$select("with_time_unit_ns"),
-    df_time_num$select(with_time_unit_ns = "with_time_unit_us")
-  )
-  expect_equal(
-    df_time_num$select("with_time_unit_us"),
-    df_time_num$select(with_time_unit_us = "with_time_unit_ms")
-  )
-
-  # both with and cast change the value
+  # cast changes the dtype
   types <- df_time$schema
-  expect_true(types$with_time_unit_ns$eq(pl$Datetime("ns")))
-  expect_true(types$with_time_unit_us$eq(pl$Datetime("us")))
-  expect_true(types$with_time_unit_ms$eq(pl$Datetime("ms")))
-
   expect_true(types$cast_time_unit_ns$eq(pl$Datetime("ns")))
   expect_true(types$cast_time_unit_us$eq(pl$Datetime("us")))
   expect_true(types$cast_time_unit_ms$eq(pl$Datetime("ms")))
@@ -590,33 +573,6 @@ test_that("dt$with_time_unit cast_time_unit", {
   expect_snapshot(
     as_polars_series(as.Date("2022-1-1"))$dt$cast_time_unit(42),
     error = TRUE
-  )
-  # with wrong inputs
-  expect_snapshot(
-    as_polars_series(as.Date("2022-1-1"))$dt$with_time_unit("bob"),
-    error = TRUE
-  )
-  expect_snapshot(
-    as_polars_series(as.Date("2022-1-1"))$dt$with_time_unit(42),
-    error = TRUE
-  )
-})
-
-test_that("dt$with_time_unit supports Duration", {
-  local_lifecycle_warnings()
-  duration <- pl$DataFrame(
-    duration = as_polars_series(1:3)$cast(pl$Duration("ms"))
-  )
-  expect_snapshot(
-    duration$select(pl$col("duration")$dt$with_time_unit("us")),
-    cnd_class = TRUE
-  )
-  local_lifecycle_silence()
-  expect_equal(
-    duration$select(pl$col("duration")$dt$with_time_unit("us")),
-    duration$select(
-      duration = pl$col("duration")$cast(pl$Int64)$cast(pl$Duration("us"))
-    )
   )
 })
 

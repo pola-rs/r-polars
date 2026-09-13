@@ -20,8 +20,8 @@ A polars \link{expression}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-Convert physical values to a Categorical or Enum data type. The input must
-be of the physical type of the target data type, i.e. \code{UInt32} for
+Convert integer values to a Categorical or Enum data type. The input is
+converted to the physical type of the target data type, i.e. \code{UInt32} for
 \link[=polars_dtype]{Categorical} and \code{UInt8}, \code{UInt16} or \code{UInt32} for
 \link[=polars_dtype]{Enum} (depending on the number of categories).
 }

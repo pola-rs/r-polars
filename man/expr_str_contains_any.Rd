@@ -7,12 +7,9 @@
 expr_str_contains_any(patterns, ..., ascii_case_insensitive = FALSE)
 }
 \arguments{
-\item{patterns}{String patterns to search. Accepts expression input. In
-Polars 1.16, bare character vectors are interpreted as literal patterns;
-in Polars 2.0, they will be interpreted as column names. Use
-\code{pl$lit(...)$implode()} for literal patterns or \code{pl$col()} for column
-patterns. To use the same character vector for all rows, use
-\code{list(c(...))} instead of \code{c(...)} (see Examples).}
+\item{patterns}{String patterns to search. Accepts expression input. Bare
+character vectors are interpreted as column names. For literal patterns,
+use a list or an expression such as \code{pl$lit(...)$implode()}.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 

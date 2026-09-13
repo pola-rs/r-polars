@@ -626,8 +626,6 @@ test_that("$list$explode() works", {
     df$select(pl$col("a")$list$explode(empty_as_null = TRUE)),
     pl$DataFrame(a = c(1, 2, 3, 4, 5, 6))
   )
-  # default warns that empty_as_null will change to FALSE in 2.0
-  expect_warning(df$select(pl$col("a")$list$explode()), "will change")
   expect_snapshot(
     df$with_columns(pl$col("a")$list$explode(empty_as_null = TRUE)),
     error = TRUE
@@ -635,60 +633,48 @@ test_that("$list$explode() works", {
 })
 
 test_that("$list$sample() works", {
-  local_lifecycle_warnings()
   df <- pl$DataFrame(
     values = list(1:3, NA, c(NA, 3L), 5:7),
     n = c(1, 1, 1, 2)
   )
 
   expect_equal(
+    df$select(pl$col("values")$list$sample(seed = 1)$list$len()),
+    pl$DataFrame(values = c(1L, 1L, 1L, 1L))$cast(values = pl$UInt32)
+  )
+  for (shuffle in list(NULL, FALSE, TRUE)) {
+    expect_equal(
+      df$select(pl$col("values")$list$sample(n = 1, shuffle = shuffle, seed = 1)$list$len()),
+      pl$DataFrame(values = c(1L, 1L, 1L, 1L))$cast(values = pl$UInt32)
+    )
+  }
+
+  expect_equal(
     df$select(
-      sample = pl$col("values")$list$sample(n = pl$col("n"), seed = 1)
+      sample = pl$col("values")$list$sample(n = pl$col("n"), shuffle = FALSE, seed = 1)
     ),
     pl$DataFrame(sample = list(3L, NA, 3L, c(6L, 7L)))
   )
 
-  expect_snapshot(
-    df$select(pl$col("values")$list$sample(fraction = 2)),
-    error = TRUE
-  )
+  expect_snapshot(df$select(pl$col("values")$list$sample(fraction = 2)), error = TRUE)
 
   expect_equal(
     df$select(
       sample = pl$col("values")$list$sample(
         fraction = 2,
         with_replacement = TRUE,
+        shuffle = FALSE,
         seed = 1
       )
     ),
     pl$DataFrame(
       sample = list(
-        c(3L, 3L, 1L, 3L, 1L, 2L),
+        c(1L, 1L, 2L, 3L, 3L, 3L),
         c(NA, NA),
-        c(3L, 3L, NA, 3L),
-        c(7L, 7L, 5L, 7L, 5L, 6L)
+        c(NA, 3L, 3L, 3L),
+        c(5L, 5L, 6L, 7L, 7L, 7L)
       )
     )
-  )
-
-  # TODO: @2.0: update this expected output because sampling with replacement
-  # and shuffle disabled changes the order of the sampled values.
-
-  expect_snapshot(
-    invisible(df$select(
-      pl$col("values")$list$sample(n = NULL, fraction = NULL, seed = 1)
-    )),
-    cnd_class = TRUE
-  )
-  old <- with_lifecycle_silence(df$select(
-    pl$col("values")$list$sample(n = NULL, fraction = NULL, seed = 1)
-  ))
-  explicit_old <- expect_no_warning(
-    df$select(pl$col("values")$list$sample(fraction = 1, seed = 1))
-  )
-  expect_equal(old, explicit_old)
-  expect_no_warning(
-    df$select(pl$col("values")$list$sample(n = 1, seed = 1))
   )
 })
 
@@ -748,20 +734,9 @@ test_that("list$count_matches", {
 })
 
 patrick::with_parameters_test_that(
-  "list$to_struct with field = {rlang::quo_text(fields)}, upper_bound = {rlang::quo_text(upper_bound)}", # nolint: line_length_linter
+  "list$to_struct with explicit fields = {rlang::quo_text(fields)}", # nolint: line_length_linter
   .cases = {
-    expand.grid(
-      fields = list(
-        NULL,
-        \(x) sprintf("field-%s", x + 1),
-        ~ paste0("field-", . + 1),
-        "a",
-        c("a", "b", "c", "d")
-      ),
-      upper_bound = c(1, 5),
-      stringsAsFactors = FALSE
-    ) |>
-      tibble::as_tibble()
+    tibble::tibble(fields = list("a", c("a", "b", "c", "d")))
   },
   code = {
     expect_snapshot(
@@ -770,68 +745,17 @@ patrick::with_parameters_test_that(
         .schema_overrides = list(values = pl$List(pl$Int64))
       )$select(
         pl$col("values")$list$to_struct(
-          fields = fields,
-          upper_bound = upper_bound
+          fields = fields
         )
       )$unnest("values")
     )
   }
 )
 
-test_that("list$to_struct's deprecated argument", {
-  expect_snapshot(
-    pl$col("foo")$list$to_struct("foo", fields = "a"),
-    cnd_class = TRUE
-  )
-  expect_snapshot(pl$col("foo")$list$to_struct(), cnd_class = TRUE)
-  expect_snapshot(
-    pl$col("foo")$list$to_struct(fields = NULL),
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    pl$col("foo")$list$to_struct(
-      fields = \(idx) paste0("field_", idx),
-      upper_bound = 2
-    ),
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    pl$col("foo")$list$to_struct(fields = c("a"), upper_bound = 1),
-    cnd_class = TRUE
-  )
-})
-
 test_that("list$to_struct accepts future-compatible fields", {
   expect_no_warning(pl$col("foo")$list$to_struct(c("a", "b")))
   expect_no_warning(
     pl$col("foo")$list$to_struct(fields = c("a", "b"))
-  )
-  expect_no_warning(
-    pl$col("foo")$list$to_struct(fields = "max_width")
-  )
-  expect_snapshot(
-    pl$col("foo")$list$to_struct("max_width"),
-    cnd_class = TRUE
-  )
-})
-
-test_that("list$to_struct preserves mixed legacy positional forms", {
-  df <- pl$DataFrame(values = list(c(1, 2), c(1, 2, 3)))
-
-  expect_snapshot(
-    df$select(
-      pl$col("values")$list$to_struct(c("a", "b"), upper_bound = 2)
-    ),
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    df$select(
-      pl$col("values")$list$to_struct(
-        n_field_strategy = "ignored",
-        c("a", "b")
-      )
-    ),
-    cnd_class = TRUE
   )
 })
 

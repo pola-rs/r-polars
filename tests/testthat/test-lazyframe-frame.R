@@ -93,56 +93,6 @@ test_that("select_seq() works", {
   )
 })
 
-test_that("POLARS_AUTO_STRUCTIFY works for select", {
-  expect_deprecated(
-    withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
-      pl$LazyFrame()$select(pl$lit(1L))
-    })
-  )
-
-  # This feature is deprecated
-  local_lifecycle_silence()
-
-  .data <- pl$DataFrame(
-    foo = 1:3,
-    bar = 6:8,
-    ham = letters[1:3],
-  )
-
-  withr::with_envvar(
-    c(POLARS_AUTO_STRUCTIFY = "foo"),
-    {
-      expect_query_error(
-        .input$select(1),
-        .data,
-        r"(Environment variable `POLARS_AUTO_STRUCTIFY` must be one of \('0', '1'\), got 'foo')"
-      )
-    }
-  )
-
-  withr::with_envvar(
-    c(POLARS_AUTO_STRUCTIFY = "0"),
-    {
-      expect_query_error(
-        .input$select(is_odd = ((pl$col(pl$Int32) %% 2) == 1)$name$suffix("_is_odd")),
-        .data,
-        "duplicate",
-        fixed = TRUE
-      )
-
-      expect_query_equal(
-        withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
-          .input$select(is_odd = ((pl$col(pl$Int32) %% 2) == 1)$name$suffix("_is_odd"))
-        }),
-        .data,
-        as_polars_lf(.data)$select(
-          is_odd = pl$struct((pl$col(pl$Int32) %% 2)$name$suffix("_is_odd") == 1),
-        )$collect()
-      )
-    }
-  )
-})
-
 test_that("slice/head/tail works lazy/eager", {
   .data <- pl$DataFrame(
     foo = 1:5,
@@ -390,14 +340,6 @@ test_that("$to_dot() works", {
   expect_snapshot(cat(lf$select("am")$to_dot()))
 })
 
-test_that("$profile() is deprecated", {
-  local_lifecycle_warnings()
-  expect_snapshot(
-    invisible(pl$LazyFrame(a = 1:3)$profile()),
-    cnd_class = TRUE
-  )
-})
-
 test_that("set_sorted works", {
   df1 <- pl$DataFrame(
     name = c("steve", "elise", "bob"),
@@ -465,32 +407,6 @@ test_that("unique works", {
     "must be one of"
   )
 })
-
-patrick::with_parameters_test_that(
-  "$unique's argument deprecation",
-  .cases = {
-    tibble::tribble(
-      ~.test_name, ~value,
-      "NULL", NULL,
-      "list of strings", list("bar", "ham"),
-      "expr", pl$col(c("bar", "ham"))
-    )
-  },
-  code = {
-    df <- pl$DataFrame(
-      foo = c(1, 2, 3, 1),
-      bar = c("a", "a", "a", "a"),
-      ham = c("b", "b", "b", "b"),
-    )
-
-    expect_snapshot(df$lazy()$unique(subset = value, maintain_order = TRUE))
-    expect_snapshot(df$unique(subset = value, maintain_order = TRUE))
-    expect_snapshot(df$lazy()$unique("foo", subset = value, maintain_order = TRUE), error = TRUE)
-    expect_snapshot(df$unique("foo", subset = value, maintain_order = TRUE), error = TRUE)
-    expect_snapshot(df$lazy()$unique(value, maintain_order = TRUE))
-    expect_snapshot(df$unique(value, maintain_order = TRUE))
-  }
-)
 
 test_that("join: basic usage", {
   df <- pl$DataFrame(
@@ -796,8 +712,6 @@ test_that("explain() works", {
   expect_snapshot(cat(lazy_query$explain(
     optimizations = pl$QueryOptFlags(predicate_pushdown = FALSE)
   )))
-  expect_snapshot(cat(lazy_query$explain(predicate_pushdown = FALSE)))
-
   expect_snapshot(cat(lazy_query$explain(format = "tree", optimized = FALSE)))
   expect_snapshot(cat(lazy_query$explain(format = "tree", )))
 })
@@ -889,6 +803,60 @@ test_that("$gather_every() works", {
     df,
     "must be numeric, not character"
   )
+})
+
+test_that("$gather_every() preserves zero-width frame height", {
+  df <- pl$DataFrame(a = 1:5)$drop(cs$all())
+  lf <- df$lazy()
+
+  expect_equal(dim(df$gather_every(1)), c(5L, 0L))
+  expect_equal(dim(df$gather_every(5)), c(1L, 0L))
+  expect_equal(dim(df$gather_every(2, offset = 1)), c(2L, 0L))
+  expect_equal(dim(df$gather_every(2, offset = 4)), c(1L, 0L))
+  expect_equal(dim(lf$gather_every(1)$collect()), c(5L, 0L))
+  expect_equal(dim(lf$gather_every(5)$collect()), c(1L, 0L))
+  expect_equal(dim(lf$gather_every(2, offset = 1)$collect()), c(2L, 0L))
+  expect_equal(
+    dim(pl$DataFrame(a = integer())$drop(cs$all())$gather_every(2)),
+    c(0L, 0L)
+  )
+  expect_equal(
+    dim(pl$DataFrame(a = integer())$drop(cs$all())$lazy()$gather_every(2)$collect()),
+    c(0L, 0L)
+  )
+})
+
+test_that("$gather_every() does not collide with a user column name", {
+  df <- pl$DataFrame(
+    `__POLARS_GATHER_EVERY__` = 1:4,
+    value = 5:8
+  )
+
+  expect_equal(
+    df$gather_every(2),
+    pl$DataFrame(
+      `__POLARS_GATHER_EVERY__` = c(1L, 3L),
+      value = c(5L, 7L)
+    )
+  )
+})
+
+test_that("$gather_every() keeps map_batches lazy", {
+  calls <- 0L
+  lf <- pl$LazyFrame(a = 1:5)$select(
+    a = pl$col("a")$map_batches(
+      \(x) {
+        calls <<- calls + 1L
+        x
+      }
+    )
+  )
+
+  gathered <- lf$gather_every(2)
+  expect_equal(calls, 0L)
+
+  gathered$collect()
+  expect_gt(calls, 0L)
 })
 
 test_that("fill_null(): basic usage", {
@@ -1067,9 +1035,6 @@ test_that("explode() works", {
     expected_df
   )
 
-  # default warns that empty_as_null will change to FALSE in 2.0
-  expect_warning(df$lazy()$explode("numbers"), "will change")
-
   # empty and null handlings
   df <- pl$DataFrame(
     letters = c("a", "a", "b", "c"),
@@ -1081,6 +1046,14 @@ test_that("explode() works", {
     pl$DataFrame(
       letters = c(rep("a", 2), "b", rep("c", 3)),
       numbers = c(1, NA, NA, 6:8)
+    )
+  )
+  expect_query_equal(
+    .input$explode("numbers"),
+    df,
+    pl$DataFrame(
+      letters = c(rep("a", 2), rep("c", 3)),
+      numbers = c(1, NA, 6:8)
     )
   )
   expect_query_equal(
@@ -1504,21 +1477,19 @@ test_that("quantile", {
 
 test_that("drop() works", {
   df <- pl$DataFrame(x = c(1, NA, 2), y = c(NA, 1, 2))
+  expect_empty_drop <- function(out) {
+    expect_equal(dim(out), c(3L, 0L))
+    expect_named(out, character())
+  }
   expect_query_equal(
     .input$drop("x"),
     df,
     pl$DataFrame(y = c(NA, 1, 2))
   )
-  expect_query_equal(
-    .input$drop("x", "y"),
-    df,
-    pl$DataFrame()
-  )
-  expect_query_equal(
-    .input$drop(cs$numeric()),
-    df,
-    pl$DataFrame()
-  )
+  expect_empty_drop(df$drop("x", "y"))
+  expect_empty_drop(df$lazy()$drop("x", "y")$collect())
+  expect_empty_drop(df$drop(cs$numeric()))
+  expect_empty_drop(df$lazy()$drop(cs$numeric())$collect())
 
   # arg 'strict' works
   expect_query_error(
@@ -2027,6 +1998,29 @@ test_that("pivot() works", {
     )$collect(),
     error = TRUE
   )
+
+  df <- pl$DataFrame(
+    index = c("x", "x", "y"),
+    variable = c("a", "a", "a"),
+    value = c(1, NA, NA)
+  )
+  expected <- pl$DataFrame(index = c("x", "y"), a = c(2, 1))$cast(a = pl$UInt32)$sort("index")
+  string_len <- df$lazy()$pivot(
+    on = "variable",
+    on_columns = "a",
+    index = "index",
+    values = "value",
+    aggregate_function = "len"
+  )$sort("index")$collect()
+  expr_len <- df$lazy()$pivot(
+    on = "variable",
+    on_columns = "a",
+    index = "index",
+    values = "value",
+    aggregate_function = pl$element()$len()
+  )$sort("index")$collect()
+  expect_equal(string_len, expr_len)
+  expect_equal(string_len, expected)
 })
 
 test_that("unpivot() works", {
@@ -2753,12 +2747,12 @@ test_that("sql() works", {
     )$collect(),
     pl$DataFrame(a = 1:3)
   )
-  expect_error(
+  expect_snapshot(
     lf$sql(
       query = "SELECT a FROM wrong_name",
       table_name = "foobar"
-    ),
-    "relation 'wrong_name' was not found"
+    )$collect(),
+    error = TRUE
   )
 
   expect_error(

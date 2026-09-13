@@ -4,15 +4,14 @@
 \alias{pl__any}
 \title{Evaluate a bitwise OR operation}
 \usage{
-pl__any(..., names, ignore_nulls = TRUE)
+pl__any(names, ..., ignore_nulls = TRUE)
 }
 \arguments{
-\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Deprecated compatibility
-interface for passing multiple names or data types.}
-
 \item{names}{The name(s) or \link[=DataType]{data type} of the column(s) to use in
 the aggregation. A character vector or a Polars data type/list of data
 types can be supplied.}
+
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{ignore_nulls}{If \code{TRUE} (default), ignore null values. If \code{FALSE},
 \href{https://en.wikipedia.org/wiki/Three-valued_logic}{Kleene logic} is used to
@@ -31,5 +30,5 @@ df <- pl$DataFrame(
   b = c(FALSE, FALSE, FALSE)
 )
 
-df$select(pl$any(names = "a"))
+df$select(pl$any("a"))
 }

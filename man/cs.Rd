@@ -33,13 +33,10 @@ type \code{String} with \code{!cs$string()}.
 
 Note that Python Polars uses \code{~} instead of \code{!} to invert selectors.
 
-If we want to apply operators on the data instead of the selector sets,
-\verb{<selector>$as_expr()} can be used to materialize the selector as a normal
-expression.
-
-Using a bare \code{pl$col()} expression as the right-hand operand of \code{&}, \code{|},
-or \verb{$xor()} on a selector is deprecated. Use \code{cs$by_name()} for set
-operations or \verb{<selector>$as_expr()} for element-wise operations.
+Selector operators combine selectors as sets. When one operand is a normal
+expression, the selector is materialized automatically and the operation is
+applied element-wise to the selected values. \verb{<selector>$as_expr()} can be
+used to materialize a selector explicitly.
 }
 
 \examples{

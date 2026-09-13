@@ -4,15 +4,14 @@
 \alias{pl__max}
 \title{Get the maximum value}
 \usage{
-pl__max(..., names)
+pl__max(names, ...)
 }
 \arguments{
-\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Deprecated compatibility
-interface for passing multiple names or data types.}
-
 \item{names}{The name(s) or \link[=DataType]{data type} of the column(s) to use in
 the aggregation. A character vector or a Polars data type/list of data
 types can be supplied.}
+
+\item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
 A polars \link{expression}
@@ -28,8 +27,8 @@ df <- pl$DataFrame(
 )
 
 # Get the maximum value of a column
-df$select(pl$max(names = "a"))
+df$select(pl$max("a"))
 
 # Get the maximum value of multiple columns
-df$select(pl$max(names = c("a", "b")))
+df$select(pl$max(c("a", "b")))
 }

@@ -5,7 +5,7 @@ use savvy::{
     ListSexp, NumericScalar, OwnedIntegerSexp, OwnedListSexp, Result, Sexp, StringSexp, TypedSexp,
     savvy,
 };
-use std::{cmp::Ordering, hash::BuildHasher};
+use std::cmp::Ordering;
 
 #[savvy]
 impl PlRDataFrame {
@@ -316,7 +316,7 @@ impl PlRDataFrame {
         &self,
         n: &PlRSeries,
         with_replacement: bool,
-        shuffle: bool,
+        shuffle: Option<bool>,
         seed: Option<NumericScalar>,
     ) -> Result<Self> {
         let seed = match seed {
@@ -325,7 +325,7 @@ impl PlRDataFrame {
         };
         Ok(self
             .df
-            .sample_n(&n.series, with_replacement, Some(shuffle), seed)
+            .sample_n(&n.series, with_replacement, shuffle, seed)
             .map_err(RPolarsErr::from)?
             .into())
     }
@@ -334,7 +334,7 @@ impl PlRDataFrame {
         &self,
         frac: &PlRSeries,
         with_replacement: bool,
-        shuffle: bool,
+        shuffle: Option<bool>,
         seed: Option<NumericScalar>,
     ) -> Result<Self> {
         let seed = match seed {
@@ -343,23 +343,13 @@ impl PlRDataFrame {
         };
         Ok(self
             .df
-            .sample_frac(&frac.series, with_replacement, Some(shuffle), seed)
+            .sample_frac(&frac.series, with_replacement, shuffle, seed)
             .map_err(RPolarsErr::from)?
             .into())
     }
 
-    pub fn hash_rows(
-        &mut self,
-        seed: NumericScalar,
-        seed_1: NumericScalar,
-        seed_2: NumericScalar,
-        seed_3: NumericScalar,
-    ) -> Result<PlRSeries> {
-        let k0 = <Wrap<u64>>::try_from(seed)?.0;
-        let k1 = <Wrap<u64>>::try_from(seed_1)?.0;
-        let k2 = <Wrap<u64>>::try_from(seed_2)?.0;
-        let k3 = <Wrap<u64>>::try_from(seed_3)?.0;
-        let seed = PlFixedStateQuality::default().hash_one((k0, k1, k2, k3));
+    pub fn hash_rows(&mut self, seed: NumericScalar) -> Result<PlRSeries> {
+        let seed = <Wrap<u64>>::try_from(seed)?.0;
         let hb = PlSeedableRandomStateQuality::seed_from_u64(seed);
         let series = self
             .df

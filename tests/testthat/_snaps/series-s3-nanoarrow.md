@@ -15,16 +15,38 @@
 # the schema argument works partial struct
 
     Code
-      format(nanoarrow::infer_nanoarrow_schema(stream))
-    Output
-      [1] "<nanoarrow_schema struct<a: uint8>>"
+      nanoarrow::as_nanoarrow_array_stream(x, schema = target_schema)
+    Condition
+      Error in `nanoarrow::as_nanoarrow_array_stream()`:
+      ! Evaluation failed.
+      Caused by error:
+      ! Invalid operation: cast from `struct[2]` to `struct[1]` failed in column '': structs do not have the same number of fields: 2 vs 1
+      
+      Ensure that any output struct has the same number of fields as the input, and that all struct field names in the output are present in the input.
+      Use `strict=False` to force the cast, and Polars will select the first n fields from the struct.
 
 # the schema argument works empty struct
 
     Code
-      format(nanoarrow::infer_nanoarrow_schema(stream))
-    Output
-      [1] "<nanoarrow_schema struct<>>"
+      nanoarrow::as_nanoarrow_array_stream(x, schema = target_schema)
+    Condition
+      Error in `nanoarrow::as_nanoarrow_array_stream()`:
+      ! Evaluation failed.
+      Caused by error:
+      ! Invalid operation: cast from `struct[2]` to `struct[0]` failed in column '': structs do not have the same number of fields: 2 vs 0
+      
+      Ensure that any output struct has the same number of fields as the input, and that all struct field names in the output are present in the input.
+      Use `strict=False` to force the cast, and Polars will select the first n fields from the struct.
+
+# the schema argument works uint8 out of range
+
+    Code
+      nanoarrow::as_nanoarrow_array_stream(x, schema = target_schema)
+    Condition
+      Error in `nanoarrow::as_nanoarrow_array_stream()`:
+      ! Evaluation failed.
+      Caused by error:
+      ! Invalid operation: conversion from `i32` to `u8` failed in column '' for 1 out of 1 values: [256]
 
 # the polars_compat_level argument works NULL
 

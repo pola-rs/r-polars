@@ -2,29 +2,30 @@
 % Please edit documentation in R/expr-expr.R
 \name{expr__reinterpret}
 \alias{expr__reinterpret}
-\title{Reinterpret the underlying bits as a signed/unsigned integer}
+\title{Reinterpret the underlying bits of a same-size numeric type.}
 \usage{
-expr__reinterpret(..., signed = TRUE)
+expr__reinterpret(..., signed = NULL, dtype = NULL)
 }
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{signed}{Whether to reinterpret as a signed integer. \code{TRUE} reinterprets
-as \code{pl$Int64}; \code{FALSE} reinterprets as \code{pl$UInt64}. If omitted, a warning is
-emitted and \code{TRUE} is used for compatibility with Polars 1.16.}
+\item{signed}{Whether to reinterpret as a signed or unsigned integer of the
+same width as the input. Must specify exactly one of \code{signed} and \code{dtype}.}
+
+\item{dtype}{Target data type for the reinterpretation. Must specify exactly
+one of \code{signed} and \code{dtype}.}
 }
 \value{
 A polars \link{expression}
 }
 \description{
-This operation is only allowed for 64-bit integers. For lower bits integers,
-you can safely use the \link[=expr__cast]{$cast()} operation.
+Reinterpret the underlying bits of a same-size numeric type.
 }
 \examples{
 df <- pl$DataFrame(a = c(1, 1, 2))$cast(pl$UInt64)
 
 # Reinterpret column a as Int64
 df$with_columns(
-  reinterpreted = pl$col("a")$reinterpret(signed = TRUE)
+  reinterpreted = pl$col("a")$reinterpret(dtype = pl$Int64)
 )
 }

@@ -22,6 +22,8 @@ A polars \link{expression}
 This allows to extract one value per array only. Values are 0-indexed (so
 index \code{0} would return the first item of every sub-array) and negative values
 start from the end (so index \code{-1} returns the last item).
+In R, out-of-bounds indices return \code{null} by default; pass
+\code{null_on_oob = FALSE} to raise an error.
 }
 \examples{
 df <- pl$DataFrame(

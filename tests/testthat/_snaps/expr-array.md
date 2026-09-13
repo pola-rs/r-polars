@@ -32,6 +32,21 @@
       * ..1 = TRUE
       i Did you forget to name an argument?
 
+# arr$get
+
+    Code
+      df$select(pl$col("a")$arr$get(10, null_on_oob = FALSE))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! get index is out of bounds
+      
+      This error occurred in the following expression:
+      	col("a").arr.get([10.0])
+
 # join
 
     Code
@@ -91,172 +106,6 @@
       
       This error occurred in the following expression:
       	col("x").arr.count_matches(["foo"])
-
-# arr$to_struct with fields = NULL
-
-    Code
-      pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(
-        values = pl$Array(pl$Int64, 2)))$select(pl$col("values")$arr$to_struct(
-        fields = fields))$unnest("values")
-    Output
-      shape: (3, 2)
-      ┌─────────┬─────────┐
-      │ field_0 ┆ field_1 │
-      │ ---     ┆ ---     │
-      │ i64     ┆ i64     │
-      ╞═════════╪═════════╡
-      │ 1       ┆ 2       │
-      │ 1       ┆ 1       │
-      │ 2       ┆ 2       │
-      └─────────┴─────────┘
-
-# arr$to_struct with fields = "a"
-
-    Code
-      pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(
-        values = pl$Array(pl$Int64, 2)))$select(pl$col("values")$arr$to_struct(
-        fields = fields))$unnest("values")
-    Condition
-      Warning:
-      struct.rename_fields() argument has a different number of fields than the struct it operates on (1 vs 2). This silently drops the last field of the struct, and it will become an error in Polars 2.0. To replicate the old behavior and suppress this warning, use struct.drop() to drop the trailing struct fields first (if any) and then call struct.rename_fields() normally.
-      Warning:
-      struct.rename_fields() argument has a different number of fields than the struct it operates on (1 vs 2). This silently drops the last field of the struct, and it will become an error in Polars 2.0. To replicate the old behavior and suppress this warning, use struct.drop() to drop the trailing struct fields first (if any) and then call struct.rename_fields() normally.
-    Output
-      shape: (3, 1)
-      ┌─────┐
-      │ a   │
-      │ --- │
-      │ i64 │
-      ╞═════╡
-      │ 1   │
-      │ 1   │
-      │ 2   │
-      └─────┘
-
-# arr$to_struct with fields = c("a", "b", "c", "d")
-
-    Code
-      pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(
-        values = pl$Array(pl$Int64, 2)))$select(pl$col("values")$arr$to_struct(
-        fields = fields))$unnest("values")
-    Condition
-      Warning:
-      struct.rename_fields() argument has a different number of fields than the struct it operates on (4 vs 2). This silently drops the last -2 names of the argument, and it will become an error in Polars 2.0. To replicate the old behavior and suppress this warning, use struct.drop() to drop the trailing struct fields first (if any) and then call struct.rename_fields() normally.
-      Warning:
-      struct.rename_fields() argument has a different number of fields than the struct it operates on (4 vs 2). This silently drops the last -2 names of the argument, and it will become an error in Polars 2.0. To replicate the old behavior and suppress this warning, use struct.drop() to drop the trailing struct fields first (if any) and then call struct.rename_fields() normally.
-    Output
-      shape: (3, 2)
-      ┌─────┬─────┐
-      │ a   ┆ b   │
-      │ --- ┆ --- │
-      │ i64 ┆ i64 │
-      ╞═════╪═════╡
-      │ 1   ┆ 2   │
-      │ 1   ┆ 1   │
-      │ 2   ┆ 2   │
-      └─────┴─────┘
-
-# arr$to_struct with fields = function (x) sprintf("field_%s", x)
-
-    Code
-      pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(
-        values = pl$Array(pl$Int64, 2)))$select(pl$col("values")$arr$to_struct(
-        fields = fields))$unnest("values")
-    Condition
-      Warning:
-      ! Legacy arguments of `<expr>$arr$to_struct()` are deprecated as of polars 1.16.0.
-      i Use an explicit character vector for `fields`.
-    Output
-      shape: (3, 2)
-      ┌─────────┬─────────┐
-      │ field_0 ┆ field_1 │
-      │ ---     ┆ ---     │
-      │ i64     ┆ i64     │
-      ╞═════════╪═════════╡
-      │ 1       ┆ 2       │
-      │ 1       ┆ 1       │
-      │ 2       ┆ 2       │
-      └─────────┴─────────┘
-
-# arr$to_struct with fields = ~paste0("field_", .)
-
-    Code
-      pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(
-        values = pl$Array(pl$Int64, 2)))$select(pl$col("values")$arr$to_struct(
-        fields = fields))$unnest("values")
-    Condition
-      Warning:
-      ! Legacy arguments of `<expr>$arr$to_struct()` are deprecated as of polars 1.16.0.
-      i Use an explicit character vector for `fields`.
-    Output
-      shape: (3, 2)
-      ┌─────────┬─────────┐
-      │ field_0 ┆ field_1 │
-      │ ---     ┆ ---     │
-      │ i64     ┆ i64     │
-      ╞═════════╪═════════╡
-      │ 1       ┆ 2       │
-      │ 1       ┆ 1       │
-      │ 2       ┆ 2       │
-      └─────────┴─────────┘
-
-# arr$to_struct deprecates dynamic field names
-
-    Code
-      df$select(pl$col("values")$arr$to_struct(fields = function(idx) paste0("field_",
-        idx)))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! Legacy arguments of `<expr>$arr$to_struct()` are deprecated as of polars 1.16.0.
-      i Use an explicit character vector for `fields`.
-    Output
-      shape: (2, 1)
-      ┌───────────┐
-      │ values    │
-      │ ---       │
-      │ struct[2] │
-      ╞═══════════╡
-      │ {1,2}     │
-      │ {1,1}     │
-      └───────────┘
-
-# series arr$to_struct delegates to the expression API
-
-    Code
-      as_polars_df(series$arr$to_struct(fields = function(idx) paste0("field_", idx)))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! Legacy arguments of `<expr>$arr$to_struct()` are deprecated as of polars 1.16.0.
-      i Use an explicit character vector for `fields`.
-    Output
-      shape: (2, 2)
-      ┌─────────┬─────────┐
-      │ field_0 ┆ field_1 │
-      │ ---     ┆ ---     │
-      │ i64     ┆ i64     │
-      ╞═════════╪═════════╡
-      │ 1       ┆ 2       │
-      │ 1       ┆ 1       │
-      └─────────┴─────────┘
-
----
-
-    Code
-      as_polars_df(series$arr$to_struct(fields = ~ paste0("field_", .)))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! Legacy arguments of `<expr>$arr$to_struct()` are deprecated as of polars 1.16.0.
-      i Use an explicit character vector for `fields`.
-    Output
-      shape: (2, 2)
-      ┌─────────┬─────────┐
-      │ field_0 ┆ field_1 │
-      │ ---     ┆ ---     │
-      │ i64     ┆ i64     │
-      ╞═════════╪═════════╡
-      │ 1       ┆ 2       │
-      │ 1       ┆ 1       │
-      └─────────┴─────────┘
 
 # arr$eval()
 

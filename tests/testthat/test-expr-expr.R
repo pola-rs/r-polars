@@ -16,8 +16,26 @@ test_that("map_batches works", {
     pl$DataFrame(a = "a", b = "b")
   )
   expect_query_equal(
+    .input$select(
+      pl$col("a")$map_batches(
+        \(x) x + 1,
+        return_dtype = pl$dtype_of("a"),
+        is_elementwise = TRUE
+      )
+    ),
+    .data,
+    pl$DataFrame(a = c(1, 2, 1, 2))
+  )
+  expect_query_equal(
+    .input$select(
+      pl$col("a")$map_batches(\(x) 1, returns_scalar = TRUE)
+    ),
+    .data,
+    pl$DataFrame(a = 1)
+  )
+  expect_query_equal(
     .input$group_by("a")$agg(
-      pl$col("b")$map_batches(\(x) x + 2)
+      pl$col("b")$map_batches(\(x) x + 2, return_dtype = pl$Float64)
     )$sort("a"),
     .data,
     pl$DataFrame(a = c(0, 1), b = list(c(3, 5), c(4, 6)))
@@ -499,16 +517,17 @@ test_that("is_in", {
     pl$DataFrame(a = c(rep(FALSE, 4), TRUE))
   )
 
-  # can compare NA_int with NA_real
+  # Polars 2.0 requires an explicit cast for Int32 and Float64 operands.
   expect_equal(
-    pl$DataFrame(a = c(1:4, NA_integer_))$select(pl$col("a")$is_in(list(NA_real_))),
+    pl$DataFrame(a = c(1:4, NA_integer_))$select(
+      pl$col("a")$cast(pl$Float64)$is_in(list(NA_real_))
+    ),
     pl$DataFrame(a = c(rep(FALSE, 4), NA))
   )
   expect_equal(
-    pl$DataFrame(a = c(1:4, NA_integer_))$select(pl$col("a")$is_in(
-      list(NA_real_),
-      nulls_equal = TRUE
-    )),
+    pl$DataFrame(a = c(1:4, NA_integer_))$select(
+      pl$col("a")$cast(pl$Float64)$is_in(list(NA_real_), nulls_equal = TRUE)
+    ),
     pl$DataFrame(a = c(rep(FALSE, 4), TRUE))
   )
 
@@ -546,6 +565,14 @@ test_that("is_in", {
 })
 
 test_that("cast", {
+  # DataTypeExpr targets are accepted by cast, including schema-dependent
+  # expressions.
+  input <- pl$DataFrame(x = 1:3)
+  expect_equal(
+    input$select(pl$col("x")$cast(pl$dtype_of("x"))),
+    input
+  )
+
   # cast error raised for String to Boolean
   expect_snapshot(
     as_polars_df(iris)$with_columns(
@@ -569,14 +596,14 @@ test_that("cast", {
     pl$DataFrame(big = NA_integer_)
   )
 
-  # casting String to Date/Datetime emits a Polars deprecation warning routed to R
+  # Casting String to Date/Datetime is rejected in Polars 2.0.
   expect_snapshot(
     as_polars_series(c("2020-01-01", "2021-06-15"))$cast(pl$Date),
-    cnd_class = TRUE
+    error = TRUE
   )
   expect_snapshot(
     as_polars_series(c("2020-01-01T12:00:00", "2021-06-15T08:30:00"))$cast(pl$Datetime("us")),
-    cnd_class = TRUE
+    error = TRUE
   )
 
   # no overflow to Int64
@@ -764,46 +791,6 @@ test_that("Expr_append", {
   )
 })
 
-test_that("agg_groups is deprecated", {
-  local_lifecycle_warnings()
-  df <- pl$DataFrame(
-    group = rep(c("one", "two"), each = 3),
-    value = c(94, 95, 96, 97, 97, 99)
-  )
-
-  expect_snapshot(
-    df$group_by("group", .maintain_order = TRUE)$agg(pl$col("value")$agg_groups()),
-    cnd_class = TRUE
-  )
-
-  old <- suppressWarnings(
-    df$group_by("group", .maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
-  )
-  expect_no_condition(
-    df$with_row_index()$group_by("group", .maintain_order = TRUE)$agg(pl$col("index"))
-  )
-  recommended <- df$with_row_index()$group_by("group", .maintain_order = TRUE)$agg(pl$col("index"))
-  expect_equal(old$get_column("group"), recommended$get_column("group"))
-  expect_equal(
-    unclass(old$get_column("value")$to_r_vector()),
-    unclass(recommended$get_column("index")$to_r_vector())
-  )
-})
-
-test_that("rechunk() works but is deprecated", {
-  expect_deprecated(pl$col("a")$rechunk())
-
-  local_lifecycle_silence()
-  series_list <- pl$DataFrame(a = 1:3, b = 4:6)$select(
-    a_chunked = pl$col("a")$append(pl$col("b")),
-    a_rechunked = pl$col("a")$append(pl$col("b"))$rechunk()
-  )$get_columns()
-  expect_identical(
-    lapply(series_list, \(x) x$chunk_lengths()),
-    list(a_chunked = c(3L, 3L), a_rechunked = 6L)
-  )
-})
-
 test_that("cum_sum cum_prod cum_min cum_max cum_count", {
   l_actual <- pl$DataFrame(a = 1:4)$select(
     cum_sum = pl$col("a")$cum_sum(),
@@ -969,7 +956,10 @@ test_that("Expr_sort", {
     sort_nulls_last = pl$col("a")$sort(nulls_last = TRUE),
     sort_reverse = pl$col("a")$sort(descending = TRUE),
     sort_reverse_nulls_last = pl$col("a")$sort(descending = TRUE, nulls_last = TRUE),
-    fake_sort_nulls_last = pl$col("a")$set_sorted()$sort(nulls_last = TRUE),
+    fake_sort_nulls_last = pl$col("a")$set_sorted(descending = FALSE)$sort(
+      descending = FALSE,
+      nulls_last = TRUE
+    ),
     fake_sort_reverse_nulls_last = pl$col("a")$set_sorted(descending = TRUE)$sort(
       descending = TRUE,
       nulls_last = TRUE
@@ -984,6 +974,32 @@ test_that("Expr_sort", {
       sort_reverse_nulls_last = c(NaN, Inf, 4, 3, 2, 1, -Inf),
       fake_sort_nulls_last = l2$a,
       fake_sort_reverse_nulls_last = l2$a
+    )
+  )
+})
+
+test_that("Expr_set_sorted defaults to nulls first", {
+  df <- pl$DataFrame(a = c(NA, 1L, 2L, 3L))
+
+  actual <- df$select(
+    ascending = pl$col("a")$sort()$set_sorted()$min(),
+    descending = pl$col("a")$sort(descending = TRUE)$set_sorted(descending = TRUE)$max(),
+    ascending_nulls_last = pl$col("a")$sort(nulls_last = TRUE)$set_sorted(
+      nulls_last = TRUE
+    )$min(),
+    descending_nulls_last = pl$col("a")$sort(
+      descending = TRUE,
+      nulls_last = TRUE
+    )$set_sorted(descending = TRUE, nulls_last = TRUE)$max()
+  )
+
+  expect_equal(
+    actual,
+    pl$DataFrame(
+      ascending = 1L,
+      descending = 3L,
+      ascending_nulls_last = 1L,
+      descending_nulls_last = 3L
     )
   )
 })
@@ -1039,29 +1055,18 @@ test_that("arg_min arg_max arg_sort", {
 })
 
 test_that("search_sorted", {
+  df <- pl$DataFrame(
+    values = c("a", "c", "e"),
+    element = c("b", "d", "f")
+  )
   expect_equal(
-    pl$DataFrame(a = 0:100)$select(pl$col("a")$search_sorted(pl$lit(42L))),
-    pl$DataFrame(a = 42)$cast(pl$UInt32)
+    df$select(pl$col("values")$search_sorted("b")),
+    pl$DataFrame(values = 1L)$cast(pl$UInt32)
   )
-})
-
-test_that("search_sorted warns for bare character strings", {
-  local_lifecycle_warnings()
-  df <- pl$DataFrame(a = 0:3)
-
-  expect_snapshot(
-    invisible(df$select(pl$col("a")$search_sorted("a"))),
-    cnd_class = TRUE
+  expect_equal(
+    df$select(pl$col("values")$search_sorted(pl$col("element"))),
+    pl$DataFrame(values = c(1L, 2L, 3L))$cast(pl$UInt32)
   )
-  old <- with_lifecycle_silence(df$select(pl$col("a")$search_sorted("a")))
-  explicit <- expect_no_warning(df$select(pl$col("a")$search_sorted(pl$col("a"))))
-  expect_equal(old, explicit)
-
-  literal_df <- pl$DataFrame(a = c("a", "b", "c"))
-  literal <- expect_no_warning(
-    literal_df$select(pl$col("a")$search_sorted(pl$lit("b")))
-  )
-  expect_equal(literal, pl$DataFrame(a = 1L)$cast(pl$UInt32))
 })
 
 test_that("sort_by", {
@@ -1173,23 +1178,20 @@ test_that("shift", {
       sp2 = r_shift_and_fill(0:3, 2, 21)
     )
   )
-})
 
-test_that("shift warns for bare character fill values", {
-  local_lifecycle_warnings()
-  df <- pl$DataFrame(a = c("a", "b", "c"))
-
-  expect_snapshot(
-    invisible(pl$col("a")$shift(1, fill_value = "fill")),
-    cnd_class = TRUE
+  df <- pl$DataFrame(
+    values = c("a", "b", "c"),
+    n = c(1L, 2L, 1L),
+    fill = c("x", "y", "z")
   )
-  expect_no_warning(
-    pl$col("a")$shift(1, fill_value = pl$col("fill"))
+  expect_equal(
+    df$select(pl$col("values")$shift(fill_value = "x")),
+    pl$DataFrame(values = c("x", "a", "b"))
   )
-  literal <- expect_no_warning(
-    df$select(pl$col("a")$shift(1, fill_value = pl$lit("fill")))
+  expect_equal(
+    df$select(pl$col("values")$shift(pl$col("n")$first(), fill_value = pl$col("fill")$first())),
+    pl$DataFrame(values = c("x", "a", "b"))
   )
-  expect_equal(literal, pl$DataFrame(a = c("fill", "a", "b")))
 })
 
 test_that("fill_null", {
@@ -1497,26 +1499,14 @@ test_that("filter", {
   )
 })
 
-test_that("explode/flatten", {
-  local_lifecycle_warnings()
+test_that("explode", {
   expect_equal(
     pl$DataFrame(a = list(letters))$select(pl$col("a")$explode(empty_as_null = TRUE)),
     pl$DataFrame(a = letters)
   )
-  expect_snapshot(
-    pl$DataFrame(a = list(letters))$select(pl$col("a")$flatten()),
-    cnd_class = TRUE
-  )
-  expect_warning(
-    pl$DataFrame(a = list(letters))$select(pl$col("a")$explode()),
-    "will change"
-  )
-  local_lifecycle_silence()
   expect_equal(
-    pl$DataFrame(a = list(letters))$select(pl$col("a")$flatten()),
-    pl$DataFrame(a = list(letters))$select(
-      pl$col("a")$list$explode(empty_as_null = TRUE, keep_nulls = TRUE)
-    )
+    pl$DataFrame(a = list(letters))$select(pl$col("a")$explode()),
+    pl$DataFrame(a = letters)
   )
   expect_equal(
     pl$DataFrame(a = list(letters))$select(
@@ -1527,15 +1517,6 @@ test_that("explode/flatten", {
 
   # empty and null handling
   df <- pl$DataFrame(a = list(NULL, list(NA), list()))
-  old_flatten <- df$select(pl$col("a")$flatten())
-  expect_equal(
-    old_flatten,
-    df$select(pl$col("a")$list$explode(empty_as_null = TRUE, keep_nulls = TRUE))
-  )
-  future_flatten <- df$select(
-    pl$col("a")$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)
-  )
-  expect_gt(old_flatten$height, future_flatten$height)
   expect_equal(
     df$select(pl$col("a")$explode(empty_as_null = TRUE)),
     pl$DataFrame(a = list(NULL, NA, NULL))
@@ -1543,6 +1524,10 @@ test_that("explode/flatten", {
   expect_equal(
     df$select(pl$col("a")$explode(empty_as_null = FALSE)),
     pl$DataFrame(a = list(NULL, NA))
+  )
+  expect_equal(
+    df$select(pl$col("a")$explode()),
+    df$select(pl$col("a")$explode(empty_as_null = FALSE))
   )
   expect_equal(
     df$select(pl$col("a")$explode(empty_as_null = TRUE, keep_nulls = FALSE)),
@@ -1649,7 +1634,7 @@ test_that("hash", {
     pl$col(c("Sepal.Width", "Species"))$unique()$hash()$implode()
   )
   hash_values2 <- df$select(
-    suppressWarnings(pl$col(c("Sepal.Width", "Species"))$unique()$hash(1, 2, 3, 4))$implode()
+    pl$col(c("Sepal.Width", "Species"))$unique()$hash(seed = 42)$implode()
   )
 
   expect_false(
@@ -1658,50 +1643,53 @@ test_that("hash", {
   expect_false(anyDuplicated(as.list(hash_values1, as_series = FALSE)$Sepal.Width) > 0)
 })
 
-test_that("hash additional seeds are deprecated", {
-  local_lifecycle_warnings()
-  expr <- pl$col("a")
-
-  expect_snapshot(invisible(expr$hash(seed_1 = 1)), cnd_class = TRUE)
-  expect_snapshot(invisible(expr$hash(seed_2 = 2)), cnd_class = TRUE)
-  expect_snapshot(invisible(expr$hash(seed_3 = 3)), cnd_class = TRUE)
-  expect_snapshot(
-    invisible(expr$hash(seed_1 = 1, seed_2 = 2, seed_3 = 3)),
-    cnd_class = TRUE
-  )
-  expect_snapshot(invisible(expr$hash(seed_1 = NULL)), cnd_class = TRUE)
-
-  expect_no_condition(expr$hash())
-  expect_no_condition(expr$hash(seed = 42))
-
-  df <- pl$DataFrame(a = 1:3)
-  old <- suppressWarnings(df$select(pl$col("a")$hash(42, 1, 2, 3)))
-  explicit <- suppressWarnings(
-    df$select(pl$col("a")$hash(seed = 42, seed_1 = 1, seed_2 = 2, seed_3 = 3))
-  )
-  expect_equal(old, explicit)
-
-  null_seed <- suppressWarnings(df$select(pl$col("a")$hash(seed = 42, seed_1 = NULL)))
-  expect_equal(null_seed, df$select(pl$col("a")$hash(seed = 42)))
-})
-
 test_that("reinterpret", {
-  local_lifecycle_warnings()
   df <- pl$DataFrame(a = c(1, 1, 2))$cast(pl$UInt64)
-  expect_snapshot(
-    invisible(df$select(pl$col("a")$reinterpret())),
-    cnd_class = TRUE
-  )
   expect_equal(
     df$select(pl$col("a")$reinterpret(signed = TRUE)),
     pl$DataFrame(a = c(1, 1, 2))$cast(pl$Int64)
   )
-  expect_no_warning(df$select(pl$col("a")$reinterpret(signed = TRUE)))
   expect_equal(
     df$select(pl$col("a")$reinterpret(signed = FALSE)),
     pl$DataFrame(a = c(1, 1, 2))$cast(pl$UInt64)
   )
-  expect_no_warning(df$select(pl$col("a")$reinterpret(signed = FALSE)))
+
+  expect_equal(
+    df$select(pl$col("a")$reinterpret(dtype = pl$Int64)),
+    pl$DataFrame(a = c(1, 1, 2))$cast(pl$Int64)
+  )
+  expect_equal(
+    pl$DataFrame(a = c(1, 1, 2))$cast(pl$Int64)$select(
+      pl$col("a")$reinterpret(dtype = pl$UInt64)
+    ),
+    df
+  )
+  expect_equal(
+    df$select(pl$col("a")$reinterpret(dtype = pl$Float64))$select(
+      pl$col("a")$reinterpret(dtype = pl$UInt64)
+    ),
+    df
+  )
+
+  expect_snapshot(
+    pl$col("a")$reinterpret(),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$col("a")$reinterpret(signed = TRUE, dtype = pl$Int64),
+    error = TRUE
+  )
+
+  expect_snapshot(
+    pl$col("a")$reinterpret(dtype = "Int64"),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$DataFrame(a = 1:2)$select(
+      pl$col("a")$reinterpret(dtype = pl$Int64)
+    ),
+    error = TRUE
+  )
 })
 
 # test_that("inspect", {
@@ -1855,7 +1843,7 @@ patrick::with_parameters_test_that(
         min = pl$col("a")$rolling_min_by("date", window_size = "2d"),
         max = pl$col("a")$rolling_max_by("date", window_size = "2d"),
         mean = pl$col("a")$rolling_mean_by("date", window_size = "2d"),
-        sum = pl$col("a")$rolling_sum_by("date", window_size = "2d", min_samples = 1),
+        sum = pl$col("a")$rolling_sum_by("date", window_size = "2d"),
         std = pl$col("a")$rolling_std_by("date", window_size = "2d"),
         var = pl$col("a")$rolling_var_by("date", window_size = "2d"),
         median = pl$col("a")$rolling_median_by("date", window_size = "2d"),
@@ -1898,7 +1886,7 @@ patrick::with_parameters_test_that(
         min = pl$col("a")$rolling_min_by("id", window_size = "2i"),
         max = pl$col("a")$rolling_max_by("id", window_size = "2i"),
         mean = pl$col("a")$rolling_mean_by("id", window_size = "2i"),
-        sum = pl$col("a")$rolling_sum_by("id", window_size = "2i", min_samples = 1),
+        sum = pl$col("a")$rolling_sum_by("id", window_size = "2i"),
         std = pl$col("a")$rolling_std_by("id", window_size = "2i"),
         var = pl$col("a")$rolling_var_by("id", window_size = "2i"),
         median = pl$col("a")$rolling_median_by("id", window_size = "2i"),
@@ -1969,26 +1957,30 @@ test_that("rolling_*_by: arg 'min_samples'", {
   )
 })
 
-test_that("rolling_sum_by warns when min_samples is omitted", {
-  local_lifecycle_warnings()
+test_that("rolling_sum_by defaults min_samples to zero", {
   df <- pl$select(
     a = 1:3,
-    date = pl$date_range(as.Date("2001-01-01"), as.Date("2001-01-03"), "1d")
+    date = pl$date_range(as.Date("2001-1-1"), as.Date("2001-1-3"), "1d")
   )
 
-  expect_snapshot(
-    invisible(df$select(pl$col("a")$rolling_sum_by("date", window_size = "2d"))),
-    cnd_class = TRUE
-  )
-  old <- with_lifecycle_silence(
-    df$select(pl$col("a")$rolling_sum_by("date", window_size = "2d"))
-  )
-  explicit_old <- expect_no_warning(
-    df$select(pl$col("a")$rolling_sum_by("date", window_size = "2d", min_samples = 1))
-  )
-  expect_equal(old, explicit_old)
-  expect_no_warning(
-    df$select(pl$col("a")$rolling_sum_by("date", window_size = "2d", min_samples = 0))
+  expect_equal(
+    df$select(
+      default = pl$col("a")$rolling_sum_by(
+        "date",
+        window_size = "1d",
+        closed = "none"
+      ),
+      explicit = pl$col("a")$rolling_sum_by(
+        "date",
+        window_size = "1d",
+        min_samples = 1,
+        closed = "none"
+      )
+    ),
+    pl$DataFrame(
+      default = c(0L, 0L, 0L),
+      explicit = c(NA_integer_, NA_integer_, NA_integer_)
+    )
   )
 })
 
@@ -2002,7 +1994,7 @@ test_that("rolling_*_by: arg 'closed'", {
     min = c(NA, 1L, 1:4),
     max = c(NA, 1:5),
     mean = c(NA, 1, 1.5, 2.5, 3.5, 4.5),
-    sum = c(NA, 1L, 3L, 5L, 7L, 9L),
+    sum = c(0L, 1L, 3L, 5L, 7L, 9L),
     std = c(NA, NA, rep(0.7071067811865476, 4)),
     var = c(NA, NA, rep(0.5, 4)),
     median = c(NA, 1, 1.5, 2.5, 3.5, 4.5),
@@ -2014,12 +2006,7 @@ test_that("rolling_*_by: arg 'closed'", {
       min = pl$col("a")$rolling_min_by("date", window_size = "2d", closed = "left"),
       max = pl$col("a")$rolling_max_by("date", window_size = "2d", closed = "left"),
       mean = pl$col("a")$rolling_mean_by("date", window_size = "2d", closed = "left"),
-      sum = pl$col("a")$rolling_sum_by(
-        "date",
-        window_size = "2d",
-        min_samples = 1,
-        closed = "left"
-      ),
+      sum = pl$col("a")$rolling_sum_by("date", window_size = "2d", closed = "left"),
       std = pl$col("a")$rolling_std_by("date", window_size = "2d", closed = "left"),
       var = pl$col("a")$rolling_var_by("date", window_size = "2d", closed = "left"),
       median = pl$col("a")$rolling_median_by("date", window_size = "2d", closed = "left"),
@@ -2450,12 +2437,19 @@ test_that("sample", {
   df <- pl$DataFrame(a = 1:10)
 
   # Numerical checks
+  expect_equal(nrow(df$select(pl$col("a")$sample(n = 2))), 2L)
+  for (shuffle in list(NULL, FALSE, TRUE)) {
+    expect_equal(
+      nrow(df$select(pl$col("a")$sample(n = 2, shuffle = shuffle, seed = 1))),
+      2L
+    )
+  }
   expect_equal(
-    df$select(pl$col("a")$sample(fraction = 0.2, seed = 1)),
+    df$select(pl$col("a")$sample(fraction = 0.2, shuffle = FALSE, seed = 1)),
     pl$DataFrame(a = c(8L, 10L))$cast(pl$Int32)
   )
   expect_equal(
-    df$select(pl$col("a")$sample(n = 2, seed = 1)),
+    df$select(pl$col("a")$sample(n = 2, shuffle = FALSE, seed = 1)),
     pl$DataFrame(a = c(8L, 10L))$cast(pl$Int32)
   )
 
@@ -2470,7 +2464,30 @@ test_that("sample", {
       nrow(),
     20
   )
+
+  df_dynamic <- df$with_columns(
+    n = pl$lit(2L),
+    fraction = pl$lit(0.2)
+  )
+  expect_equal(
+    df$select(pl$col("a")$sample(n = 2, seed = 1)),
+    df_dynamic$select(pl$col("a")$sample(n = pl$col("n")$first(), seed = 1))
+  )
+  expect_equal(
+    df$select(pl$col("a")$sample(fraction = 0.2, seed = 1)),
+    df_dynamic$select(pl$col("a")$sample(fraction = pl$col("fraction")$first(), seed = 1))
+  )
+  df_single <- pl$DataFrame(a = 7L, n = 1L, fraction = 1)
+  expect_equal(
+    df_single$select(pl$col("a")$sample(n = "n")),
+    pl$DataFrame(a = 7L)
+  )
+  expect_equal(
+    df_single$select(pl$col("a")$sample(fraction = "fraction")),
+    pl$DataFrame(a = 7L)
+  )
 })
+
 
 test_that("ewm_", {
   df <- pl$DataFrame(a = c(1, rep(0, 10)))
@@ -3193,13 +3210,8 @@ test_that("index_of works", {
     )$cast(pl$UInt32)
   )
 
-  # Test deprecation and error
-  expect_snapshot(df$select(na = pl$col("a")$index_of(NA)))
+  # Test invalid dtype error
   expect_snapshot(df$select(na = pl$col("a")$index_of(NA_character_)), error = TRUE)
-})
-
-test_that("Deprecated shrink_dtype", {
-  expect_snapshot(pl$col("foo")$shrink_dtype(), cnd_class = TRUE)
 })
 
 test_that("is_close works", {

@@ -9,25 +9,25 @@ expr__sample(
   ...,
   fraction = NULL,
   with_replacement = FALSE,
-  shuffle = FALSE,
+  shuffle = NULL,
   seed = NULL
 )
 }
 \arguments{
-\item{n}{Number of items to return. Cannot be used with \code{fraction}. Values
-are interpreted as literals in Polars 1.16; bare strings are interpreted as
-columns in Polars 2.0.
-Defaults to 1 if \code{fraction} is \code{NULL}.}
+\item{n}{Number of items to return. Can be an Expr. Strings are parsed as
+column names. Cannot be used with \code{fraction}. Defaults to 1 if \code{fraction}
+is \code{NULL}.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{fraction}{Fraction of items to return. Cannot be used with \code{n}. Values
-are interpreted as literals in Polars 1.16; bare strings are interpreted as
-columns in Polars 2.0.}
+\item{fraction}{Fraction of items to return. Can be an Expr. Strings are
+parsed as column names. Cannot be used with \code{n}.}
 
 \item{with_replacement}{Allow values to be sampled more than once.}
 
-\item{shuffle}{Whether to shuffle the order of sampled data points.}
+\item{shuffle}{If \code{TRUE}, explicitly shuffle the sampled data points. If
+\code{FALSE}, maintain their relative order. If \code{NULL} (default), use a
+high-performance algorithm without guaranteeing an order.}
 
 \item{seed}{Seed for the random number generator. If \code{NULL} (default), a
 random seed is generated for each sample operation.}

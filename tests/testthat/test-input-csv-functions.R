@@ -92,76 +92,34 @@ test_that("read/scan: arg raise_if_empty works", {
   expect_equal(dim(out), c(0L, 0L))
 })
 
-test_that("read/scan: CSV default migrations preserve missingness", {
-  local_lifecycle_warnings()
+test_that("read/scan: CSV defaults use the 2.0 behavior", {
   tmpf <- withr::local_tempfile()
   writeLines("a\n1", tmpf)
 
-  expect_snapshot(
-    pl$scan_csv(tmpf),
-    cnd_class = TRUE
-  )
-  expect_no_condition(pl$scan_csv(tmpf, infer_schema_files = NULL))
+  expect_no_condition(pl$scan_csv(tmpf))
   expect_no_condition(pl$scan_csv(tmpf, infer_schema_files = 10))
-
-  expect_snapshot(
-    pl$read_csv(tmpf),
-    cnd_class = TRUE
-  )
-  expect_no_condition(pl$read_csv(tmpf, infer_schema_files = NULL))
+  expect_no_condition(pl$read_csv(tmpf))
 
   empty <- withr::local_tempfile()
   file.create(empty)
-  expect_snapshot(
-    pl$scan_csv(
-      empty,
-      has_header = FALSE,
-      schema = list(a = pl$Int64),
-      infer_schema_files = NULL
-    )$collect(),
-    error = TRUE,
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    pl$scan_csv(
-      empty,
-      has_header = FALSE,
-      schema = list(a = pl$Int64),
-      raise_if_empty = TRUE,
-      infer_schema_files = NULL
-    )$collect(),
-    error = TRUE,
-    cnd_class = TRUE
-  )
   scan_out <- expect_no_condition(
     pl$scan_csv(
       empty,
       has_header = FALSE,
       schema = list(a = pl$Int64),
-      raise_if_empty = FALSE,
       infer_schema_files = NULL
     )$collect()
   )
   expect_equal(dim(scan_out), c(0L, 1L))
   expect_equal(scan_out$schema, list(a = pl$Int64))
   expect_snapshot(
-    pl$read_csv(
-      empty,
-      has_header = FALSE,
-      schema = list(a = pl$Int64),
-      infer_schema_files = NULL
-    ),
-    error = TRUE,
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    pl$read_csv(
+    pl$scan_csv(
       empty,
       has_header = FALSE,
       schema = list(a = pl$Int64),
       raise_if_empty = TRUE,
       infer_schema_files = NULL
-    ),
+    )$collect(),
     error = TRUE,
     cnd_class = TRUE
   )
@@ -170,12 +128,22 @@ test_that("read/scan: CSV default migrations preserve missingness", {
       empty,
       has_header = FALSE,
       schema = list(a = pl$Int64),
-      raise_if_empty = FALSE,
       infer_schema_files = NULL
     )
   )
   expect_equal(dim(out), c(0L, 1L))
   expect_equal(out$schema, list(a = pl$Int64))
+  expect_snapshot(
+    pl$read_csv(
+      empty,
+      has_header = FALSE,
+      schema = list(a = pl$Int64),
+      raise_if_empty = TRUE,
+      infer_schema_files = NULL
+    ),
+    error = TRUE,
+    cnd_class = TRUE
+  )
 })
 
 test_that("read/scan: arg glob works", {
@@ -210,22 +178,6 @@ test_that("read/scan: arg empty_string_is_null works", {
   )
 
   out <- pl$read_csv(tmpf, empty_string_is_null = FALSE, infer_schema_files = NULL)
-  expect_equal(
-    out$select("b"),
-    pl$DataFrame(b = c("a", ""))
-  )
-})
-
-test_that("read/scan: arg missing_utf8_is_empty_string is deprecated", {
-  tmpf <- withr::local_tempfile()
-  writeLines("a,b\n1,a\n2,", tmpf)
-
-  expect_deprecated(
-    pl$read_csv(tmpf, missing_utf8_is_empty_string = TRUE, infer_schema_files = NULL)
-  )
-
-  local_lifecycle_silence()
-  out <- pl$read_csv(tmpf, missing_utf8_is_empty_string = TRUE, infer_schema_files = NULL)
   expect_equal(
     out$select("b"),
     pl$DataFrame(b = c("a", ""))
@@ -373,23 +325,110 @@ test_that("read/scan: arg 'schema_overrides' works", {
     error = TRUE
   )
 
-  # works with unnamed elements
-  writeLines("a,,c\n1.5,a,2\n2,,", tmpf)
+  # Unnamed overrides target every column by position.
+  writeLines("a,b,c\n1.5,a,2\n2,,", tmpf)
   expect_equal(
-    pl$read_csv(tmpf, schema_overrides = list(pl$Categorical()), infer_schema_files = NULL),
-    pl$DataFrame(a = c(1.5, 2), factor(c("a", NA)), c = c(2L, NA))$cast(c = pl$Int64)
-  )
-
-  # A fully unnamed schema override remains valid in Polars 2.0.
-  expect_no_warning(
     pl$read_csv(
       tmpf,
-      schema_overrides = list(pl$String, pl$String, pl$String),
+      schema_overrides = list(pl$Float64, pl$Categorical(), pl$Int32),
       infer_schema_files = NULL
+    ),
+    pl$DataFrame(a = c(1.5, 2), b = factor(c("a", NA)), c = c(2L, NA))
+  )
+  expect_snapshot(
+    pl$read_csv(
+      tmpf,
+      schema_overrides = list(pl$Categorical()),
+      infer_schema_files = NULL
+    ),
+    error = TRUE
+  )
+  # A non-NULL names attribute selects name-based overrides. This includes
+  # empty names, which are valid Polars column names.
+  writeLines("a,,c\n1,2,3\n2,4,5", tmpf)
+  empty_name_override <- setNames(list(pl$Int32), "")
+  out <- pl$read_csv(
+    tmpf,
+    schema_overrides = empty_name_override,
+    infer_schema_files = NULL
+  )
+  expect_named(out, c("a", "", "c"))
+  expect_equal(out$schema[[2]], pl$Int32)
+
+  mixed_empty_name <- list(a = pl$Float64, pl$Int32, c = pl$Int32)
+  expect_equal(
+    pl$read_csv(
+      tmpf,
+      schema_overrides = mixed_empty_name,
+      infer_schema_files = NULL
+    )$schema,
+    setNames(
+      list(pl$Float64, pl$Int32, pl$Int32),
+      c("a", "", "c")
     )
   )
-  # TODO: @2.0: require unnamed schema overrides to cover every column; use
-  # a named list for partial overrides.
+
+  mixed_na <- list(pl$Float64, pl$Int32)
+  names(mixed_na) <- c(NA_character_, "b")
+  expect_snapshot(
+    pl$read_csv(tmpf, schema_overrides = mixed_na, infer_schema_files = NULL),
+    error = TRUE
+  )
+})
+
+test_that("read/scan: arg 'extra_columns' works", {
+  tmpf <- withr::local_tempfile()
+  writeLines("a,b,c\n1,2,3", tmpf)
+  schema <- list(a = pl$Int32, b = pl$Int32)
+
+  expect_snapshot(
+    pl$read_csv(tmpf, schema = schema, infer_schema_files = NULL),
+    error = TRUE
+  )
+  expect_equal(
+    pl$read_csv(
+      tmpf,
+      schema = schema,
+      extra_columns = "ignore",
+      infer_schema_files = NULL
+    ),
+    pl$DataFrame(a = 1L, b = 2L)
+  )
+  expect_equal(
+    pl$scan_csv(
+      tmpf,
+      schema = schema,
+      extra_columns = "ignore",
+      infer_schema_files = NULL
+    )$collect(),
+    pl$DataFrame(a = 1L, b = 2L)
+  )
+
+  ragged <- withr::local_tempfile()
+  writeLines("a,b\n1,2,3", ragged)
+  expect_equal(
+    pl$read_csv(
+      ragged,
+      schema = schema,
+      extra_columns = "ignore",
+      infer_schema_files = NULL
+    ),
+    pl$DataFrame(a = 1L, b = 2L)
+  )
+  expect_snapshot(
+    pl$read_csv(
+      ragged,
+      schema = schema,
+      extra_columns = "ignore",
+      truncate_ragged_lines = FALSE,
+      infer_schema_files = NULL
+    ),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$read_csv(tmpf, extra_columns = "invalid", infer_schema_files = NULL),
+    error = TRUE
+  )
 })
 
 test_that("read/scan: arg 'schema' works", {
@@ -404,14 +443,14 @@ test_that("read/scan: arg 'schema' works", {
     pl$DataFrame(a = c(1.5, 2), b = factor(c("a", NA)), c = c(2L, NA))$cast(a = pl$Float32)
   )
 
-  # works with unnamed elements
+  # Schema fields must be named to match the CSV header.
   expect_equal(
     pl$read_csv(
       tmpf,
-      schema = list(a = pl$Float64, pl$Categorical(), c = pl$Int32),
+      schema = list(a = pl$Float64, b = pl$Categorical(), c = pl$Int32),
       infer_schema_files = NULL
     ),
-    pl$DataFrame(a = c(1.5, 2), factor(c("a", NA)), c = c(2L, NA))
+    pl$DataFrame(a = c(1.5, 2), b = factor(c("a", NA)), c = c(2L, NA))
   )
   expect_snapshot(
     pl$read_csv(tmpf, schema = list(b = pl$Categorical(), c = pl$Int32), infer_schema_files = NULL),
@@ -427,143 +466,12 @@ test_that("read/scan: arg 'schema' works", {
   )
 })
 
-test_that("read/scan: NA schema names are deprecated", {
-  local_lifecycle_warnings()
-  tmpf <- withr::local_tempfile()
-  writeLines("a,b,c\n1.5,a,2\n2,,", tmpf)
-  mixed_schema <- list(a = pl$Float64, pl$Categorical(), c = pl$Int32)
-
-  # A fully unnamed schema with a header is deprecated because its matching
-  # behavior changes in Polars 2.0.
-  full_unnamed <- list(pl$Int32, pl$Int32, pl$Int32)
-
-  # An NA schema name is deprecated, while an empty string is a valid name.
-  mixed_na <- structure(
-    mixed_schema,
-    names = c("a", NA_character_, "c")
-  )
-  mixed_overrides_na <- structure(
-    list(pl$Float64, pl$Categorical(), pl$Int32),
-    names = c("a", NA_character_, "c")
-  )
-  fully_named_schema <- structure(mixed_schema, names = c("a", "b", "c"))
-  empty_schema <- list()
-  expect_snapshot(
-    invisible(pl$scan_csv(tmpf, schema = mixed_na, infer_schema_files = NULL)),
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    invisible(
-      pl$scan_csv(
-        tmpf,
-        schema_overrides = mixed_overrides_na,
-        infer_schema_files = NULL
-      )
-    ),
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    invisible(pl$scan_csv(tmpf, schema = full_unnamed, infer_schema_files = NULL)),
-    cnd_class = TRUE
-  )
-  for (candidate_schema in list(
-    mixed_schema,
-    fully_named_schema,
-    empty_schema
-  )) {
-    expect_no_warning(
-      invisible(
-        pl$scan_csv(tmpf, schema = candidate_schema, infer_schema_files = NULL)
-      )
-    )
-  }
-  expect_no_warning(
-    invisible(
-      pl$scan_csv(
-        tmpf,
-        has_header = FALSE,
-        schema = full_unnamed,
-        raise_if_empty = TRUE,
-        infer_schema_files = NULL
-      )
-    )
-  )
-  for (candidate_schema in list(
-    list(pl$Float64, pl$Categorical(), pl$Int32),
-    mixed_schema,
-    fully_named_schema,
-    empty_schema
-  )) {
-    expect_no_warning(
-      invisible(
-        pl$scan_csv(
-          tmpf,
-          schema_overrides = candidate_schema,
-          infer_schema_files = NULL
-        )
-      )
-    )
-  }
-
-  # The 1.16 positional behavior remains unchanged.
-  expected <- pl$DataFrame(
-    a = c(1.5, 2),
-    factor(c("a", NA)),
-    c = c(2L, NA)
-  )
-  expect_equal(
-    expect_no_warning(
-      pl$scan_csv(tmpf, schema = mixed_schema, infer_schema_files = NULL)$collect()
-    ),
-    expected
-  )
-  expect_equal(
-    expect_no_warning(
-      pl$read_csv(tmpf, schema = mixed_schema, infer_schema_files = NULL)
-    ),
-    expected
-  )
-
-  # Empty schemas do not use the positional compatibility path.
-  empty <- withr::local_tempfile()
-  writeLines("", empty)
-  expect_no_warning(pl$scan_csv(empty, schema = list(), infer_schema_files = NULL))
-  expect_no_warning(
-    pl$read_csv(
-      empty,
-      schema = list(),
-      raise_if_empty = FALSE,
-      infer_schema_files = NULL
-    )
-  )
-  # An empty CSV header is a valid column name and must not trigger a warning.
-  writeLines("a,,c\n1.5,a,2\n2,,", tmpf)
-  empty_header_schema <- structure(
-    list(pl$Float64, pl$Categorical(), pl$Int32),
-    names = c("a", "", "c")
-  )
-  scan_out <- expect_no_warning(
-    pl$scan_csv(
-      tmpf,
-      schema = empty_header_schema,
-      infer_schema_files = NULL
-    )$collect()
-  )
-  read_out <- expect_no_warning(
-    pl$read_csv(tmpf, schema = empty_header_schema, infer_schema_files = NULL)
-  )
-  expect_equal(scan_out$columns, c("a", "", "c"))
-  expect_equal(read_out$columns, c("a", "", "c"))
-  expect_equal(scan_out, read_out)
-})
-
-test_that("read/scan: schema currently matches columns positionally", {
+test_that("read/scan: schema matches columns by name", {
   tmpf <- withr::local_tempfile()
   writeLines("a,b\nA,B", tmpf)
   schema <- list(b = pl$String, a = pl$String)
 
-  # TODO: @2.0: schema fields will match by name, so expect b = "B" and a = "A".
-  expected <- pl$DataFrame(b = "A", a = "B")
+  expected <- pl$DataFrame(b = "B", a = "A")
   expect_equal(
     pl$scan_csv(tmpf, schema = schema, infer_schema_files = NULL)$collect(),
     expected
@@ -585,90 +493,6 @@ test_that("read/scan: arg 'storage_options' throws basic errors", {
     pl$read_csv(tmpf, storage_options = list(a = "b", c = 1), infer_schema_files = NULL),
     error = TRUE
   )
-})
-
-test_that("read/scan: arg 'file_cache_ttl' is deprecated", {
-  tmpf <- withr::local_tempfile()
-  writeLines("a\n1", tmpf)
-
-  expect_warning(
-    pl$scan_csv(tmpf, file_cache_ttl = 10, infer_schema_files = NULL),
-    "do not use the file cache",
-    class = "polars_deprecation_warning"
-  )
-  expect_warning(
-    pl$read_csv(tmpf, file_cache_ttl = 10, infer_schema_files = NULL),
-    "do not use the file cache",
-    class = "polars_deprecation_warning"
-  )
-  expect_no_condition(pl$scan_csv(tmpf, infer_schema_files = NULL))
-  expect_no_condition(pl$read_csv(tmpf, infer_schema_files = NULL))
-
-  captured <- NULL
-  original <- get("PlRLazyFrame", asNamespace("polars"))$new_from_csv
-  mock <- new.env(parent = emptyenv())
-  mock$new_from_csv <- function(...) {
-    captured <<- list(...)
-    original(...)
-  }
-  testthat::local_mocked_bindings(PlRLazyFrame = mock, .package = "polars")
-
-  expect_warning(
-    pl$scan_csv(
-      tmpf,
-      file_cache_ttl = 10,
-      infer_schema_files = NULL,
-      storage_options = c(
-        endpoint_url = "https://example.com",
-        file_cache_ttl = "60"
-      )
-    ),
-    "do not use the file cache",
-    class = "polars_deprecation_warning"
-  )
-  expect_identical(
-    captured$storage_options,
-    c(endpoint_url = "https://example.com", file_cache_ttl = "60")
-  )
-})
-
-test_that("read/scan: arg 'cache' is deprecated", {
-  local_lifecycle_warnings()
-  tmpf <- withr::local_tempfile()
-  writeLines("a\n1", tmpf)
-
-  captured <- new.env(parent = emptyenv())
-  original <- get("PlRLazyFrame", asNamespace("polars"))$new_from_csv
-  mock <- new.env(parent = emptyenv())
-  mock$new_from_csv <- function(...) {
-    captured$args <- list(...)
-    original(...)
-  }
-  testthat::local_mocked_bindings(PlRLazyFrame = mock, .package = "polars")
-
-  expect_no_condition(pl$scan_csv(tmpf, infer_schema_files = NULL))
-  expect_false(captured$args$cache)
-
-  expect_snapshot(
-    {
-      pl$scan_csv(tmpf, cache = TRUE, infer_schema_files = NULL)
-      NULL
-    },
-    cnd_class = TRUE
-  )
-  expect_true(captured$args$cache)
-
-  expect_no_condition(pl$read_csv(tmpf, infer_schema_files = NULL))
-  expect_false(captured$args$cache)
-
-  expect_snapshot(
-    {
-      pl$read_csv(tmpf, cache = TRUE, infer_schema_files = NULL)
-      NULL
-    },
-    cnd_class = TRUE
-  )
-  expect_true(captured$args$cache)
 })
 
 test_that("read/scan: arg 'decimal_comma' works", {
@@ -717,23 +541,6 @@ test_that("arg 'missing_columns' works", {
   )
 })
 
-test_that("read/scan: arg rechunk is deprecated", {
-  tmpf <- withr::local_tempfile()
-  writeLines("a,b\n1,a\n2,b", tmpf)
-
-  expect_deprecated(pl$read_csv(tmpf, rechunk = TRUE, infer_schema_files = NULL))
-  expect_deprecated(pl$scan_csv(tmpf, rechunk = TRUE, infer_schema_files = NULL))
-
-  # not deprecated when not passed
-  expect_no_condition(pl$read_csv(tmpf, infer_schema_files = NULL))
-
-  local_lifecycle_silence()
-  expect_equal(
-    pl$read_csv(tmpf, rechunk = TRUE, infer_schema_files = NULL),
-    pl$DataFrame(a = 1:2, b = c("a", "b"), .schema_overrides = list(a = pl$Int64))
-  )
-})
-
 test_that("read/scan: arg infer_schema_files works", {
   tmpdir <- withr::local_tempdir()
   for (i in seq_len(10)) {
@@ -742,11 +549,10 @@ test_that("read/scan: arg infer_schema_files works", {
   writeLines(c("a", "x", "y"), file.path(tmpdir, "11.csv"))
   glob <- file.path(tmpdir, "*.csv")
 
-  # The 1.16 default uses all files for inference, so the common type is String.
-  local_lifecycle_silence()
+  # The default uses the first 10 files for inference.
   expect_equal(
     pl$scan_csv(glob)$collect_schema(),
-    list(a = pl$String)
+    list(a = pl$Int64)
   )
 
   expect_equal(

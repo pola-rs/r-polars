@@ -25,7 +25,7 @@ df <- pl$DataFrame(
   group = c("one", "one", "one", "two", "two", "two"),
   value = c(1, 98, 2, 3, 99, 4)
 )
-df$group_by("group", maintain_order = TRUE)$agg(
+df$group_by("group", .maintain_order = TRUE)$agg(
   pl$col("value")$gather(c(2, 1))
 )
 }

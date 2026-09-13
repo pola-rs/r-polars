@@ -6,55 +6,13 @@ test_that("$first() works for series list namespace", {
   )
 })
 
-patrick::with_parameters_test_that(
-  "list$to_struct with fields = {rlang::quo_text(fields)}, n_field_strategy = {rlang::quo_text(n_field_strategy)}", # nolint: line_length_linter
-  .cases = {
-    expand.grid(
-      fields = list(
-        NULL,
-        \(x) sprintf("field-%s", x + 1),
-        ~ paste0("field-", . + 1)
-      ),
-      n_field_strategy = c("first_non_null", "max_width"),
-      stringsAsFactors = FALSE
-    ) |>
-      tibble::as_tibble() |>
-      # Add character cases (ignoring n_field_strategy)
-      vctrs::vec_rbind(tibble::tibble(fields = list(c("a"), c("a", "b", "c", "d"))))
-  },
-  code = {
-    expect_snapshot(
-      as_polars_series(list(c(1, 2), c(1, 2, 3), c(1)))$list$to_struct(
-        fields = fields,
-        n_field_strategy = n_field_strategy
-      ) |>
-        as_polars_df()
-    )
-  }
-)
-
-test_that("series list$to_struct accepts future-compatible fields", {
+test_that("series list$to_struct accepts explicit fields", {
   series <- as_polars_series(list(c(1, 2), c(1, 2, 3)))
 
   expect_no_warning(series$list$to_struct(c("a", "b")))
   expect_no_warning(series$list$to_struct(fields = c("a", "b")))
-  expect_no_warning(series$list$to_struct(fields = "max_width"))
-  expect_snapshot(as_polars_df(series$list$to_struct()), cnd_class = TRUE)
-  expect_snapshot(
-    as_polars_df(series$list$to_struct("max_width")),
-    cnd_class = TRUE
+  expect_equal(
+    as_polars_df(series$list$to_struct(c("a", "b"))),
+    pl$DataFrame(a = c(1, 1), b = c(2, 2))
   )
-  expect_snapshot(
-    series$list$to_struct("first_non_null", c("a"), 2),
-    error = TRUE
-  )
-  expect_snapshot(
-    series$list$to_struct(
-      fields = "a",
-      "first_non_null",
-      2
-    ),
-    error = TRUE
-  )
-  expect_snapshot(series$list$to_struct(upper_bound = 2), error = TRUE)
 })

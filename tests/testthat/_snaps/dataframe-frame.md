@@ -150,51 +150,6 @@
       x Problematic argument:
       * frac = 0.1
 
-# hash_rows additional seeds are deprecated
-
-    Code
-      invisible(df$hash_rows(seed_1 = 1))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<dataframe>$hash_rows()` are deprecated as of polars 1.16.0.
-      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
-
----
-
-    Code
-      invisible(df$hash_rows(seed_2 = 2))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<dataframe>$hash_rows()` are deprecated as of polars 1.16.0.
-      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
-
----
-
-    Code
-      invisible(df$hash_rows(seed_3 = 3))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<dataframe>$hash_rows()` are deprecated as of polars 1.16.0.
-      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
-
----
-
-    Code
-      invisible(df$hash_rows(seed_1 = 1, seed_2 = 2, seed_3 = 3))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<dataframe>$hash_rows()` are deprecated as of polars 1.16.0.
-      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
-
----
-
-    Code
-      invisible(df$hash_rows(seed_1 = NULL))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<dataframe>$hash_rows()` are deprecated as of polars 1.16.0.
-      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
-
 # unstack() works
 
     Code

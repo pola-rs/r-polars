@@ -5,31 +5,21 @@
 \alias{pl__deserialize_lf}
 \title{Serialize the logical plan of this LazyFrame}
 \usage{
-lazyframe__serialize(..., format = c("binary", "json"))
+lazyframe__serialize()
 
 pl__deserialize_lf(data)
 }
 \arguments{
-\item{...}{These dots are for future extensions and must be empty.}
-
-\item{format}{A character of the format in which to serialize.
-One of:
-\itemize{
-\item \code{"binary"} (default): Serialize to binary format (raw vector).
-\item \code{"json"}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-Serialize to JSON format (character vector).
-}}
-
 \item{data}{A raw vector of serialized \link{LazyFrame}.}
 }
 \value{
 \itemize{
-\item \verb{<lazyframe>$serialize()} returns raw or character, depending on the \code{format} argument.
+\item \verb{<lazyframe>$serialize()} returns a raw vector.
 \item \code{pl$deserialize_lf()} returns a deserialized \link{LazyFrame}.
 }
 }
 \description{
-Serialize the logical plan of this LazyFrame
+Serialize the logical plan to a binary representation (raw vector).
 }
 \examples{
 lf <- pl$LazyFrame(a = 1:3)$sum()

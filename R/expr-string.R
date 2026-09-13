@@ -280,27 +280,6 @@ expr_str_join <- function(
   })
 }
 
-expr_str_concat <- function(
-  delimiter = NULL,
-  ...,
-  ignore_nulls = TRUE
-) {
-  replacement <- if (is.null(delimiter)) {
-    'Use `$str$join("-")` instead.'
-  } else {
-    "Use `$str$join()` with the same delimiter instead."
-  }
-  deprecate_warn(
-    c(
-      `!` = "`$str$concat()` is deprecated.",
-      i = replacement
-    )
-  )
-  delimiter <- delimiter %||% "-"
-  self$`_rexpr`$str_join(delimiter, ignore_nulls) |>
-    wrap()
-}
-
 #' Convert a string to uppercase
 #'
 #' @description Transform to uppercase variant.
@@ -492,8 +471,6 @@ expr_str_zfill <- function(length) {
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @param scale Number of digits after the comma to use for the decimals.
-#' @param inference_length `r lifecycle::badge("deprecated")`
-#'   Ignored.
 #' @inherit as_polars_expr return
 #' @seealso
 #' - [`<series>$str$to_decimal()`][series_str_to_decimal]
@@ -505,39 +482,9 @@ expr_str_zfill <- function(length) {
 #'   )
 #' )
 #' df$with_columns(numbers_decimal = pl$col("numbers")$str$to_decimal(scale = 2))
-expr_str_to_decimal <- function(..., scale, inference_length = deprecated()) {
+expr_str_to_decimal <- function(..., scale) {
   wrap({
     check_dots_empty0(...)
-    if (is_present(inference_length)) {
-      deprecate_warn(
-        c(
-          `!` = sprintf(
-            "%s with %s is deprecated and has no effect on execution.",
-            format_code("<expr>$str$to_decimal()"),
-            format_arg("inference_length")
-          )
-        ),
-        always = TRUE
-      )
-    }
-
-    # Python Polars does not allow `scale` to be empty,
-    # but avoiding breaking change for the API, this is needed.
-    if (is_missing(scale)) {
-      deprecate_warn(
-        c(
-          `!` = sprintf(
-            "%s without %s is deprecated and set %s automatically.",
-            format_code("<expr>$str$to_decimal()"),
-            format_arg("scale"),
-            format_code("scale = 0L")
-          )
-        ),
-        always = TRUE
-      )
-      scale <- 0L
-    }
-
     self$`_rexpr`$str_to_decimal(scale)
   })
 }
@@ -663,16 +610,8 @@ expr_str_starts_with <- function(prefix) {
 #' Parse string values as JSON.
 #' Throw errors if encounter invalid json strings.
 #'
-#' As of polars 1.3.0, `infer_schema_length` is deprecated and
-#' `dtype` must be provided to ensure that the planner can determine
-#' the output datatype.
-#'
-#' If inferring dtype is needed, [`<series>$str$json_decode()`][series_str_json_decode]
-#' can be used, which inspects the data at runtime.
 #' @inheritParams rlang::args_dots_empty
 #' @param dtype The dtype to cast the extracted value to.
-#' @param infer_schema_length `r lifecycle::badge("deprecated")`
-#'   Ignored.
 #' @inherit as_polars_expr return
 #' @seealso
 #' - [`<series>$str$json_decode()`][series_str_json_decode]
@@ -685,38 +624,9 @@ expr_str_starts_with <- function(prefix) {
 #' df$select(
 #'   pl$col("json_val")$str$json_decode(dtype)
 #' )$unnest("json_val")
-expr_str_json_decode <- function(dtype, ..., infer_schema_length = deprecated()) {
+expr_str_json_decode <- function(dtype, ...) {
   wrap({
     check_dots_empty0(...)
-
-    # Python Polars does not allow `dtype` to be empty,
-    # but avoiding breaking change for the API, this is needed.
-    if (is_missing(dtype)) {
-      deprecate_warn(
-        c(
-          `!` = sprintf(
-            "%s without %s is deprecated and set %s automatically.",
-            format_code("<expr>$str$json_decode()"),
-            format_arg("dtype"),
-            format_code("dtype = pl$Struct()")
-          )
-        ),
-        always = TRUE
-      )
-      dtype <- pl$Struct()
-    }
-    if (is_present(infer_schema_length)) {
-      deprecate_warn(
-        c(
-          `!` = sprintf(
-            "%s with %s is deprecated and has no effect on execution.",
-            format_code("<expr>$str$json_decode()"),
-            format_arg("infer_schema_length")
-          )
-        )
-      )
-    }
-
     self$`_rexpr`$str_json_decode(dtype = dtype$`_dt`)
   })
 }
@@ -1161,12 +1071,9 @@ expr_str_reverse <- function() {
 #'
 #' This function determines if any of the patterns find a match.
 #' @inherit expr_str_contains params return
-#' @param patterns String patterns to search. Accepts expression input. In
-#'   Polars 1.16, bare character vectors are interpreted as literal patterns;
-#'   in Polars 2.0, they will be interpreted as column names. Use
-#'   `pl$lit(...)$implode()` for literal patterns or `pl$col()` for column
-#'   patterns. To use the same character vector for all rows, use
-#'   `list(c(...))` instead of `c(...)` (see Examples).
+#' @param patterns String patterns to search. Accepts expression input. Bare
+#'   character vectors are interpreted as column names. For literal patterns,
+#'   use a list or an expression such as `pl$lit(...)$implode()`.
 #' @param ascii_case_insensitive Enable ASCII-aware case insensitive matching.
 #' When this option is enabled, searching will be performed without respect to
 #' case for ASCII letters (a-z and A-Z) only.
@@ -1192,8 +1099,7 @@ expr_str_contains_any <- function(
   wrap({
     check_dots_empty0(...)
     self$`_rexpr`$str_contains_any(
-      # TODO: @2.0 set this to FALSE to parse character vectors as columns.
-      as_polars_expr(patterns, as_lit = TRUE)$`_rexpr`,
+      as_polars_expr(patterns, as_lit = FALSE)$`_rexpr`,
       ascii_case_insensitive = ascii_case_insensitive
     )
   })
@@ -1205,16 +1111,12 @@ expr_str_contains_any <- function(
 #'
 #' @inherit as_polars_expr return
 #' @inheritParams rlang::args_dots_empty
-# TODO: @2.0 remove inheriting from expr_str_contains_any and document the
-#       column-name interpretation of bare character vectors directly.
 #' @inheritParams expr_str_contains_any
 #' @inheritParams expr_str_extract_many
-#' @param replace_with A list containing a vector of strings used as
-#' replacements. If this vector is of length 1, then it is applied to all
-#' matches. Otherwise, it must be of the same length as the `patterns` vector.
-#' In Polars 1.16, a flat character vector is accepted with a deprecation
-#' warning, but Polars 2.0 requires a list. Use `list(c(...))` for a literal
-#' scalar or vector replacement.
+#' @param replace_with A list of strings, such as `list(c(...))`, or an Expr of
+#' dtype `List(String)` used as replacements. A single replacement is applied
+#' to all matches. Otherwise, the number of replacements must match the
+#' `patterns` argument.
 #' @param ascii_case_insensitive Enable ASCII-aware case insensitive matching.
 #' When this option is enabled, searching will be performed without respect to
 #' case for ASCII letters (a-z and A-Z) only.
@@ -1229,17 +1131,13 @@ expr_str_contains_any <- function(
 #'
 #' # a replacement of length 1 is applied to all matches
 #' df$with_columns(
-#'   remove_pronouns = pl$col("lyrics")$str$replace_many(
-#'     list(c("you", "me")), list(c(""))
-#'   )
+#'   remove_pronouns = pl$col("lyrics")$str$replace_many(list(c("you", "me")), list(c("")))
 #' )
 #'
 #' # if there are more than one replacement, the patterns and replacements are
 #' # matched
 #' df$with_columns(
-#'   fake_pronouns = pl$col("lyrics")$str$replace_many(
-#'     list(c("you", "me")), list(c("foo", "bar"))
-#'   )
+#'   fake_pronouns = pl$col("lyrics")$str$replace_many(list(c("you", "me")), list(c("foo", "bar")))
 #' )
 expr_str_replace_many <- function(
   patterns,
@@ -1251,8 +1149,7 @@ expr_str_replace_many <- function(
   wrap({
     check_dots_empty0(...)
     self$`_rexpr`$str_replace_many(
-      # TODO: @2.0 set this to FALSE to parse character vectors as columns.
-      as_polars_expr(patterns, as_lit = TRUE)$`_rexpr`,
+      as_polars_expr(patterns, as_lit = FALSE)$`_rexpr`,
       as_polars_expr(replace_with, as_lit = TRUE)$`_rexpr`,
       ascii_case_insensitive = ascii_case_insensitive,
       leftmost = leftmost

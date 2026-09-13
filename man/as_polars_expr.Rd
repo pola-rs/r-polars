@@ -13,7 +13,7 @@ as_polars_expr(x, ...)
 
 \method{as_polars_expr}{default}(x, ..., keep_series = FALSE)
 
-\method{as_polars_expr}{polars_expr}(x, ..., structify = deprecated())
+\method{as_polars_expr}{polars_expr}(x, ...)
 
 \method{as_polars_expr}{character}(x, ..., as_lit = FALSE)
 
@@ -29,11 +29,6 @@ as_polars_expr(x, ...)
 \item{keep_series}{A logical value indicating whether to treat the object as a \link{Series} or
 scalar value. If \code{TRUE}, the output is ensured to be a \link{Series} literal even if
 the length of the object is \code{1}.}
-
-\item{structify}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-A logical. If \code{TRUE}, convert multi-column expressions to a single struct
-expression by calling \code{\link[=pl__struct]{pl$struct()}}. Otherwise (default), done nothing.
-Deprecated since polars 1.1.0.}
 
 \item{as_lit}{A logical value indicating whether to treat vector as literal values or not.
 This argument is always set to \code{TRUE} when calling this function from \code{\link[=pl__lit]{pl$lit()}},

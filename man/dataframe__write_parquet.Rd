@@ -15,7 +15,6 @@ dataframe__write_parquet(
   partition_by = NULL,
   partition_chunk_size_bytes = 4294967296,
   storage_options = NULL,
-  retries = deprecated(),
   mkdir = FALSE
 )
 }
@@ -25,7 +24,7 @@ a path to a directory if writing a partitioned dataset.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{compression}{The compression method. Must be one of:
+\item{compression}{The compression method. Defaults to \code{"lz4"}. Must be one of:
 \itemize{
 \item \code{"lz4"}: fast compression/decompression.
 \item \code{"uncompressed"}
@@ -88,10 +87,6 @@ variable.
 
 If \code{storage_options} is not provided, Polars will try to infer the
 information from environment variables.}
-
-\item{retries}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Number of retries if
-accessing a cloud instance fails. Specify \code{max_retries} in
-\code{storage_options} instead.}
 
 \item{mkdir}{Recursively create all the directories in the path.}
 }

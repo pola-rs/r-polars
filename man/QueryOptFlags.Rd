@@ -15,7 +15,9 @@ pl__QueryOptFlags(
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
   check_order_observe = TRUE,
-  fast_projection = TRUE
+  fast_projection = TRUE,
+  join_order = TRUE,
+  row_estimate = TRUE
 )
 }
 \arguments{
@@ -42,6 +44,11 @@ if the order would not be observed.}
 
 \item{fast_projection}{A logical, indicates to replace simple projections
 with a faster inlined projection that skips the expression engine.}
+
+\item{join_order}{A logical, indicates whether joins may be reordered.}
+
+\item{row_estimate}{A logical, indicates whether row estimates are used in
+cost planning.}
 }
 \value{
 A \code{QueryOptFlags} object.

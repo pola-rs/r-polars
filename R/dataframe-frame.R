@@ -858,12 +858,10 @@ dataframe__set_sorted <- function(column, ..., descending = FALSE) {
 dataframe__unique <- function(
   ...,
   keep = c("any", "none", "first", "last"),
-  maintain_order = FALSE,
-  subset = deprecated()
+  maintain_order = FALSE
 ) {
   self$lazy()$unique(
     ...,
-    subset = subset,
     keep = keep,
     maintain_order = maintain_order
   )$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
@@ -1023,10 +1021,11 @@ dataframe__drop_nulls <- function(...) {
 #' )
 #'
 #' # Apply `<series>$str$json_decode()` to both the "a" and "b" columns
-#' df2$map_columns(c("a", "b"), \(s) s$str$json_decode())
+#' dtype <- pl$Struct(value = pl$Int64)
+#' df2$map_columns(c("a", "b"), \(s) s$str$json_decode(dtype))
 #'
 #' # Use a selector to apply the function to all columns
-#' df2$map_columns(cs$all(), \(s) s$str$json_decode())
+#' df2$map_columns(cs$all(), \(s) s$str$json_decode(dtype))
 dataframe__map_columns <- function(column_names, lambda) {
   wrap({
     lambda <- as_function(lambda)
@@ -1052,7 +1051,7 @@ dataframe__map_columns <- function(column_names, lambda) {
 #'
 #' df$gather_every(2, offset = 1)
 dataframe__gather_every <- function(n, offset = 0) {
-  self$select(pl$col("*")$gather_every(n, offset)) |>
+  self$lazy()$gather_every(n, offset)$collect(optimizations = DEFAULT_EAGER_OPT_FLAGS) |>
     wrap()
 }
 
@@ -1109,7 +1108,7 @@ dataframe__fill_null <- function(
 #' )
 #'
 #' df$explode("numbers")
-dataframe__explode <- function(..., empty_as_null = NULL, keep_nulls = TRUE) {
+dataframe__explode <- function(..., empty_as_null = FALSE, keep_nulls = TRUE) {
   self$lazy()$explode(..., empty_as_null = empty_as_null, keep_nulls = keep_nulls)$collect(
     optimizations = DEFAULT_EAGER_OPT_FLAGS
   ) |>
@@ -1978,16 +1977,17 @@ dataframe__with_row_index <- function(name = "index", offset = 0) {
 
 #' Sample from this DataFrame
 #'
-#' @inheritParams expr__sample
-#' @param n Number of items to return. Cannot be used with `fraction`. Accepts
-#'   a scalar value or a Series; expressions are not supported. Values are
-#'   interpreted as literals in Polars 1.16. Defaults to 1 if `fraction` is
-#'   `NULL`.
-#' @param fraction Fraction of items to return. Cannot be used with `n`.
-#'   Accepts a scalar value or a Series; expressions are not supported. Values
-#'   are interpreted as literals in Polars 1.16.
+#' @inheritParams rlang::args_dots_empty
+#' @param n Number of items to return. Accepts a scalar value or a Series;
+#'   expressions are not supported. Values are parsed as literals. Cannot be
+#'   used with `fraction`. Defaults to 1 if `fraction` is `NULL`.
+#' @param fraction Fraction of items to return. Accepts a scalar value or a
+#'   Series; expressions are not supported. Values are parsed as literals.
+#'   Cannot be used with `n`.
 #' @param with_replacement Allow values to be sampled more than once.
-#' @param shuffle Whether to shuffle the order of sampled data points.
+#' @param shuffle If `TRUE`, explicitly shuffle the sampled data points. If
+#'   `FALSE`, maintain their relative order. If `NULL` (default), use a
+#'   high-performance algorithm without guaranteeing an order.
 #' @param seed Seed for the random number generator. If `NULL` (default), a
 #'   random seed is generated for each sample operation.
 #' @inherit as_polars_df return
@@ -2003,7 +2003,7 @@ dataframe__sample <- function(
   ...,
   fraction = NULL,
   with_replacement = FALSE,
-  shuffle = FALSE,
+  shuffle = NULL,
   seed = NULL
 ) {
   wrap({
@@ -2139,9 +2139,6 @@ dataframe__group_by_dynamic <- function(
 #' The hash value is of type [UInt64][polars_dtype].
 #'
 #' @param seed Random seed parameter. Defaults to 0.
-#' @param seed_1,seed_2,seed_3 `r lifecycle::badge("deprecated")` Random seed
-#' parameters. Defaults to `seed` if not set. These arguments will be removed
-#' in Polars 2.0; only `seed` will remain, and hash values may change.
 #'
 #' @details
 #' This implementation does not guarantee stable results across different
@@ -2154,43 +2151,10 @@ dataframe__group_by_dynamic <- function(
 #'   ham = c("a", "b", NA, "d")
 #' )
 #' df$hash_rows(seed = 42)
-dataframe__hash_rows <- function(
-  seed = 0,
-  seed_1 = deprecated(),
-  seed_2 = deprecated(),
-  seed_3 = deprecated()
-) {
-  if (is_present(seed_1) || is_present(seed_2) || is_present(seed_3)) {
-    warn_deprecated_hash_seeds("<dataframe>$hash_rows")
-  }
-
+dataframe__hash_rows <- function(seed = 0) {
   wrap({
     check_number_whole(seed, min = 0)
-    seed_1 <- if (is_present(seed_1)) {
-      check_number_whole(seed_1, min = 0, allow_null = TRUE)
-      seed_1 %||% seed
-    } else {
-      seed
-    }
-    seed_2 <- if (is_present(seed_2)) {
-      check_number_whole(seed_2, min = 0, allow_null = TRUE)
-      seed_2 %||% seed
-    } else {
-      seed
-    }
-    seed_3 <- if (is_present(seed_3)) {
-      check_number_whole(seed_3, min = 0, allow_null = TRUE)
-      seed_3 %||% seed
-    } else {
-      seed
-    }
-
-    self$`_df`$hash_rows(
-      seed,
-      seed_1,
-      seed_2,
-      seed_3
-    )
+    self$`_df`$hash_rows(seed)
   })
 }
 

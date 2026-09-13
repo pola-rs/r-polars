@@ -26,11 +26,7 @@ df <- pl$DataFrame(
   item = c(0L, 4L, 2L),
 )$cast(values = pl$Array(pl$Float64, 3))
 df$with_columns(
-  with_expr = pl$col("values")$arr$contains(
-    pl$col("item")$cast(pl$Float64)
-  ),
-  with_lit = pl$col("values")$arr$contains(
-    pl$lit(1L)$cast(pl$Float64)
-  )
+  with_expr = pl$col("values")$arr$contains(pl$col("item")$cast(pl$Float64)),
+  with_lit = pl$col("values")$arr$contains(pl$lit(1)$cast(pl$Float64))
 )
 }

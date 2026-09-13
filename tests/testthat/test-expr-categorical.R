@@ -1,14 +1,3 @@
-test_that("get_categories", {
-  skip("Since categories are not stable because global categories are always used now.")
-  # TODO: enable tests after local categorical generation is implemented
-
-  dat <- pl$DataFrame(x = factor(c("z", "z", "k", "a", "b")))
-  expect_equal(
-    dat$select(pl$col("x")$cat$get_categories()),
-    pl$DataFrame(x = c("z", "k", "a", "b"))
-  )
-})
-
 test_that("cat$physical() works", {
   dtype <- pl$Enum(c("bar", "foo", "x"))
   df <- pl$DataFrame(x = c("foo", "bar", "foo", "x", NA))$cast(dtype)
@@ -50,10 +39,10 @@ test_that("cat$to() works", {
     pl$DataFrame(x = c("foo", "bar", NA))$cast(dtype)
   )
 
-  # the input must have the physical type of the target dtype
-  expect_snapshot(
+  # integer input is converted to the physical type of the target dtype
+  expect_equal(
     pl$DataFrame(x = c(1, 0))$cast(pl$UInt16)$select(pl$col("x")$cat$to(dtype)),
-    error = TRUE
+    pl$DataFrame(x = c("foo", "bar"))$cast(dtype)
   )
 
   # the target dtype must be a Categorical or an Enum

@@ -38,19 +38,27 @@ patrick::with_parameters_test_that(
       "struct", as_polars_series(data.frame(a = 1:3, b = letters[1:3])), nanoarrow::na_struct(list(a = nanoarrow::na_uint8(), b = nanoarrow::na_string())),
       "partial struct", as_polars_series(data.frame(a = 1:3, b = letters[1:3])), nanoarrow::na_struct(list(a = nanoarrow::na_uint8())),
       "empty struct", as_polars_series(data.frame(a = 1:3, b = letters[1:3])), nanoarrow::na_struct(),
+      "uint8 out of range", as_polars_series(256L), nanoarrow::na_uint8(),
     )
     # nolint end
   },
   code = {
-    stream <- nanoarrow::as_nanoarrow_array_stream(x, schema = target_schema)
+    if (.test_name %in% c("partial struct", "empty struct", "uint8 out of range")) {
+      expect_snapshot(
+        nanoarrow::as_nanoarrow_array_stream(x, schema = target_schema),
+        error = TRUE
+      )
+    } else {
+      stream <- nanoarrow::as_nanoarrow_array_stream(x, schema = target_schema)
 
-    expect_snapshot(
-      nanoarrow::infer_nanoarrow_schema(stream) |>
-        format()
-    )
+      expect_snapshot(
+        nanoarrow::infer_nanoarrow_schema(stream) |>
+          format()
+      )
 
-    # clean up
-    stream$release()
+      # clean up
+      stream$release()
+    }
   }
 )
 

@@ -51,6 +51,19 @@ test_that("flags work", {
   )
 })
 
+test_that("string conversion supports inferred and explicit schemas", {
+  strings <- as_polars_series(c("1.2", "3.45"))
+  expect_s3_class(strings$str$to_decimal(), "polars_series")
+  expect_s3_class(strings$str$to_decimal(scale = 2), "polars_series")
+
+  json <- as_polars_series(c('{"a": 1}', '{"a": 2}'))
+  expect_s3_class(json$str$json_decode(), "polars_series")
+  expect_s3_class(
+    json$str$json_decode(pl$Struct(a = pl$Int64)),
+    "polars_series"
+  )
+})
+
 test_that("alias/rename works", {
   series <- pl$Series("a", 1:3)
   expect_equal(

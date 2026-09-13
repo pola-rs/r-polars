@@ -667,7 +667,8 @@ expr__sum <- function() {
 #' Cast between DataType
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param dtype DataType to cast to.
+#' @param dtype DataType or DataTypeExpr to cast to. A DataTypeExpr can refer
+#' to the dtype of another expression.
 #' @param strict If `TRUE` (default), an error will be thrown if cast failed at
 #' resolve time.
 #' @param wrap_numerical If `TRUE`, numeric casts wrap overflowing values
@@ -698,9 +699,9 @@ expr__sum <- function() {
 expr__cast <- function(dtype, ..., strict = TRUE, wrap_numerical = FALSE) {
   wrap({
     check_dots_empty0(...)
-    check_polars_dtype(dtype)
+    dtype <- as_polars_dtype_expr(dtype)
 
-    self$`_rexpr`$cast(dtype$`_dt`, strict, wrap_numerical)
+    self$`_rexpr`$cast(dtype$`_datatype_expr`, strict, wrap_numerical)
   })
 }
 
@@ -863,11 +864,19 @@ expr__slice <- function(offset, length = NULL) {
     as_polars_expr(
       offset,
       as_lit = TRUE
-    )$`_rexpr`$cast(pl$Int64$`_dt`, strict = FALSE, wrap_numerical = TRUE),
+    )$`_rexpr`$cast(
+      as_polars_dtype_expr(pl$Int64)$`_datatype_expr`,
+      strict = FALSE,
+      wrap_numerical = TRUE
+    ),
     as_polars_expr(
       length,
       as_lit = TRUE
-    )$`_rexpr`$cast(pl$Int64$`_dt`, strict = FALSE, wrap_numerical = TRUE)
+    )$`_rexpr`$cast(
+      as_polars_dtype_expr(pl$Int64)$`_datatype_expr`,
+      strict = FALSE,
+      wrap_numerical = TRUE
+    )
   ) |>
     wrap()
 }
@@ -1058,12 +1067,21 @@ expr__filter <- function(...) {
 #'
 #' The output of this custom function is presumed to be either a Series, or an
 #' R vector that will be converted into a Series by [as_polars_series()].
+#' By default, the function is applied to the complete Series, rather than
+#' element by element. Set `is_elementwise` to `TRUE` when the function can be
+#' safely applied element by element.
 #' @inheritParams rlang::args_dots_empty
 #' @param lambda Function to apply.
-#' @param return_dtype Dtype of the output Series.
+#' @param return_dtype Dtype of the output Series. Can be a [DataType][polars_dtype]
+#'   or a DataTypeExpr, such as one returned by [`pl$dtype_of()`][pl__dtype_of].
 #'   It is recommended to set this whenever possible. If this is `NULL`, it tries
 #'   to infer the datatype by calling the function with dummy data and looking at
 #'   the output.
+#' @param is_elementwise Whether the function can be applied element by element.
+#'   If `TRUE`, the function may be optimized by the query engine. Defaults to
+#'   `FALSE`.
+#' @param returns_scalar Whether the function returns a single scalar value.
+#'   Defaults to `FALSE`.
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -1090,18 +1108,28 @@ expr__filter <- function(...) {
 expr__map_batches <- function(
   lambda,
   return_dtype = NULL,
-  ...
+  ...,
+  is_elementwise = FALSE,
+  returns_scalar = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
-    check_polars_dtype(return_dtype, allow_null = TRUE)
+    return_dtype <- if (is.null(return_dtype)) {
+      NULL
+    } else {
+      as_polars_dtype_expr(return_dtype)
+    }
+    check_bool(is_elementwise)
+    check_bool(returns_scalar)
     lambda <- as_function(lambda)
 
     self$`_rexpr`$map_batches(
       lambda = function(series) {
         as_polars_series(lambda(wrap(.savvy_wrap_PlRSeries(series))))$`_s`
       },
-      output_type = return_dtype$`_dt`
+      is_elementwise = is_elementwise,
+      returns_scalar = returns_scalar,
+      output_type = return_dtype$`_datatype_expr`
     )
   })
 }
@@ -1427,45 +1455,6 @@ expr__cumulative_eval <- function(expr, ..., min_samples = 1) {
   })
 }
 
-#' Get the group indexes of the group by operation
-#'
-#' `r lifecycle::badge("deprecated")`
-#'
-#' `agg_groups()` is deprecated as of polars 1.16.0. Use
-#' `df$with_row_index()$group_by(..., .maintain_order = TRUE)$agg(pl$col("index"))`
-#' instead.
-#'
-#' Should be used in aggregation context only.
-#' @inherit as_polars_expr return
-#' @examples
-#' df <- pl$DataFrame(
-#'   group = rep(c("one", "two"), each = 3),
-#'   value = c(94, 95, 96, 97, 97, 99)
-#' )
-#'
-#' df$group_by("group", .maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
-#'
-#' # Recommended approach
-#' df$with_row_index()$group_by("group", .maintain_order = TRUE)$agg(pl$col("index"))
-expr__agg_groups <- function() {
-  deprecate_warn(
-    c(
-      `!` = sprintf(
-        "%s is deprecated as of %s 1.16.0.",
-        format_fn("agg_groups"),
-        format_pkg("polars")
-      ),
-      i = sprintf(
-        "Use %s instead.",
-        format_code(
-          'df$with_row_index()$group_by(..., .maintain_order = TRUE)$agg(pl$col("index"))'
-        )
-      )
-    )
-  )
-  self$`_rexpr`$agg_groups() |>
-    wrap()
-}
 
 #' Get the index of the maximal value
 #'
@@ -2063,10 +2052,6 @@ expr__log1p <- function() {
 #' Hash elements
 #'
 #' @param seed Integer, random seed parameter. Defaults to 0.
-#' @param seed_1,seed_2,seed_3 `r lifecycle::badge("deprecated")` Integer,
-#' random seed parameters. Default to `seed` if not set. These arguments will
-#' be removed in Polars 2.0; only `seed` will remain, and hash values may
-#' change.
 #' @inherit as_polars_expr return
 #'
 #' @details
@@ -2077,21 +2062,10 @@ expr__log1p <- function() {
 #' @examples
 #' df <- pl$DataFrame(a = c(1, 2, NA), b = c("x", NA, "z"))
 #' df$with_columns(pl$all()$hash(seed = 10))
-expr__hash <- function(
-  seed = 0,
-  seed_1 = deprecated(),
-  seed_2 = deprecated(),
-  seed_3 = deprecated()
-) {
-  if (is_present(seed_1) || is_present(seed_2) || is_present(seed_3)) {
-    warn_deprecated_hash_seeds("<expr>$hash")
-  }
-
+expr__hash <- function(seed = 0) {
   wrap({
-    seed_1 <- if (is_present(seed_1)) seed_1 %||% seed else seed
-    seed_2 <- if (is_present(seed_2)) seed_2 %||% seed else seed
-    seed_3 <- if (is_present(seed_3)) seed_3 %||% seed else seed
-    self$`_rexpr`$hash(seed, seed_1, seed_2, seed_3)
+    check_number_whole(seed, min = 0)
+    self$`_rexpr`$hash(seed)
   })
 }
 
@@ -2421,9 +2395,7 @@ expr__sign <- function() {
 #' than 0.
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param element Expression or scalar value. In Polars 1.16, a bare character
-#'   string is interpreted as a column and emits a warning. Use `pl$col()` for
-#'   that interpretation or `pl$lit()` for a literal (the Polars 2.0 behavior).
+#' @param element Expression or scalar value. Strings are parsed as literals.
 #' @param side Must be one of the following:
 #' * `"any"`: the index of the first suitable location found is given;
 #' * `"left"`: the index of the leftmost suitable location found is given;
@@ -2446,10 +2418,7 @@ expr__search_sorted <- function(
   wrap({
     check_dots_empty0(...)
     side <- arg_match0(side, values = c("any", "left", "right"))
-    if (is_string(element)) {
-      warn_deprecated_bare_string("element", "<expr>$search_sorted")
-    }
-    self$`_rexpr`$search_sorted(as_polars_expr(element)$`_rexpr`, side, descending)
+    self$`_rexpr`$search_sorted(as_polars_expr(element, as_lit = TRUE)$`_rexpr`, side, descending)
   })
 }
 
@@ -3051,7 +3020,7 @@ expr__rolling <- function(
 #' (which may not be 24 hours, due to daylight savings). Similarly for
 #' "calendar week", "calendar month", "calendar quarter", and "calendar year".
 #' @param min_samples The number of values in the window that should be
-#' non-null before computing a result. Defaults to 1.
+#'   non-null before computing a result. Defaults to 1.
 #' @param closed Define which sides of the interval are closed (inclusive).
 #' Default is `"right"`.
 #'
@@ -3110,6 +3079,8 @@ expr__rolling_max_by <- function(
 #' Apply a rolling min based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
+#' @param min_samples The number of values in the window that should be
+#'   non-null before computing a result. Defaults to 1.
 #' @inherit as_polars_expr return
 #' @examples
 #' df_temporal <- pl$select(
@@ -3160,6 +3131,8 @@ expr__rolling_min_by <- function(
 #' Apply a rolling mean based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
+#' @param min_samples The number of values in the window that should be
+#'   non-null before computing a result. Defaults to 1.
 #' @inherit as_polars_expr return
 #' @examples
 #' df_temporal <- pl$select(
@@ -3210,6 +3183,8 @@ expr__rolling_mean_by <- function(
 #' Apply a rolling median based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
+#' @param min_samples The number of values in the window that should be
+#'   non-null before computing a result. Defaults to 1.
 #' @inherit as_polars_expr return
 #' @examples
 #' df_temporal <- pl$select(
@@ -3261,9 +3236,7 @@ expr__rolling_median_by <- function(
 #'
 #' @inherit expr__rolling_max_by description params details
 #' @param min_samples The number of values in the window that should be
-#'   non-null before computing a result. Defaults to 1 in Polars 1.16. Omitting
-#'   this argument emits a warning because the default will change to 0 in
-#'   Polars 2.0.
+#'   non-null before computing a result. Defaults to 0.
 #' @inherit as_polars_expr return
 #' @examples
 #' df_temporal <- pl$select(
@@ -3280,8 +3253,7 @@ expr__rolling_median_by <- function(
 #' df_temporal$with_columns(
 #'   rolling_row_sum = pl$col("index")$rolling_sum_by(
 #'     "date",
-#'     window_size = "2h",
-#'     min_samples = 1
+#'     window_size = "2h"
 #'   )
 #' )
 #'
@@ -3290,7 +3262,6 @@ expr__rolling_median_by <- function(
 #'   rolling_row_sum = pl$col("index")$rolling_sum_by(
 #'     "date",
 #'     window_size = "2h",
-#'     min_samples = 1,
 #'     closed = "both"
 #'   )
 #' )
@@ -3298,15 +3269,11 @@ expr__rolling_sum_by <- function(
   by,
   window_size,
   ...,
-  min_samples = 1,
+  min_samples = 0,
   closed = c("right", "both", "left", "none")
 ) {
-  min_samples_missing <- missing(min_samples)
   wrap({
     check_dots_empty0(...)
-    if (min_samples_missing) {
-      warn_rolling_sum_min_samples()
-    }
     closed <- arg_match0(closed, values = c("both", "left", "right", "none"))
     self$`_rexpr`$rolling_sum_by(
       by = as_polars_expr(by)$`_rexpr`,
@@ -3320,6 +3287,8 @@ expr__rolling_sum_by <- function(
 #' Apply a rolling quantile based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
+#' @param min_samples The number of values in the window that should be
+#'   non-null before computing a result. Defaults to 1.
 #' @inherit as_polars_expr return
 #' @inheritParams expr__quantile
 #' @examples
@@ -3381,6 +3350,8 @@ expr__rolling_quantile_by <- function(
 #' Apply a rolling standard deviation based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
+#' @param min_samples The number of values in the window that should be
+#'   non-null before computing a result. Defaults to 1.
 #' @inheritParams expr__std
 #' @inherit as_polars_expr return
 #' @examples
@@ -3434,6 +3405,8 @@ expr__rolling_std_by <- function(
 #' Apply a rolling variance based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
+#' @param min_samples The number of values in the window that should be
+#'   non-null before computing a result. Defaults to 1.
 #' @inheritParams expr__var
 #' @inherit as_polars_expr return
 #' @examples
@@ -3487,6 +3460,8 @@ expr__rolling_var_by <- function(
 #' Apply a rolling rank based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
+#' @param min_samples The number of values in the window that should be
+#'   non-null before computing a result. Defaults to 1.
 #' @inheritParams expr__rolling_rank
 #'
 #' @inherit as_polars_expr return
@@ -4016,7 +3991,7 @@ expr__drop_nulls <- function() {
 #' @inherit as_polars_expr return
 #' @inheritParams rlang::args_dots_empty
 #' @param empty_as_null Indicates to explode an empty list/array into a `null`.
-#'   Defaults to `TRUE`. In Polars 2.0, the default will change to `FALSE`.
+#' Defaults to `FALSE`.
 #' @param keep_nulls Indicates to explode a `null` list/array into a `null`.
 #' @examples
 #' df <- pl$DataFrame(
@@ -4025,28 +4000,9 @@ expr__drop_nulls <- function() {
 #' )
 #'
 #' df$select(pl$col("values")$explode())
-expr__explode <- function(..., empty_as_null = NULL, keep_nulls = TRUE) {
+expr__explode <- function(..., empty_as_null = FALSE, keep_nulls = TRUE) {
   wrap({
     check_dots_empty0(...)
-    if (is.null(empty_as_null)) {
-      deprecate_warn(
-        c(
-          `!` = sprintf(
-            "The default value of %s in %s will change from %s to %s in Polars 2.0.",
-            format_arg("empty_as_null"),
-            format_fn("explode"),
-            "TRUE",
-            "FALSE"
-          ),
-          `i` = sprintf(
-            "Explicitly set %s to suppress this warning.",
-            format_arg("empty_as_null")
-          )
-        ),
-        always = TRUE
-      )
-      empty_as_null <- TRUE
-    }
     self$`_rexpr`$explode(empty_as_null = empty_as_null, keep_nulls = keep_nulls)
   })
 }
@@ -4055,44 +4011,6 @@ expr__explode <- function(..., empty_as_null = NULL, keep_nulls = TRUE) {
 # The document is in expr-array.R
 expr_arr_explode <- expr__explode
 
-#' Flatten a list or string column
-#'
-#' @description
-#' `r lifecycle::badge("deprecated")`
-#'
-#' `$flatten()` is deprecated. For Polars 2.0-compatible behavior, use
-#' `$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)`. To preserve the
-#' legacy behavior exactly, use `$list$explode(empty_as_null = TRUE,
-#' keep_nulls = TRUE)`; the null handling differs between these forms.
-#'
-#' @inherit as_polars_expr return
-#' @examples
-#' df <- pl$DataFrame(
-#'   group = c("a", "b", "b"),
-#'   values = list(1:2, 2:3, 4)
-#' )
-#'
-#' df$group_by("group")$agg(pl$col("values")$list$explode())
-expr__flatten <- function() {
-  deprecate_warn(
-    c(
-      `!` = sprintf(
-        "%s is deprecated as of %s 1.9.0.",
-        format_fn("flatten"),
-        format_pkg("polars")
-      ),
-      i = paste0(
-        "Use `$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)` for ",
-        "Polars 2.0-compatible behavior. Use ",
-        "`$list$explode(empty_as_null = TRUE, keep_nulls = TRUE)` to preserve ",
-        "the legacy behavior exactly."
-      )
-    )
-  )
-  wrap({
-    self$explode(empty_as_null = TRUE)
-  })
-}
 
 #' Extend the Series with `n` copies of a value
 #'
@@ -4177,7 +4095,7 @@ expr__fill_null <- function(value = NULL, strategy = NULL, limit = NULL) {
 #'   group = c("one", "one", "one", "two", "two", "two"),
 #'   value = c(1, 98, 2, 3, 99, 4)
 #' )
-#' df$group_by("group", maintain_order = TRUE)$agg(
+#' df$group_by("group", .maintain_order = TRUE)$agg(
 #'   pl$col("value")$gather(c(2, 1))
 #' )
 expr__gather <- function(indices, ..., null_on_oob = FALSE) {
@@ -4203,7 +4121,7 @@ expr__gather <- function(indices, ..., null_on_oob = FALSE) {
 #'   group = c("one", "one", "one", "two", "two", "two"),
 #'   value = c(1, 98, 2, 3, 99, 4)
 #' )
-#' df$group_by("group", maintain_order = TRUE)$agg(
+#' df$group_by("group", .maintain_order = TRUE)$agg(
 #'   pl$col("value")$get(1)
 #' )
 expr__get <- function(index, ..., null_on_oob = FALSE) {
@@ -4419,49 +4337,14 @@ expr__qcut <- function(
   })
 }
 
-#' Create a single chunk of memory for this Series
-#'
-#' @description
-#' `r lifecycle::badge("deprecated")`
-#'
-#' `<expr>$rechunk()` is deprecated. Rechunking within a query is not
-#' well-defined. Use `$rechunk()` on the DataFrame after collecting the results
-#' instead.
-#'
-#' @inherit as_polars_expr return
-#' @examples
-#' df <- pl$DataFrame(a = c(1, 1, 2))
-#'
-#' # Create a Series with 3 nulls, append column a then rechunk
-#' df$select(pl$repeat_(NA, 3)$append(pl$col("a"))$rechunk())
-expr__rechunk <- function() {
-  wrap({
-    deprecate_warn(
-      c(
-        `!` = sprintf(
-          "%s is deprecated as of %s 1.15.0.",
-          format_fn("rechunk"),
-          format_pkg("polars")
-        ),
-        i = sprintf(
-          "Rechunking within a query is not well-defined. Call %s on the DataFrame after collecting the results instead.", # nolint: line_length_linter
-          format_code("$rechunk()")
-        )
-      )
-    )
-    self$`_rexpr`$rechunk()
-  })
-}
 
-#' Reinterpret the underlying bits as a signed/unsigned integer
-#'
-#' This operation is only allowed for 64-bit integers. For lower bits integers,
-#' you can safely use the [$cast()][expr__cast] operation.
+#' Reinterpret the underlying bits of a same-size numeric type.
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param signed Whether to reinterpret as a signed integer. `TRUE` reinterprets
-#'   as `pl$Int64`; `FALSE` reinterprets as `pl$UInt64`. If omitted, a warning is
-#'   emitted and `TRUE` is used for compatibility with Polars 1.16.
+#' @param signed Whether to reinterpret as a signed or unsigned integer of the
+#'   same width as the input. Must specify exactly one of `signed` and `dtype`.
+#' @param dtype Target data type for the reinterpretation. Must specify exactly
+#'   one of `signed` and `dtype`.
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -4469,16 +4352,21 @@ expr__rechunk <- function() {
 #'
 #' # Reinterpret column a as Int64
 #' df$with_columns(
-#'   reinterpreted = pl$col("a")$reinterpret(signed = TRUE)
+#'   reinterpreted = pl$col("a")$reinterpret(dtype = pl$Int64)
 #' )
-expr__reinterpret <- function(..., signed = TRUE) {
-  signed_missing <- missing(signed)
+expr__reinterpret <- function(..., signed = NULL, dtype = NULL) {
   wrap({
     check_dots_empty0(...)
-    if (signed_missing) {
-      warn_reinterpret_signed()
+    check_null_exclusive(signed, dtype)
+
+    if (is.null(signed)) {
+      check_polars_dtype(dtype)
+      dtype <- dtype$`_dt`
+    } else {
+      check_bool(signed)
     }
-    self$`_rexpr`$reinterpret(signed)
+
+    self$`_rexpr`$reinterpret(signed, dtype)
   })
 }
 
@@ -4693,15 +4581,15 @@ expr__rle_id <- function() {
 #' Sample from this expression
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param n Number of items to return. Cannot be used with `fraction`. Values
-#'   are interpreted as literals in Polars 1.16; bare strings are interpreted as
-#'   columns in Polars 2.0.
-#'   Defaults to 1 if `fraction` is `NULL`.
-#' @param fraction Fraction of items to return. Cannot be used with `n`. Values
-#'   are interpreted as literals in Polars 1.16; bare strings are interpreted as
-#'   columns in Polars 2.0.
+#' @param n Number of items to return. Can be an Expr. Strings are parsed as
+#'  column names. Cannot be used with `fraction`. Defaults to 1 if `fraction`
+#'  is `NULL`.
+#' @param fraction Fraction of items to return. Can be an Expr. Strings are
+#'  parsed as column names. Cannot be used with `n`.
 #' @param with_replacement Allow values to be sampled more than once.
-#' @param shuffle Whether to shuffle the order of sampled data points.
+#' @param shuffle If `TRUE`, explicitly shuffle the sampled data points. If
+#'   `FALSE`, maintain their relative order. If `NULL` (default), use a
+#'   high-performance algorithm without guaranteeing an order.
 #' @param seed Seed for the random number generator. If `NULL` (default), a
 #' random seed is generated for each sample operation.
 #'
@@ -4716,7 +4604,7 @@ expr__sample <- function(
   ...,
   fraction = NULL,
   with_replacement = FALSE,
-  shuffle = FALSE,
+  shuffle = NULL,
   seed = NULL
 ) {
   wrap({
@@ -4726,7 +4614,7 @@ expr__sample <- function(
         abort("Can't specify both `n` and `fraction`.")
       }
       self$`_rexpr`$sample_frac(
-        as_polars_expr(fraction, as_lit = TRUE)$`_rexpr`,
+        as_polars_expr(fraction)$`_rexpr`,
         with_replacement = with_replacement,
         shuffle = shuffle,
         seed = seed
@@ -4736,7 +4624,7 @@ expr__sample <- function(
         n <- 1
       }
       self$`_rexpr`$sample_n(
-        as_polars_expr(n, as_lit = TRUE)$`_rexpr`,
+        as_polars_expr(n)$`_rexpr`,
         with_replacement = with_replacement,
         shuffle = shuffle,
         seed = seed
@@ -4838,12 +4726,11 @@ expr__truncate <- function(decimals = 0L) {
 #' Shift values by the given number of indices
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param n Number of indices to shift forward. If a negative value is
-#' passed, values are shifted in the opposite direction instead.
-#' @param fill_value Fill the resulting null values with this value. In Polars
-#'   1.16, a bare character string is interpreted as a column and emits a
-#'   warning. In Polars 2.0, bare strings are literals; use `pl$col()` to
-#'   preserve the old column behavior or `pl$lit()` for the new behavior.
+#' @param n Number of indices to shift forward. Can be an Expr. Strings are
+#'  parsed as column names. If a negative value is passed, values are shifted
+#'  in the opposite direction instead.
+#' @param fill_value Fill the resulting null values with this value. Strings
+#'  are parsed as literals.
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -4859,32 +4746,13 @@ expr__truncate <- function(decimals = 0L) {
 expr__shift <- function(n = 1, ..., fill_value = NULL) {
   wrap({
     check_dots_empty0(...)
-    if (!is.null(fill_value) && is_string(fill_value)) {
-      warn_deprecated_bare_string("fill_value", "<expr>$shift")
-    }
     self$`_rexpr`$shift(
       as_polars_expr(n)$`_rexpr`,
-      as_polars_expr(fill_value)$`_rexpr`
+      as_polars_expr(fill_value, as_lit = TRUE)$`_rexpr`
     )
   })
 }
 
-#' Shrink numeric columns to the minimal required datatype
-#'
-#' `r lifecycle::badge("deprecated")`
-#' Deprecated as of polars 1.3.0 and turned into a no-op.
-#' Use [`<series>$shrink_dtype`][series__shrink_dtype] instead.
-#'
-#' @inherit as_polars_expr return
-expr__shrink_dtype <- function() {
-  deprecate_warn(
-    c(
-      `!` = sprintf("%s is deprecated and is a no-op.", format_code("<expr>$shrink_dtype()")),
-      `i` = sprintf("Use %s instead.", format_code("<series>$shrink_dtype()"))
-    )
-  )
-  self
-}
 
 #' Shuffle the contents of this expression
 #'
@@ -4923,7 +4791,7 @@ expr__shuffle <- function(seed = NULL) {
 #' @examples
 #' df <- pl$DataFrame(a = 1:3)
 #' df$select(pl$col("a")$set_sorted()$max())
-expr__set_sorted <- function(..., descending = FALSE, nulls_last = !descending) {
+expr__set_sorted <- function(..., descending = FALSE, nulls_last = FALSE) {
   wrap({
     check_dots_empty0(...)
     self$`_rexpr`$set_sorted_flag(descending, nulls_last)
@@ -5119,32 +4987,6 @@ expr__bitwise_xor <- function() {
 #' )
 expr__index_of <- function(element) {
   wrap({
-    # TODO: @2.0 remove this workaround
-    # We use `NA` in examples before, but in 1.7.0,
-    # polars stricts dtype of `null` here.
-    # So users should use typed NA (like `NA_real_`) or
-    # Null dtype `null` converted from R `NULL` or
-    # `vctrs::unspecified(1)`.
-    if (identical(element, NA)) {
-      deprecate_warn(
-        c(
-          `!` = sprintf(
-            "As of %s 1.7.0, %s checks dtype strictly.",
-            format_pkg("polars"),
-            format_code("<expr>$index_of()")
-          ),
-          i = sprintf(
-            "Please use %s or %s instead of %s.",
-            format_code("NULL"),
-            format_code("vctrs::unspecified(1)"),
-            format_code("NA")
-          )
-        )
-      )
-
-      element <- NULL
-    }
-
     self$`_rexpr`$index_of(as_polars_expr(element, as_lit = TRUE)$`_rexpr`)
   })
 }

@@ -86,32 +86,24 @@
 
     Code
       as_polars_series(c("2020-01-01", "2021-06-15"))$cast(pl$Date)
-    Condition <polars_deprecation_warning>
-      Warning:
-      Casting from String to Date is deprecated and will be removed in Polars 2.0. Use `str.to_date()` instead.
-    Output
-      shape: (2,)
-      Series: '' [date]
-      [
-      	2020-01-01
-      	2021-06-15
-      ]
+    Condition
+      Error in `as_polars_series(c("2020-01-01", "2021-06-15"))$cast()`:
+      ! Evaluation failed in `$cast()`.
+      Caused by error:
+      ! Invalid operation: casting from string to date is not supported.
+      It was removed in Polars 2.0. Use `str.to_date()` instead.
 
 ---
 
     Code
       as_polars_series(c("2020-01-01T12:00:00", "2021-06-15T08:30:00"))$cast(pl$
         Datetime("us"))
-    Condition <polars_deprecation_warning>
-      Warning:
-      Casting from String to DateTime is deprecated and will be removed in Polars 2.0. Use `str.to_datetime()` instead.
-    Output
-      shape: (2,)
-      Series: '' [datetime[μs]]
-      [
-      	2020-01-01 12:00:00
-      	2021-06-15 08:30:00
-      ]
+    Condition
+      Error in `as_polars_series(c("2020-01-01T12:00:00", "2021-06-15T08:30:00"))$cast()`:
+      ! Evaluation failed in `$cast()`.
+      Caused by error:
+      ! Invalid operation: casting from string to datetime is not supported.
+      It was removed in Polars 2.0. Use `str.to_datetime()` instead.
 
 # exclude
 
@@ -160,25 +152,6 @@
       Caused by error:
       ! type bool is incompatible with expected type str
 
-# agg_groups is deprecated
-
-    Code
-      df$group_by("group", .maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! `agg_groups()` is deprecated as of polars 1.16.0.
-      i Use `df$with_row_index()$group_by(..., .maintain_order = TRUE)$agg(pl$col("index"))` instead.
-    Output
-      shape: (2, 2)
-      ┌───────┬───────────┐
-      │ group ┆ value     │
-      │ ---   ┆ ---       │
-      │ str   ┆ list[u32] │
-      ╞═══════╪═══════════╡
-      │ one   ┆ [0, 1, 2] │
-      │ two   ┆ [3, 4, 5] │
-      └───────┴───────────┘
-
 # truncate
 
     Code
@@ -222,15 +195,6 @@
       This error occurred in the following expression:
       	col("x").truncate()
 
-# search_sorted warns for bare character strings
-
-    Code
-      invisible(df$select(pl$col("a")$search_sorted("a")))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! Using a bare character string as the `element` argument of `<expr>$search_sorted()` is deprecated as of polars 1.16.0.
-      i In polars 2.0, bare strings will be literals. Use `pl$col(...)` for a column or `pl$lit(...)` for a literal.
-
 # gather that
 
     Code
@@ -260,15 +224,6 @@
       
       This error occurred in the following expression:
       	Series[literal].get(11)
-
-# shift warns for bare character fill values
-
-    Code
-      invisible(pl$col("a")$shift(1, fill_value = "fill"))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! Using a bare character string as the `fill_value` argument of `<expr>$shift()` is deprecated as of polars 1.16.0.
-      i In polars 2.0, bare strings will be literals. Use `pl$col(...)` for a column or `pl$lit(...)` for a literal.
 
 # fill_nan() works
 
@@ -305,34 +260,6 @@
       Caused by error:
       ! -1.0 is out of range that can be safely converted to u8
 
-# explode/flatten
-
-    Code
-      pl$DataFrame(a = list(letters))$select(pl$col("a")$flatten())
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! `flatten()` is deprecated as of polars 1.9.0.
-      i Use `$list$explode(empty_as_null = FALSE, keep_nulls = FALSE)` for Polars 2.0-compatible behavior. Use `$list$explode(empty_as_null = TRUE, keep_nulls = TRUE)` to preserve the legacy behavior exactly.
-    Output
-      shape: (26, 1)
-      ┌─────┐
-      │ a   │
-      │ --- │
-      │ str │
-      ╞═════╡
-      │ a   │
-      │ b   │
-      │ c   │
-      │ d   │
-      │ e   │
-      │ …   │
-      │ v   │
-      │ w   │
-      │ x   │
-      │ y   │
-      │ z   │
-      └─────┘
-
 # is_between errors if wrong 'closed' arg
 
     Code
@@ -347,59 +274,47 @@
       Caused by error:
       ! `closed` must be one of "both", "left", "right", or "none", not "foo".
 
-# hash additional seeds are deprecated
-
-    Code
-      invisible(expr$hash(seed_1 = 1))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
-      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
-
----
-
-    Code
-      invisible(expr$hash(seed_2 = 2))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
-      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
-
----
-
-    Code
-      invisible(expr$hash(seed_3 = 3))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
-      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
-
----
-
-    Code
-      invisible(expr$hash(seed_1 = 1, seed_2 = 2, seed_3 = 3))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
-      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
-
----
-
-    Code
-      invisible(expr$hash(seed_1 = NULL))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `seed_1`, `seed_2`, and `seed_3` arguments of `<expr>$hash()` are deprecated as of polars 1.16.0.
-      i The `seed_1`, `seed_2`, and `seed_3` arguments will be removed in Polars 2.0; only `seed` will remain. Hash values may change.
-
 # reinterpret
 
     Code
-      invisible(df$select(pl$col("a")$reinterpret()))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! Calling `<expr>$reinterpret()` without the `signed` argument is deprecated as of polars 1.16.0.
-      i Use `signed = TRUE` to retain the current behavior. In polars 2.0, exactly one of `signed` or `dtype` must be supplied.
+      pl$col("a")$reinterpret()
+    Condition
+      Error:
+      ! Evaluation failed in `$reinterpret()`.
+      Caused by error:
+      ! Must specify either `signed` or `dtype`.
+
+---
+
+    Code
+      pl$col("a")$reinterpret(signed = TRUE, dtype = pl$Int64)
+    Condition
+      Error:
+      ! Evaluation failed in `$reinterpret()`.
+      Caused by error:
+      ! Can't specify both `signed` and `dtype`.
+
+---
+
+    Code
+      pl$col("a")$reinterpret(dtype = "Int64")
+    Condition
+      Error:
+      ! Evaluation failed in `$reinterpret()`.
+      Caused by error:
+      ! `dtype` must be a polars data type, not the string "Int64".
+
+---
+
+    Code
+      pl$DataFrame(a = 1:2)$select(pl$col("a")$reinterpret(dtype = pl$Int64))
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: cannot reinterpret from Int32 to Int64
 
 # rolling_*_by only works with date, datetime, or integers
 
@@ -430,15 +345,6 @@
       ! Evaluation failed in `$rolling_min_by()`.
       Caused by error:
       ! -1.0 is out of range that can be safely converted to usize
-
-# rolling_sum_by warns when min_samples is omitted
-
-    Code
-      invisible(df$select(pl$col("a")$rolling_sum_by("date", window_size = "2d")))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default value of `min_samples` in `<expr>$rolling_sum_by()` will change in polars 2.0.
-      i Use `min_samples = 1` to retain the current behavior or `min_samples = 0` to opt into the new default.
 
 # rolling_*_by: arg 'closed'
 
@@ -851,24 +757,6 @@
 # index_of works
 
     Code
-      df$select(na = pl$col("a")$index_of(NA))
-    Condition
-      Warning:
-      ! As of polars 1.7.0, `<expr>$index_of()` checks dtype strictly.
-      i Please use `NULL` or `vctrs::unspecified(1)` instead of `NA`.
-    Output
-      shape: (1, 1)
-      ┌─────┐
-      │ na  │
-      │ --- │
-      │ u32 │
-      ╞═════╡
-      │ 1   │
-      └─────┘
-
----
-
-    Code
       df$select(na = pl$col("a")$index_of(NA_character_))
     Condition
       Error in `df$select()`:
@@ -877,17 +765,6 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid operation: cannot cast losslessly from str to f64
-
-# Deprecated shrink_dtype
-
-    Code
-      pl$col("foo")$shrink_dtype()
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! `<expr>$shrink_dtype()` is deprecated and is a no-op.
-      i Use `<series>$shrink_dtype()` instead.
-    Output
-      col("foo")
 
 # is_close works
 

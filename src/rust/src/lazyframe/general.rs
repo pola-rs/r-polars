@@ -337,101 +337,6 @@ impl PlRLazyFrame {
             .into())
     }
 
-    fn profile(&self) -> Result<Sexp> {
-        use crate::{
-            r_threads::{ThreadCom, concurrent_handler},
-            r_udf::{CONFIG, RUdfReturn, RUdfSignature},
-        };
-        fn serve_r(
-            udf_sig: RUdfSignature,
-        ) -> std::result::Result<RUdfReturn, Box<dyn std::error::Error>> {
-            udf_sig.eval()
-        }
-
-        #[cfg(not(target_arch = "wasm32"))]
-        {
-            use crate::r_threads::wrap_with_cancel;
-            use std::panic::AssertUnwindSafe;
-            use std::sync::{
-                Arc,
-                atomic::{AtomicBool, Ordering},
-            };
-
-            let ldf = self.ldf.clone();
-
-            // Nested path (called from within a UDF): run directly, no cancellation.
-            if ThreadCom::try_from_global(&CONFIG).is_ok() {
-                let ldf = self.ldf.clone();
-                let (data, timings) = ldf.profile().map_err(RPolarsErr::from)?;
-                let data = <PlRDataFrame>::from(data);
-                let timings = <PlRDataFrame>::from(timings);
-                let mut out = OwnedListSexp::new(2, true)?;
-                unsafe {
-                    out.set_value_unchecked(0, Sexp::try_from(data)?.0);
-                    out.set_value_unchecked(1, Sexp::try_from(timings)?.0);
-                };
-                return Ok(out.into());
-            }
-
-            // Top-level path: cancellation support via polars SIGINT hook.
-            let cancelled = Arc::new(AtomicBool::new(false));
-            let worker_cancelled = Arc::clone(&cancelled);
-
-            let concurrent_result = concurrent_handler(
-                move |tc| {
-                    let retval =
-                        wrap_with_cancel(&worker_cancelled, AssertUnwindSafe(|| ldf.profile()));
-                    ThreadCom::kill_global(&CONFIG);
-                    drop(tc);
-                    retval
-                },
-                serve_r,
-                &CONFIG,
-            );
-
-            if cancelled.load(Ordering::Acquire) {
-                drop(concurrent_result);
-                return match unsafe {
-                    savvy::unwind_protect(|| {
-                        Rf_onintr();
-                        std::ptr::null_mut()
-                    })
-                } {
-                    Err(e) => Err(e),
-                    Ok(_) => Err(savvy::Error::from("operation cancelled by user interrupt")),
-                };
-            }
-
-            let (data, timings) = concurrent_result
-                .map_err(|e| e.to_string())?
-                .map_err(RPolarsErr::from)?;
-
-            let data = <PlRDataFrame>::from(data);
-            let timings = <PlRDataFrame>::from(timings);
-
-            let mut out = OwnedListSexp::new(2, true)?;
-            unsafe {
-                out.set_value_unchecked(0, Sexp::try_from(data)?.0);
-                out.set_value_unchecked(1, Sexp::try_from(timings)?.0);
-            };
-            return Ok(out.into());
-        }
-
-        #[cfg(target_arch = "wasm32")]
-        {
-            let ldf = self.ldf.clone();
-            let (data, timings) = ldf.profile().map_err(RPolarsErr::from)?;
-            let data = <PlRDataFrame>::from(data);
-            let timings = <PlRDataFrame>::from(timings);
-            let mut out = OwnedListSexp::new(2, true)?;
-            unsafe {
-                out.set_value_unchecked(0, Sexp::try_from(data)?.0);
-                out.set_value_unchecked(1, Sexp::try_from(timings)?.0);
-            };
-            Ok(out.into())
-        }
-    }
-
     fn select_seq(&mut self, exprs: ListSexp) -> Result<Self> {
         let ldf = self.ldf.clone();
         let exprs = <Wrap<Vec<Expr>>>::try_from(exprs)?.0;
@@ -994,6 +899,7 @@ impl PlRLazyFrame {
         glob: bool,
         row_index_offset: NumericScalar,
         missing_columns: &str,
+        extra_columns: &str,
         comment_prefix: Option<&str>,
         quote_char: Option<&str>,
         null_values: Option<StringSexp>,
@@ -1005,6 +911,7 @@ impl PlRLazyFrame {
         schema: Option<ListSexp>,
         storage_options: Option<StringSexp>,
         include_file_paths: Option<&str>,
+        overwrite_dtype_slice: Option<ListSexp>,
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
@@ -1023,6 +930,7 @@ impl PlRLazyFrame {
                 None => NonZeroUsize::MAX,
             };
             let missing_columns_policy = <Wrap<MissingColumnsPolicy>>::try_from(missing_columns)?.0;
+            let extra_columns_policy = <Wrap<ExtraColumnsPolicy>>::try_from(extra_columns)?.0;
             let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
             let n_rows = match n_rows {
                 Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
@@ -1061,6 +969,10 @@ impl PlRLazyFrame {
                 Some(x) => Some(<Wrap<Schema>>::try_from(x)?.0),
                 None => None,
             };
+            let overwrite_dtype_slice = match overwrite_dtype_slice {
+                Some(x) => Some(<Wrap<Vec<DataType>>>::try_from(x)?.0),
+                None => None,
+            };
             let schema = match schema {
                 Some(x) => Some(<Wrap<Schema>>::try_from(x)?.0),
                 None => None,
@@ -1095,6 +1007,7 @@ impl PlRLazyFrame {
                 .with_n_rows(n_rows)
                 .with_cache(cache)
                 .with_dtype_overwrite(overwrite_dtype.map(Arc::new))
+                .with_dtype_overwrite_by_position(overwrite_dtype_slice.map(Arc::new))
                 .with_schema(schema.map(Arc::new))
                 .with_low_memory(low_memory)
                 .with_comment_prefix(comment_prefix.map(|x| x.into()))
@@ -1113,6 +1026,7 @@ impl PlRLazyFrame {
                 .with_raise_if_empty(raise_if_empty)
                 .with_include_file_paths(include_file_paths.map(|x| x.into()))
                 .with_missing_columns_policy(Some(missing_columns_policy))
+                .with_extra_columns_policy(extra_columns_policy)
                 .finish()
                 .map_err(RPolarsErr::from)
                 .map(PlRLazyFrame::from)

@@ -4,12 +4,9 @@
 \alias{pl__col}
 \title{Create an expression representing column(s) in a DataFrame}
 \usage{
-pl__col(..., names)
+pl__col(names)
 }
 \arguments{
-\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Deprecated compatibility
-interface for passing multiple names or data types.}
-
 \item{names}{The name(s) or \link[=DataType]{data type} of the column(s) to
 represent. It accepts one of the following:
 \itemize{
@@ -39,9 +36,6 @@ pl$col(c(pl$Float64, pl$String))
 
 # Single `"*"` is converted to a wildcard expression
 pl$col("*")
-
-# The old dynamic-dots interface is deprecated:
-pl$col("foo", "bar")
 
 # there are some special notations for selecting columns
 df <- pl$DataFrame(foo = 1:3, bar = 4:6, baz = 7:9)

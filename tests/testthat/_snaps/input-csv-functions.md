@@ -10,74 +10,13 @@
       Caused by error:
       ! no data: empty CSV
 
-# read/scan: CSV default migrations preserve missingness
-
-    Code
-      pl$scan_csv(tmpf)
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default value of `infer_schema_files` will change in polars 2.0.
-      i The default will change from using all files to 10 files in Polars 2.0. Use `infer_schema_files = 10` to opt into the new default or `infer_schema_files = NULL` to keep using all files.
-    Output
-      <polars_lazy_frame>
-
----
-
-    Code
-      pl$read_csv(tmpf)
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default value of `infer_schema_files` will change in polars 2.0.
-      i The default will change from using all files to 10 files in Polars 2.0. Use `infer_schema_files = 10` to opt into the new default or `infer_schema_files = NULL` to keep using all files.
-    Output
-      shape: (1, 1)
-      ┌─────┐
-      │ a   │
-      │ --- │
-      │ i64 │
-      ╞═════╡
-      │ 1   │
-      └─────┘
-
----
-
-    Code
-      pl$scan_csv(empty, has_header = FALSE, schema = list(a = pl$Int64),
-      infer_schema_files = NULL)$collect()
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default value of `raise_if_empty` will change in polars 2.0.
-      i When `has_header = FALSE` and `schema` is supplied, the default will change from `TRUE` to `FALSE` in Polars 2.0. Use `raise_if_empty = TRUE` to keep the current behavior.
-    Condition <rlang_error>
-      Error:
-      ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! no data: empty CSV
-
----
+# read/scan: CSV defaults use the 2.0 behavior
 
     Code
       pl$scan_csv(empty, has_header = FALSE, schema = list(a = pl$Int64),
       raise_if_empty = TRUE, infer_schema_files = NULL)$collect()
     Condition <rlang_error>
       Error:
-      ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! no data: empty CSV
-
----
-
-    Code
-      pl$read_csv(empty, has_header = FALSE, schema = list(a = pl$Int64),
-      infer_schema_files = NULL)
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The default value of `raise_if_empty` will change in polars 2.0.
-      i When `has_header = FALSE` and `schema` is supplied, the default will change from `TRUE` to `FALSE` in Polars 2.0. Use `raise_if_empty = TRUE` to keep the current behavior.
-    Condition <rlang_error>
-      Error in `pl$read_csv()`:
-      ! Evaluation failed in `$read_csv()`.
-      Caused by error in `do.call(pl$scan_csv, .args)$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! no data: empty CSV
@@ -148,6 +87,62 @@
       Caused by error:
       ! `schema_overrides` must be a list of polars data types or `NULL`, not a list.
 
+---
+
+    Code
+      pl$read_csv(tmpf, schema_overrides = list(pl$Categorical()),
+      infer_schema_files = NULL)
+    Condition
+      Error in `pl$read_csv()`:
+      ! Evaluation failed in `$read_csv()`.
+      Caused by error in `do.call(pl$scan_csv, .args)$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! The number of dtypes in schema override must be equal to the number of fields in the file (1 != 3).
+
+---
+
+    Code
+      pl$read_csv(tmpf, schema_overrides = mixed_na, infer_schema_files = NULL)
+    Condition
+      Error in `pl$read_csv()`:
+      ! Evaluation failed in `$read_csv()`.
+      Caused by error:
+      ! `schema_overrides` names must not contain `NA`.
+
+# read/scan: arg 'extra_columns' works
+
+    Code
+      pl$read_csv(tmpf, schema = schema, infer_schema_files = NULL)
+    Condition
+      Error in `pl$read_csv()`:
+      ! Evaluation failed in `$read_csv()`.
+      Caused by error in `do.call(pl$scan_csv, .args)$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! CSV file contained column names not specified in schema (n_extra = 1). Specify these names in the schema, or pass `extra_columns='ignore'` to ignore these columns. (extra names: ["c"])
+
+---
+
+    Code
+      pl$read_csv(ragged, schema = schema, extra_columns = "ignore",
+        truncate_ragged_lines = FALSE, infer_schema_files = NULL)
+    Condition
+      Error in `pl$read_csv()`:
+      ! Evaluation failed in `$read_csv()`.
+      Caused by error:
+      ! `truncate_ragged_lines` must be `TRUE` when `extra_columns = 'ignore'`.
+
+---
+
+    Code
+      pl$read_csv(tmpf, extra_columns = "invalid", infer_schema_files = NULL)
+    Condition
+      Error in `pl$read_csv()`:
+      ! Evaluation failed in `$read_csv()`.
+      Caused by error:
+      ! `extra_columns` must be one of "raise" or "ignore", not "invalid".
+
 # read/scan: arg 'schema' works
 
     Code
@@ -159,7 +154,7 @@
       Caused by error in `do.call(pl$scan_csv, .args)$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! provided schema does not match number of columns in file (2 != 3 in file)
+      ! CSV file contained column names not specified in schema (n_extra = 1). Specify these names in the schema, or pass `extra_columns='ignore'` to ignore these columns. (extra names: ["a"])
 
 ---
 
@@ -173,34 +168,6 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! unsupported data type when reading CSV: binary when reading CSV
-
-# read/scan: NA schema names are deprecated
-
-    Code
-      invisible(pl$scan_csv(tmpf, schema = mixed_na, infer_schema_files = NULL))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! NA names of `schema` are deprecated as of polars 1.16.0.
-      i In Polars 2.0, NA schema names will be invalid. Replace them with the corresponding input column names.
-
----
-
-    Code
-      invisible(pl$scan_csv(tmpf, schema_overrides = mixed_overrides_na,
-        infer_schema_files = NULL))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! NA names of `schema_overrides` are deprecated as of polars 1.16.0.
-      i In Polars 2.0, NA schema names will be invalid. Replace them with the corresponding input column names.
-
----
-
-    Code
-      invisible(pl$scan_csv(tmpf, schema = full_unnamed, infer_schema_files = NULL))
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! An unnamed `schema` with `has_header = TRUE` is deprecated as of polars 1.16.0.
-      i In Polars 1.16, schema fields are matched by position. In Polars 2.0, schema fields for CSV files with headers are matched by header name. Name all schema fields using the corresponding header names.
 
 # read/scan: arg 'storage_options' throws basic errors
 
@@ -221,43 +188,6 @@
       ! Evaluation failed in `$read_csv()`.
       Caused by error:
       ! `storage_options` must be a character vector or `NULL`, not a list.
-
-# read/scan: arg 'cache' is deprecated
-
-    Code
-      pl$scan_csv(tmpf, cache = TRUE, infer_schema_files = NULL)
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `cache` argument is deprecated as of polars 1.16.0.
-      i The Polars 2.0 streaming readers do not use the file cache, and this argument has no direct replacement.
-    Output
-      <polars_lazy_frame>
-    Code
-      NULL
-    Output
-      NULL
-
----
-
-    Code
-      pl$read_csv(tmpf, cache = TRUE, infer_schema_files = NULL)
-    Condition <lifecycle_warning_deprecated>
-      Warning:
-      ! The `cache` argument is deprecated as of polars 1.16.0.
-      i The Polars 2.0 streaming readers do not use the file cache, and this argument has no direct replacement.
-    Output
-      shape: (1, 1)
-      ┌─────┐
-      │ a   │
-      │ --- │
-      │ i64 │
-      ╞═════╡
-      │ 1   │
-      └─────┘
-    Code
-      NULL
-    Output
-      NULL
 
 # arg 'missing_columns' works
 

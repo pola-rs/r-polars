@@ -5,7 +5,6 @@
   "cli",
   "clock",
   "data.table",
-  "ggplot2",
   "hms",
   "mirai",
   "nanoarrow",

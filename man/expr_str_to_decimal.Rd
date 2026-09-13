@@ -4,15 +4,12 @@
 \alias{expr_str_to_decimal}
 \title{Convert a String column into a Decimal column}
 \usage{
-expr_str_to_decimal(..., scale, inference_length = deprecated())
+expr_str_to_decimal(..., scale)
 }
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
 
 \item{scale}{Number of digits after the comma to use for the decimals.}
-
-\item{inference_length}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-Ignored.}
 }
 \value{
 A polars \link{expression}

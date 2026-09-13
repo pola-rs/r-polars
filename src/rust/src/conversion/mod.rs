@@ -548,19 +548,6 @@ impl TryFrom<&str> for Wrap<SetOperation> {
     }
 }
 
-impl TryFrom<&str> for Wrap<ListToStructWidthStrategy> {
-    type Error = String;
-
-    fn try_from(operation: &str) -> Result<Self, String> {
-        let parsed = match operation {
-            "first_non_null" => ListToStructWidthStrategy::FirstNonNull,
-            "max_width" => ListToStructWidthStrategy::MaxWidth,
-            _ => return Err("unreachable".to_string()),
-        };
-        Ok(Wrap(parsed))
-    }
-}
-
 impl TryFrom<&str> for Wrap<ClosedWindow> {
     type Error = String;
 
@@ -978,6 +965,19 @@ impl TryFrom<&str> for Wrap<MissingColumnsPolicy> {
     }
 }
 
+impl TryFrom<&str> for Wrap<ExtraColumnsPolicy> {
+    type Error = savvy::Error;
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        let parsed = match value {
+            "raise" => ExtraColumnsPolicy::Raise,
+            "ignore" => ExtraColumnsPolicy::Ignore,
+            _ => return Err(savvy_err!("unreachable")),
+        };
+        Ok(Wrap(parsed))
+    }
+}
+
 #[cfg(not(target_arch = "wasm32"))]
 pub(crate) fn parse_parquet_compression(
     compression: &str,
@@ -1180,7 +1180,7 @@ impl TryFrom<Sexp> for Wrap<SinkDestination> {
                 Ok(Wrap(target))
             }
             TypedSexp::Obj(o) => <Wrap<SinkDestination>>::try_from(o),
-            _ => Err("Only accept a path string or a SinkDirectory object"
+            _ => Err("Only accept a path string or a PartitionBy object"
                 .to_string()
                 .into()),
         }

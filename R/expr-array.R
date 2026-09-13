@@ -178,6 +178,8 @@ expr_arr_unique <- function(..., maintain_order = FALSE) {
 #' This allows to extract one value per array only. Values are 0-indexed (so
 #' index `0` would return the first item of every sub-array) and negative values
 #' start from the end (so index `-1` returns the last item).
+#' In R, out-of-bounds indices return `null` by default; pass
+#' `null_on_oob = FALSE` to raise an error.
 #'
 #' @inherit expr_list_get params return
 #' @param index An Expr or something coercible to an Expr, that must return a
@@ -211,12 +213,8 @@ expr_arr_get <- function(index, ..., null_on_oob = TRUE) {
 #'   item = c(0L, 4L, 2L),
 #' )$cast(values = pl$Array(pl$Float64, 3))
 #' df$with_columns(
-#'   with_expr = pl$col("values")$arr$contains(
-#'     pl$col("item")$cast(pl$Float64)
-#'   ),
-#'   with_lit = pl$col("values")$arr$contains(
-#'     pl$lit(1L)$cast(pl$Float64)
-#'   )
+#'   with_expr = pl$col("values")$arr$contains(pl$col("item")$cast(pl$Float64)),
+#'   with_lit = pl$col("values")$arr$contains(pl$lit(1)$cast(pl$Float64))
 #' )
 expr_arr_contains <- function(item, ..., nulls_equal = TRUE) {
   wrap({
@@ -229,6 +227,7 @@ expr_arr_contains <- function(item, ..., nulls_equal = TRUE) {
 #'
 #' Join all string items in a sub-array and place a separator between them. This
 #' only works if the inner type of the array is `String`.
+#' The default is to propagate null values.
 #'
 #' @param separator String to separate the items with. Can be an Expr. Strings
 #'   are not parsed as columns.
@@ -321,11 +320,9 @@ expr_arr_any <- function(..., ignore_nulls = TRUE) {
 
 #' Shift values in every sub-array by the given number of indices
 #'
-#' @inheritParams dataframe__shift
-#' @param n Number of indices to shift forward. If a negative value is passed,
-#'   values are shifted in the opposite direction instead. In Polars 1.16,
-#'   bare strings are interpreted as literals; in Polars 2.0, they are
-#'   interpreted as columns.
+#' @param n Number of indices to shift forward. Can be an Expr. Strings are
+#'  parsed as column names. If a negative value is passed, values are shifted
+#'  in the opposite direction instead.
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -338,7 +335,7 @@ expr_arr_any <- function(..., ignore_nulls = TRUE) {
 #'   shift_by_lit = pl$col("values")$arr$shift(2)
 #' )
 expr_arr_shift <- function(n = 1) {
-  self$`_rexpr`$arr_shift(as_polars_expr(n, as_lit = TRUE)$`_rexpr`) |>
+  self$`_rexpr`$arr_shift(as_polars_expr(n)$`_rexpr`) |>
     wrap()
 }
 
@@ -362,12 +359,8 @@ expr_arr_to_list <- function() {
 #' Convert the Series of type Array to a Series of type Struct
 #'
 #' @param fields `r lifecycle::badge("experimental")`
-#'   `NULL` (default) or character vector of field names. A function that
-#'   takes an integer index and returns character remains accepted only for
-#'   compatibility; explicit character names are preferred.
-#'   A character vector assigns explicit names by index. If `NULL` is used,
-#'   names are generated as `field_0`, `field_1`, ... from the fixed array width.
-#'   See the examples for details.
+#'   `NULL` (default) or a character vector of field names. If `NULL` is used,
+#'   names are generated from the fixed array width.
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(
@@ -377,27 +370,14 @@ expr_arr_to_list <- function() {
 #'
 #' df$with_columns(struct = pl$col("n")$arr$to_struct())
 #'
-#' # Dynamic field-name functions are deprecated:
-#' df$select(pl$col("n")$arr$to_struct(\(idx) paste0("n", idx)))$unnest("n")
-#'
 #' # Convert array to struct with field name assignment by index from character:
 #' df$select(pl$col("n")$arr$to_struct(c("a", "b", "c")))$unnest("n")
 expr_arr_to_struct <- function(fields = NULL) {
   wrap({
-    if (is_character(fields)) {
-      wrap(self$`_rexpr`$arr_to_struct())$struct$rename_fields(fields)
-    } else {
-      if (!is.null(fields)) {
-        warn_deprecated_to_struct("<expr>$arr$to_struct()")
-      }
-      name_gen <- if (is.null(fields)) {
-        NULL
-      } else {
-        fields <- as_function(fields)
-        \(idx) fields(idx)
-      }
-      self$`_rexpr`$arr_to_struct(name_gen)
+    if (!is.null(fields)) {
+      check_character(fields, allow_na = FALSE)
     }
+    self$`_rexpr`$arr_to_struct(fields)
   })
 }
 

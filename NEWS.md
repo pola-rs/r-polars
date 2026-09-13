@@ -1,5 +1,121 @@
 # NEWS
 
+## polars (development version)
+
+## polars 2.0.0
+
+This release completes the R Polars 2.0 API transition. The Polars 1.16.0
+section below documents the migration paths for changes that could warn before
+this release.
+
+### API changes
+
+- Removed APIs that were deprecated in earlier releases, including
+  `<expr>$agg_groups()`, `<expr>$flatten()`, `<expr>$rechunk()`,
+  `<expr>$shrink_dtype()`, `<expr>$str$concat()`,
+  `<expr>$cat$get_categories()`, `<expr>$dt$with_time_unit()`,
+  `<lazyframe>$profile()`, the legacy categorical scope and ordering methods,
+  and `<Enum>$union()`.
+- Replaced `pl$PartitionByKey()`, `pl$PartitionMaxSize()`, and
+  `pl$PartitionParted()` with the unified `pl$PartitionBy()` constructor.
+- Removed JSON logical-plan serialization. LazyFrame serialization now uses the
+  binary format only.
+- Removed automatic structification through `as_polars_expr(structify = ...)`
+  and `POLARS_AUTO_STRUCTIFY`, `ordering` from `pl$Categorical()`, the legacy
+  `subset` compatibility argument from `$unique()`, and the extra hash seeds
+  `seed_1`, `seed_2`, and `seed_3`.
+- Removed deprecated reader arguments, including `rechunk`; `cache` from CSV
+  and Arrow IPC readers; `retries` and `file_cache_ttl` from readers that
+  previously exposed them; CSV `missing_utf8_is_empty_string`; and Parquet
+  `allow_missing_columns`. Removed `retries` from writers and sinks. Use
+  `empty_string_is_null` and `missing_columns` for the renamed reader options.
+- Removed the individual query-optimization arguments from collection,
+  explanation, sink, and LazyFrame conversion methods. Configure them through
+  `pl$QueryOptFlags()` instead.
+- `pl$col()`, `cs$by_name()`, and `cs$by_dtype()` accept column names or data
+  types as one vector or list. The vertical aggregation helpers `pl$all()`,
+  `pl$any()`, `pl$max()`, `pl$min()`, `pl$sum()`, and `pl$cum_sum()` likewise
+  accept one `names` input. `pl$all()` with no arguments remains the all-column
+  selector; the other helpers require an input.
+- Bare character vectors passed to `<expr>$str$contains_any()` and
+  `<expr>$str$replace_many()` are interpreted as column names. Wrap literal
+  vectors in `list()` or use `pl$lit(...)$implode()`. `replace_with` also
+  requires the list form for literal vectors.
+- List `$to_struct()` methods require explicit character field names; their
+  legacy field-generating functions, `n_field_strategy`, and `upper_bound`
+  interfaces have been removed. Array `$to_struct()` still supports
+  `fields = NULL` to generate names from the fixed width, but no longer accepts
+  a function for `fields`.
+- `pl$concat(how = "horizontal")` requires equal-height inputs. Use
+  `how = "horizontal_extend"` to pad shorter inputs with nulls. The deprecated
+  `strict` argument remains only to provide migration guidance and no longer
+  enables the old padding behavior.
+- `<expr>$reinterpret()` requires exactly one of `signed` or `dtype`. `signed`
+  selects the same-width signed or unsigned integer type; `dtype` supports
+  same-size integer and floating-point reinterpretation.
+
+### Behavior changes
+
+- `engine = "auto"` selects the streaming engine. Make required row ordering
+  explicit or use `engine = "in-memory"` when the in-memory engine is needed.
+- Headerless CSV column names start at `column_0`. With a header, `schema`
+  fields are matched by name; without a header they are positional and must
+  match the input width. Unnamed `schema_overrides` are positional and must
+  cover every input column, while named overrides are matched by name. Empty
+  string names remain valid, but `NA` names are invalid.
+- CSV `infer_schema_files` defaults to `10`. `raise_if_empty` defaults to
+  `FALSE` for a headerless CSV with a supplied schema and to `TRUE` otherwise.
+- The supertype of a signed integer and `UInt64` is `Int128`. Lossy numeric
+  coercion in membership operations is an error, and strict Struct casts reject
+  mismatched field counts or names. Duration standard-deviation and
+  exponentially weighted standard-deviation operations are errors. Construct a
+  list expression with `pl$list(expr)` instead of casting a non-list expression
+  to a List dtype.
+- DataFrame, Expr, and List sampling use `shuffle = NULL` by default. `NULL`,
+  `FALSE`, and `TRUE` are distinct modes. `<expr>$list$sample()` defaults to
+  `n = 1` when neither `n` nor `fraction` is supplied. Seeded sample order can
+  differ from Polars 1.x; `shuffle = FALSE` preserves relative order, except
+  that replacement sampling can still produce a different order.
+- `<expr>$rolling_sum_by()` defaults to `min_samples = 0`; the other rolling-by
+  methods continue to default to `1`. `<expr>$set_sorted()` defaults to
+  `nulls_last = FALSE`.
+- Strings passed to `<expr>$search_sorted(element = ...)` and
+  `<expr>$shift(fill_value = ...)` are literals. Strings passed as the expression
+  inputs `n` and `fraction`, including Array `$shift(n = ...)`, continue to
+  identify columns.
+- Null List and Array values remain outer nulls after `$to_struct()`. Selecting
+  no columns produces a `(0, 0)` frame, while dropping all columns or calling
+  `$gather_every()` on a zero-width frame preserves its existing height. Empty
+  DataFrames can be transposed.
+- `explode()` defaults to `empty_as_null = FALSE` and `keep_nulls = TRUE`.
+  Arrow IPC writing defaults to uncompressed output. The intentional R defaults
+  `null_on_oob = TRUE` for List and Array `$get()`, `ignore_nulls = FALSE` for
+  List and Array `$join()`, and `compression = "lz4"` for Parquet remain
+  unchanged.
+- The output names produced by `pl$datetime()` and `pl$repeat_()` have changed.
+  Use `$alias()` when a stable output name is required.
+
+### New features
+
+- CSV readers accept `extra_columns = "raise"` or `"ignore"` to control input
+  fields that are not represented by the selected schema.
+- Expression casting and `<expr>$map_batches(return_dtype = ...)` accept
+  `DataTypeExpr` inputs. `$map_batches()` also supports `is_elementwise` and
+  `returns_scalar`.
+- `pl$QueryOptFlags()` exposes the `join_order` and `row_estimate` optimizer
+  properties.
+
+### Bug fixes
+
+- `pivot(aggregate_function = "len")` counts rows containing null values.
+- `pl$read_ipc_stream()` preserves record-batch chunks when rechunking is not
+  requested.
+- Serialized SQL LazyFrames can be deserialized in a fresh R process because
+  the SQL resolver is registered when the package starts.
+- Empty-string CSV override names are preserved.
+- LazyFrame `$gather_every()` remains lazy and schema-free, including for
+  zero-width inputs.
+
 ## polars 1.16.0
 
 This is the last release before R Polars 2.0. It doesn't remove any existing API

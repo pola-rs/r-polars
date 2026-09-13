@@ -21,6 +21,9 @@ polars_query_opt_flags__methods <- new.env(parent = emptyenv())
 #'   if the order would not be observed.
 #' @param fast_projection A logical, indicates to replace simple projections
 #'   with a faster inlined projection that skips the expression engine.
+#' @param join_order A logical, indicates whether joins may be reordered.
+#' @param row_estimate A logical, indicates whether row estimates are used in
+#'   cost planning.
 #' @return A `QueryOptFlags` object.
 #' @name QueryOptFlags
 #' @examples
@@ -44,6 +47,8 @@ QueryOptFlags <- new_class(
     cluster_with_columns = prop_bool(),
     check_order_observe = prop_bool(),
     fast_projection = prop_bool(),
+    join_order = prop_bool(),
+    row_estimate = prop_bool(),
     eager = prop_bool(),
     streaming = prop_bool()
   ),
@@ -57,7 +62,9 @@ QueryOptFlags <- new_class(
     comm_subexpr_elim = TRUE,
     cluster_with_columns = TRUE,
     check_order_observe = TRUE,
-    fast_projection = TRUE
+    fast_projection = TRUE,
+    join_order = TRUE,
+    row_estimate = TRUE
   ) {
     check_dots_empty0(...)
 
@@ -76,6 +83,8 @@ QueryOptFlags <- new_class(
       cluster_with_columns = cluster_with_columns,
       check_order_observe = check_order_observe,
       fast_projection = fast_projection,
+      join_order = join_order,
+      row_estimate = row_estimate,
       eager = FALSE,
       streaming = FALSE
     )
@@ -145,7 +154,9 @@ QueryOptFlags__no_optimizations <- function() {
     comm_subexpr_elim = FALSE,
     cluster_with_columns = FALSE,
     check_order_observe = FALSE,
-    fast_projection = FALSE
+    fast_projection = FALSE,
+    join_order = FALSE,
+    row_estimate = FALSE
   )
 }
 

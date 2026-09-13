@@ -4,13 +4,12 @@
 \alias{cs__by_dtype}
 \title{Select all columns matching the given dtypes}
 \usage{
-cs__by_dtype(..., dtypes)
+cs__by_dtype(dtypes, ...)
 }
 \arguments{
-\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Deprecated compatibility
-interface for passing multiple data types.}
-
 \item{dtypes}{A Polars data type or list of Polars data types to select.}
+
+\item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
 A Polars \link[=cs]{selector}

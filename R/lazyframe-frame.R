@@ -72,14 +72,9 @@ polars_lazyframe__methods <- new.env(parent = emptyenv())
 
 #' Serialize the logical plan of this LazyFrame
 #'
-#' @inheritParams rlang::args_dots_empty
-#' @param format A character of the format in which to serialize.
-#' One of:
-#' - `"binary"` (default): Serialize to binary format (raw vector).
-#' - `"json"`: `r lifecycle::badge("deprecated")`
-#'   Serialize to JSON format (character vector).
+#' Serialize the logical plan to a binary representation (raw vector).
 #' @return
-#' - `<lazyframe>$serialize()` returns raw or character, depending on the `format` argument.
+#' - `<lazyframe>$serialize()` returns a raw vector.
 #' - `pl$deserialize_lf()` returns a deserialized [LazyFrame].
 #' @examples
 #' lf <- pl$LazyFrame(a = 1:3)$sum()
@@ -90,17 +85,9 @@ polars_lazyframe__methods <- new.env(parent = emptyenv())
 #'
 #' # The bytes can later be deserialized back into a LazyFrame.
 #' pl$deserialize_lf(serialized)$collect()
-lazyframe__serialize <- function(..., format = c("binary", "json")) {
+lazyframe__serialize <- function() {
   wrap({
-    check_dots_empty0(...)
-    format <- arg_match0(format, values = c("binary", "json"))
-
-    if (format == "binary") {
-      self$`_ldf`$serialize_binary()
-    } else {
-      deprecate_warn(c(`!` = '"json" serialization format of LazyFrame is deprecated.'))
-      self$`_ldf`$serialize_json()
-    }
+    self$`_ldf`$serialize_binary()
   })
 }
 
@@ -150,9 +137,7 @@ pl__deserialize_lf <- function(data) {
 #' )$collect()
 lazyframe__select <- function(...) {
   wrap({
-    structify <- parse_env_auto_structify()
-
-    parse_into_list_of_expressions(..., `__structify` = maybe_missing(structify)) |>
+    parse_into_list_of_expressions(...) |>
       self$`_ldf`$select()
   })
 }
@@ -174,8 +159,7 @@ lazyframe__select <- function(...) {
 #' lf$select_seq("foo", bar2 = pl$col("bar") * 2)$collect()
 lazyframe__select_seq <- function(...) {
   wrap({
-    structify <- parse_env_auto_structify()
-    parse_into_list_of_expressions(..., `__structify` = maybe_missing(structify)) |>
+    parse_into_list_of_expressions(...) |>
       self$`_ldf`$select_seq()
   })
 }
@@ -245,39 +229,7 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 #'   - `"streaming"`: Use the streaming engine.
 #' @param optimizations `r lifecycle::badge("experimental")`
 #'   A [QueryOptFlags] object to indicate optimization passes done during query optimization.
-#' @param type_coercion `r lifecycle::badge("deprecated")`
-#'   Use the `type_coercion` property of a [QueryOptFlags] object, then pass
-#'   that to the `optimizations` argument instead.
-#' @param predicate_pushdown `r lifecycle::badge("deprecated")`
-#'   Use the `predicate_pushdown` property of a [QueryOptFlags] object, then pass
-#'   that to the `optimizations` argument instead.
-#' @param projection_pushdown `r lifecycle::badge("deprecated")`
-#'   Use the `projection_pushdown` property of a [QueryOptFlags] object, then pass
-#'   that to the `optimizations` argument instead.
-#' @param simplify_expression `r lifecycle::badge("deprecated")`
-#'   Use the `simplify_expression` property of a [QueryOptFlags] object, then pass
-#'   that to the `optimizations` argument instead.
-#' @param slice_pushdown `r lifecycle::badge("deprecated")`
-#'   Use the `slice_pushdown` property of a [QueryOptFlags] object, then pass
-#'   that to the `optimizations` argument instead.
-#' @param comm_subplan_elim `r lifecycle::badge("deprecated")`
-#'   Use the `comm_subplan_elim` property of a [QueryOptFlags] object, then pass
-#'   that to the `optimizations` argument instead.
-#' @param comm_subexpr_elim `r lifecycle::badge("deprecated")`
-#'   Use the `comm_subexpr_elim` property of a [QueryOptFlags] object, then pass
-#'   that to the `optimizations` argument instead.
-#' @param cluster_with_columns `r lifecycle::badge("deprecated")`
-#'   Use the `cluster_with_columns` property of a [QueryOptFlags] object, then pass
-#'   that to the `optimizations` argument instead.
-#' @param collapse_joins `r lifecycle::badge("deprecated")`
-#'   Use the `predicate_pushdown` property of a [QueryOptFlags] object, then pass
-#'   that to the `optimizations` argument instead.
-#' @param no_optimization `r lifecycle::badge("deprecated")`
-#'   Use the `optimizations` argument with
-#'   [`pl$QueryOptFlags()$no_optimizations()`][QueryOptFlags] instead.
 #' @seealso
-#'  - [`$profile()`][lazyframe__profile] - same as `$collect()` but also returns
-#'    a table with each operation profiled.
 #'  - [`$sink_parquet()`][lazyframe__sink_parquet()] streams query to a parquet file.
 #'  - [`$sink_ipc()`][lazyframe__sink_ipc()] streams query to a arrow file.
 #'
@@ -296,145 +248,16 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 lazyframe__collect <- function(
   ...,
   engine = c("auto", "in-memory", "streaming"),
-  optimizations = pl$QueryOptFlags(),
-  type_coercion = deprecated(),
-  predicate_pushdown = deprecated(),
-  projection_pushdown = deprecated(),
-  simplify_expression = deprecated(),
-  slice_pushdown = deprecated(),
-  comm_subplan_elim = deprecated(),
-  comm_subexpr_elim = deprecated(),
-  cluster_with_columns = deprecated(),
-  collapse_joins = deprecated(),
-  no_optimization = deprecated()
+  optimizations = pl$QueryOptFlags()
 ) {
   wrap({
     check_dots_empty0(...)
     engine <- arg_match0(engine, c("auto", "in-memory", "streaming"))
     check_is_S7(optimizations, QueryOptFlags)
-
-    optimizations <- forward_old_opt_flags(
-      optimizations,
-      type_coercion = type_coercion,
-      predicate_pushdown = predicate_pushdown,
-      projection_pushdown = projection_pushdown,
-      simplify_expression = simplify_expression,
-      slice_pushdown = slice_pushdown,
-      comm_subplan_elim = comm_subplan_elim,
-      comm_subexpr_elim = comm_subexpr_elim,
-      cluster_with_columns = cluster_with_columns,
-      collapse_joins = collapse_joins,
-      no_optimization = no_optimization
-    )
 
     ldf <- self$`_ldf`$with_optimizations(optimizations)
 
     ldf$collect(engine)
-  })
-}
-
-#' Collect and profile a lazy query
-#'
-#' @description
-#' `r lifecycle::badge("deprecated")`
-#'
-#' `$profile()` is deprecated. Starting with Polars 2.0, `engine = "auto"` will
-#' use the streaming engine by default. Due to the concurrent nature of the
-#' streaming engine, the profiling information from this method would be
-#' misleading.
-#'
-#' This will run the query and return a list containing the
-#' materialized DataFrame and a DataFrame that contains profiling information
-#' of each node that is executed.
-#'
-#' @inheritParams rlang::args_dots_empty
-#' @inheritParams lazyframe__collect
-#' @param show_plot Show a Gantt chart of the profiling result
-#' @param truncate_nodes Truncate the label lengths in the Gantt chart to this
-#' number of characters. If `0` (default), do not truncate.
-#'
-#' @details The units of the timings are microseconds.
-#'
-#' @return List of two `DataFrame`s: one with the collected result, the other
-#' with the timings of each step. If `show_plot = TRUE`, then the plot is
-#' also stored in the list.
-#' @seealso
-#'  - [`$collect()`][lazyframe__collect] - regular collect.
-#'  - [`$sink_parquet()`][lazyframe__sink_parquet()] streams query to a parquet file.
-#'  - [`$sink_ipc()`][lazyframe__sink_ipc()] streams query to a arrow file.
-#' @examples
-#' lf <- pl$LazyFrame(
-#'   a = c("a", "b", "a", "b", "b", "c"),
-#'   b = 1:6,
-#'   c = 6:1,
-#' )
-#'
-#' lf$group_by("a", .maintain_order = TRUE)$agg(
-#'   pl$all()$sum()
-#' )$sort("a")$profile()
-lazyframe__profile <- function(
-  ...,
-  show_plot = FALSE,
-  truncate_nodes = 0,
-  engine = c("auto", "in-memory", "streaming"),
-  optimizations = pl$QueryOptFlags(),
-  type_coercion = deprecated(),
-  predicate_pushdown = deprecated(),
-  projection_pushdown = deprecated(),
-  simplify_expression = deprecated(),
-  slice_pushdown = deprecated(),
-  comm_subplan_elim = deprecated(),
-  comm_subexpr_elim = deprecated(),
-  cluster_with_columns = deprecated(),
-  collapse_joins = deprecated(),
-  no_optimization = deprecated()
-) {
-  wrap({
-    check_dots_empty0(...)
-    deprecate_warn(
-      c(
-        `!` = sprintf(
-          "%s is deprecated as of %s 1.14.0.",
-          format_fn("profile"),
-          format_pkg("polars")
-        ),
-        i = paste0(
-          "Starting with Polars 2.0, engine = \"auto\" will use the streaming ",
-          "engine by default. Due to the concurrent nature of the streaming ",
-          "engine, the profiling information from this method would be misleading."
-        )
-      )
-    )
-    engine <- arg_match0(engine, c("auto", "in-memory", "streaming"))
-    check_is_S7(optimizations, QueryOptFlags)
-
-    optimizations <- forward_old_opt_flags(
-      optimizations,
-      type_coercion = type_coercion,
-      predicate_pushdown = predicate_pushdown,
-      projection_pushdown = projection_pushdown,
-      simplify_expression = simplify_expression,
-      slice_pushdown = slice_pushdown,
-      comm_subplan_elim = comm_subplan_elim,
-      comm_subexpr_elim = comm_subexpr_elim,
-      cluster_with_columns = cluster_with_columns,
-      collapse_joins = collapse_joins,
-      no_optimization = no_optimization
-    )
-
-    ldf <- self$`_ldf`$with_optimizations(optimizations)
-
-    out <- lapply(ldf$profile(), \(x) {
-      x |>
-        .savvy_wrap_PlRDataFrame() |>
-        wrap()
-    })
-
-    if (isTRUE(show_plot)) {
-      out[["plot"]] <- make_profile_plot(out, truncate_nodes)
-    }
-
-    out
   })
 }
 
@@ -481,16 +304,7 @@ lazyframe__explain <- function(
   format = c("plain", "tree"),
   engine = c("auto", "in-memory", "streaming"),
   optimized = TRUE,
-  optimizations = pl$QueryOptFlags(),
-  type_coercion = deprecated(),
-  predicate_pushdown = deprecated(),
-  projection_pushdown = deprecated(),
-  simplify_expression = deprecated(),
-  slice_pushdown = deprecated(),
-  comm_subplan_elim = deprecated(),
-  comm_subexpr_elim = deprecated(),
-  cluster_with_columns = deprecated(),
-  collapse_joins = deprecated()
+  optimizations = pl$QueryOptFlags()
 ) {
   wrap({
     check_dots_empty0(...)
@@ -498,19 +312,6 @@ lazyframe__explain <- function(
     format <- arg_match0(format, c("plain", "tree"))
     engine <- arg_match0(engine, c("auto", "in-memory", "streaming"))
     check_is_S7(optimizations, QueryOptFlags)
-
-    optimizations <- forward_old_opt_flags(
-      optimizations,
-      type_coercion = type_coercion,
-      predicate_pushdown = predicate_pushdown,
-      projection_pushdown = projection_pushdown,
-      simplify_expression = simplify_expression,
-      slice_pushdown = slice_pushdown,
-      comm_subplan_elim = comm_subplan_elim,
-      comm_subexpr_elim = comm_subexpr_elim,
-      cluster_with_columns = cluster_with_columns,
-      collapse_joins = collapse_joins
-    )
 
     if (isTRUE(optimized)) {
       prop(optimizations, "streaming", check = FALSE) <- engine == "streaming"
@@ -771,9 +572,7 @@ lazyframe__sort <- function(
 #'   `not c` = pl$col("c")$not(),
 #' )$collect()
 lazyframe__with_columns <- function(...) {
-  structify <- parse_env_auto_structify()
-
-  parse_into_list_of_expressions(..., `__structify` = maybe_missing(structify)) |>
+  parse_into_list_of_expressions(...) |>
     self$`_ldf`$with_columns() |>
     wrap()
 }
@@ -821,9 +620,7 @@ lazyframe__with_columns <- function(...) {
 #' )$collect()
 lazyframe__with_columns_seq <- function(...) {
   wrap({
-    structify <- parse_env_auto_structify()
-
-    parse_into_list_of_expressions(..., `__structify` = maybe_missing(structify)) |>
+    parse_into_list_of_expressions(...) |>
       self$`_ldf`$with_columns_seq()
   })
 }
@@ -1245,7 +1042,6 @@ lazyframe__drop_nans <- function(...) {
   })
 }
 
-# TODO: @2.0 remove subset
 #' Drop duplicate rows
 #'
 #' @inheritParams lazyframe__drop_nulls
@@ -1258,8 +1054,6 @@ lazyframe__drop_nans <- function(...) {
 #' @param maintain_order Keep the same order as the original data. This is
 #' more expensive to compute. Setting this to `TRUE` blocks the possibility to
 #' run on the streaming engine.
-#' @param subset `r lifecycle::badge("deprecated")` Replaced by `...` in 1.1.0.
-#'
 #' @inherit as_polars_lf return
 #' @examples
 #' lf <- pl$LazyFrame(
@@ -1275,60 +1069,12 @@ lazyframe__drop_nans <- function(...) {
 lazyframe__unique <- function(
   ...,
   keep = c("any", "none", "first", "last"),
-  maintain_order = FALSE,
-  subset = deprecated()
+  maintain_order = FALSE
 ) {
   wrap({
     keep <- arg_match0(keep, values = c("any", "none", "first", "last"))
 
-    # Use `list2(...)` instead of `..1` for compatibility with dynamic dots splicing by `!!!`.
-    # <https://github.com/pola-rs/r-polars/pull/1475>
-    dots <- list2(...)
-    subset <- if (is_present(subset)) {
-      deprecate_warn(
-        format_warning(
-          c(
-            `!` = sprintf(
-              "The %s argument of %s is deprecated and replaced by %s as of %s 1.1.0.",
-              format_arg("subset"),
-              format_code("$unique()"),
-              format_arg("..."),
-              format_pkg("polars")
-            )
-          )
-        )
-      )
-      check_dots_empty0(...)
-
-      if (is.null(subset)) {
-        list(cs$all()$`_rexpr`)
-      } else {
-        parse_into_list_of_expressions(!!!c(subset), `__require_selectors` = TRUE)
-      }
-    } else if (...length() == 1L && (is.null(dots[[1]]) || is.list(dots[[1]]))) {
-      check_dots_unnamed()
-      deprecate_warn(
-        c(
-          `!` = format_warning(sprintf(
-            "Passing %s to the first argument of %s is deprecated as of %s 1.1.0.",
-            obj_type_friendly(dots[[1]]),
-            format_code("$unique()"),
-            format_pkg("polars")
-          )),
-          i = format_warning(sprintf(
-            "Passing %s to %s instead.",
-            format_code(if (is.null(dots[[1]])) "cs$all()" else "!!!my_list"),
-            format_arg("...")
-          ))
-        )
-      )
-
-      if (is.null(dots[[1]])) {
-        list(cs$all()$`_rexpr`)
-      } else {
-        parse_into_list_of_expressions(!!!dots[[1]])
-      }
-    } else if (...length() == 0L) {
+    subset <- if (...length() == 0L) {
       NULL
     } else {
       parse_into_list_of_expressions(..., `__require_selectors` = TRUE)
@@ -1873,26 +1619,7 @@ lazyframe__rename <- function(..., .strict = TRUE) {
 #' )
 #'
 #' lf$explode("numbers")$collect()
-lazyframe__explode <- function(..., empty_as_null = NULL, keep_nulls = TRUE) {
-  if (is.null(empty_as_null)) {
-    deprecate_warn(
-      c(
-        `!` = sprintf(
-          "The default value of %s in %s will change from %s to %s in Polars 2.0.",
-          format_arg("empty_as_null"),
-          format_fn("explode"),
-          "TRUE",
-          "FALSE"
-        ),
-        `i` = sprintf(
-          "Explicitly set %s to suppress this warning.",
-          format_arg("empty_as_null")
-        )
-      ),
-      always = TRUE
-    )
-    empty_as_null <- TRUE
-  }
+lazyframe__explode <- function(..., empty_as_null = FALSE, keep_nulls = TRUE) {
   parse_into_selector(...)$`_rselector` |>
     self$`_ldf`$explode(empty_as_null = empty_as_null, keep_nulls = keep_nulls) |>
     wrap()
@@ -2241,7 +1968,6 @@ lazyframe__group_by_dynamic <- function(
 #' This only returns the "dot" output that can be passed to other packages, such
 #' as `DiagrammeR::grViz()`.
 #'
-#' @param ... `r lifecycle::badge("deprecated")` Ignored.
 #' @param optimized Optimize the query plan.
 #' @inheritParams lazyframe__explain
 #'
@@ -2263,47 +1989,11 @@ lazyframe__group_by_dynamic <- function(
 #' # You could print the graph by using DiagrammeR for example, with
 #' # query$to_dot() |> DiagrammeR::grViz().
 lazyframe__to_dot <- function(
-  ...,
   optimized = TRUE,
-  optimizations = pl$QueryOptFlags(),
-  type_coercion = deprecated(),
-  predicate_pushdown = deprecated(),
-  projection_pushdown = deprecated(),
-  simplify_expression = deprecated(),
-  slice_pushdown = deprecated(),
-  comm_subplan_elim = deprecated(),
-  comm_subexpr_elim = deprecated(),
-  cluster_with_columns = deprecated(),
-  collapse_joins = deprecated()
+  optimizations = pl$QueryOptFlags()
 ) {
   wrap({
-    check_dots_empty(
-      error = deprecate_warn(
-        format_warning(
-          c(
-            `!` = sprintf(
-              "%s of %s will raise an error in a future version.",
-              format_arg("..."),
-              format_code("$to_dot()")
-            )
-          )
-        )
-      )
-    )
     check_is_S7(optimizations, QueryOptFlags)
-
-    optimizations <- forward_old_opt_flags(
-      optimizations,
-      type_coercion = type_coercion,
-      predicate_pushdown = predicate_pushdown,
-      projection_pushdown = projection_pushdown,
-      simplify_expression = simplify_expression,
-      slice_pushdown = slice_pushdown,
-      comm_subplan_elim = comm_subplan_elim,
-      comm_subexpr_elim = comm_subexpr_elim,
-      cluster_with_columns = cluster_with_columns,
-      collapse_joins = collapse_joins
-    )
 
     ldf <- self$`_ldf`$with_optimizations(optimizations)
 
@@ -2350,7 +2040,15 @@ lazyframe__clear <- function(n = 0) {
 #'
 #' lf$gather_every(2, offset = 1)$collect()
 lazyframe__gather_every <- function(n, offset = 0) {
-  self$select(pl$col("*")$gather_every(n, offset))
+  # Add a temporary empty Struct column so that zero-width frames retain their
+  # height. Keep the whole operation in the lazy plan: resolving `self` here
+  # would execute schema inference (and potentially map callbacks) too early.
+  # A generated name avoids replacing a user column without resolving `self`.
+  tmp_name <- basename(tempfile("__POLARS_GATHER_EVERY_"))
+
+  tmp <- pl$lit(NULL, dtype = pl$Struct())$alias(tmp_name)
+
+  self$with_columns(tmp)$select(pl$all()$gather_every(n, offset))$drop(tmp_name)
 }
 
 #' Return the number of non-null elements for each column

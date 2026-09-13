@@ -1,5 +1,5 @@
-use crate::{PlRExpr, prelude::*};
-use savvy::{FunctionSexp, NumericScalar, Result, savvy};
+use crate::{PlRExpr, conversion::strings_to_pl_smallstr, prelude::*};
+use savvy::{NumericScalar, Result, StringSexp, savvy};
 
 #[savvy]
 impl PlRExpr {
@@ -94,24 +94,9 @@ impl PlRExpr {
             .into())
     }
 
-    fn arr_to_struct(&self, name_gen: Option<FunctionSexp>) -> Result<Self> {
-        #[cfg(not(target_arch = "wasm32"))]
-        use crate::r_udf::RUdf;
-
-        #[cfg(not(target_arch = "wasm32"))]
-        let name_gen = name_gen.map(|lambda| RUdf::new(lambda).into());
-        #[cfg(target_arch = "wasm32")]
-        let name_gen = match name_gen {
-            Some(_) => {
-                return Err(crate::RPolarsErr::Other(
-                    "Specifying a function name generator is not supported in WASM".to_string(),
-                )
-                .into());
-            }
-            None => None,
-        };
-
-        Ok(self.inner.clone().arr().to_struct(name_gen).into())
+    fn arr_to_struct(&self, fields: Option<StringSexp>) -> Result<Self> {
+        let fields = fields.map(|fields| strings_to_pl_smallstr(fields).into());
+        Ok(self.inner.clone().arr().to_struct(fields).into())
     }
 
     fn arr_shift(&self, n: &PlRExpr) -> Result<Self> {

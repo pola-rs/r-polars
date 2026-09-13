@@ -35,6 +35,8 @@ flag_setters! {
     (COMM_SUBEXPR_ELIM, set_comm_subexpr_elim)
     (CHECK_ORDER_OBSERVE, set_check_order_observe)
     (FAST_PROJECTION, set_fast_projection)
+    (JOIN_ORDER, set_join_order)
+    (ROW_ESTIMATE, set_row_estimate)
 
     (EAGER, set_eager)
     (STREAMING, set_streaming)

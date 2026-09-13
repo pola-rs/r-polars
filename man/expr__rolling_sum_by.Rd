@@ -8,7 +8,7 @@ expr__rolling_sum_by(
   by,
   window_size,
   ...,
-  min_samples = 1,
+  min_samples = 0,
   closed = c("right", "both", "left", "none")
 )
 }
@@ -43,9 +43,7 @@ By "calendar day", we mean the corresponding time on the next day
 \item{...}{These dots are for future extensions and must be empty.}
 
 \item{min_samples}{The number of values in the window that should be
-non-null before computing a result. Defaults to 1 in Polars 1.16. Omitting
-this argument emits a warning because the default will change to 0 in
-Polars 2.0.}
+non-null before computing a result. Defaults to 0.}
 
 \item{closed}{Define which sides of the interval are closed (inclusive).
 Default is \code{"right"}.}
@@ -85,8 +83,7 @@ df_temporal <- pl$select(
 df_temporal$with_columns(
   rolling_row_sum = pl$col("index")$rolling_sum_by(
     "date",
-    window_size = "2h",
-    min_samples = 1
+    window_size = "2h"
   )
 )
 
@@ -95,7 +92,6 @@ df_temporal$with_columns(
   rolling_row_sum = pl$col("index")$rolling_sum_by(
     "date",
     window_size = "2h",
-    min_samples = 1,
     closed = "both"
   )
 )

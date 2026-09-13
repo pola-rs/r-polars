@@ -310,6 +310,29 @@ test_that("pivot() works", {
       y = c(NA, 0.99995377060327)
     )
   )
+
+  df <- pl$DataFrame(
+    index = c("x", "x", "y"),
+    variable = c("a", "a", "a"),
+    value = c(1, NA, NA)
+  )
+  expected <- pl$DataFrame(index = c("x", "y"), a = c(2, 1))$cast(a = pl$UInt32)$sort("index")
+  string_len <- df$pivot(
+    on = "variable",
+    on_columns = "a",
+    index = "index",
+    values = "value",
+    aggregate_function = "len"
+  )$sort("index")
+  expr_len <- df$pivot(
+    on = "variable",
+    on_columns = "a",
+    index = "index",
+    values = "value",
+    aggregate_function = pl$element()$len()
+  )$sort("index")
+  expect_equal(string_len, expr_len)
+  expect_equal(string_len, expected)
 })
 
 test_that("pivot len counts null rows", {
@@ -632,8 +655,12 @@ test_that("sample() works", {
     bar = 6:8,
     ham = c("a", "b", "c")
   )
+  expect_equal(nrow(df$sample(n = 2)), 2L)
+  for (shuffle in list(NULL, FALSE, TRUE)) {
+    expect_equal(nrow(df$sample(n = 2, shuffle = shuffle, seed = 0)), 2L)
+  }
   expect_equal(
-    df$sample(n = 2, seed = 0),
+    df$sample(n = 2, shuffle = FALSE, seed = 0),
     pl$DataFrame(
       foo = 1:2,
       bar = 6:7,
@@ -641,7 +668,7 @@ test_that("sample() works", {
     )
   )
   expect_equal(
-    df$sample(fraction = 0.5, seed = 0),
+    df$sample(fraction = 0.5, shuffle = FALSE, seed = 0),
     pl$DataFrame(foo = 1L, bar = 6L, ham = "a")
   )
   expect_snapshot(df$sample(n = 2, fraction = 0.1), error = TRUE)
@@ -666,48 +693,6 @@ test_that("hash_rows() works", {
     df$hash_rows(seed = 42)$dtype,
     pl$UInt64
   )
-  expect_error(
-    suppressWarnings(df$hash_rows(seed = 42, seed_1 = "a")),
-    "`seed_1` must be a whole number or `NULL`, not the string"
-  )
-  expect_error(
-    suppressWarnings(df$hash_rows(seed = 42, seed_1 = 1.5)),
-    "`seed_1` must be a whole number or `NULL`"
-  )
-  expect_error(
-    suppressWarnings(df$hash_rows(seed = 42, seed_1 = 1:2)),
-    "`seed_1` must be a whole number or `NULL`"
-  )
-  expect_error(
-    suppressWarnings(df$hash_rows(seed = 42, seed_1 = -1)),
-    "`seed_1` must be a whole number larger than or equal to 0 or `NULL`"
-  )
-})
-
-test_that("hash_rows additional seeds are deprecated", {
-  local_lifecycle_warnings()
-  df <- pl$DataFrame(foo = 1:3, bar = c("a", "b", "c"))
-
-  expect_snapshot(invisible(df$hash_rows(seed_1 = 1)), cnd_class = TRUE)
-  expect_snapshot(invisible(df$hash_rows(seed_2 = 2)), cnd_class = TRUE)
-  expect_snapshot(invisible(df$hash_rows(seed_3 = 3)), cnd_class = TRUE)
-  expect_snapshot(
-    invisible(df$hash_rows(seed_1 = 1, seed_2 = 2, seed_3 = 3)),
-    cnd_class = TRUE
-  )
-  expect_snapshot(invisible(df$hash_rows(seed_1 = NULL)), cnd_class = TRUE)
-
-  expect_no_condition(df$hash_rows())
-  expect_no_condition(df$hash_rows(seed = 42))
-
-  old <- suppressWarnings(df$hash_rows(42, 1, 2, 3))
-  explicit <- suppressWarnings(
-    df$hash_rows(seed = 42, seed_1 = 1, seed_2 = 2, seed_3 = 3)
-  )
-  expect_equal(old, explicit)
-
-  null_seed <- suppressWarnings(df$hash_rows(seed = 42, seed_1 = NULL))
-  expect_equal(null_seed, df$hash_rows(seed = 42))
 })
 
 test_that("unstack() works", {

@@ -12,9 +12,13 @@ test_that("'union' operator works", {
     df$select(cs$alpha() | cs$contains("2")),
     c("foo", "foo2")
   )
-  expect_named(
-    df$select(suppressWarnings(cs$string() | pl$col("foo2"))),
-    c("foo", "foo2")
+  boolean_df <- pl$DataFrame(
+    a = c(TRUE, FALSE, TRUE),
+    b = c(FALSE, TRUE, TRUE)
+  )
+  expect_equal(
+    boolean_df$select(cs$by_name("a") | pl$col("b")),
+    boolean_df$select(pl$col("a") | pl$col("b"))
   )
 })
 
@@ -24,46 +28,13 @@ test_that("'and' operator works", {
     df$select(cs$contains("oo") & cs$ends_with("t")),
     "foot"
   )
-  expect_named(
-    df$select(suppressWarnings(cs$numeric() & pl$col("foot"))),
-    "foot"
+  boolean_df <- pl$DataFrame(
+    a = c(TRUE, FALSE, TRUE),
+    b = c(FALSE, TRUE, TRUE)
   )
-  expect_named(
-    df$select(suppressWarnings(cs$by_name("foo") & pl$col("foot"))),
-    character(0)
-  )
-})
-
-test_that("selector and column operations are deprecated", {
-  local_lifecycle_warnings()
-  df <- pl$DataFrame(foo = c("a", "b"), foot = c(1, 2), foo2 = c(TRUE, FALSE))
-
-  expect_snapshot(cs$string() | pl$col("foo2"), cnd_class = TRUE)
-  expect_snapshot(cs$numeric() & pl$col("foot"), cnd_class = TRUE)
-  expect_snapshot(cs$by_name("foo")$xor(pl$col("foo")), cnd_class = TRUE)
-
-  expect_named(
-    df$select(suppressWarnings(cs$string() | pl$col("foo2"))),
-    c("foo", "foo2")
-  )
-  expect_named(
-    df$select(suppressWarnings(cs$numeric() & pl$col("foot"))),
-    "foot"
-  )
-  expect_named(
-    df$select(suppressWarnings(cs$by_name("foo")$xor(pl$col("foo")))),
-    character(0)
-  )
-
-  expect_no_condition(cs$string() | cs$by_name("foo2"))
-  expect_no_condition(cs$numeric() & cs$by_name("foot"))
-  expect_no_condition(cs$string()$xor(cs$by_name("foo")))
-  expect_no_condition(cs$by_name("foo2")$as_expr() | pl$lit(TRUE))
-  expect_no_condition(pl$col("foo") | cs$by_name("foo"))
-
   expect_equal(
-    df$select(cs$by_name("foo2")$as_expr() | pl$lit(TRUE)),
-    pl$DataFrame(foo2 = c(TRUE, TRUE))
+    boolean_df$select(cs$by_name("a") & pl$col("b")),
+    boolean_df$select(pl$col("a") & pl$col("b"))
   )
 })
 
@@ -80,6 +51,14 @@ test_that("'xor' operator works", {
   expect_named(
     df$select(cs$string()$xor(cs$contains("foo"))),
     c("bar", "foo3")
+  )
+  boolean_df <- pl$DataFrame(
+    a = c(TRUE, FALSE, TRUE),
+    b = c(FALSE, TRUE, TRUE)
+  )
+  expect_equal(
+    boolean_df$select(cs$by_name("a")$xor(pl$col("b"))),
+    boolean_df$select(pl$col("a")$xor(pl$col("b")))
   )
 })
 
@@ -198,10 +177,7 @@ test_that("by_dtype", {
     df$select(!cs$by_dtype(c(pl$Date, pl$String))),
     "value"
   )
-  expect_snapshot(
-    df$select(cs$by_dtype(a = pl$String)),
-    error = TRUE
-  )
+  expect_error(df$select(cs$by_dtype(a = pl$String)))
 })
 
 test_that("by_index", {
@@ -228,23 +204,18 @@ test_that("by_name", {
     df$select(cs$by_name(c("baz", "moose", "foo", "bear"), require_all = FALSE)),
     df$select("baz", "foo")
   )
-  expect_snapshot(
-    df$select(cs$by_name(a = "foo")),
-    error = TRUE
-  )
+  expect_error(df$select(cs$by_name(a = "foo")))
 })
 
-test_that("single-argument selector interfaces deprecate dynamic dots", {
-  local_lifecycle_warnings()
-  expect_snapshot(cs$by_name("foo", "bar"), cnd_class = TRUE)
-  expect_snapshot(cs$by_name(!!!c("foo", "bar")), cnd_class = TRUE)
-  expect_snapshot(cs$by_name(), cnd_class = TRUE)
-  expect_snapshot(cs$by_dtype(pl$Date, pl$String), cnd_class = TRUE)
-  expect_snapshot(cs$by_dtype(!!!list(pl$Date, pl$String)), cnd_class = TRUE)
-  expect_snapshot(cs$by_dtype(), cnd_class = TRUE)
-  expect_snapshot(cs$by_name("bar", names = "foo"), error = TRUE, cnd_class = TRUE)
-  expect_snapshot(cs$by_name(c("foo", "bar"), "baz"), error = TRUE, cnd_class = TRUE)
-  expect_snapshot(cs$by_dtype(list(pl$Date), pl$String), error = TRUE, cnd_class = TRUE)
+test_that("single-argument selector interfaces reject dynamic dots", {
+  expect_error(cs$by_name("foo", "bar"))
+  expect_error(cs$by_name(!!!c("foo", "bar")))
+  expect_error(cs$by_name())
+  expect_error(cs$by_dtype(pl$Date, pl$String))
+  expect_error(cs$by_dtype(!!!list(pl$Date, pl$String)))
+  expect_error(cs$by_dtype())
+  expect_error(cs$by_name(c("foo", "bar"), "baz"))
+  expect_error(cs$by_dtype(list(pl$Date), pl$String))
 
   expect_silent(cs$by_name(names = c("foo", "bar")))
   expect_silent(cs$by_name(character()))
@@ -253,13 +224,11 @@ test_that("single-argument selector interfaces deprecate dynamic dots", {
   expect_silent(cs$by_dtype(list()))
   expect_silent(cs$by_dtype(pl$Date))
 
-  local_lifecycle_silence()
-  old_names <- cs$by_name("foo", "bar")
-  new_names <- cs$by_name(c("foo", "bar"))
-  old_dtypes <- cs$by_dtype(pl$Date, pl$String)
-  new_dtypes <- cs$by_dtype(list(pl$Date, pl$String))
-  expect_equal(new_names, old_names, ignore_attr = TRUE)
-  expect_equal(new_dtypes, old_dtypes, ignore_attr = TRUE)
+  expect_equal(
+    cs$by_name("foo", require_all = TRUE),
+    cs$by_name(c("foo")),
+    ignore_attr = TRUE
+  )
 })
 
 test_that("categorical", {

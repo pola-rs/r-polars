@@ -7,10 +7,9 @@
 dataframe__write_ipc(
   path,
   ...,
-  compression = c("zstd", "lz4", "uncompressed"),
+  compression = c("uncompressed", "lz4", "zstd"),
   compat_level = c("newest", "oldest"),
-  storage_options = NULL,
-  retries = deprecated()
+  storage_options = NULL
 )
 }
 \arguments{
@@ -19,9 +18,6 @@ dataframe__write_ipc(
 \item{...}{These dots are for future extensions and must be empty.}
 
 \item{compression}{Determines the compression algorithm.
-In Polars 1.16, omitting this argument uses \code{"zstd"} and emits a
-deprecation warning. The default changes to \code{"uncompressed"} in Polars 2.0;
-pass an explicit value to choose either behavior without a warning.
 Must be one of:
 \itemize{
 \item \code{"uncompressed"} or \code{NULL}: Write an uncompressed Arrow file.
@@ -58,10 +54,6 @@ variable.
 
 If \code{storage_options} is not provided, Polars will try to infer the
 information from environment variables.}
-
-\item{retries}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Number of retries if
-accessing a cloud instance fails. Specify \code{max_retries} in
-\code{storage_options} instead.}
 }
 \value{
 \code{NULL} invisibly.

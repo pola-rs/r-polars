@@ -29,41 +29,32 @@ patrick::with_parameters_test_that(
 )
 
 test_that("pl$col() input error", {
-  local_lifecycle_warnings()
   invalid_error_message <- r"(Invalid input for `pl\$col\(\)`)"
 
   expect_error(pl$col(NA_character_), invalid_error_message)
-  expect_snapshot(pl$col("foo", NA_character_), error = TRUE, cnd_class = TRUE)
-  expect_snapshot(pl$col("foo", 1), error = TRUE, cnd_class = TRUE)
+  expect_error(pl$col("foo", NA_character_))
+  expect_error(pl$col("foo", 1))
   expect_error(pl$col(1), invalid_error_message)
   expect_error(pl$col(list("foo")), invalid_error_message)
-  expect_snapshot(pl$col("foo", pl$Int8), error = TRUE, cnd_class = TRUE)
-  expect_snapshot(pl$col(pl$Int8, "foo"), error = TRUE, cnd_class = TRUE)
-  expect_error(pl$col(foo = "bar"), "Arguments in `...` must be passed by position, not name")
+  expect_error(pl$col("foo", pl$Int8))
+  expect_error(pl$col(pl$Int8, "foo"))
+  expect_error(pl$col(foo = "bar"))
 })
 
-test_that("pl$col() dynamic dots are deprecated", {
-  local_lifecycle_warnings()
-  expect_snapshot(pl$col("i8", "i16"), cnd_class = TRUE)
-  expect_snapshot(pl$col(!!!c("i8", "i16")), cnd_class = TRUE)
-  expect_snapshot(pl$col(), cnd_class = TRUE)
-  expect_snapshot(pl$col("i16", names = "i8"), error = TRUE, cnd_class = TRUE)
-  expect_snapshot(pl$col(c("i8", "i16"), "str"), error = TRUE, cnd_class = TRUE)
-  expect_snapshot(pl$col(list(pl$Int8), pl$Int16), error = TRUE, cnd_class = TRUE)
+test_that("pl$col() accepts one names argument", {
+  expect_error(pl$col("i8", "i16"))
+  expect_error(pl$col(!!!c("i8", "i16")))
+  expect_error(pl$col())
+  expect_error(pl$col(c("i8", "i16"), "str"))
+  expect_error(pl$col(list(pl$Int8), pl$Int16))
 
-  expect_silent(pl$col(names = c("i8", "i16")))
+  expect_silent(pl$col(c("i8", "i16")))
   expect_silent(pl$col(character()))
   expect_silent(pl$col(list()))
   expect_silent(pl$col(pl$Int8))
 
   df <- pl$DataFrame(i8 = 1:2, i16 = 3:4)
-  local_lifecycle_silence()
-  old_columns <- df$select(pl$col("i8", "i16"))$columns
-  new_columns <- df$select(pl$col(c("i8", "i16")))$columns
-  expect_identical(old_columns, new_columns)
-  old_empty <- df$select(pl$col())$columns
-  new_empty <- df$select(pl$col(character()))$columns
-  expect_identical(old_empty, new_empty)
+  expect_identical(df$select(pl$col(c("i8", "i16")))$columns, c("i8", "i16"))
 })
 
 test_that("pl$nth()", {

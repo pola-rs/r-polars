@@ -23,13 +23,10 @@ pl__scan_ndjson <- function(
   batch_size = 1024,
   n_rows = NULL,
   low_memory = FALSE,
-  rechunk = deprecated(),
   row_index_name = NULL,
   row_index_offset = 0L,
   ignore_errors = FALSE,
   storage_options = NULL,
-  retries = deprecated(),
-  file_cache_ttl = deprecated(),
   include_file_paths = NULL
 ) {
   check_dots_empty0(...)
@@ -41,39 +38,10 @@ pl__scan_ndjson <- function(
   check_list_of_polars_dtype(schema_overrides, allow_null = TRUE)
   check_character(storage_options, allow_null = TRUE)
 
-  if (is_present(retries)) {
-    deprecate_warn(
-      c(
-        `!` = sprintf(
-          "The %s argument is deprecated as of %s 1.9.0.",
-          format_arg("retries"),
-          format_pkg("polars")
-        ),
-        i = sprintf(
-          "Specify %s in %s instead.",
-          format_code("max_retries"),
-          format_arg("storage_options")
-        )
-      )
-    )
-    storage_options <- storage_options %||% character()
-    storage_options[["max_retries"]] <- as.character(retries)
-  }
-
-  if (is_present(file_cache_ttl)) {
-    warn_deprecated_file_cache_ttl()
-  }
-
   if (!is.null(schema)) {
     schema <- parse_into_list_of_datatypes(!!!schema)
   }
   schema_overrides <- parse_into_list_of_datatypes(!!!schema_overrides)
-
-  if (is_present(rechunk)) {
-    warn_deprecated_rechunk()
-  } else {
-    rechunk <- FALSE
-  }
 
   PlRLazyFrame$new_from_ndjson(
     source = source,
@@ -83,7 +51,7 @@ pl__scan_ndjson <- function(
     batch_size = batch_size,
     n_rows = n_rows,
     low_memory = low_memory,
-    rechunk = rechunk,
+    rechunk = FALSE,
     row_index_name = row_index_name,
     row_index_offset = row_index_offset,
     ignore_errors = ignore_errors,
@@ -110,13 +78,10 @@ pl__read_ndjson <- function(
   batch_size = 1024,
   n_rows = NULL,
   low_memory = FALSE,
-  rechunk = deprecated(),
   row_index_name = NULL,
   row_index_offset = 0L,
   ignore_errors = FALSE,
   storage_options = NULL,
-  retries = deprecated(),
-  file_cache_ttl = deprecated(),
   include_file_paths = NULL
 ) {
   check_dots_empty0(...)

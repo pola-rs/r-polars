@@ -103,6 +103,14 @@ test_that("arr$get", {
     df$select(pl$col("a")$arr$get("b")),
     pl$DataFrame(a = c(2, 2))$cast(pl$Float32)
   )
+  expect_equal(
+    df$select(pl$col("a")$arr$get(10)),
+    pl$DataFrame(a = c(NA, NA))$cast(pl$Float32)
+  )
+  expect_snapshot(
+    df$select(pl$col("a")$arr$get(10, null_on_oob = FALSE)),
+    error = TRUE
+  )
 })
 
 test_that("join", {
@@ -155,8 +163,8 @@ test_that("arr$contains", {
     item = 0:2
   )$cast(values = pl$Array(pl$Float64, 3))
   out <- df$select(
-    with_expr = pl$col("values")$arr$contains(pl$col("item")),
-    with_lit = pl$col("values")$arr$contains(4)
+    with_expr = pl$col("values")$arr$contains(pl$col("item")$cast(pl$Float64)),
+    with_lit = pl$col("values")$arr$contains(pl$lit(4)$cast(pl$Float64))
   )
   expect_equal(
     out,
@@ -283,7 +291,8 @@ test_that("arr$median", {
 
 test_that("arr$shift", {
   df <- pl$DataFrame(
-    strings = list(c("a", "b"), c("c", "d"))
+    strings = list(c("a", "b"), c("c", "d")),
+    n = c(1L, 2L)
   )$cast(strings = pl$Array(pl$String, 2))
   expect_equal(
     df$select(pl$col("strings")$arr$shift()),
@@ -292,6 +301,17 @@ test_that("arr$shift", {
   expect_equal(
     df$select(pl$col("strings")$arr$shift(-1)),
     pl$DataFrame(strings = list(c("b", NA), c("d", NA)))$cast(strings = pl$Array(pl$String, 2))
+  )
+  expect_equal(
+    df$select(pl$col("strings")$arr$shift(pl$col("n"))),
+    pl$DataFrame(strings = list(c(NA, "a"), c(NA, NA)))$cast(strings = pl$Array(pl$String, 2))
+  )
+  df_single <- pl$DataFrame(strings = list(c("a", "b")), n = 1L)$cast(
+    strings = pl$Array(pl$String, 2)
+  )
+  expect_equal(
+    df_single$select(pl$col("strings")$arr$shift("n")),
+    pl$DataFrame(strings = list(c(NA, "a")))$cast(strings = pl$Array(pl$String, 2))
   )
 })
 
@@ -378,44 +398,17 @@ test_that("arr$len", {
   )
 })
 
-patrick::with_parameters_test_that(
-  "arr$to_struct with fields = {rlang::quo_text(fields)}",
-  .cases = {
-    tibble::tribble(
-      ~.test_name, ~fields,
-      "default", NULL,
-      "short chr", c("a"),
-      "long chr", c("a", "b", "c", "d"),
-      "function", \(x) sprintf("field_%s", x),
-      "purrr style", ~ paste0("field_", .),
-    )
-  },
-  code = {
-    expect_snapshot(
-      pl$DataFrame(
-        values = list(c(1, 2), c(1, 1), c(2, 2)),
-        .schema_overrides = list(values = pl$Array(pl$Int64, 2))
-      )$select(
-        pl$col("values")$arr$to_struct(fields = fields)
-      )$unnest("values")
-    )
-  }
-)
-
-test_that("arr$to_struct deprecates dynamic field names", {
+test_that("arr$to_struct accepts NULL or character fields", {
   df <- pl$DataFrame(
-    values = list(c(1, 2), c(1, 1)),
+    values = list(c(1, 2), c(1, 1), c(2, 2)),
     .schema_overrides = list(values = pl$Array(pl$Int64, 2))
   )
 
   expect_no_warning(
-    df$select(pl$col("values")$arr$to_struct(fields = c("a", "b")))
+    df$select(pl$col("values")$arr$to_struct())
   )
-  expect_snapshot(
-    df$select(
-      pl$col("values")$arr$to_struct(fields = \(idx) paste0("field_", idx))
-    ),
-    cnd_class = TRUE
+  expect_no_warning(
+    df$select(pl$col("values")$arr$to_struct(fields = c("a", "b")))
   )
 })
 
@@ -426,14 +419,6 @@ test_that("series arr$to_struct delegates to the expression API", {
   )$cast(pl$Array(pl$Int64, 2))
   expect_no_warning(series$arr$to_struct())
   expect_no_warning(series$arr$to_struct(fields = c("a", "b")))
-  expect_snapshot(
-    as_polars_df(series$arr$to_struct(fields = \(idx) paste0("field_", idx))),
-    cnd_class = TRUE
-  )
-  expect_snapshot(
-    as_polars_df(series$arr$to_struct(fields = ~ paste0("field_", .))),
-    cnd_class = TRUE
-  )
 })
 
 test_that("arr$eval()", {

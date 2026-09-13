@@ -63,49 +63,6 @@ patrick::with_parameters_test_that(
 )
 
 patrick::with_parameters_test_that(
-  "Enum union works",
-  .cases = {
-    tibble::tribble(
-      ~.test_name, ~input, ~expected_output,
-      "a", pl$Enum("a"), pl$Enum(c("b", "d", "a")),
-      "b", pl$Enum("b"), pl$Enum(c("b", "d")),
-      "c, d", pl$Enum(c("c", "d")), pl$Enum(c("b", "d", "c")),
-    )
-  },
-  code = {
-    expect_equal(suppressWarnings(pl$Enum(c("b", "d"))$union(input)), expected_output)
-    expect_equal(suppressWarnings(input$union(input)), input)
-  }
-)
-
-test_that("Enum union is deprecated", {
-  local_lifecycle_warnings()
-  lhs <- pl$Enum(c("b", "d"))
-  rhs <- pl$Enum(c("d", "a"))
-
-  expect_snapshot(lhs$union(rhs), cnd_class = TRUE)
-
-  old <- suppressWarnings(lhs$union(rhs))
-  expect_no_condition(pl$Enum(unique(c(lhs$categories, rhs$categories))))
-  recommended <- pl$Enum(unique(c(lhs$categories, rhs$categories)))
-  expect_equal(old, recommended)
-})
-
-test_that("Enum union error", {
-  expect_error(pl$Enum("a")$union(1), "`other` must be a polars data type, not the number 1")
-  expect_error(pl$Enum("a")$union(pl$Int32), "`other` must be a Enum data type")
-})
-
-test_that("Categorical order deprecation", {
-  expect_deprecated(pl$Categorical("lexical"))
-  expect_deprecated(pl$Categorical("physical"))
-})
-
-test_that("Decimal deprecation", {
-  expect_snapshot(pl$Decimal(NULL, NULL))
-})
-
-patrick::with_parameters_test_that(
   "invalid decimal (precision = {precision}, scale = {scale})",
   .cases = {
     tibble::tribble(
