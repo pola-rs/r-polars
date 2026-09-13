@@ -29,13 +29,11 @@ for scanning cloud locations, see the \code{storage_options} parameter.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{schema}{Provide the schema. This means that polars doesn't do schema
-inference. This argument expects the complete schema, whereas
-\code{schema_overrides} can be used to partially overwrite a schema. This must be
-a list.}
+\item{schema}{Provide a list of \link[=DataType]{datatypes} for the fields in the
+NDJSON input. Named elements are matched by name.}
 
-\item{schema_overrides}{Overwrite dtypes during inference. This must be a
-list.}
+\item{schema_overrides}{Overwrite dtypes during schema inference. This must
+be a list of \link[=DataType]{datatypes}. Named elements are matched by name.}
 
 \item{infer_schema_length}{The maximum number of rows to scan for schema
 inference. This applies individually to each file included according to

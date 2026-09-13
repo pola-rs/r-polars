@@ -5,6 +5,10 @@
 #' @inherit pl__scan_ipc description
 #' @inherit as_polars_lf return
 #' @inheritParams pl__scan_csv
+#' @param schema Provide a list of [datatypes][DataType] for the fields in the
+#'   NDJSON input. Named elements are matched by name.
+#' @param schema_overrides Overwrite dtypes during schema inference. This must
+#'   be a list of [datatypes][DataType]. Named elements are matched by name.
 #' @param batch_size Number of rows to read in each batch.
 #' @examplesIf requireNamespace("jsonlite", quietly = TRUE)
 #' ndjson_filename <- tempfile()

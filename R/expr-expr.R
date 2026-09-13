@@ -4459,8 +4459,9 @@ expr__rechunk <- function() {
 #' you can safely use the [$cast()][expr__cast] operation.
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param signed Whether to reinterpret as a signed integer. If omitted, a
-#'   warning is emitted and `TRUE` is used for compatibility with Polars 1.16.
+#' @param signed Whether to reinterpret as a signed integer. `TRUE` reinterprets
+#'   as `pl$Int64`; `FALSE` reinterprets as `pl$UInt64`. If omitted, a warning is
+#'   emitted and `TRUE` is used for compatibility with Polars 1.16.
 #'
 #' @inherit as_polars_expr return
 #' @examples

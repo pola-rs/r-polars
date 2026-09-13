@@ -9,8 +9,9 @@ expr__reinterpret(..., signed = TRUE)
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{signed}{Whether to reinterpret as a signed integer. If omitted, a
-warning is emitted and \code{TRUE} is used for compatibility with Polars 1.16.}
+\item{signed}{Whether to reinterpret as a signed integer. \code{TRUE} reinterprets
+as \code{pl$Int64}; \code{FALSE} reinterprets as \code{pl$UInt64}. If omitted, a warning is
+emitted and \code{TRUE} is used for compatibility with Polars 1.16.}
 }
 \value{
 A polars \link{expression}
