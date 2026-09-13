@@ -152,7 +152,7 @@ test_that("list sampling uses the Polars 2.0 deterministic output", {
 
   expect_equal(
     df$select(sample = pl$col("values")$list$sample(n = pl$col("n"), seed = 1)),
-    pl$DataFrame(sample = list(c(3L, NA), NA, 2L, NULL))
+    pl$DataFrame(sample = list(c(NA, 3L), NA, 2L, NULL))
   )
 })
 
