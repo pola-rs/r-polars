@@ -1,9 +1,3 @@
-normalize_warning_snapshot <- function(lines) {
-  # Drop platform-specific blank warning lines after normalizing line endings.
-  lines <- sub("\\r$", "", lines)
-  lines[!grepl("^[[:blank:]]*$", lines)]
-}
-
 test_that("CSV preserves the current ragged-line default", {
   tmpf <- withr::local_tempfile(fileext = ".csv")
   writeLines(c("a,b", "1,2,3", "4,5"), tmpf)
@@ -202,12 +196,10 @@ test_that("Rust deprecation warnings are routed to R snapshots", {
     pl$DataFrame(x = list(c(1L, 2L), c(3L, 4L)))$select(
       pl$col("x")$list$gather(c(0L, 1L))
     ),
-    transform = normalize_warning_snapshot,
     cnd_class = TRUE
   )
   expect_snapshot(
     pl$DataFrame(x = 1:3)$select(pl$col("x")$is_in(pl$lit(1:3))),
-    transform = normalize_warning_snapshot,
     cnd_class = TRUE
   )
   expect_snapshot(

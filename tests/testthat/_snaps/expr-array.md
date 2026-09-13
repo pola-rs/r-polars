@@ -283,6 +283,7 @@
       ! Evaluation failed in `$eval()`.
       Caused by error in `pl$col("a")$arr$eval()`:
       ! `expr` must be a polars expression, not the number 1.
+
 ---
 
     Code
@@ -308,3 +309,4 @@
       ! Evaluation failed in `$agg()`.
       Caused by error in `pl$col("a")$arr$agg()`:
       ! `expr` must be a polars expression, not the number 1.
+
