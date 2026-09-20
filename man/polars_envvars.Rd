@@ -65,11 +65,6 @@ UTF8-styled tables (only applies to UTF8 formats).
 \item \code{POLARS_MAX_THREADS} (\verb{<variable>}): Maximum number of threads used to
 initialize the thread pool. The thread pool is locked once polars is loaded,
 so this envvar must be set before loading the package.
-\item \code{POLARS_STREAMING_CHUNK_SIZE} (\verb{<variable>}): Chunk size used in the
-streaming engine. Integer larger than 1. By default, the chunk size is
-determined by the schema and size of the thread pool. For some datasets
-(esp. when you have large string elements) this can be too optimistic and
-lead to Out of Memory errors.
 \item \code{POLARS_TABLE_WIDTH} (\verb{<variable>}): Set the maximum width of a table in
 characters.
 \item \code{POLARS_VERBOSE} (\code{"0"}): Enable additional verbose/debug logging.

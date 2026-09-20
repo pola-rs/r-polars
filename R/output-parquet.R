@@ -46,7 +46,6 @@
 #' is set to 1024^2 bytes.
 #' @param maintain_order Maintain the order in which data is processed. Setting
 #' this to `FALSE` will be slightly faster.
-#' @inheritParams lazyframe__collect
 #' @inheritParams pl__scan_parquet
 #' @param sync_on_close Sync to disk when before closing a file. Must be one of:
 #' * `"none"`: does not sync;

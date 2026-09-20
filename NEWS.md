@@ -53,6 +53,10 @@ this release.
 - `<expr>$reinterpret()` requires exactly one of `signed` or `dtype`. `signed`
   selects the same-width signed or unsigned integer type; `dtype` supports
   same-size integer and floating-point reinterpretation.
+- `<expr>$cut()` and `<expr>$qcut()` are deprecated. Use the experimental
+  `<expr>$bin_intervals()`, `<expr>$bin_quantiles()`, or `<expr>$bin_ranks()`
+  methods. Set `right_closed = TRUE` on `bin_intervals()` or `bin_quantiles()`
+  to preserve the old right-closed intervals.
 
 ### Behavior changes
 
@@ -94,6 +98,9 @@ this release.
   unchanged.
 - The output names produced by `pl$datetime()` and `pl$repeat_()` have changed.
   Use `$alias()` when a stable output name is required.
+- Parquet columns annotated as ENUM by another writer are read as String.
+- `POLARS_STREAMING_CHUNK_SIZE` has been removed from `polars_envvars()` because
+  Polars no longer supports this environment variable.
 
 ### New features
 
@@ -105,6 +112,8 @@ this release.
 - `pl$QueryOptFlags()` exposes the `join_order` and `row_estimate` optimizer
   properties.
 - `$wrap_in_list()` and `$wrap_in_array()` for `DataTypeExpr` (#1881).
+- Experimental `<expr>$bin_intervals()`, `<expr>$bin_quantiles()`, and
+  `<expr>$bin_ranks()` methods for interval, quantile, and rank-based binning.
 
 ### Bug fixes
 
@@ -116,6 +125,10 @@ this release.
 - Empty-string CSV override names are preserved.
 - LazyFrame `$gather_every()` remains lazy and schema-free, including for
   zero-width inputs.
+
+### Other changes
+
+- Update the upstream Polars dependency to 2.0.0-rc.2.
 
 ## polars 1.16.0
 
