@@ -1370,6 +1370,42 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   }
 }
 
+`PlRExpr_bin_intervals` <- function(self) {
+  function(`breaks`, `include_intervals`, `right_closed`, `labels` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_intervals__impl, `self`, `breaks`, `include_intervals`, `right_closed`, `labels`))
+  }
+}
+
+`PlRExpr_bin_intervals_uniform` <- function(self) {
+  function(`n_bins`, `include_intervals`, `right_closed`, `labels` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_intervals_uniform__impl, `self`, `n_bins`, `include_intervals`, `right_closed`, `labels`))
+  }
+}
+
+`PlRExpr_bin_quantiles` <- function(self) {
+  function(`quantiles`, `include_intervals`, `right_closed`, `labels` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_quantiles__impl, `self`, `quantiles`, `include_intervals`, `right_closed`, `labels`))
+  }
+}
+
+`PlRExpr_bin_quantiles_uniform` <- function(self) {
+  function(`n_bins`, `include_intervals`, `right_closed`, `labels` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_quantiles_uniform__impl, `self`, `n_bins`, `include_intervals`, `right_closed`, `labels`))
+  }
+}
+
+`PlRExpr_bin_ranks` <- function(self) {
+  function(`ranks`, `include_intervals`, `labels` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_ranks__impl, `self`, `ranks`, `include_intervals`, `labels`))
+  }
+}
+
+`PlRExpr_bin_ranks_uniform` <- function(self) {
+  function(`n_bins`, `include_intervals`, `labels` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_ranks_uniform__impl, `self`, `n_bins`, `include_intervals`, `labels`))
+  }
+}
+
 `PlRExpr_bin_reinterpret` <- function(self) {
   function(`dtype`, `kind`) {
     `dtype` <- .savvy_extract_ptr(`dtype`, "polars::PlRDataTypeExpr")
@@ -3540,6 +3576,12 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   e$`bin_get` <- `PlRExpr_bin_get`(ptr)
   e$`bin_hex_decode` <- `PlRExpr_bin_hex_decode`(ptr)
   e$`bin_hex_encode` <- `PlRExpr_bin_hex_encode`(ptr)
+  e$`bin_intervals` <- `PlRExpr_bin_intervals`(ptr)
+  e$`bin_intervals_uniform` <- `PlRExpr_bin_intervals_uniform`(ptr)
+  e$`bin_quantiles` <- `PlRExpr_bin_quantiles`(ptr)
+  e$`bin_quantiles_uniform` <- `PlRExpr_bin_quantiles_uniform`(ptr)
+  e$`bin_ranks` <- `PlRExpr_bin_ranks`(ptr)
+  e$`bin_ranks_uniform` <- `PlRExpr_bin_ranks_uniform`(ptr)
   e$`bin_reinterpret` <- `PlRExpr_bin_reinterpret`(ptr)
   e$`bin_size_bytes` <- `PlRExpr_bin_size_bytes`(ptr)
   e$`bin_starts_with` <- `PlRExpr_bin_starts_with`(ptr)

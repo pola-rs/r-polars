@@ -38,7 +38,13 @@ a Categorical to a Struct.}
 A polars \link{expression}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+}
+\details{
+Deprecated in Polars 2.0.0 in favor of \verb{$bin_quantiles()} or \verb{$bin_ranks()}.
+Both replacements are experimental and require \code{labels}; use \code{labels = NULL}
+for \code{UInt32} bin indices. \verb{$bin_quantiles()} keeps equal values together,
+while \verb{$bin_ranks()} can split equal values across bins.
 }
 \examples{
 # Divide a column into three categories according to pre-defined quantile

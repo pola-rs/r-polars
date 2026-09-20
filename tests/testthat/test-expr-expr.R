@@ -2978,7 +2978,79 @@ test_that("rle_id works", {
   )
 })
 
+test_that("cut and qcut are deprecated", {
+  expect_deprecated(
+    pl$col("foo")$cut(c(-1, 1)),
+    regexp = "bin_intervals"
+  )
+  expect_deprecated(
+    pl$col("foo")$qcut(2),
+    regexp = "bin_quantiles"
+  )
+})
+
+test_that("bin methods work", {
+  df <- pl$DataFrame(foo = -2:2)
+  labels <- c("low", "mid", "high")
+
+  expect_equal(
+    df$select(
+      bin = pl$col("foo")$bin_intervals(
+        c(-1, 1),
+        labels = labels,
+        right_closed = TRUE
+      )
+    ),
+    pl$DataFrame(bin = factor(c("low", "low", "mid", "mid", "high")))$
+      cast(bin = pl$Enum(labels))
+  )
+  expect_equal(
+    df$select(
+      bin = pl$col("foo")$bin_quantiles(
+        c(0.25, 0.75),
+        labels = labels,
+        right_closed = TRUE
+      )
+    ),
+    pl$DataFrame(bin = factor(c("low", "low", "mid", "mid", "high")))$
+      cast(bin = pl$Enum(labels))
+  )
+  expect_equal(
+    df$select(
+      bin = pl$col("foo")$bin_ranks(c(0.25, 0.75), labels = labels)
+    ),
+    pl$DataFrame(bin = factor(c("low", "mid", "mid", "mid", "high")))$
+      cast(bin = pl$Enum(labels))
+  )
+
+  interval_bins <- df$select(
+    bin = pl$col("foo")$bin_intervals(2L, labels = NULL)
+  )
+  expect_identical(interval_bins$schema, list(bin = pl$UInt32))
+  expect_identical(
+    interval_bins$get_column("bin")$to_r_vector(int64 = "character"),
+    c("0", "0", "1", "1", "1")
+  )
+
+  quantile_bins <- df$select(
+    bin = pl$col("foo")$bin_quantiles(2L, labels = NULL)
+  )
+  expect_identical(quantile_bins$schema, list(bin = pl$UInt32))
+  expect_identical(
+    quantile_bins$get_column("bin")$to_r_vector(int64 = "character"),
+    c("0", "0", "1", "1", "1")
+  )
+
+  rank_bins <- df$select(bin = pl$col("foo")$bin_ranks(2L, labels = NULL))
+  expect_identical(rank_bins$schema, list(bin = pl$UInt32))
+  expect_identical(
+    rank_bins$get_column("bin")$to_r_vector(int64 = "character"),
+    c("0", "0", "0", "1", "1")
+  )
+})
+
 test_that("cut works", {
+  local_lifecycle_silence()
   df <- pl$DataFrame(foo = c(-2, -1, 0, 1, 2))
 
   expect_equal(
@@ -3017,6 +3089,7 @@ test_that("cut works", {
 })
 
 test_that("qcut works", {
+  local_lifecycle_silence()
   df <- pl$DataFrame(foo = c(-2, -1, 0, 1, 2))
 
   expect_equal(
