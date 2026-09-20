@@ -1,6 +1,6 @@
 use crate::{PlRLazyFrame, RPolarsErr, prelude::*};
 use parking_lot::Mutex;
-use polars_core::utils::arrow::ffi::{ArrowArrayStream, export_iterator};
+use polars_core::utils::polars_arrow::ffi::{ArrowArrayStream, export_iterator};
 use savvy::{ExternalPointerSexp, NumericScalar, Result, Sexp, savvy};
 use std::num::NonZeroUsize;
 

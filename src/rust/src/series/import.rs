@@ -1,5 +1,5 @@
 use crate::{PlRSeries, RPolarsErr, prelude::*};
-use polars_core::utils::arrow::{
+use polars_core::utils::polars_arrow::{
     array::Array,
     ffi::{ArrowArrayStream, ArrowArrayStreamReader},
 };

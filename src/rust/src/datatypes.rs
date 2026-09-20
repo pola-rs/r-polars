@@ -1,6 +1,6 @@
 use crate::{PlRCategories, PlRExpr, PlRSeries, RPolarsErr, prelude::*};
 use polars::lazy::dsl;
-use polars_core::utils::{arrow::array::Array, try_get_supertype};
+use polars_core::utils::{polars_arrow::array::Array, try_get_supertype};
 use savvy::{
     EnvironmentSexp, ListSexp, NullSexp, NumericScalar, NumericSexp, OwnedListSexp, OwnedRealSexp,
     OwnedStringSexp, Result, Sexp, TypedSexp, savvy,
@@ -278,6 +278,9 @@ impl PlRDataType {
             DataType::List(_) => vec!["list", "nested"],
             DataType::Array(_, _) => vec!["array", "nested"],
             DataType::Struct(_) => vec!["struct", "nested"],
+            DataType::Map(_, _) => {
+                unimplemented!("Map dtype support is not yet implemented in r-polars")
+            }
             // TODO: what is this? It does not seem supported by py-polars
             DataType::BinaryOffset => vec!["binary_offset"],
         }

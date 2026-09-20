@@ -4,7 +4,10 @@ use savvy::{OwnedRawSexp, RawSexp, Result, Sexp, savvy};
 #[savvy]
 impl PlRDataFrame {
     fn serialize_binary(&mut self) -> Result<Sexp> {
-        let buf = self.df.serialize_to_bytes().map_err(RPolarsErr::from)?;
+        let mut buf = Vec::new();
+        self.df
+            .serialize_into_writer(&mut buf)
+            .map_err(RPolarsErr::from)?;
         OwnedRawSexp::try_from_iter(buf).map(Into::into)
     }
 
