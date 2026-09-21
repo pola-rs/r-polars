@@ -4234,7 +4234,7 @@ expr__upper_bound <- function() {
 #'
 #' `r lifecycle::badge("deprecated")`
 #'
-#' Deprecated in Polars 2.0.0 in favor of `$bin_intervals()`. Set
+#' Deprecated in Polars 2.0.0 in favor of [`$bin_intervals()`][expr__bin_intervals]. Set
 #' `right_closed = TRUE` to keep the same interval closure. The replacement is
 #' experimental and requires `labels`; use `labels = NULL` for `UInt32` bin
 #' indices.
@@ -4296,10 +4296,12 @@ expr__cut <- function(
 #'
 #' `r lifecycle::badge("deprecated")`
 #'
-#' Deprecated in Polars 2.0.0 in favor of `$bin_quantiles()` or `$bin_ranks()`.
+#' Deprecated in Polars 2.0.0 in favor of [`$bin_quantiles()`][expr__bin_quantiles]
+#' or [`$bin_ranks()`][expr__bin_ranks].
 #' Both replacements are experimental and require `labels`; use `labels = NULL`
-#' for `UInt32` bin indices. `$bin_quantiles()` keeps equal values together,
-#' while `$bin_ranks()` can split equal values across bins.
+#' for `UInt32` bin indices. [`$bin_quantiles()`][expr__bin_quantiles] keeps
+#' equal values together, while [`$bin_ranks()`][expr__bin_ranks] can split
+#' equal values across bins.
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams expr__cut

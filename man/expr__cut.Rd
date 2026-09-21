@@ -34,7 +34,7 @@ A polars \link{expression}
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 }
 \details{
-Deprecated in Polars 2.0.0 in favor of \verb{$bin_intervals()}. Set
+Deprecated in Polars 2.0.0 in favor of \code{\link[=expr__bin_intervals]{$bin_intervals()}}. Set
 \code{right_closed = TRUE} to keep the same interval closure. The replacement is
 experimental and requires \code{labels}; use \code{labels = NULL} for \code{UInt32} bin
 indices.
