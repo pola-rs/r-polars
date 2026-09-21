@@ -44,6 +44,12 @@
 #' | `Struct`                                       | Composite product type that can store multiple fields.                          |
 #' | `Null`                                         | Represents null values.                                                         |
 # nolint end
+#'
+#' ## Maps
+#'
+#' Use `pl$Map(key, value)` to define a Map data type. To create a Map Series from R
+#' values, first create a compatible `List(Struct)` Series and explicitly cast it to
+#' the Map type. Ordinary R lists are not implicitly inferred as Map values.
 #' @name polars_dtype
 #' @aliases DataType
 #' @examples
@@ -66,6 +72,7 @@
 #' pl$Duration()
 #' pl$Array(pl$Int32, c(2, 3))
 #' pl$List(pl$Int32)
+#' pl$Map(pl$String, pl$Int64)
 #' pl$Categorical()
 #' pl$Enum(c("a", "b", "c"))
 #' pl$Struct(a = pl$Int32, b = pl$String)
@@ -234,6 +241,17 @@ pl__List <- function(inner) {
   wrap({
     check_polars_dtype(inner)
     PlRDataType$new_list(inner$`_dt`)
+  })
+}
+
+#' @rdname polars_dtype
+#' @param key A polars data type for the Map keys. Keys cannot have the `Null` type.
+#' @param value A polars data type for the Map values.
+pl__Map <- function(key, value) {
+  wrap({
+    check_polars_dtype(key)
+    check_polars_dtype(value)
+    PlRDataType$new_map(key$`_dt`, value$`_dt`)
   })
 }
 

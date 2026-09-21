@@ -1,3 +1,7 @@
+test_that("Map Series prints", {
+  expect_snapshot(map_test_series())
+})
+
 patrick::with_parameters_test_that(
   "roundtrip around serialization",
   .cases = {

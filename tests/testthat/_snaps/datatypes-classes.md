@@ -437,6 +437,21 @@
     Output
       Array(List(Array(String, shape=c(2))), shape=c(2, 2))
 
+# data types print Map(String, Int64)
+
+    Code
+      print(class(object))
+    Output
+      [1] "polars_dtype_map"    "polars_dtype_nested" "polars_dtype"       
+      [4] "polars_object"      
+
+---
+
+    Code
+      print(object)
+    Output
+      Map(String, Int64)
+
 # data types print Struct(a = Int32, b = String)
 
     Code
@@ -510,6 +525,26 @@
       print(object)
     Output
       Enum(categories=c('a', 'b', 'c'))
+
+# Map dtype constructor validates inputs
+
+    Code
+      pl$Map(1, pl$Int64)
+    Condition
+      Error in `pl$Map()`:
+      ! Evaluation failed in `$Map()`.
+      Caused by error in `pl$Map()`:
+      ! `key` must be a polars data type, not the number 1.
+
+---
+
+    Code
+      pl$Map(pl$Null, pl$Int64)
+    Condition
+      Error in `pl$Map()`:
+      ! Evaluation failed in `$Map()`.
+      Caused by error:
+      ! Invalid operation: `null` cannot be used as a Map key dtype
 
 # Enum construct error non-character
 

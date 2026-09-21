@@ -167,6 +167,12 @@ impl PlRDataType {
         Ok(DataType::List(Box::new(inner.dt.clone())).into())
     }
 
+    pub fn new_map(key: &PlRDataType, value: &PlRDataType) -> Result<Self> {
+        let dt = DataType::Map(Box::new(key.dt.clone()), Box::new(value.dt.clone()));
+        dt.ensure_valid_map_dtype().map_err(RPolarsErr::from)?;
+        Ok(dt.into())
+    }
+
     pub fn new_array(inner: &PlRDataType, shape: NumericSexp) -> Result<Self> {
         let inner = inner.dt.clone();
         let mut shape = <Wrap<Vec<usize>>>::try_from(shape)?.0;

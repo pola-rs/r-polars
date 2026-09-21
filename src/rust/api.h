@@ -128,6 +128,7 @@ SEXP savvy_PlRDataType_new_duration__ffi(SEXP c_arg__time_unit);
 SEXP savvy_PlRDataType_new_enum__ffi(SEXP c_arg__categories);
 SEXP savvy_PlRDataType_new_from_name__ffi(SEXP c_arg__name);
 SEXP savvy_PlRDataType_new_list__ffi(SEXP c_arg__inner);
+SEXP savvy_PlRDataType_new_map__ffi(SEXP c_arg__key, SEXP c_arg__value);
 SEXP savvy_PlRDataType_new_struct__ffi(SEXP c_arg__fields);
 
 // methods and associated functions for PlRDataTypeExpr

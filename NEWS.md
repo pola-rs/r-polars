@@ -104,8 +104,9 @@ this release.
 
 ### New features
 
-- Arrow Map columns can be imported and exported. Map Series convert to a
-  `vctrs::list_of` of data frames with `key` and `value` columns.
+- Map dtypes can be defined with `pl$Map(key, value)`, and Arrow Map columns can
+  be imported and exported. Map Series convert to a `vctrs::list_of` of data
+  frames with `key` and `value` columns.
 - CSV readers accept `extra_columns = "raise"` or `"ignore"` to control input
   fields that are not represented by the selected schema.
 - Expression casting and `<expr>$map_batches(return_dtype = ...)` accept

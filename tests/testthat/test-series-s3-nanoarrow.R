@@ -16,7 +16,7 @@ patrick::with_parameters_test_that(
       "categorical", as_polars_series(c("a", "b"))$cast(pl$Categorical()),
       "enum", as_polars_series(c("a", "b"))$cast(pl$Enum(c("a", "b"))),
       "decimal", as_polars_series(1:3)$cast(pl$Decimal(precision = 10, scale = 2)),
-      "map", map_nanoarrow_series(),
+      "map", map_test_series(),
     )
   },
   code = {
@@ -24,15 +24,6 @@ patrick::with_parameters_test_that(
       as_polars_series()
 
     expect_equal(from_nanoarrow, x)
-
-    if (.test_name == "map") {
-      expect_s3_class(x$dtype, "polars_dtype_map")
-      expect_true(x$dtype$is_nested())
-      expect_equal(format(x$dtype$key), "String")
-      expect_equal(format(x$dtype$value), "Int32")
-      expect_output(print(x$dtype), "Map\\(String, Int32\\)")
-      expect_output(print(x), "map\\[str, i32\\]")
-    }
   }
 )
 

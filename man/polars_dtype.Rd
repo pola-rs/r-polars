@@ -10,6 +10,7 @@
 \alias{pl__Enum}
 \alias{pl__Array}
 \alias{pl__List}
+\alias{pl__Map}
 \alias{pl__Struct}
 \title{Polars DataType class (\code{polars_dtype})}
 \usage{
@@ -26,6 +27,8 @@ pl__Enum(categories)
 pl__Array(inner, shape)
 
 pl__List(inner)
+
+pl__Map(key, value)
 
 pl__Struct(...)
 }
@@ -47,6 +50,10 @@ Should not contain \code{NA} values and all values should be unique.}
 \item{inner}{A polars data type object.}
 
 \item{shape}{A integer-ish vector, representing the shape of the Array.}
+
+\item{key}{A polars data type for the Map keys. Keys cannot have the \code{Null} type.}
+
+\item{value}{A polars data type for the Map values.}
 
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}>
 Name-value pairs of polars data type.
@@ -89,6 +96,13 @@ see the section about floating point numbers for more information.
    \code{Null} \tab Represents null values. \cr
 }
 }
+
+\subsection{Maps}{
+
+Use \code{pl$Map(key, value)} to define a Map data type. To create a Map Series from R
+values, first create a compatible \code{List(Struct)} Series and explicitly cast it to
+the Map type. Ordinary R lists are not implicitly inferred as Map values.
+}
 }
 \examples{
 pl$Int8
@@ -110,6 +124,7 @@ pl$Datetime()
 pl$Duration()
 pl$Array(pl$Int32, c(2, 3))
 pl$List(pl$Int32)
+pl$Map(pl$String, pl$Int64)
 pl$Categorical()
 pl$Enum(c("a", "b", "c"))
 pl$Struct(a = pl$Int32, b = pl$String)

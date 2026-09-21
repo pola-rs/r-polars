@@ -900,6 +900,12 @@ class(`PlRDataFrame`) <- c("polars::PlRDataFrame__bundle", "savvy_polars__sealed
   .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_list__impl, `inner`))
 }
 
+`PlRDataType`$`new_map` <- function(`key`, `value`) {
+  `key` <- .savvy_extract_ptr(`key`, "polars::PlRDataType")
+  `value` <- .savvy_extract_ptr(`value`, "polars::PlRDataType")
+  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_map__impl, `key`, `value`))
+}
+
 `PlRDataType`$`new_struct` <- function(`fields`) {
   .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_struct__impl, `fields`))
 }

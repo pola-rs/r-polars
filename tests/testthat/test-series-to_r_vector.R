@@ -226,11 +226,17 @@ patrick::with_parameters_test_that(
 )
 
 test_that("Map conversion", {
-  skip_if_not_installed("nanoarrow")
   skip_if_not_installed("vctrs")
 
-  series <- map_nanoarrow_series()
-  expect_identical(series$to_r_vector(), as.vector(map_nanoarrow_array()))
+  series <- map_test_series()
+  expected <- vctrs::list_of(
+    data.frame(key = c("a", "b"), value = c(1L, 2L)),
+    NULL,
+    data.frame(key = character(), value = integer()),
+    .ptype = data.frame(key = character(), value = integer())
+  )
+  expect_identical(series$to_r_vector(), expected)
+  expect_equal(series$dtype, pl$Map(pl$String, pl$Int32))
 
   with_mocked_bindings(
     expect_snapshot(series$to_r_vector()),
