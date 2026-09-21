@@ -3001,8 +3001,7 @@ test_that("bin methods work", {
         right_closed = TRUE
       )
     ),
-    pl$DataFrame(bin = factor(c("low", "low", "mid", "mid", "high")))$
-      cast(bin = pl$Enum(labels))
+    pl$DataFrame(bin = factor(c("low", "low", "mid", "mid", "high")))$cast(bin = pl$Enum(labels))
   )
   expect_equal(
     df$select(
@@ -3012,15 +3011,13 @@ test_that("bin methods work", {
         right_closed = TRUE
       )
     ),
-    pl$DataFrame(bin = factor(c("low", "low", "mid", "mid", "high")))$
-      cast(bin = pl$Enum(labels))
+    pl$DataFrame(bin = factor(c("low", "low", "mid", "mid", "high")))$cast(bin = pl$Enum(labels))
   )
   expect_equal(
     df$select(
       bin = pl$col("foo")$bin_ranks(c(0.25, 0.75), labels = labels)
     ),
-    pl$DataFrame(bin = factor(c("low", "mid", "mid", "mid", "high")))$
-      cast(bin = pl$Enum(labels))
+    pl$DataFrame(bin = factor(c("low", "mid", "mid", "mid", "high")))$cast(bin = pl$Enum(labels))
   )
 
   interval_bins <- df$select(
