@@ -4439,8 +4439,8 @@ expr__bin_intervals <- function(
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @param quantiles Explicit non-decreasing quantile probabilities in `[0, 1]`.
-#' @param n_bins Number of bins with equal probability. Supply exactly one of
-#'   `quantiles` and `n_bins`.
+#' @param n_bins Number of bins based on evenly spaced quantile fractions.
+#'   Supply exactly one of `quantiles` and `n_bins`.
 #' @param labels Names of the bins. The number of labels must equal the number
 #'   of bins. Use `NULL` to return `UInt32` bin indices.
 #' @param include_intervals Return a struct with the bin and its left and right

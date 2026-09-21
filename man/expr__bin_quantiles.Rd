@@ -18,8 +18,8 @@ expr__bin_quantiles(
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{n_bins}{Number of bins with equal probability. Supply exactly one of
-\code{quantiles} and \code{n_bins}.}
+\item{n_bins}{Number of bins based on evenly spaced quantile fractions.
+Supply exactly one of \code{quantiles} and \code{n_bins}.}
 
 \item{labels}{Names of the bins. The number of labels must equal the number
 of bins. Use \code{NULL} to return \code{UInt32} bin indices.}
