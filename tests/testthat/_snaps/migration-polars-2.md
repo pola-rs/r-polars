@@ -9,7 +9,7 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid operation: 'is_in' cannot check for Int64 values in List(Float64) data.
-      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for is_in() it is required to explicitly cast (one of) the operands to a compatible type.
+      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for 'is_in' it is required to explicitly cast (one of) the operands to a compatible type.
 
 ---
 
@@ -22,7 +22,7 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid operation: 'list.contains' cannot check for Float64 values in List(Int32) data.
-      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for is_in() it is required to explicitly cast (one of) the operands to a compatible type.
+      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for 'list.contains' it is required to explicitly cast (one of) the operands to a compatible type.
 
 ---
 
@@ -35,7 +35,7 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid operation: 'arr.contains' cannot check for Float64 values in Array(Int32, 2) data.
-      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for is_in() it is required to explicitly cast (one of) the operands to a compatible type.
+      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for 'arr.contains' it is required to explicitly cast (one of) the operands to a compatible type.
 
 ---
 
@@ -48,7 +48,7 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid operation: 'arr.contains' cannot check for Float64 values in Array(Int32, 2) data.
-      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for is_in() it is required to explicitly cast (one of) the operands to a compatible type.
+      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for 'arr.contains' it is required to explicitly cast (one of) the operands to a compatible type.
 
 # strict Struct casts enforce the 2.0 field contract
 
