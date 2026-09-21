@@ -33,6 +33,7 @@ patrick::with_parameters_test_that(
       "Array(String, 2)", pl$Array(pl$String, 2),
       "Array(String, c(2, 2))", pl$Array(pl$String, c(2, 2)),
       "Array(List(Array(String, 2)), c(2, 2))", pl$Array(pl$List(pl$Array(pl$String, 2)), c(2, 2)),
+      "Map(String, Int64)", pl$Map(pl$String, pl$Int64),
       "Struct(a = Int32, b = String)", pl$Struct(a = pl$Int32, b = pl$String),
       "Struct(a = Struct(b = Int32), c = String)", pl$Struct(a = pl$Struct(b = pl$Int32), c = pl$String),
       "Struct(Int8, ` ` = String, \"`'\"\" = Int16))", pl$Struct(pl$Int8, ` ` = pl$String, "`'\"" = pl$Int16),
@@ -46,6 +47,18 @@ patrick::with_parameters_test_that(
     expect_snapshot(print(object))
   }
 )
+
+test_that("Map dtype constructor validates inputs", {
+  dtype <- pl$Map(pl$String, pl$Int32)
+  expect_s3_class(dtype, "polars_dtype_map")
+  expect_true(dtype$is_nested())
+  expect_equal(format(dtype$key), "String")
+  expect_equal(format(dtype$value), "Int32")
+
+  expect_snapshot(pl$Map(1, pl$Int64), error = TRUE)
+  expect_snapshot(pl$Map(pl$String, 1), error = TRUE)
+  expect_snapshot(pl$Map(pl$Null, pl$Int64), error = TRUE)
+})
 
 patrick::with_parameters_test_that(
   "Enum construct error",

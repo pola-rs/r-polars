@@ -1,3 +1,16 @@
+# Map Series prints
+
+    Code
+      map_test_series()
+    Output
+      shape: (3,)
+      Series: '' [map[str, i32]]
+      [
+      	{"a": 1, "b": 2}
+      	null
+      	{}
+      ]
+
 # deserialize series' error
 
     Code

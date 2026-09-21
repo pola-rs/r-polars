@@ -16,6 +16,7 @@ patrick::with_parameters_test_that(
       "categorical", as_polars_series(c("a", "b"))$cast(pl$Categorical()),
       "enum", as_polars_series(c("a", "b"))$cast(pl$Enum(c("a", "b"))),
       "decimal", as_polars_series(1:3)$cast(pl$Decimal(precision = 10, scale = 2)),
+      "map", map_test_series(),
     )
   },
   code = {

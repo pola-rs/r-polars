@@ -91,6 +91,49 @@ test_that("membership operations reject lossy comparisons", {
   )
 })
 
+test_that("temporal membership operations require matching time units", {
+  datetime <- as.POSIXct("1970-01-01 00:00:00", tz = "UTC")
+  datetime_us <- pl$Datetime("us", "UTC")
+  datetime_ms <- pl$Datetime("ms", "UTC")
+
+  list_input <- pl$DataFrame(values = list(datetime))$cast(
+    values = pl$List(datetime_us)
+  )
+  needle_ms <- pl$lit(datetime)$cast(datetime_ms)
+  needle_us <- pl$lit(datetime)$cast(datetime_us)
+
+  expect_snapshot(
+    list_input$select(needle_ms$is_in(pl$col("values"))),
+    transform = normalize_migration_snapshot,
+    error = TRUE
+  )
+  expect_equal(
+    list_input$select(needle_us$is_in(pl$col("values"))),
+    pl$DataFrame(literal = TRUE)
+  )
+
+  expect_snapshot(
+    list_input$select(pl$col("values")$list$contains(needle_ms)),
+    transform = normalize_migration_snapshot,
+    error = TRUE
+  )
+  expect_equal(
+    list_input$select(pl$col("values")$list$contains(needle_us)),
+    pl$DataFrame(values = TRUE)
+  )
+
+  array_input <- list_input$cast(values = pl$Array(datetime_us, 1L))
+  expect_snapshot(
+    array_input$select(pl$col("values")$arr$contains(needle_ms)),
+    transform = normalize_migration_snapshot,
+    error = TRUE
+  )
+  expect_equal(
+    array_input$select(pl$col("values")$arr$contains(needle_us)),
+    pl$DataFrame(values = TRUE)
+  )
+})
+
 test_that("strict Struct casts enforce the 2.0 field contract", {
   input <- pl$DataFrame(a = 1:2, b = c("x", "y"))$select(s = pl$struct("a", "b"))
   input <- input$to_series()

@@ -206,7 +206,7 @@ impl PlRSeries {
         let datetime_strings = self.series.str().map_err(RPolarsErr::from)?;
         let ambiguous = ambiguous.series.str().map_err(RPolarsErr::from)?;
 
-        polars::time::prelude::string::infer::to_datetime_with_inferred_tz(
+        polars::chunked_array::temporal::string::infer::to_datetime_with_inferred_tz(
             datetime_strings,
             time_unit.map_or(TimeUnit::Microseconds, |v| v.0),
             strict,

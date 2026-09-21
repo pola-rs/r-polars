@@ -639,6 +639,11 @@ SEXP savvy_PlRDataType_new_list__impl(SEXP c_arg__inner) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataType_new_map__impl(SEXP c_arg__key, SEXP c_arg__value) {
+    SEXP res = savvy_PlRDataType_new_map__ffi(c_arg__key, c_arg__value);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRDataType_new_struct__impl(SEXP c_arg__fields) {
     SEXP res = savvy_PlRDataType_new_struct__ffi(c_arg__fields);
     return handle_result(res);
@@ -976,6 +981,36 @@ SEXP savvy_PlRExpr_bin_hex_decode__impl(SEXP self__, SEXP c_arg__strict) {
 
 SEXP savvy_PlRExpr_bin_hex_encode__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_bin_hex_encode__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_bin_intervals__impl(SEXP self__, SEXP c_arg__breaks, SEXP c_arg__include_intervals, SEXP c_arg__right_closed, SEXP c_arg__labels) {
+    SEXP res = savvy_PlRExpr_bin_intervals__ffi(self__, c_arg__breaks, c_arg__include_intervals, c_arg__right_closed, c_arg__labels);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_bin_intervals_uniform__impl(SEXP self__, SEXP c_arg__n_bins, SEXP c_arg__include_intervals, SEXP c_arg__right_closed, SEXP c_arg__labels) {
+    SEXP res = savvy_PlRExpr_bin_intervals_uniform__ffi(self__, c_arg__n_bins, c_arg__include_intervals, c_arg__right_closed, c_arg__labels);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_bin_quantiles__impl(SEXP self__, SEXP c_arg__quantiles, SEXP c_arg__include_intervals, SEXP c_arg__right_closed, SEXP c_arg__labels) {
+    SEXP res = savvy_PlRExpr_bin_quantiles__ffi(self__, c_arg__quantiles, c_arg__include_intervals, c_arg__right_closed, c_arg__labels);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_bin_quantiles_uniform__impl(SEXP self__, SEXP c_arg__n_bins, SEXP c_arg__include_intervals, SEXP c_arg__right_closed, SEXP c_arg__labels) {
+    SEXP res = savvy_PlRExpr_bin_quantiles_uniform__ffi(self__, c_arg__n_bins, c_arg__include_intervals, c_arg__right_closed, c_arg__labels);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_bin_ranks__impl(SEXP self__, SEXP c_arg__ranks, SEXP c_arg__include_intervals, SEXP c_arg__labels) {
+    SEXP res = savvy_PlRExpr_bin_ranks__ffi(self__, c_arg__ranks, c_arg__include_intervals, c_arg__labels);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_bin_ranks_uniform__impl(SEXP self__, SEXP c_arg__n_bins, SEXP c_arg__include_intervals, SEXP c_arg__labels) {
+    SEXP res = savvy_PlRExpr_bin_ranks_uniform__ffi(self__, c_arg__n_bins, c_arg__include_intervals, c_arg__labels);
     return handle_result(res);
 }
 
@@ -3545,6 +3580,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataType_new_enum__impl", (DL_FUNC) &savvy_PlRDataType_new_enum__impl, 1},
     {"savvy_PlRDataType_new_from_name__impl", (DL_FUNC) &savvy_PlRDataType_new_from_name__impl, 1},
     {"savvy_PlRDataType_new_list__impl", (DL_FUNC) &savvy_PlRDataType_new_list__impl, 1},
+    {"savvy_PlRDataType_new_map__impl", (DL_FUNC) &savvy_PlRDataType_new_map__impl, 2},
     {"savvy_PlRDataType_new_struct__impl", (DL_FUNC) &savvy_PlRDataType_new_struct__impl, 1},
     {"savvy_PlRDataTypeExpr_arr_inner_dtype__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_arr_inner_dtype__impl, 1},
     {"savvy_PlRDataTypeExpr_arr_shape__impl", (DL_FUNC) &savvy_PlRDataTypeExpr_arr_shape__impl, 1},
@@ -3613,6 +3649,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_bin_get__impl", (DL_FUNC) &savvy_PlRExpr_bin_get__impl, 3},
     {"savvy_PlRExpr_bin_hex_decode__impl", (DL_FUNC) &savvy_PlRExpr_bin_hex_decode__impl, 2},
     {"savvy_PlRExpr_bin_hex_encode__impl", (DL_FUNC) &savvy_PlRExpr_bin_hex_encode__impl, 1},
+    {"savvy_PlRExpr_bin_intervals__impl", (DL_FUNC) &savvy_PlRExpr_bin_intervals__impl, 5},
+    {"savvy_PlRExpr_bin_intervals_uniform__impl", (DL_FUNC) &savvy_PlRExpr_bin_intervals_uniform__impl, 5},
+    {"savvy_PlRExpr_bin_quantiles__impl", (DL_FUNC) &savvy_PlRExpr_bin_quantiles__impl, 5},
+    {"savvy_PlRExpr_bin_quantiles_uniform__impl", (DL_FUNC) &savvy_PlRExpr_bin_quantiles_uniform__impl, 5},
+    {"savvy_PlRExpr_bin_ranks__impl", (DL_FUNC) &savvy_PlRExpr_bin_ranks__impl, 4},
+    {"savvy_PlRExpr_bin_ranks_uniform__impl", (DL_FUNC) &savvy_PlRExpr_bin_ranks_uniform__impl, 4},
     {"savvy_PlRExpr_bin_reinterpret__impl", (DL_FUNC) &savvy_PlRExpr_bin_reinterpret__impl, 3},
     {"savvy_PlRExpr_bin_size_bytes__impl", (DL_FUNC) &savvy_PlRExpr_bin_size_bytes__impl, 1},
     {"savvy_PlRExpr_bin_starts_with__impl", (DL_FUNC) &savvy_PlRExpr_bin_starts_with__impl, 2},

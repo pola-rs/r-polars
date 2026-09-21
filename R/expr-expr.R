@@ -4232,10 +4232,15 @@ expr__upper_bound <- function() {
 
 #' Bin continuous values into discrete categories
 #'
-#' `r lifecycle::badge("experimental")`
+#' `r lifecycle::badge("deprecated")`
+#'
+#' Deprecated in Polars 2.0.0 in favor of [`$bin_intervals()`][expr__bin_intervals]. Set
+#' `right_closed = TRUE` to keep the same interval closure. The replacement is
+#' experimental and requires `labels`; use `labels = NULL` for `UInt32` bin
+#' indices.
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param breaks List of unique cut points.
+#' @param breaks Numeric vector of unique cut points.
 #' @param labels Names of the categories. The number of labels must be equal to
 #' the number of cut points plus one.
 #' @param left_closed Set the intervals to be left-closed instead of
@@ -4265,6 +4270,19 @@ expr__cut <- function(
 ) {
   wrap({
     check_dots_empty0(...)
+    deprecate_warn(
+      c(
+        `!` = sprintf(
+          "The method %s is deprecated as of %s 2.0.0.",
+          format_fn("<expr>$cut"),
+          format_pkg("polars")
+        ),
+        i = sprintf(
+          "Use the method %s instead.",
+          format_fn("<expr>$bin_intervals")
+        )
+      )
+    )
     self$`_rexpr`$cut(
       breaks = breaks,
       labels = labels,
@@ -4276,7 +4294,14 @@ expr__cut <- function(
 
 #' Bin continuous values into discrete categories based on their quantiles
 #'
-#' `r lifecycle::badge("experimental")`
+#' `r lifecycle::badge("deprecated")`
+#'
+#' Deprecated in Polars 2.0.0 in favor of [`$bin_quantiles()`][expr__bin_quantiles]
+#' or [`$bin_ranks()`][expr__bin_ranks].
+#' Both replacements are experimental and require `labels`; use `labels = NULL`
+#' for `UInt32` bin indices. [`$bin_quantiles()`][expr__bin_quantiles] keeps
+#' equal values together, while [`$bin_ranks()`][expr__bin_ranks] can split
+#' equal values across bins.
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams expr__cut
@@ -4317,6 +4342,20 @@ expr__qcut <- function(
 ) {
   wrap({
     check_dots_empty0(...)
+    deprecate_warn(
+      c(
+        `!` = sprintf(
+          "The method %s is deprecated as of %s 2.0.0.",
+          format_fn("<expr>$qcut"),
+          format_pkg("polars")
+        ),
+        i = sprintf(
+          "Use the methods %s or %s instead.",
+          format_fn("<expr>$bin_quantiles"),
+          format_fn("<expr>$bin_ranks")
+        )
+      )
+    )
     if (is_scalar_integerish(quantiles)) {
       self$`_rexpr`$qcut_uniform(
         n_bins = quantiles,
@@ -4332,6 +4371,176 @@ expr__qcut <- function(
         left_closed = left_closed,
         allow_duplicates = allow_duplicates,
         include_breaks = include_breaks
+      )
+    }
+  })
+}
+
+
+#' Bin values into discrete intervals delimited by breakpoints
+#'
+#' `r lifecycle::badge("experimental")`
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @param intervals Explicit numeric breakpoints for the bin boundaries.
+#' @param n_bins Number of equal-width bins. Supply exactly one of `intervals`
+#'   and `n_bins`.
+#' @param labels Names of the bins. The number of labels must equal the number
+#'   of bins. Use `NULL` to return `UInt32` bin indices.
+#' @param include_intervals Return a struct with the bin and its left and right
+#'   boundaries.
+#' @param right_closed Use right-closed `(left, right]` bins instead of
+#'   left-closed `[left, right)` bins.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(foo = -2:2)
+#' df$select(bin = pl$col("foo")$bin_intervals(
+#'   intervals = c(-1, 1), labels = c("low", "mid", "high"), right_closed = TRUE
+#' ))
+#'
+#' # A single integer is a breakpoint; use n_bins for equal-width bins.
+#' df$select(bin = pl$col("foo")$bin_intervals(intervals = 2L, labels = NULL))
+#' df$select(bin = pl$col("foo")$bin_intervals(n_bins = 3, labels = NULL))
+expr__bin_intervals <- function(
+  intervals = NULL,
+  ...,
+  n_bins = NULL,
+  labels = NULL,
+  include_intervals = FALSE,
+  right_closed = FALSE
+) {
+  wrap({
+    check_dots_empty0(...)
+    argument <- check_exclusive(intervals, n_bins)
+    if (
+      (identical(argument, "intervals") && is.null(intervals)) ||
+        (identical(argument, "n_bins") && is.null(n_bins))
+    ) {
+      abort(sprintf("`%s` must not be `NULL`.", argument))
+    }
+    if (identical(argument, "intervals")) {
+      self$`_rexpr`$bin_intervals(
+        breaks = intervals,
+        labels = labels,
+        include_intervals = include_intervals,
+        right_closed = right_closed
+      )
+    } else {
+      self$`_rexpr`$bin_intervals_uniform(
+        n_bins = n_bins,
+        labels = labels,
+        include_intervals = include_intervals,
+        right_closed = right_closed
+      )
+    }
+  })
+}
+
+#' Bin values into discrete intervals delimited by their quantiles
+#'
+#' `r lifecycle::badge("experimental")`
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @param quantiles Explicit non-decreasing quantile probabilities in `[0, 1]`.
+#' @param n_bins Number of bins based on evenly spaced quantile fractions.
+#'   Supply exactly one of `quantiles` and `n_bins`.
+#' @param labels Names of the bins. The number of labels must equal the number
+#'   of bins. Use `NULL` to return `UInt32` bin indices.
+#' @param include_intervals Return a struct with the bin and its left and right
+#'   boundaries.
+#' @param right_closed Use right-closed `(left, right]` bins instead of
+#'   left-closed `[left, right)` bins.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(foo = -2:2)
+#' df$select(bin = pl$col("foo")$bin_quantiles(
+#'   quantiles = c(0.25, 0.75), labels = c("low", "mid", "high")
+#' ))
+#' df$select(bin = pl$col("foo")$bin_quantiles(n_bins = 3, labels = NULL))
+expr__bin_quantiles <- function(
+  quantiles = NULL,
+  ...,
+  n_bins = NULL,
+  labels = NULL,
+  include_intervals = FALSE,
+  right_closed = FALSE
+) {
+  wrap({
+    check_dots_empty0(...)
+    argument <- check_exclusive(quantiles, n_bins)
+    if (
+      (identical(argument, "quantiles") && is.null(quantiles)) ||
+        (identical(argument, "n_bins") && is.null(n_bins))
+    ) {
+      abort(sprintf("`%s` must not be `NULL`.", argument))
+    }
+    if (identical(argument, "quantiles")) {
+      self$`_rexpr`$bin_quantiles(
+        quantiles = quantiles,
+        labels = labels,
+        include_intervals = include_intervals,
+        right_closed = right_closed
+      )
+    } else {
+      self$`_rexpr`$bin_quantiles_uniform(
+        n_bins = n_bins,
+        labels = labels,
+        include_intervals = include_intervals,
+        right_closed = right_closed
+      )
+    }
+  })
+}
+
+#' Bin values by their position in sorted order
+#'
+#' `r lifecycle::badge("experimental")`
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @param ranks Explicit non-decreasing cumulative fractions in `[0, 1]`.
+#' @param n_bins Number of near-equal-sized bins. Supply exactly one of
+#'   `ranks` and `n_bins`.
+#' @param labels Names of the bins. The number of labels must equal the number
+#'   of bins. Use `NULL` to return `UInt32` bin indices.
+#' @param include_intervals Return a struct with the bin and its left and right
+#'   boundaries.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(foo = -2:2)
+#' df$select(bin = pl$col("foo")$bin_ranks(
+#'   ranks = c(0.25, 0.75), labels = c("low", "mid", "high")
+#' ))
+#' df$select(bin = pl$col("foo")$bin_ranks(n_bins = 3, labels = NULL))
+expr__bin_ranks <- function(
+  ranks = NULL,
+  ...,
+  n_bins = NULL,
+  labels = NULL,
+  include_intervals = FALSE
+) {
+  wrap({
+    check_dots_empty0(...)
+    argument <- check_exclusive(ranks, n_bins)
+    if (
+      (identical(argument, "ranks") && is.null(ranks)) ||
+        (identical(argument, "n_bins") && is.null(n_bins))
+    ) {
+      abort(sprintf("`%s` must not be `NULL`.", argument))
+    }
+    if (identical(argument, "ranks")) {
+      self$`_rexpr`$bin_ranks(
+        ranks = ranks,
+        labels = labels,
+        include_intervals = include_intervals
+      )
+    } else {
+      self$`_rexpr`$bin_ranks_uniform(
+        n_bins = n_bins,
+        labels = labels,
+        include_intervals = include_intervals
       )
     }
   })

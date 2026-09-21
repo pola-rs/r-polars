@@ -128,6 +128,7 @@ SEXP savvy_PlRDataType_new_duration__ffi(SEXP c_arg__time_unit);
 SEXP savvy_PlRDataType_new_enum__ffi(SEXP c_arg__categories);
 SEXP savvy_PlRDataType_new_from_name__ffi(SEXP c_arg__name);
 SEXP savvy_PlRDataType_new_list__ffi(SEXP c_arg__inner);
+SEXP savvy_PlRDataType_new_map__ffi(SEXP c_arg__key, SEXP c_arg__value);
 SEXP savvy_PlRDataType_new_struct__ffi(SEXP c_arg__fields);
 
 // methods and associated functions for PlRDataTypeExpr
@@ -200,6 +201,12 @@ SEXP savvy_PlRExpr_bin_ends_with__ffi(SEXP self__, SEXP c_arg__suffix);
 SEXP savvy_PlRExpr_bin_get__ffi(SEXP self__, SEXP c_arg__index, SEXP c_arg__null_on_oob);
 SEXP savvy_PlRExpr_bin_hex_decode__ffi(SEXP self__, SEXP c_arg__strict);
 SEXP savvy_PlRExpr_bin_hex_encode__ffi(SEXP self__);
+SEXP savvy_PlRExpr_bin_intervals__ffi(SEXP self__, SEXP c_arg__breaks, SEXP c_arg__include_intervals, SEXP c_arg__right_closed, SEXP c_arg__labels);
+SEXP savvy_PlRExpr_bin_intervals_uniform__ffi(SEXP self__, SEXP c_arg__n_bins, SEXP c_arg__include_intervals, SEXP c_arg__right_closed, SEXP c_arg__labels);
+SEXP savvy_PlRExpr_bin_quantiles__ffi(SEXP self__, SEXP c_arg__quantiles, SEXP c_arg__include_intervals, SEXP c_arg__right_closed, SEXP c_arg__labels);
+SEXP savvy_PlRExpr_bin_quantiles_uniform__ffi(SEXP self__, SEXP c_arg__n_bins, SEXP c_arg__include_intervals, SEXP c_arg__right_closed, SEXP c_arg__labels);
+SEXP savvy_PlRExpr_bin_ranks__ffi(SEXP self__, SEXP c_arg__ranks, SEXP c_arg__include_intervals, SEXP c_arg__labels);
+SEXP savvy_PlRExpr_bin_ranks_uniform__ffi(SEXP self__, SEXP c_arg__n_bins, SEXP c_arg__include_intervals, SEXP c_arg__labels);
 SEXP savvy_PlRExpr_bin_reinterpret__ffi(SEXP self__, SEXP c_arg__dtype, SEXP c_arg__kind);
 SEXP savvy_PlRExpr_bin_size_bytes__ffi(SEXP self__);
 SEXP savvy_PlRExpr_bin_starts_with__ffi(SEXP self__, SEXP c_arg__prefix);

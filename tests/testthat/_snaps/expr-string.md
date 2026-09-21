@@ -12,7 +12,7 @@
       
       You might want to try:
       - setting `strict=False` to set values that cannot be converted to `null`
-      - using `str.strptime`, `str.to_date`, or `str.to_datetime` and providing a format string
+      - using `str.strptime`, `str.to_date`, `str.to_datetime`, or `str.to_time` and providing a format string
       
       This error occurred in the following expression:
       	col("x").str.strptime(["raise"])
@@ -45,7 +45,7 @@
       
       You might want to try:
       - setting `strict=False` to set values that cannot be converted to `null`
-      - using `str.strptime`, `str.to_date`, or `str.to_datetime` and providing a format string
+      - using `str.strptime`, `str.to_date`, `str.to_datetime`, or `str.to_time` and providing a format string
       
       This error occurred in the following expression:
       	col("x").str.strptime(["raise"])
@@ -76,6 +76,10 @@
       Caused by error:
       ! conversion from `str` to `time` failed in column 'x' for 1 out of 3 values: ["invalid time"]
       
+      You might want to try:
+      - setting `strict=False` to set values that cannot be converted to `null`
+      - using `str.strptime`, `str.to_date`, `str.to_datetime`, or `str.to_time` and providing a format string
+      
       This error occurred in the following expression:
       	col("x").str.strptime(["raise"])
 
@@ -93,7 +97,7 @@
       
       You might want to try:
       - setting `strict=False` to set values that cannot be converted to `null`
-      - using `str.strptime`, `str.to_date`, or `str.to_datetime` and providing a format string
+      - using `str.strptime`, `str.to_date`, `str.to_datetime`, or `str.to_time` and providing a format string
       
       This error occurred in the following expression:
       	col("x").str.strptime(["raise"])
@@ -109,6 +113,10 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! conversion from `str` to `time` failed in column 'x' for 1 out of 3 values: ["28:00:02"]
+      
+      You might want to try:
+      - setting `strict=False` to set values that cannot be converted to `null`
+      - using `str.strptime`, `str.to_date`, `str.to_datetime`, or `str.to_time` and providing a format string
       
       This error occurred in the following expression:
       	col("x").str.strptime(["raise"])
@@ -127,7 +135,7 @@
       
       You might want to try:
       - setting `strict=False` to set values that cannot be converted to `null`
-      - using `str.strptime`, `str.to_date`, or `str.to_datetime` and providing a format string
+      - using `str.strptime`, `str.to_date`, `str.to_datetime`, or `str.to_time` and providing a format string
       
       This error occurred in the following expression:
       	col("invalid").str.strptime(["raise"])

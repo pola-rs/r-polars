@@ -53,6 +53,10 @@ this release.
 - `<expr>$reinterpret()` requires exactly one of `signed` or `dtype`. `signed`
   selects the same-width signed or unsigned integer type; `dtype` supports
   same-size integer and floating-point reinterpretation.
+- `<expr>$cut()` and `<expr>$qcut()` are deprecated. Use the experimental
+  `<expr>$bin_intervals()`, `<expr>$bin_quantiles()`, or `<expr>$bin_ranks()`
+  methods. Set `right_closed = TRUE` on `bin_intervals()` or `bin_quantiles()`
+  to preserve the old right-closed intervals.
 
 ### Behavior changes
 
@@ -67,10 +71,12 @@ this release.
   `FALSE` for a headerless CSV with a supplied schema and to `TRUE` otherwise.
 - The supertype of a signed integer and `UInt64` is `Int128`. Lossy numeric
   coercion in membership operations is an error, and strict Struct casts reject
-  mismatched field counts or names. Duration standard-deviation and
-  exponentially weighted standard-deviation operations are errors. Construct a
-  list expression with `pl$list(expr)` instead of casting a non-list expression
-  to a List dtype.
+  mismatched field counts or names. Membership comparisons in `is_in()`,
+  `<expr>$list$contains()`, and `<expr>$arr$contains()` require matching time
+  units for Datetime and Duration values; explicitly cast both operands to the
+  same unit. Duration standard-deviation and exponentially weighted
+  standard-deviation operations are errors. Construct a list expression with
+  `pl$list(expr)` instead of casting a non-list expression to a List dtype.
 - DataFrame, Expr, and List sampling use `shuffle = NULL` by default. `NULL`,
   `FALSE`, and `TRUE` are distinct modes. `<expr>$list$sample()` defaults to
   `n = 1` when neither `n` nor `fraction` is supplied. Seeded sample order can
@@ -94,9 +100,15 @@ this release.
   unchanged.
 - The output names produced by `pl$datetime()` and `pl$repeat_()` have changed.
   Use `$alias()` when a stable output name is required.
+- Parquet columns annotated as ENUM by another writer are read as String.
+- `POLARS_STREAMING_CHUNK_SIZE` has been removed from `polars_envvars()` because
+  Polars no longer supports this environment variable.
 
 ### New features
 
+- Map dtypes can be defined with `pl$Map(key, value)`, and Arrow Map columns can
+  be imported and exported. Map Series convert to a `vctrs::list_of` of data
+  frames with `key` and `value` columns.
 - CSV readers accept `extra_columns = "raise"` or `"ignore"` to control input
   fields that are not represented by the selected schema.
 - Expression casting and `<expr>$map_batches(return_dtype = ...)` accept
@@ -105,6 +117,8 @@ this release.
 - `pl$QueryOptFlags()` exposes the `join_order` and `row_estimate` optimizer
   properties.
 - `$wrap_in_list()` and `$wrap_in_array()` for `DataTypeExpr` (#1881).
+- Experimental `<expr>$bin_intervals()`, `<expr>$bin_quantiles()`, and
+  `<expr>$bin_ranks()` methods for interval, quantile, and rank-based binning.
 
 ### Bug fixes
 
@@ -116,6 +130,10 @@ this release.
 - Empty-string CSV override names are preserved.
 - LazyFrame `$gather_every()` remains lazy and schema-free, including for
   zero-width inputs.
+
+### Other changes
+
+- Update the upstream Polars dependency to 2.0.0-rc.2.
 
 ## polars 1.16.0
 

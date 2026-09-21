@@ -145,6 +145,7 @@ depending on the \code{as_clock_class} argument.
 \item Binary: \link[blob:blob]{blob::blob}.
 \item Null: \link[vctrs:unspecified]{vctrs::unspecified}.
 \item List, Array: \link[vctrs:list_of]{vctrs::list_of}.
+\item Map: \link[vctrs:list_of]{vctrs::list_of} of \link{data.frame} objects with typed \code{key} and \code{value} columns.
 \item Struct: \link{data.frame} or \link[tibble:tbl_df]{tibble}, depending on the \code{struct} argument.
 }
 }

@@ -9,7 +9,7 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid operation: 'is_in' cannot check for Int64 values in List(Float64) data.
-      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for is_in() it is required to explicitly cast (one of) the operands to a compatible type.
+      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for 'is_in' it is required to explicitly cast (one of) the operands to a compatible type.
 
 ---
 
@@ -22,7 +22,7 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid operation: 'list.contains' cannot check for Float64 values in List(Int32) data.
-      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for is_in() it is required to explicitly cast (one of) the operands to a compatible type.
+      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for 'list.contains' it is required to explicitly cast (one of) the operands to a compatible type.
 
 ---
 
@@ -35,7 +35,7 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid operation: 'arr.contains' cannot check for Float64 values in Array(Int32, 2) data.
-      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for is_in() it is required to explicitly cast (one of) the operands to a compatible type.
+      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for 'arr.contains' it is required to explicitly cast (one of) the operands to a compatible type.
 
 ---
 
@@ -48,7 +48,46 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! Invalid operation: 'arr.contains' cannot check for Float64 values in Array(Int32, 2) data.
-      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for is_in() it is required to explicitly cast (one of) the operands to a compatible type.
+      Hint: Before version 2.0, Polars would perform this check by lossily coercing the operands to Float64. However, since Polars 2.0, for 'arr.contains' it is required to explicitly cast (one of) the operands to a compatible type.
+
+# temporal membership operations require matching time units
+
+    Code
+      list_input$select(needle_ms$is_in(pl$col("values")))
+    Condition
+      Error in `list_input$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: 'is_in' cannot check for ms values in μs data
+      Hint: cast both sides to the same time unit first.
+
+---
+
+    Code
+      list_input$select(pl$col("values")$list$contains(needle_ms))
+    Condition
+      Error in `list_input$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: 'list.contains' cannot check for ms values in μs data
+      Hint: cast both sides to the same time unit first.
+
+---
+
+    Code
+      array_input$select(pl$col("values")$arr$contains(needle_ms))
+    Condition
+      Error in `array_input$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: 'arr.contains' cannot check for ms values in μs data
+      Hint: cast both sides to the same time unit first.
 
 # strict Struct casts enforce the 2.0 field contract
 

@@ -13,7 +13,7 @@ expr__cut(
 )
 }
 \arguments{
-\item{breaks}{List of unique cut points.}
+\item{breaks}{Numeric vector of unique cut points.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
@@ -31,7 +31,13 @@ a Categorical to a Struct.}
 A polars \link{expression}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+}
+\details{
+Deprecated in Polars 2.0.0 in favor of \code{\link[=expr__bin_intervals]{$bin_intervals()}}. Set
+\code{right_closed = TRUE} to keep the same interval closure. The replacement is
+experimental and requires \code{labels}; use \code{labels = NULL} for \code{UInt32} bin
+indices.
 }
 \examples{
 # Divide a column into three categories.

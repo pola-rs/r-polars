@@ -113,6 +113,33 @@
       1     1            [2 x 1]
       2     2            [2 x 1]
 
+# Map conversion
+
+    Code
+      series$to_r_vector()
+    Message
+      i The `vctrs` package is not installed.
+      i Return value may not be printed correctly.
+    Output
+      <list_of<
+        data.frame<
+          key  : character
+          value: integer
+        >
+      >[3]>
+      [[1]]
+        key value
+      1   a     1
+      2   b     2
+      
+      [[2]]
+      NULL
+      
+      [[3]]
+      [1] key   value
+      <0 rows> (or 0-length row.names)
+      
+
 # ambiguous argument 'raise'
 
     Code

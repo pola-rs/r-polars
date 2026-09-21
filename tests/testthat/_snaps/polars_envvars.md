@@ -20,7 +20,6 @@
       POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE                            0
       POLARS_FMT_TABLE_ROUNDED_CORNERS                                    0
       POLARS_MAX_THREADS                                                  2
-      POLARS_STREAMING_CHUNK_SIZE                                  variable
       POLARS_TABLE_WIDTH                                           variable
       POLARS_VERBOSE                                                      0
       POLARS_WARN_UNSTABLE                                                0

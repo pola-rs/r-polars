@@ -257,6 +257,9 @@ nav:
             - arg_true: man/expr__arg_true.md
             - arg_unique: man/expr__arg_unique.md
             - backward_fill: man/expr__backward_fill.md
+            - bin_intervals: man/expr__bin_intervals.md
+            - bin_quantiles: man/expr__bin_quantiles.md
+            - bin_ranks: man/expr__bin_ranks.md
             - bitwise_and: man/expr__bitwise_and.md
             - bitwise_count_ones: man/expr__bitwise_count_ones.md
             - bitwise_count_zeros: man/expr__bitwise_count_zeros.md

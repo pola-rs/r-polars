@@ -907,6 +907,132 @@ impl PlRExpr {
             .into())
     }
 
+    fn bin_intervals(
+        &self,
+        breaks: NumericSexp,
+        include_intervals: bool,
+        right_closed: bool,
+        labels: Option<StringSexp>,
+    ) -> Result<Self> {
+        let breaks = Series::new("breaks".into(), breaks.as_slice_f64());
+        let labels = labels.map(strings_to_pl_smallstr);
+        Ok(self
+            .inner
+            .clone()
+            .bin(BinOptions {
+                method: BinMethod::Intervals {
+                    spec: DslIntervalSpec::from_breaks(breaks),
+                    right_closed,
+                },
+                labels,
+                include_intervals,
+            })
+            .into())
+    }
+
+    fn bin_intervals_uniform(
+        &self,
+        n_bins: NumericScalar,
+        include_intervals: bool,
+        right_closed: bool,
+        labels: Option<StringSexp>,
+    ) -> Result<Self> {
+        let n_bins = <Wrap<usize>>::try_from(n_bins)?.0;
+        let labels = labels.map(strings_to_pl_smallstr);
+        let spec = DslIntervalSpec::from_count(n_bins).map_err(RPolarsErr::from)?;
+        Ok(self
+            .inner
+            .clone()
+            .bin(BinOptions {
+                method: BinMethod::Intervals { spec, right_closed },
+                labels,
+                include_intervals,
+            })
+            .into())
+    }
+
+    fn bin_quantiles(
+        &self,
+        quantiles: NumericSexp,
+        include_intervals: bool,
+        right_closed: bool,
+        labels: Option<StringSexp>,
+    ) -> Result<Self> {
+        let quantiles: Vec<f64> = quantiles.as_slice_f64().into();
+        let spec = FractionSpec::from_fractions(quantiles).map_err(RPolarsErr::from)?;
+        let labels = labels.map(strings_to_pl_smallstr);
+        Ok(self
+            .inner
+            .clone()
+            .bin(BinOptions {
+                method: BinMethod::Quantiles { spec, right_closed },
+                labels,
+                include_intervals,
+            })
+            .into())
+    }
+
+    fn bin_quantiles_uniform(
+        &self,
+        n_bins: NumericScalar,
+        include_intervals: bool,
+        right_closed: bool,
+        labels: Option<StringSexp>,
+    ) -> Result<Self> {
+        let n_bins = <Wrap<usize>>::try_from(n_bins)?.0;
+        let spec = FractionSpec::from_count(n_bins).map_err(RPolarsErr::from)?;
+        let labels = labels.map(strings_to_pl_smallstr);
+        Ok(self
+            .inner
+            .clone()
+            .bin(BinOptions {
+                method: BinMethod::Quantiles { spec, right_closed },
+                labels,
+                include_intervals,
+            })
+            .into())
+    }
+
+    fn bin_ranks(
+        &self,
+        ranks: NumericSexp,
+        include_intervals: bool,
+        labels: Option<StringSexp>,
+    ) -> Result<Self> {
+        let ranks: Vec<f64> = ranks.as_slice_f64().into();
+        let spec = FractionSpec::from_fractions(ranks).map_err(RPolarsErr::from)?;
+        let labels = labels.map(strings_to_pl_smallstr);
+        Ok(self
+            .inner
+            .clone()
+            .bin(BinOptions {
+                method: BinMethod::Ranks { spec },
+                labels,
+                include_intervals,
+            })
+            .into())
+    }
+
+    fn bin_ranks_uniform(
+        &self,
+        n_bins: NumericScalar,
+        include_intervals: bool,
+        labels: Option<StringSexp>,
+    ) -> Result<Self> {
+        let n_bins = <Wrap<usize>>::try_from(n_bins)?.0;
+        let spec = FractionSpec::from_count(n_bins).map_err(RPolarsErr::from)?;
+        let labels = labels.map(strings_to_pl_smallstr);
+        Ok(self
+            .inner
+            .clone()
+            .bin(BinOptions {
+                method: BinMethod::Ranks { spec },
+                labels,
+                include_intervals,
+            })
+            .into())
+    }
+
     fn reinterpret(&self, signed: Option<bool>, dtype: Option<&PlRDataType>) -> Result<Self> {
         Ok(self
             .inner

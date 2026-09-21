@@ -51,11 +51,6 @@
 #' - `POLARS_MAX_THREADS` (`<variable>`): Maximum number of threads used to
 #'   initialize the thread pool. The thread pool is locked once polars is loaded,
 #'   so this envvar must be set before loading the package.
-#' - `POLARS_STREAMING_CHUNK_SIZE` (`<variable>`): Chunk size used in the
-#'   streaming engine. Integer larger than 1. By default, the chunk size is
-#'   determined by the schema and size of the thread pool. For some datasets
-#'   (esp. when you have large string elements) this can be too optimistic and
-#'   lead to Out of Memory errors.
 #' - `POLARS_TABLE_WIDTH` (`<variable>`): Set the maximum width of a table in
 #'   characters.
 #' - `POLARS_VERBOSE` (`"0"`): Enable additional verbose/debug logging.
@@ -108,7 +103,6 @@ polars_envvars <- function() {
     POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE = "0",
     POLARS_FMT_TABLE_ROUNDED_CORNERS = "0",
     POLARS_MAX_THREADS = thread_pool_size(),
-    POLARS_STREAMING_CHUNK_SIZE = "variable",
     POLARS_TABLE_WIDTH = "variable",
     POLARS_VERBOSE = "0",
     POLARS_WARN_UNSTABLE = "0"

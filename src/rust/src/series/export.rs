@@ -1,5 +1,5 @@
 use crate::{PlRExpr, PlRSeries, RPolarsErr, prelude::*};
-use polars_core::utils::arrow::{
+use polars_core::utils::polars_arrow::{
     array::Array,
     ffi::{ArrowArrayStream, export_iterator},
 };
@@ -159,6 +159,19 @@ impl PlRSeries {
                     let _ = args.add("x", chr_vec);
                     Ok(r_func.call(args)?.into())
                 }
+                DataType::Map(_, _) => to_r_vector_recursive(
+                    series.map().map_err(RPolarsErr::from)?.storage(),
+                    uint8,
+                    int64,
+                    date,
+                    time,
+                    r#struct,
+                    decimal,
+                    as_clock_class,
+                    ambiguous,
+                    non_existent,
+                    local_time_zone,
+                ),
                 DataType::List(inner) => unsafe {
                     let len = series.len();
                     let mut list = OwnedListSexp::new(len, false)?;
@@ -459,13 +472,14 @@ fn is_dtype_include_null(dtype: &DataType) -> bool {
         DataType::Null => true,
         DataType::List(_) | DataType::Array(_, _) => is_dtype_include_null(dtype.leaf_dtype()),
         DataType::Struct(fields) => fields.iter().any(|fld| is_dtype_include_null(fld.dtype())),
+        DataType::Map(key, value) => is_dtype_include_null(key) || is_dtype_include_null(value),
         _ => false,
     }
 }
 
 fn is_dtype_include_list(dtype: &DataType) -> bool {
     match dtype {
-        DataType::List(_) | DataType::Array(_, _) => true,
+        DataType::List(_) | DataType::Array(_, _) | DataType::Map(_, _) => true,
         DataType::Struct(fields) => fields.iter().any(|fld| is_dtype_include_list(fld.dtype())),
         _ => false,
     }
@@ -478,6 +492,7 @@ fn is_dtype_include_binary(dtype: &DataType) -> bool {
         DataType::Struct(fields) => fields
             .iter()
             .any(|fld| is_dtype_include_binary(fld.dtype())),
+        DataType::Map(key, value) => is_dtype_include_binary(key) || is_dtype_include_binary(value),
         _ => false,
     }
 }
@@ -487,6 +502,7 @@ fn is_dtype_include_time(dtype: &DataType) -> bool {
         DataType::Time => true,
         DataType::List(_) | DataType::Array(_, _) => is_dtype_include_time(dtype.leaf_dtype()),
         DataType::Struct(fields) => fields.iter().any(|fld| is_dtype_include_time(fld.dtype())),
+        DataType::Map(key, value) => is_dtype_include_time(key) || is_dtype_include_time(value),
         _ => false,
     }
 }
