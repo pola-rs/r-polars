@@ -539,6 +539,16 @@
 ---
 
     Code
+      pl$Map(pl$String, 1)
+    Condition
+      Error in `pl$Map()`:
+      ! Evaluation failed in `$Map()`.
+      Caused by error in `pl$Map()`:
+      ! `value` must be a polars data type, not the number 1.
+
+---
+
+    Code
       pl$Map(pl$Null, pl$Int64)
     Condition
       Error in `pl$Map()`:

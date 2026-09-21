@@ -4278,7 +4278,7 @@ expr__cut <- function(
           format_pkg("polars")
         ),
         i = sprintf(
-          "Use the experimental method %s instead.",
+          "Use the method %s instead.",
           format_fn("<expr>$bin_intervals")
         )
       )
@@ -4350,7 +4350,7 @@ expr__qcut <- function(
           format_pkg("polars")
         ),
         i = sprintf(
-          "Use the experimental methods %s or %s instead.",
+          "Use the methods %s or %s instead.",
           format_fn("<expr>$bin_quantiles"),
           format_fn("<expr>$bin_ranks")
         )
@@ -4412,10 +4412,14 @@ expr__bin_intervals <- function(
 ) {
   wrap({
     check_dots_empty0(...)
-    if (is.null(intervals) == is.null(n_bins)) {
-      abort("Supply exactly one of `intervals` or `n_bins`.")
+    argument <- rlang::check_exclusive(intervals, n_bins)
+    if (
+      (identical(argument, "intervals") && is.null(intervals)) ||
+        (identical(argument, "n_bins") && is.null(n_bins))
+    ) {
+      abort(sprintf("`%s` must not be `NULL`.", argument))
     }
-    if (is.null(n_bins)) {
+    if (identical(argument, "intervals")) {
       self$`_rexpr`$bin_intervals(
         breaks = intervals,
         labels = labels,
@@ -4465,10 +4469,14 @@ expr__bin_quantiles <- function(
 ) {
   wrap({
     check_dots_empty0(...)
-    if (is.null(quantiles) == is.null(n_bins)) {
-      abort("Supply exactly one of `quantiles` or `n_bins`.")
+    argument <- rlang::check_exclusive(quantiles, n_bins)
+    if (
+      (identical(argument, "quantiles") && is.null(quantiles)) ||
+        (identical(argument, "n_bins") && is.null(n_bins))
+    ) {
+      abort(sprintf("`%s` must not be `NULL`.", argument))
     }
-    if (is.null(n_bins)) {
+    if (identical(argument, "quantiles")) {
       self$`_rexpr`$bin_quantiles(
         quantiles = quantiles,
         labels = labels,
@@ -4515,10 +4523,14 @@ expr__bin_ranks <- function(
 ) {
   wrap({
     check_dots_empty0(...)
-    if (is.null(ranks) == is.null(n_bins)) {
-      abort("Supply exactly one of `ranks` or `n_bins`.")
+    argument <- rlang::check_exclusive(ranks, n_bins)
+    if (
+      (identical(argument, "ranks") && is.null(ranks)) ||
+        (identical(argument, "n_bins") && is.null(n_bins))
+    ) {
+      abort(sprintf("`%s` must not be `NULL`.", argument))
     }
-    if (is.null(n_bins)) {
+    if (identical(argument, "ranks")) {
       self$`_rexpr`$bin_ranks(
         ranks = ranks,
         labels = labels,

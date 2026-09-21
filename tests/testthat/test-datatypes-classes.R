@@ -56,6 +56,7 @@ test_that("Map dtype constructor validates inputs", {
   expect_equal(format(dtype$value), "Int32")
 
   expect_snapshot(pl$Map(1, pl$Int64), error = TRUE)
+  expect_snapshot(pl$Map(pl$String, 1), error = TRUE)
   expect_snapshot(pl$Map(pl$Null, pl$Int64), error = TRUE)
 })
 
