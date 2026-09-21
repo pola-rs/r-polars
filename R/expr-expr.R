@@ -4412,7 +4412,7 @@ expr__bin_intervals <- function(
 ) {
   wrap({
     check_dots_empty0(...)
-    argument <- rlang::check_exclusive(intervals, n_bins)
+    argument <- check_exclusive(intervals, n_bins)
     if (
       (identical(argument, "intervals") && is.null(intervals)) ||
         (identical(argument, "n_bins") && is.null(n_bins))
@@ -4469,7 +4469,7 @@ expr__bin_quantiles <- function(
 ) {
   wrap({
     check_dots_empty0(...)
-    argument <- rlang::check_exclusive(quantiles, n_bins)
+    argument <- check_exclusive(quantiles, n_bins)
     if (
       (identical(argument, "quantiles") && is.null(quantiles)) ||
         (identical(argument, "n_bins") && is.null(n_bins))
@@ -4523,7 +4523,7 @@ expr__bin_ranks <- function(
 ) {
   wrap({
     check_dots_empty0(...)
-    argument <- rlang::check_exclusive(ranks, n_bins)
+    argument <- check_exclusive(ranks, n_bins)
     if (
       (identical(argument, "ranks") && is.null(ranks)) ||
         (identical(argument, "n_bins") && is.null(n_bins))
