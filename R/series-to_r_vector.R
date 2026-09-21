@@ -28,6 +28,7 @@
 #' - Binary: [blob::blob].
 #' - Null: [vctrs::unspecified].
 #' - List, Array: [vctrs::list_of].
+#' - Map: [vctrs::list_of] of [data.frame] objects with typed `key` and `value` columns.
 #' - Struct: [data.frame] or [tibble][tibble::tbl_df], depending on the `struct` argument.
 #' @inheritParams rlang::args_dots_empty
 #' @param uint8 `r lifecycle::badge("experimental")`

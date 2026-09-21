@@ -278,9 +278,7 @@ impl PlRDataType {
             DataType::List(_) => vec!["list", "nested"],
             DataType::Array(_, _) => vec!["array", "nested"],
             DataType::Struct(_) => vec!["struct", "nested"],
-            DataType::Map(_, _) => {
-                unimplemented!("Map dtype support is not yet implemented in r-polars")
-            }
+            DataType::Map(_, _) => vec!["map", "nested"],
             // TODO: what is this? It does not seem supported by py-polars
             DataType::BinaryOffset => vec!["binary_offset"],
         }
@@ -351,6 +349,14 @@ impl PlRDataType {
                     let _ = list.set_name_and_value(i, name, value);
                 }
                 let _ = out.set_name_and_value(0, "_fields", list);
+                Ok(out.into())
+            }
+            DataType::Map(key, value) => {
+                let mut out = OwnedListSexp::new(2, true)?;
+                let key: Sexp = PlRDataType { dt: *key.clone() }.try_into()?;
+                let value: Sexp = PlRDataType { dt: *value.clone() }.try_into()?;
+                let _ = out.set_name_and_value(0, "_key", key);
+                let _ = out.set_name_and_value(1, "_value", value);
                 Ok(out.into())
             }
             DataType::Categorical(_, _) => {

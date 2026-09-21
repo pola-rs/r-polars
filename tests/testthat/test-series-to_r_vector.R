@@ -225,6 +225,19 @@ patrick::with_parameters_test_that(
   }
 )
 
+test_that("Map conversion", {
+  skip_if_not_installed("nanoarrow")
+  skip_if_not_installed("vctrs")
+
+  series <- map_nanoarrow_series()
+  expect_identical(series$to_r_vector(), as.vector(map_nanoarrow_array()))
+
+  with_mocked_bindings(
+    expect_snapshot(series$to_r_vector()),
+    is_vctrs_installed = \() FALSE
+  )
+})
+
 test_that("struct argument warning and error", {
   expect_error(
     as_polars_series(1)$to_r_vector(struct = TRUE),

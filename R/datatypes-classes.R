@@ -11,7 +11,7 @@
 #' Polars supports a variety of data types that fall broadly under the following categories:
 #'
 #' - Numeric data types: signed integers, unsigned integers, floating point numbers, and decimals.
-#' - Nested data types: lists, structs, and arrays.
+#' - Nested data types: lists, structs, arrays, and maps.
 #' - Temporal: dates, datetimes, times, and time deltas.
 #' - Miscellaneous: strings, binary data, Booleans, categoricals, and enums.
 #'
@@ -38,6 +38,7 @@
 #' | `Duration`                                     | Represents a time duration.                                                     |
 #' | `Array`                                        | Arrays with a known, fixed shape per series; akin to numpy arrays.              |
 #' | `List`                                         | Homogeneous 1D container with variable length.                                  |
+#' | `Map`                                          | Key/value entries; their types are exposed through `$key` and `$value`.        |
 #' | `Categorical`                                  | Efficient encoding of string data where the categories are inferred at runtime. |
 #' | `Enum` `r lifecycle::badge("experimental")`    | Efficient ordered encoding of a set of predetermined string categories.         |
 #' | `Struct`                                       | Composite product type that can store multiple fields.                          |
@@ -108,6 +109,24 @@ polars_datatype__methods <- new.env(parent = emptyenv())
       },
       self
     )
+  }
+
+  ## Map key and value are pointers to data types too
+  for (field in c("key", "value")) {
+    private_field <- paste0("_", field)
+    if (exists(private_field, envir = self)) {
+      makeActiveBinding(
+        field,
+        local({
+          private_field <- private_field
+          function() {
+            .savvy_wrap_PlRDataType(self[[private_field]]) |>
+              wrap()
+          }
+        }),
+        self
+      )
+    }
   }
 
   class(self) <- c(dtype_names, "polars_dtype", "polars_object")
