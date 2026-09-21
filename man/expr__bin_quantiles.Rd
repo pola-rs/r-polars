@@ -5,18 +5,21 @@
 \title{Bin values into discrete intervals delimited by their quantiles}
 \usage{
 expr__bin_quantiles(
-  quantiles,
+  quantiles = NULL,
   ...,
+  n_bins = NULL,
   labels = NULL,
   include_intervals = FALSE,
   right_closed = FALSE
 )
 }
 \arguments{
-\item{quantiles}{Non-decreasing quantile probabilities in \verb{[0, 1]}, or a
-positive integer giving the number of bins.}
+\item{quantiles}{Explicit non-decreasing quantile probabilities in \verb{[0, 1]}.}
 
 \item{...}{These dots are for future extensions and must be empty.}
+
+\item{n_bins}{Number of bins with equal probability. Supply exactly one of
+\code{quantiles} and \code{n_bins}.}
 
 \item{labels}{Names of the bins. The number of labels must equal the number
 of bins. Use \code{NULL} to return \code{UInt32} bin indices.}
@@ -36,6 +39,7 @@ A polars \link{expression}
 \examples{
 df <- pl$DataFrame(foo = -2:2)
 df$select(bin = pl$col("foo")$bin_quantiles(
-  c(0.25, 0.75), labels = c("low", "mid", "high")
+  quantiles = c(0.25, 0.75), labels = c("low", "mid", "high")
 ))
+df$select(bin = pl$col("foo")$bin_quantiles(n_bins = 3, labels = NULL))
 }

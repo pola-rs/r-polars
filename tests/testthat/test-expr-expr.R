@@ -2996,7 +2996,7 @@ test_that("bin methods work", {
   expect_equal(
     df$select(
       bin = pl$col("foo")$bin_intervals(
-        c(-1, 1),
+        intervals = c(-1, 1),
         labels = labels,
         right_closed = TRUE
       )
@@ -3006,7 +3006,7 @@ test_that("bin methods work", {
   expect_equal(
     df$select(
       bin = pl$col("foo")$bin_quantiles(
-        c(0.25, 0.75),
+        quantiles = c(0.25, 0.75),
         labels = labels,
         right_closed = TRUE
       )
@@ -3015,13 +3015,13 @@ test_that("bin methods work", {
   )
   expect_equal(
     df$select(
-      bin = pl$col("foo")$bin_ranks(c(0.25, 0.75), labels = labels)
+      bin = pl$col("foo")$bin_ranks(ranks = c(0.25, 0.75), labels = labels)
     ),
     pl$DataFrame(bin = factor(c("low", "mid", "mid", "mid", "high")))$cast(bin = pl$Enum(labels))
   )
 
   interval_bins <- df$select(
-    bin = pl$col("foo")$bin_intervals(2L, labels = NULL)
+    bin = pl$col("foo")$bin_intervals(n_bins = 2L, labels = NULL)
   )
   expect_identical(interval_bins$schema, list(bin = pl$UInt32))
   expect_identical(
@@ -3030,7 +3030,7 @@ test_that("bin methods work", {
   )
 
   quantile_bins <- df$select(
-    bin = pl$col("foo")$bin_quantiles(2L, labels = NULL)
+    bin = pl$col("foo")$bin_quantiles(n_bins = 2L, labels = NULL)
   )
   expect_identical(quantile_bins$schema, list(bin = pl$UInt32))
   expect_identical(
@@ -3038,11 +3038,54 @@ test_that("bin methods work", {
     c("0", "0", "1", "1", "1")
   )
 
-  rank_bins <- df$select(bin = pl$col("foo")$bin_ranks(2L, labels = NULL))
+  rank_bins <- df$select(bin = pl$col("foo")$bin_ranks(n_bins = 2L, labels = NULL))
   expect_identical(rank_bins$schema, list(bin = pl$UInt32))
   expect_identical(
     rank_bins$get_column("bin")$to_r_vector(int64 = "character"),
     c("0", "0", "0", "1", "1")
+  )
+
+  # Integer scalars in the explicit-value arguments are not bin counts.
+  single_interval <- df$select(
+    bin = pl$col("foo")$bin_intervals(intervals = 2L, labels = NULL)
+  )
+  expect_identical(
+    single_interval$get_column("bin")$to_r_vector(int64 = "character"),
+    c("0", "0", "0", "0", "1")
+  )
+
+  single_quantile <- df$select(
+    bin = pl$col("foo")$bin_quantiles(quantiles = 1L, labels = NULL)
+  )
+  expect_identical(
+    single_quantile$get_column("bin")$to_r_vector(int64 = "character"),
+    c("0", "0", "0", "0", "1")
+  )
+
+  rank_labels <- c("low", "high")
+  single_rank <- df$select(
+    bin = pl$col("foo")$bin_ranks(ranks = 1L, labels = rank_labels)
+  )
+  expect_identical(single_rank$schema, list(bin = pl$Enum(rank_labels)))
+})
+
+test_that("bin methods require exactly one of explicit values and n_bins", {
+  expr <- pl$col("foo")
+
+  expect_error(expr$bin_intervals(), "exactly one of `intervals` or `n_bins`")
+  expect_error(
+    expr$bin_intervals(intervals = 2L, n_bins = 2L),
+    "exactly one of `intervals` or `n_bins`"
+  )
+  expect_error(expr$bin_quantiles(), "exactly one of `quantiles` or `n_bins`")
+  expect_error(
+    expr$bin_quantiles(quantiles = 0.5, n_bins = 2L),
+    "exactly one of `quantiles` or `n_bins`"
+  )
+  expect_error(expr$bin_ranks(), "exactly one of `ranks` or `n_bins`")
+  expect_error(
+    expr$bin_ranks(ranks = 0.5, n_bins = 2L),
+    "exactly one of `ranks` or `n_bins`"
   )
 })
 

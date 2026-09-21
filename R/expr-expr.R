@@ -4382,8 +4382,9 @@ expr__qcut <- function(
 #' `r lifecycle::badge("experimental")`
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param intervals Numeric breakpoints, or a positive integer giving the number
-#'   of equal-width bins.
+#' @param intervals Explicit numeric breakpoints for the bin boundaries.
+#' @param n_bins Number of equal-width bins. Supply exactly one of `intervals`
+#'   and `n_bins`.
 #' @param labels Names of the bins. The number of labels must equal the number
 #'   of bins. Use `NULL` to return `UInt32` bin indices.
 #' @param include_intervals Return a struct with the bin and its left and right
@@ -4395,27 +4396,35 @@ expr__qcut <- function(
 #' @examples
 #' df <- pl$DataFrame(foo = -2:2)
 #' df$select(bin = pl$col("foo")$bin_intervals(
-#'   c(-1, 1), labels = c("low", "mid", "high"), right_closed = TRUE
+#'   intervals = c(-1, 1), labels = c("low", "mid", "high"), right_closed = TRUE
 #' ))
+#'
+#' # A single integer is a breakpoint; use n_bins for equal-width bins.
+#' df$select(bin = pl$col("foo")$bin_intervals(intervals = 2L, labels = NULL))
+#' df$select(bin = pl$col("foo")$bin_intervals(n_bins = 3, labels = NULL))
 expr__bin_intervals <- function(
-  intervals,
+  intervals = NULL,
   ...,
+  n_bins = NULL,
   labels = NULL,
   include_intervals = FALSE,
   right_closed = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
-    if (is_scalar_integerish(intervals)) {
-      self$`_rexpr`$bin_intervals_uniform(
-        n_bins = intervals,
+    if (is.null(intervals) == is.null(n_bins)) {
+      abort("Supply exactly one of `intervals` or `n_bins`.")
+    }
+    if (is.null(n_bins)) {
+      self$`_rexpr`$bin_intervals(
+        breaks = intervals,
         labels = labels,
         include_intervals = include_intervals,
         right_closed = right_closed
       )
     } else {
-      self$`_rexpr`$bin_intervals(
-        breaks = intervals,
+      self$`_rexpr`$bin_intervals_uniform(
+        n_bins = n_bins,
         labels = labels,
         include_intervals = include_intervals,
         right_closed = right_closed
@@ -4429,8 +4438,9 @@ expr__bin_intervals <- function(
 #' `r lifecycle::badge("experimental")`
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param quantiles Non-decreasing quantile probabilities in `[0, 1]`, or a
-#'   positive integer giving the number of bins.
+#' @param quantiles Explicit non-decreasing quantile probabilities in `[0, 1]`.
+#' @param n_bins Number of bins with equal probability. Supply exactly one of
+#'   `quantiles` and `n_bins`.
 #' @param labels Names of the bins. The number of labels must equal the number
 #'   of bins. Use `NULL` to return `UInt32` bin indices.
 #' @param include_intervals Return a struct with the bin and its left and right
@@ -4442,27 +4452,32 @@ expr__bin_intervals <- function(
 #' @examples
 #' df <- pl$DataFrame(foo = -2:2)
 #' df$select(bin = pl$col("foo")$bin_quantiles(
-#'   c(0.25, 0.75), labels = c("low", "mid", "high")
+#'   quantiles = c(0.25, 0.75), labels = c("low", "mid", "high")
 #' ))
+#' df$select(bin = pl$col("foo")$bin_quantiles(n_bins = 3, labels = NULL))
 expr__bin_quantiles <- function(
-  quantiles,
+  quantiles = NULL,
   ...,
+  n_bins = NULL,
   labels = NULL,
   include_intervals = FALSE,
   right_closed = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
-    if (is_scalar_integerish(quantiles)) {
-      self$`_rexpr`$bin_quantiles_uniform(
-        n_bins = quantiles,
+    if (is.null(quantiles) == is.null(n_bins)) {
+      abort("Supply exactly one of `quantiles` or `n_bins`.")
+    }
+    if (is.null(n_bins)) {
+      self$`_rexpr`$bin_quantiles(
+        quantiles = quantiles,
         labels = labels,
         include_intervals = include_intervals,
         right_closed = right_closed
       )
     } else {
-      self$`_rexpr`$bin_quantiles(
-        quantiles = quantiles,
+      self$`_rexpr`$bin_quantiles_uniform(
+        n_bins = n_bins,
         labels = labels,
         include_intervals = include_intervals,
         right_closed = right_closed
@@ -4476,8 +4491,9 @@ expr__bin_quantiles <- function(
 #' `r lifecycle::badge("experimental")`
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param ranks Non-decreasing cumulative fractions in `[0, 1]`, or a positive
-#'   integer giving the number of near-equal-sized bins.
+#' @param ranks Explicit non-decreasing cumulative fractions in `[0, 1]`.
+#' @param n_bins Number of near-equal-sized bins. Supply exactly one of
+#'   `ranks` and `n_bins`.
 #' @param labels Names of the bins. The number of labels must equal the number
 #'   of bins. Use `NULL` to return `UInt32` bin indices.
 #' @param include_intervals Return a struct with the bin and its left and right
@@ -4487,25 +4503,30 @@ expr__bin_quantiles <- function(
 #' @examples
 #' df <- pl$DataFrame(foo = -2:2)
 #' df$select(bin = pl$col("foo")$bin_ranks(
-#'   c(0.25, 0.75), labels = c("low", "mid", "high")
+#'   ranks = c(0.25, 0.75), labels = c("low", "mid", "high")
 #' ))
+#' df$select(bin = pl$col("foo")$bin_ranks(n_bins = 3, labels = NULL))
 expr__bin_ranks <- function(
-  ranks,
+  ranks = NULL,
   ...,
+  n_bins = NULL,
   labels = NULL,
   include_intervals = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
-    if (is_scalar_integerish(ranks)) {
-      self$`_rexpr`$bin_ranks_uniform(
-        n_bins = ranks,
+    if (is.null(ranks) == is.null(n_bins)) {
+      abort("Supply exactly one of `ranks` or `n_bins`.")
+    }
+    if (is.null(n_bins)) {
+      self$`_rexpr`$bin_ranks(
+        ranks = ranks,
         labels = labels,
         include_intervals = include_intervals
       )
     } else {
-      self$`_rexpr`$bin_ranks(
-        ranks = ranks,
+      self$`_rexpr`$bin_ranks_uniform(
+        n_bins = n_bins,
         labels = labels,
         include_intervals = include_intervals
       )

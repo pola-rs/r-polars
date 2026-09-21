@@ -5,18 +5,21 @@
 \title{Bin values into discrete intervals delimited by breakpoints}
 \usage{
 expr__bin_intervals(
-  intervals,
+  intervals = NULL,
   ...,
+  n_bins = NULL,
   labels = NULL,
   include_intervals = FALSE,
   right_closed = FALSE
 )
 }
 \arguments{
-\item{intervals}{Numeric breakpoints, or a positive integer giving the number
-of equal-width bins.}
+\item{intervals}{Explicit numeric breakpoints for the bin boundaries.}
 
 \item{...}{These dots are for future extensions and must be empty.}
+
+\item{n_bins}{Number of equal-width bins. Supply exactly one of \code{intervals}
+and \code{n_bins}.}
 
 \item{labels}{Names of the bins. The number of labels must equal the number
 of bins. Use \code{NULL} to return \code{UInt32} bin indices.}
@@ -36,6 +39,10 @@ A polars \link{expression}
 \examples{
 df <- pl$DataFrame(foo = -2:2)
 df$select(bin = pl$col("foo")$bin_intervals(
-  c(-1, 1), labels = c("low", "mid", "high"), right_closed = TRUE
+  intervals = c(-1, 1), labels = c("low", "mid", "high"), right_closed = TRUE
 ))
+
+# A single integer is a breakpoint; use n_bins for equal-width bins.
+df$select(bin = pl$col("foo")$bin_intervals(intervals = 2L, labels = NULL))
+df$select(bin = pl$col("foo")$bin_intervals(n_bins = 3, labels = NULL))
 }

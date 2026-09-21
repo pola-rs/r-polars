@@ -4,13 +4,21 @@
 \alias{expr__bin_ranks}
 \title{Bin values by their position in sorted order}
 \usage{
-expr__bin_ranks(ranks, ..., labels = NULL, include_intervals = FALSE)
+expr__bin_ranks(
+  ranks = NULL,
+  ...,
+  n_bins = NULL,
+  labels = NULL,
+  include_intervals = FALSE
+)
 }
 \arguments{
-\item{ranks}{Non-decreasing cumulative fractions in \verb{[0, 1]}, or a positive
-integer giving the number of near-equal-sized bins.}
+\item{ranks}{Explicit non-decreasing cumulative fractions in \verb{[0, 1]}.}
 
 \item{...}{These dots are for future extensions and must be empty.}
+
+\item{n_bins}{Number of near-equal-sized bins. Supply exactly one of
+\code{ranks} and \code{n_bins}.}
 
 \item{labels}{Names of the bins. The number of labels must equal the number
 of bins. Use \code{NULL} to return \code{UInt32} bin indices.}
@@ -27,6 +35,7 @@ A polars \link{expression}
 \examples{
 df <- pl$DataFrame(foo = -2:2)
 df$select(bin = pl$col("foo")$bin_ranks(
-  c(0.25, 0.75), labels = c("low", "mid", "high")
+  ranks = c(0.25, 0.75), labels = c("low", "mid", "high")
 ))
+df$select(bin = pl$col("foo")$bin_ranks(n_bins = 3, labels = NULL))
 }

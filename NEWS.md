@@ -71,10 +71,12 @@ this release.
   `FALSE` for a headerless CSV with a supplied schema and to `TRUE` otherwise.
 - The supertype of a signed integer and `UInt64` is `Int128`. Lossy numeric
   coercion in membership operations is an error, and strict Struct casts reject
-  mismatched field counts or names. Duration standard-deviation and
-  exponentially weighted standard-deviation operations are errors. Construct a
-  list expression with `pl$list(expr)` instead of casting a non-list expression
-  to a List dtype.
+  mismatched field counts or names. Membership comparisons in `is_in()`,
+  `<expr>$list$contains()`, and `<expr>$arr$contains()` require matching time
+  units for Datetime and Duration values; explicitly cast both operands to the
+  same unit. Duration standard-deviation and exponentially weighted
+  standard-deviation operations are errors. Construct a list expression with
+  `pl$list(expr)` instead of casting a non-list expression to a List dtype.
 - DataFrame, Expr, and List sampling use `shuffle = NULL` by default. `NULL`,
   `FALSE`, and `TRUE` are distinct modes. `<expr>$list$sample()` defaults to
   `n = 1` when neither `n` nor `fraction` is supplied. Seeded sample order can
