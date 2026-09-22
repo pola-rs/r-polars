@@ -48,6 +48,10 @@ $(STATLIB): remove-prev
 	mkdir -p $(LIBDIR)/libgcc_mock && touch $(LIBDIR)/libgcc_mock/libgcc_eh.a
 
 	# Rtools doesn't have the linker in the location that cargo expects, so we need to overwrite it via configuration.
+	# For ARM64, aws-lc-sys 0.45 selects MSVC-style /FI flags from the
+	# clang-cl name, but Rtools uses GNU-style flags. Use the GNU drivers for
+	# AWS-LC so its assembly gets --include= instead. Honor explicit AWS-LC
+	# compiler overrides, leaving the linker and other crates' CC unchanged.
 	if [ -f "$(CURDIR)/../tools/$(LIBNAME)" ]; then \
 		mkdir -p "$(LIBDIR)" ; \
 		mv "$(CURDIR)/../tools/$(LIBNAME)" "$(STATLIB)" ; \
@@ -58,6 +62,8 @@ $(STATLIB): remove-prev
 				export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="x86_64-w64-mingw32.static.posix-gcc.exe" ;; \
 			aarch64-pc-windows-gnullvm) \
 				export CARGO_TARGET_AARCH64_PC_WINDOWS_GNULLVM_LINKER="clang-cl.exe" ; \
+				export AWS_LC_SYS_CC_aarch64_pc_windows_gnullvm="$${AWS_LC_SYS_CC_aarch64_pc_windows_gnullvm:-$${AWS_LC_SYS_CC:-clang.exe}}" ; \
+				export AWS_LC_SYS_CXX_aarch64_pc_windows_gnullvm="$${AWS_LC_SYS_CXX_aarch64_pc_windows_gnullvm:-$${AWS_LC_SYS_CXX:-clang++.exe}}" ; \
 				export CC="clang-cl.exe" ;; \
 		esac && \
 		export LIBRARY_PATH="$${LIBRARY_PATH};$(LIBDIR)/libgcc_mock" && \
