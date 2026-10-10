@@ -38,17 +38,18 @@
     Output
       SINK_MULTIPLE
         PLAN 0:
-           WITH_COLUMNS:
-           [col("mpg").sqrt().alias("sqrt_mpg")] 
-            FILTER col("cyl") == 4.0
-            FROM
-              DF ["mpg", "cyl", "disp", "hp", ...]; PROJECT */11 COLUMNS
+          FILTER col("cyl") == 4.0
+          FROM
+            CACHE[id: <cache-1>]
+               WITH_COLUMNS:
+               [col("mpg").sqrt().alias("sqrt_mpg")] 
+                FILTER (col("cyl") >= 4.0) & (col("cyl") <= 6.0)
+                FROM
+                  DF ["mpg", "cyl", "disp", "hp", ...]; PROJECT */11 COLUMNS
         PLAN 1:
-           WITH_COLUMNS:
-           [col("mpg").sqrt().alias("sqrt_mpg")] 
-            FILTER col("cyl") == 6.0
-            FROM
-              DF ["mpg", "cyl", "disp", "hp", ...]; PROJECT */11 COLUMNS
+          FILTER col("cyl") == 6.0
+          FROM
+            CACHE[id: <cache-1>]
       END SINK_MULTIPLE
 
 ---
