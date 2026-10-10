@@ -89,19 +89,6 @@ test_that("pl$explain_all() works", {
   cyl_4 <- lf$filter(pl$col("cyl") == 4)
   cyl_6 <- lf$filter(pl$col("cyl") == 6)
 
-  normalize_cache_ids <- function(lines) {
-    matches <- gregexpr("CACHE\\[id: [[:xdigit:]-]{36}\\]", lines)
-    ids <- unique(unlist(regmatches(lines, matches)))
-    for (i in seq_along(ids)) {
-      lines <- gsub(
-        ids[[i]],
-        paste0("CACHE[id: <cache-", i, ">]"),
-        lines,
-        fixed = TRUE
-      )
-    }
-    lines
-  }
   expect_snapshot(
     cat(pl$explain_all(list(cyl_4, cyl_6))),
     transform = normalize_cache_ids

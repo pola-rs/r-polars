@@ -91,33 +91,38 @@ test_that("membership operations reject lossy comparisons", {
   )
 })
 
-test_that("temporal membership operations convert time units exactly", {
-  for (dtype in list(pl$Datetime, pl$Duration)) {
+patrick::with_parameters_test_that(
+  "temporal membership operations convert time units exactly",
+  .cases = tibble::tribble(
+    ~.test_name, ~dtype, ~unit, ~needle_values, ~matches,
+    "Datetime ms", pl$Datetime, "ms", 1L, c(TRUE, TRUE),
+    "Datetime us", pl$Datetime, "us", 1000L, c(TRUE, TRUE),
+    "Datetime ns", pl$Datetime, "ns", c(1000000L, 1000001L), c(TRUE, FALSE),
+    "Duration ms", pl$Duration, "ms", 1L, c(TRUE, TRUE),
+    "Duration us", pl$Duration, "us", 1000L, c(TRUE, TRUE),
+    "Duration ns", pl$Duration, "ns", c(1000000L, 1000001L), c(TRUE, FALSE)
+  ),
+  code = {
     list_input <- pl$DataFrame(values = list(1000L, 1000L))$cast(
       values = pl$List(dtype("us"))
     )
     array_input <- list_input$cast(values = pl$Array(dtype("us"), 1L))
-    needle_ms <- pl$lit(1L)$cast(dtype("ms"))
-    needle_us <- pl$lit(1000L)$cast(dtype("us"))
-    needle_ns <- pl$lit(c(1000000L, 1000001L))$cast(dtype("ns"))
+    needle <- pl$lit(needle_values)$cast(dtype(unit))
 
-    for (needle in list(needle_ms, needle_us, needle_ns)) {
-      matches <- if (identical(needle, needle_ns)) c(TRUE, FALSE) else c(TRUE, TRUE)
-      expect_equal(
-        list_input$select(needle$is_in(pl$col("values"))),
-        pl$DataFrame(literal = matches)
-      )
-      expect_equal(
-        list_input$select(pl$col("values")$list$contains(needle)),
-        pl$DataFrame(values = matches)
-      )
-      expect_equal(
-        array_input$select(pl$col("values")$arr$contains(needle)),
-        pl$DataFrame(values = matches)
-      )
-    }
+    expect_equal(
+      list_input$select(needle$is_in(pl$col("values"))),
+      pl$DataFrame(literal = matches)
+    )
+    expect_equal(
+      list_input$select(pl$col("values")$list$contains(needle)),
+      pl$DataFrame(values = matches)
+    )
+    expect_equal(
+      array_input$select(pl$col("values")$arr$contains(needle)),
+      pl$DataFrame(values = matches)
+    )
   }
-})
+)
 
 test_that("strict Struct casts enforce the 2.0 field contract", {
   input <- pl$DataFrame(a = 1:2, b = c("x", "y"))$select(s = pl$struct("a", "b"))
