@@ -190,7 +190,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! truncation ('to_zero') can only be used on numeric types
+      ! truncation ('to_zero') operation not supported for dtype `str` (expected: numeric)
       
       This error occurred in the following expression:
       	col("x").truncate()
@@ -664,10 +664,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! expected numerical input for 'entropy'
-      
-      This error occurred in the following expression:
-      	Series[literal].entropy()
+      ! Invalid operation: `entropy` operation not supported for dtype `str` as argument 0
 
 # implode
 

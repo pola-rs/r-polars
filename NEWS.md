@@ -71,12 +71,26 @@ this release.
   `FALSE` for a headerless CSV with a supplied schema and to `TRUE` otherwise.
 - The supertype of a signed integer and `UInt64` is `Int128`. Lossy numeric
   coercion in membership operations is an error, and strict Struct casts reject
-  mismatched field counts or names. Membership comparisons in `is_in()`,
-  `<expr>$list$contains()`, and `<expr>$arr$contains()` require matching time
-  units for Datetime and Duration values; explicitly cast both operands to the
-  same unit. Duration standard-deviation and exponentially weighted
-  standard-deviation operations are errors. Construct a list expression with
-  `pl$list(expr)` instead of casting a non-list expression to a List dtype.
+  mismatched field counts or names. Membership comparisons convert Datetime and
+  Duration needles to the time unit of the searched values; needles that cannot
+  be represented exactly match nothing. Comparing Decimal needles with float
+  data, or mixing time-zone-aware and naive datetimes, raises an error. Unknown
+  Enum labels are treated as absent. Duration standard-deviation and
+  exponentially weighted standard-deviation operations are errors. Construct a
+  list expression with `pl$list(expr)` instead of casting a non-list expression
+  to a List dtype.
+- Arithmetic between a Struct and a numeric scalar or column resolves the
+  result dtype separately for each field and rejects non-numeric fields.
+- Decimal rounding and `$sign()` widen precision when needed. Decimal
+  `$list$sum()` and grouped or windowed `$cum_sum()` use precision 38.
+- Lazy SQL queries are resolved when the plan is optimized, so syntax and
+  name-resolution errors can be deferred to `$collect()` or `$collect_schema()`.
+  SQL Decimal multiplication adds operand scales, while division retains more
+  fractional digits. SQL fractional literals without an exponent are exact
+  Decimals; remainder and integer division truncate toward zero, and Decimal
+  `ROUND` rounds halfway values away from zero.
+- `$log()`, `$log1p()`, and `$exp()` reject non-numeric inputs instead of
+  returning nulls.
 - DataFrame, Expr, and List sampling use `shuffle = NULL` by default. `NULL`,
   `FALSE`, and `TRUE` are distinct modes. `<expr>$list$sample()` defaults to
   `n = 1` when neither `n` nor `fraction` is supplied. Seeded sample order can
@@ -122,6 +136,9 @@ this release.
 
 ### Bug fixes
 
+- Scalar expressions used as keys in `$top_k()` and `$bottom_k()` are now
+  broadcast to the frame height
+  ([pola-rs/polars#29535](https://github.com/pola-rs/polars/pull/29535)).
 - `pivot(aggregate_function = "len")` counts rows containing null values.
 - `pl$read_ipc_stream()` preserves record-batch chunks when rechunking is not
   requested.
@@ -133,7 +150,7 @@ this release.
 
 ### Other changes
 
-- Update the upstream Polars dependency to 2.0.0-rc.2.
+- Update the upstream Polars dependency to 2.0.0.
 
 ## polars 1.16.0
 

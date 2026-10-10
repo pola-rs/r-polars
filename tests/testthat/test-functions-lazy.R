@@ -89,7 +89,10 @@ test_that("pl$explain_all() works", {
   cyl_4 <- lf$filter(pl$col("cyl") == 4)
   cyl_6 <- lf$filter(pl$col("cyl") == 6)
 
-  expect_snapshot(cat(pl$explain_all(list(cyl_4, cyl_6))))
+  expect_snapshot(
+    cat(pl$explain_all(list(cyl_4, cyl_6))),
+    transform = normalize_cache_ids
+  )
   expect_snapshot(pl$explain_all(1), error = TRUE)
   expect_snapshot(
     pl$explain_all(list(cyl_4, cyl_6), optimizations = 1),
