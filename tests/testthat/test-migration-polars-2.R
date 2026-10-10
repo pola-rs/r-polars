@@ -91,47 +91,32 @@ test_that("membership operations reject lossy comparisons", {
   )
 })
 
-test_that("temporal membership operations require matching time units", {
-  datetime <- as.POSIXct("1970-01-01 00:00:00", tz = "UTC")
-  datetime_us <- pl$Datetime("us", "UTC")
-  datetime_ms <- pl$Datetime("ms", "UTC")
+test_that("temporal membership operations convert time units exactly", {
+  for (dtype in list(pl$Datetime, pl$Duration)) {
+    list_input <- pl$DataFrame(values = list(1000L, 1000L))$cast(
+      values = pl$List(dtype("us"))
+    )
+    array_input <- list_input$cast(values = pl$Array(dtype("us"), 1L))
+    needle_ms <- pl$lit(1L)$cast(dtype("ms"))
+    needle_us <- pl$lit(1000L)$cast(dtype("us"))
+    needle_ns <- pl$lit(c(1000000L, 1000001L))$cast(dtype("ns"))
 
-  list_input <- pl$DataFrame(values = list(datetime))$cast(
-    values = pl$List(datetime_us)
-  )
-  needle_ms <- pl$lit(datetime)$cast(datetime_ms)
-  needle_us <- pl$lit(datetime)$cast(datetime_us)
-
-  expect_snapshot(
-    list_input$select(needle_ms$is_in(pl$col("values"))),
-    transform = normalize_migration_snapshot,
-    error = TRUE
-  )
-  expect_equal(
-    list_input$select(needle_us$is_in(pl$col("values"))),
-    pl$DataFrame(literal = TRUE)
-  )
-
-  expect_snapshot(
-    list_input$select(pl$col("values")$list$contains(needle_ms)),
-    transform = normalize_migration_snapshot,
-    error = TRUE
-  )
-  expect_equal(
-    list_input$select(pl$col("values")$list$contains(needle_us)),
-    pl$DataFrame(values = TRUE)
-  )
-
-  array_input <- list_input$cast(values = pl$Array(datetime_us, 1L))
-  expect_snapshot(
-    array_input$select(pl$col("values")$arr$contains(needle_ms)),
-    transform = normalize_migration_snapshot,
-    error = TRUE
-  )
-  expect_equal(
-    array_input$select(pl$col("values")$arr$contains(needle_us)),
-    pl$DataFrame(values = TRUE)
-  )
+    for (needle in list(needle_ms, needle_us, needle_ns)) {
+      matches <- if (identical(needle, needle_ns)) c(TRUE, FALSE) else c(TRUE, TRUE)
+      expect_equal(
+        list_input$select(needle$is_in(pl$col("values"))),
+        pl$DataFrame(literal = matches)
+      )
+      expect_equal(
+        list_input$select(pl$col("values")$list$contains(needle)),
+        pl$DataFrame(values = matches)
+      )
+      expect_equal(
+        array_input$select(pl$col("values")$arr$contains(needle)),
+        pl$DataFrame(values = matches)
+      )
+    }
+  }
 })
 
 test_that("strict Struct casts enforce the 2.0 field contract", {
