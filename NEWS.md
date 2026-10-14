@@ -8,6 +8,11 @@ This release matches Python Polars 2.0 and completes the R Polars 2.0 API
 transition. The Polars 1.16.0 section below documents the migration paths for
 changes that could warn before this release.
 
+We recommend reading the Python Polars migration guide to 2.0:
+https://docs.pola.rs/releases/upgrade/2/#the-lazy-api-defaults-to-the-streaming-engine
+This contains general information and the similarity between the Python Polars
+and the R Polars APIs should help understand how to convert existing code.
+
 ### API changes
 
 - Removed APIs that were deprecated in earlier releases, including
