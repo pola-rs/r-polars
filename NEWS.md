@@ -4,9 +4,9 @@
 
 ## polars 2.0.0
 
-This release completes the R Polars 2.0 API transition. The Polars 1.16.0
-section below documents the migration paths for changes that could warn before
-this release.
+This release matches Python Polars 2.0 and completes the R Polars 2.0 API
+transition. The Polars 1.16.0 section below documents the migration paths for
+changes that could warn before this release.
 
 ### API changes
 
@@ -33,10 +33,10 @@ this release.
   explanation, sink, and LazyFrame conversion methods. Configure them through
   `pl$QueryOptFlags()` instead.
 - `pl$col()`, `cs$by_name()`, and `cs$by_dtype()` accept column names or data
-  types as one vector or list. The vertical aggregation helpers `pl$all()`,
-  `pl$any()`, `pl$max()`, `pl$min()`, `pl$sum()`, and `pl$cum_sum()` likewise
-  accept one `names` input. `pl$all()` with no arguments remains the all-column
-  selector; the other helpers require an input.
+  types as one vector or list and no longer require `!!!`. The vertical
+  aggregation helpers `pl$all()`, `pl$any()`, `pl$max()`, `pl$min()`, `pl$sum()`,
+  and `pl$cum_sum()` likewise accept one `names` input. `pl$all()` with no
+  arguments remains the all-column selector; the other helpers require an input.
 - Bare character vectors passed to `<expr>$str$contains_any()` and
   `<expr>$str$replace_many()` are interpreted as column names. Wrap literal
   vectors in `list()` or use `pl$lit(...)$implode()`. `replace_with` also
@@ -60,8 +60,10 @@ this release.
 
 ### Behavior changes
 
-- `engine = "auto"` selects the streaming engine. Make required row ordering
-  explicit or use `engine = "in-memory"` when the in-memory engine is needed.
+- `engine = "auto"` (default) selects the streaming engine. This affects the
+  row order of the output in many cases, so if your code depends on this order
+  you should either explicitly sort your data or use `engine = "in-memory"` to
+  maintain the previous behaviour.
 - Headerless CSV column names start at `column_0`. With a header, `schema`
   fields are matched by name; without a header they are positional and must
   match the input width. Unnamed `schema_overrides` are positional and must
@@ -69,16 +71,19 @@ this release.
   string names remain valid, but `NA` names are invalid.
 - CSV `infer_schema_files` defaults to `10`. `raise_if_empty` defaults to
   `FALSE` for a headerless CSV with a supplied schema and to `TRUE` otherwise.
-- The supertype of a signed integer and `UInt64` is `Int128`. Lossy numeric
-  coercion in membership operations is an error, and strict Struct casts reject
-  mismatched field counts or names. Membership comparisons convert Datetime and
-  Duration needles to the time unit of the searched values; needles that cannot
-  be represented exactly match nothing. Comparing Decimal needles with float
-  data, or mixing time-zone-aware and naive datetimes, raises an error. Unknown
-  Enum labels are treated as absent. Duration standard-deviation and
-  exponentially weighted standard-deviation operations are errors. Construct a
-  list expression with `pl$list(expr)` instead of casting a non-list expression
-  to a List dtype.
+- The supertype of a signed integer and `UInt64` is `Int128`.
+- Lossy numeric coercion in membership operations is an error.
+- Strict Struct casts reject mismatched field counts or names.
+- Membership comparisons convert Datetime and Duration values to the time unit
+  of the searched values; values that cannot be represented exactly match
+  nothing.
+- Comparing Decimal values with float data, or mixing time-zone-aware and
+  naive datetimes, raises an error.
+- Unknown Enum labels are treated as absent.
+- Duration standard-deviation and exponentially weighted standard-deviation
+  operations are errors.
+- Construct a list expression with `pl$list(expr)` instead of casting a
+  non-list expression to a List dtype.
 - Arithmetic between a Struct and a numeric scalar or column resolves the
   result dtype separately for each field and rejects non-numeric fields.
 - Decimal rounding and `$sign()` widen precision when needed. Decimal
@@ -148,9 +153,6 @@ this release.
 - LazyFrame `$gather_every()` remains lazy and schema-free, including for
   zero-width inputs.
 
-### Other changes
-
-- Update the upstream Polars dependency to 2.0.0.
 
 ## polars 1.16.0
 
