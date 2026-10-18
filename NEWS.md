@@ -1,5 +1,7 @@
 # NEWS
 
+## polars (development version)
+
 ## polars 2.0.0
 
 This release matches Python Polars 2.0.0 and completes the R Polars 2.0 API transition.
