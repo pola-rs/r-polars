@@ -5,6 +5,7 @@ on:
     paths:
       - "**/*.R"
       - air.toml
+      - jarl.toml
       - .github/workflows/lint-r.yml
   push:
     branches:
@@ -12,6 +13,7 @@ on:
     paths:
       - "**/*.R"
       - air.toml
+      - jarl.toml
       - .github/workflows/lint-r.yml
   workflow_dispatch:
 
