@@ -12,6 +12,7 @@
 ^\.lycheeignore$
 
 ^dev$
+^crates$
 ^src/Makevars$
 ^src/Makevars\.win$
 ^src/rust/\.cargo$

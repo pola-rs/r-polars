@@ -1,0 +1,29 @@
+[package]
+name = "r-polars-plugin"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+publish = false
+description = "Python-independent Polars expression plugin runtime"
+repository = "https://github.com/pola-rs/r-polars"
+
+[workspace]
+resolver = "2"
+members = ["tests/plugin"]
+
+[dependencies]
+# Keep every Polars dependency (including the macro's build-time dependencies)
+# on the same source and revision as src/rust/Cargo.toml.
+polars-arrow = { git = "https://github.com/pola-rs/polars.git", rev = "22a147de3d2bb2e44b97338a2510816c7105c9f2", default-features = false }
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "22a147de3d2bb2e44b97338a2510816c7105c9f2", default-features = false }
+polars-error = { git = "https://github.com/pola-rs/polars.git", rev = "22a147de3d2bb2e44b97338a2510816c7105c9f2", default-features = false }
+polars-ffi = { git = "https://github.com/pola-rs/polars.git", rev = "22a147de3d2bb2e44b97338a2510816c7105c9f2", default-features = false }
+polars-plan = { git = "https://github.com/pola-rs/polars.git", rev = "22a147de3d2bb2e44b97338a2510816c7105c9f2", default-features = false }
+pyo3-polars-derive = { git = "https://github.com/pola-rs/polars.git", rev = "22a147de3d2bb2e44b97338a2510816c7105c9f2" }
+serde = "1"
+serde-pickle = "1"
+
+# Mirrors the hashbrown fix used by src/rust. Dependency patches are not
+# inherited by consumers; see README.md.
+[patch.crates-io]
+hashbrown = { git = "https://github.com/pola-rs/hashbrown", rev = "d76a6f81abd8f388676aff15068236a8d21c7e1a" }

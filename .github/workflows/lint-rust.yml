@@ -4,12 +4,14 @@ on:
   pull_request:
     paths:
       - src/rust/**
+      - crates/r-polars-plugin/**
       - .github/workflows/lint-rust.yml
   push:
     branches:
       - main
     paths:
       - src/**
+      - crates/r-polars-plugin/**
       - .github/workflows/lint-rust.yml
   workflow_dispatch:
 
@@ -34,6 +36,7 @@ jobs:
         run: |
           rustup component add rustfmt
           cargo fmt --all --check
+          cargo fmt --manifest-path ../../crates/r-polars-plugin/Cargo.toml --all --check
 
   cargo-clippy:
     runs-on: ubuntu-22.04
@@ -63,3 +66,19 @@ jobs:
             -- \
             -D warnings \
             -D clippy::dbg_macro
+
+      - name: Check plugin fixture
+        working-directory: src/rust
+        run: |
+          manifest=../../crates/r-polars-plugin/Cargo.toml
+          cargo build --manifest-path "$manifest" --target-dir target --release -p plugin-fixture
+          library=target/release/libplugin_fixture.so
+          symbols=$(nm -D --defined-only "$library")
+          for symbol in get_version get_last_error_message double field_double; do
+            grep -q " T _polars_plugin_${symbol}$" <<< "$symbols"
+          done
+          linkage=$(ldd "$library")
+          echo "$linkage"
+          if grep -Ei 'python|not found' <<< "$linkage"; then exit 1; fi
+          cargo tree --manifest-path "$manifest" --prefix none > "$RUNNER_TEMP/plugin-dependencies.txt"
+          if grep -E '^(pyo3|pyo3-ffi|polars-python) v' "$RUNNER_TEMP/plugin-dependencies.txt"; then exit 1; fi
