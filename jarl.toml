@@ -2,6 +2,11 @@
 select = ["ALL"]
 fixable = ["ALL"]
 ignore = [
+  # Deprecated
+  "internal_function",
+  # Usually not relevant because complicated functions are translated directly
+  # from Python Polars
+  "cyclomatic_complexity",
   # Don't think they help for readability
   "sample_int", "nzchar",
   # No need here, and it would require installing R in Jarl's CI workflow
@@ -10,6 +15,8 @@ ignore = [
   "missing_argument",
   # Lots of unnecessary reports
   "nested_pipe",
+  # We use "<<-" and ":::" for legitimate use cases
+  "undesirable_operator",
   # This package has a lot of probably unavoidable false positives
   "unused_object"
 ]
