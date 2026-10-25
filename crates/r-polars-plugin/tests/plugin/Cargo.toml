@@ -9,3 +9,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pyo3_polars = { package = "r-polars-plugin", path = "../.." }
+serde = { version = "1", features = ["derive"] }

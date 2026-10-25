@@ -74,7 +74,7 @@ jobs:
           cargo build --manifest-path "$manifest" --target-dir target --release -p plugin-fixture
           library=target/release/libplugin_fixture.so
           symbols=$(nm -D --defined-only "$library")
-          for symbol in get_version get_last_error_message double field_double; do
+          for symbol in get_version get_last_error_message add_offset field_add_offset; do
             grep -q " T _polars_plugin_${symbol}$" <<< "$symbols"
           done
           linkage=$(ldd "$library")
