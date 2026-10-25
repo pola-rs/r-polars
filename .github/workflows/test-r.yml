@@ -231,6 +231,8 @@ jobs:
 
       - name: Run tests
         shell: Rscript {0}
+        env:
+          R_POLARS_TEST_PLUGIN_REQUIRED: ${{ matrix.os == 'ubuntu-latest' && matrix.r == 'devel' }}
         run: |
           devtools::test(stop_on_failure = TRUE)
 

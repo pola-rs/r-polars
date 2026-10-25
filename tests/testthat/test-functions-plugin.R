@@ -16,6 +16,31 @@ test_that("pl$register_plugin_function() builds a plugin expression", {
   expect_match(expr$meta$serialize(format = "json"), '"is_deterministic":\\s*true')
 })
 
+test_that("pl$register_plugin_function() executes a plugin with pickle kwargs", {
+  plugin_path <- Sys.getenv("R_POLARS_TEST_PLUGIN_PATH")
+  if (!nzchar(plugin_path)) {
+    if (identical(Sys.getenv("R_POLARS_TEST_PLUGIN_REQUIRED"), "true")) {
+      stop("R_POLARS_TEST_PLUGIN_PATH must be set for the plugin integration test.", call. = FALSE)
+    }
+    skip("Set R_POLARS_TEST_PLUGIN_PATH to the compiled plugin fixture.")
+  }
+
+  input <- pl$DataFrame(x = c(1L, NA_integer_, 3L))
+  for (enabled in c(TRUE, FALSE)) {
+    expr <- pl$register_plugin_function(
+      plugin_path = plugin_path,
+      function_name = "add_offset",
+      args = pl$col("x")$cast(pl$Int64),
+      kwargs = list(offset = 5L, enabled = enabled),
+      is_elementwise = TRUE
+    )
+    expected <- pl$DataFrame(
+      x = if (enabled) c(6L, NA_integer_, 8L) else c(1L, NA_integer_, 3L)
+    )$cast(pl$Int64)
+    expect_query_equal(.input$select(expr), input, expected)
+  }
+})
+
 test_that("pl$register_plugin_function() expressions survive serialization", {
   # Requires the `ffi_plugin` feature; serialization does not open the library.
   for (is_deterministic in c(TRUE, FALSE)) {
