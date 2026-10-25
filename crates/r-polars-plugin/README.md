@@ -20,23 +20,15 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pyo3_polars = { package = "r-polars-plugin", git = "https://github.com/pola-rs/r-polars", rev = "<pinned-r-polars-commit>" }
+serde = { version = "1", features = ["derive"] }
 ```
 
 Copy the relevant `[patch.crates-io]` entries from this crate's
 [Cargo.toml](Cargo.toml) into your workspace root; Cargo does not inherit
 patches from dependencies.
 
-In `src/lib.rs`:
-
-```rust
-use pyo3_polars::derive::polars_expr;
-use pyo3_polars::export::polars_core::prelude::*;
-
-#[polars_expr(output_type = Int64)]
-fn double(inputs: &[Series]) -> PolarsResult<Series> {
-    Ok((inputs[0].i64()? * 2).into_series())
-}
-```
+See [`tests/plugin/src/lib.rs`](tests/plugin/src/lib.rs) for a complete, compiled
+example of an expression plugin.
 
 Build with `cargo build --release`, selecting the toolchain configured in
 r-polars' `src/rust/rust-toolchain.toml`. The result is
@@ -56,5 +48,5 @@ into all Polars dependencies (including `pyo3-polars-derive`) in this crate's
 `Cargo.toml`.
 
 Check whether upstream `pyo3-polars/src/derive.rs` has changed, and update the shim
-only if necessary. The existing Rust CI verifies that the example plugin compiles
-and exports the required symbols without Python.
+only if necessary. CI verifies that the example plugin compiles and exports the
+required symbols without Python.

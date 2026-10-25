@@ -9,6 +9,7 @@ on:
       - src/**
       - tests/**
       - tools/**
+      - crates/r-polars-plugin/**
       - vignettes/*
       - configure*
       - DESCRIPTION
@@ -22,6 +23,7 @@ on:
       - src/**
       - tests/**
       - tools/**
+      - crates/r-polars-plugin/**
       - vignettes/*
       - configure*
       - DESCRIPTION
@@ -207,6 +209,25 @@ jobs:
           # Since the debug build is faster to compile (200 sec v.s. 600 sec on macos-14 runner without cache),
           # we use the debug build here.
           Rscript -e "pkgbuild::compile_dll(debug = ${{ runner.os == 'Windows' && 'FALSE' || 'TRUE' }})"
+
+      - name: Build and validate plugin fixture
+        if: matrix.os == 'ubuntu-latest' && matrix.r == 'devel'
+        working-directory: src/rust
+        run: |
+          manifest=../../crates/r-polars-plugin/Cargo.toml
+          cargo build --release --manifest-path "$manifest" -p plugin-fixture
+          library=../../crates/r-polars-plugin/target/release/libplugin_fixture.so
+          test -f "$library"
+          symbols=$(nm -D --defined-only "$library")
+          for symbol in get_version get_last_error_message add_offset field_add_offset; do
+            grep -q " T _polars_plugin_${symbol}$" <<< "$symbols"
+          done
+          linkage=$(ldd "$library")
+          echo "$linkage"
+          if grep -Ei 'python|not found' <<< "$linkage"; then exit 1; fi
+          cargo tree --manifest-path "$manifest" --prefix none > "$RUNNER_TEMP/plugin-dependencies.txt"
+          if grep -E '^(pyo3|pyo3-ffi|polars-python) v' "$RUNNER_TEMP/plugin-dependencies.txt"; then exit 1; fi
+          echo "R_POLARS_TEST_PLUGIN_PATH=$(realpath "$library")" >> "$GITHUB_ENV"
 
       - name: Run tests
         shell: Rscript {0}
