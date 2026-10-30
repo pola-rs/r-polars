@@ -2292,6 +2292,20 @@ test_that("clip", {
     )
   )
 
+  # lower bound greater than upper bound
+  expect_equal(
+    df$select(pl$col("float")$clip(10, 1)),
+    pl$DataFrame(float = c(10, 10, 10, NA, 10, 1))
+  )
+
+  # NaN bound
+  expect_equal(
+    df$select(clip_min_float = pl$col("float")$clip(NaN)),
+    pl$DataFrame(clip_min_float = c(1, 2, 3, NA, -Inf, Inf))
+  )
+  # TODO: add a test for integer columns when https://github.com/pola-rs/polars/issues/30462
+  # is resolved
+
   # clip() works with temporal
   df <- pl$DataFrame(foo = as.Date(c("2020-01-01", "2020-01-02")))
   expect_equal(
