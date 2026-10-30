@@ -1,6 +1,6 @@
 [package]
 name = "r-polars"
-version = "2.0.0-rc.3"
+version = "2.0.0-rc.4"
 edition = "2024"
 rust-version = "1.97.0"
 publish = false
@@ -32,6 +32,7 @@ polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "22a147de3d
 polars-error = { git = "https://github.com/pola-rs/polars.git", rev = "22a147de3d2bb2e44b97338a2510816c7105c9f2", default-features = false }
 polars-plan = { git = "https://github.com/pola-rs/polars.git", rev = "22a147de3d2bb2e44b97338a2510816c7105c9f2", default-features = false }
 savvy = { version = "0.11.0", features = ["use-custom-error"] }
+serde-pickle = "1"
 serde_json = "1"
 state = "0.6"
 strum = "0.28"
@@ -63,7 +64,7 @@ features = [
 git = "https://github.com/pola-rs/polars.git"
 rev = "22a147de3d2bb2e44b97338a2510816c7105c9f2"
 default-features = false
-features = ["streaming"]
+features = ["streaming", "ffi_plugin"]
 
 [target.'cfg(not(target_os = "emscripten"))'.dependencies.polars-mem-engine]
 git = "https://github.com/pola-rs/polars.git"
