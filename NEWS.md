@@ -4,6 +4,14 @@
 
 This is an update that corresponds to Python Polars 2.1.0.
 
+### New features
+
+- `$join_where()` supports `how = "full"` (#1901).
+- `<expr>$reinterpret()` can convert between Decimal and Int128, the unscaled
+  integer representation of a Decimal (#1901).
+- New method `<expr>$trunc_div()` (alias `$truncdiv()`) to divide, rounding
+  the quotient toward zero (#1901).
+
 ### Other changes
 
 - Aggregations such as `$mean()`, `$std()`, and `$var()` on unsupported data types (e.g. 

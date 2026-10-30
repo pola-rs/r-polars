@@ -244,6 +244,35 @@ expr__floor_div <- function(other) {
 #' @rdname expr__floor_div
 expr__floordiv <- expr__floor_div
 
+#' Divide two expressions, rounding the quotient toward zero
+#'
+#' Unlike [`<Expr>$floor_div()`][expr__floor_div], which rounds down, this
+#' rounds a negative quotient up, as integer division does in C and Rust.
+#' The result has the same data type as `$floor_div()`'s.
+#' `$truncdiv()` is an alias for `$trunc_div()`, which exists for compatibility
+#' with Python Polars.
+#' @inheritParams expr__true_div
+#' @inherit as_polars_expr return
+#' @seealso
+#' - [`<Expr>$floor_div()`][expr__floor_div]
+#' - [`<Expr>$true_div()`][expr__true_div]
+#' @examples
+#' df <- pl$DataFrame(x = c(-5L, -4L, 4L, 5L))
+#'
+#' df$with_columns(
+#'   `x%/%2` = pl$col("x")$floor_div(2L),
+#'   `trunc_div(x, 2)` = pl$col("x")$trunc_div(2L)
+#' )
+expr__trunc_div <- function(other) {
+  wrap({
+    other <- as_polars_expr(other, as_lit = TRUE)
+    self$`_rexpr`$trunc_div(other$`_rexpr`)
+  })
+}
+
+#' @rdname expr__trunc_div
+expr__truncdiv <- expr__trunc_div
+
 expr__neg <- function() {
   self$`_rexpr`$neg() |>
     wrap()
@@ -4549,6 +4578,15 @@ expr__bin_ranks <- function(
 
 #' Reinterpret the underlying bits of a same-size numeric type.
 #'
+#' This operation is only allowed between numeric types of the same size. To
+#' convert between types of different sizes, use [`<expr>$cast()`][expr__cast]
+#' instead.
+#'
+#' A Decimal can also be reinterpreted to and from Int128, its unscaled integer
+#' representation: `1.23` as `Decimal(5, 2)` becomes `123`. Reinterpreting an
+#' Int128 raises an error if the value doesn't fit the precision of the target
+#' Decimal.
+#'
 #' @inheritParams rlang::args_dots_empty
 #' @param signed Whether to reinterpret as a signed or unsigned integer of the
 #'   same width as the input. Must specify exactly one of `signed` and `dtype`.
@@ -4562,6 +4600,12 @@ expr__bin_ranks <- function(
 #' # Reinterpret column a as Int64
 #' df$with_columns(
 #'   reinterpreted = pl$col("a")$reinterpret(dtype = pl$Int64)
+#' )
+#'
+#' # Reinterpret a Decimal as its unscaled Int128 representation
+#' df2 <- pl$DataFrame(a = c(1.23, -4.5))$cast(pl$Decimal(5, 2))
+#' df2$with_columns(
+#'   reinterpreted = pl$col("a")$reinterpret(dtype = pl$Int128)
 #' )
 expr__reinterpret <- function(..., signed = NULL, dtype = NULL) {
   wrap({

@@ -2634,6 +2634,11 @@ SEXP savvy_PlRExpr_top_k_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__k, SE
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_trunc_div__impl(SEXP self__, SEXP c_arg__rhs) {
+    SEXP res = savvy_PlRExpr_trunc_div__ffi(self__, c_arg__rhs);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_truncate__impl(SEXP self__, SEXP c_arg__decimals) {
     SEXP res = savvy_PlRExpr_truncate__ffi(self__, c_arg__decimals);
     return handle_result(res);
@@ -3979,6 +3984,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_to_physical__impl", (DL_FUNC) &savvy_PlRExpr_to_physical__impl, 1},
     {"savvy_PlRExpr_top_k__impl", (DL_FUNC) &savvy_PlRExpr_top_k__impl, 2},
     {"savvy_PlRExpr_top_k_by__impl", (DL_FUNC) &savvy_PlRExpr_top_k_by__impl, 4},
+    {"savvy_PlRExpr_trunc_div__impl", (DL_FUNC) &savvy_PlRExpr_trunc_div__impl, 2},
     {"savvy_PlRExpr_truncate__impl", (DL_FUNC) &savvy_PlRExpr_truncate__impl, 2},
     {"savvy_PlRExpr_unique__impl", (DL_FUNC) &savvy_PlRExpr_unique__impl, 1},
     {"savvy_PlRExpr_unique_counts__impl", (DL_FUNC) &savvy_PlRExpr_unique_counts__impl, 1},

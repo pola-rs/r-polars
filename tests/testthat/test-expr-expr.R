@@ -50,9 +50,26 @@ test_that("map_batches works", {
   )
 })
 
-test_that("floordiv and truediv exist for compatibility", {
+test_that("floordiv, truediv and truncdiv exist for compatibility", {
   expect_equal(pl$lit(1)$floordiv(2), pl$lit(1)$floor_div(2))
   expect_equal(pl$lit(1)$truediv(2), pl$lit(1)$true_div(2))
+  expect_equal(pl$lit(1)$truncdiv(2), pl$lit(1)$trunc_div(2))
+})
+
+test_that("trunc_div rounds toward zero", {
+  df <- pl$DataFrame(x = c(-5L, -4L, 4L, 5L, NA), y = c(-5, -4, 4, 5, NA))
+  expect_equal(
+    df$select(
+      pl$col("x")$trunc_div(2L),
+      pl$col("y")$trunc_div(2),
+      floor = pl$col("x")$floor_div(2L)
+    ),
+    pl$DataFrame(
+      x = c(-2L, -2L, 2L, 2L, NA),
+      y = c(-2, -2, 2, 2, NA),
+      floor = c(-3L, -2L, 2L, 2L, NA)
+    )
+  )
 })
 
 # TODO: use parametrize test, and is_polars_expr
@@ -1671,6 +1688,18 @@ test_that("reinterpret", {
     df
   )
 
+  df_dec <- pl$DataFrame(a = c(1.23, -4.5))$cast(pl$Decimal(5, 2))
+  expect_equal(
+    df_dec$select(pl$col("a")$reinterpret(dtype = pl$Int128)),
+    pl$DataFrame(a = c(123, -450))$cast(pl$Int128)
+  )
+  expect_equal(
+    df_dec$select(
+      pl$col("a")$reinterpret(dtype = pl$Int128)$reinterpret(dtype = pl$Decimal(5, 2))
+    ),
+    df_dec
+  )
+
   expect_snapshot(
     pl$col("a")$reinterpret(),
     error = TRUE
@@ -1687,6 +1716,12 @@ test_that("reinterpret", {
   expect_snapshot(
     pl$DataFrame(a = 1:2)$select(
       pl$col("a")$reinterpret(dtype = pl$Int64)
+    ),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$DataFrame(a = 1e6)$cast(pl$Int128)$select(
+      pl$col("a")$reinterpret(dtype = pl$Decimal(5, 2))
     ),
     error = TRUE
   )

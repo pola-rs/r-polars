@@ -7,7 +7,7 @@
 lazyframe__join_where(
   other,
   ...,
-  how = c("inner", "left", "right"),
+  how = c("inner", "left", "right", "full"),
   suffix = "_right"
 )
 }
@@ -20,8 +20,10 @@ suffix must be applied in the predicate. For example, if both tables have a
 column \code{"x"} that you want to use in the conditions, you must refer to the
 column of the right table as \code{"x<suffix>"}.}
 
-\item{how}{Join strategy, one of \code{"inner"} (default), \code{"left"} or
-\code{"right"}.}
+\item{how}{Join strategy, one of \code{"inner"} (default), \code{"left"}, \code{"right"}
+or \code{"full"}. \code{"left"} and \code{"right"} also keep the rows of that input without
+a match, and \code{"full"} keeps them from both inputs. The columns of the other
+input are null in those rows.}
 
 \item{suffix}{Suffix to append to columns with a duplicate name.}
 }

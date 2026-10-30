@@ -19,7 +19,15 @@ one of \code{signed} and \code{dtype}.}
 A polars \link{expression}
 }
 \description{
-Reinterpret the underlying bits of a same-size numeric type.
+This operation is only allowed between numeric types of the same size. To
+convert between types of different sizes, use \code{\link[=expr__cast]{<expr>$cast()}}
+instead.
+}
+\details{
+A Decimal can also be reinterpreted to and from Int128, its unscaled integer
+representation: \code{1.23} as \code{Decimal(5, 2)} becomes \code{123}. Reinterpreting an
+Int128 raises an error if the value doesn't fit the precision of the target
+Decimal.
 }
 \examples{
 df <- pl$DataFrame(a = c(1, 1, 2))$cast(pl$UInt64)
@@ -27,5 +35,11 @@ df <- pl$DataFrame(a = c(1, 1, 2))$cast(pl$UInt64)
 # Reinterpret column a as Int64
 df$with_columns(
   reinterpreted = pl$col("a")$reinterpret(dtype = pl$Int64)
+)
+
+# Reinterpret a Decimal as its unscaled Int128 representation
+df2 <- pl$DataFrame(a = c(1.23, -4.5))$cast(pl$Decimal(5, 2))
+df2$with_columns(
+  reinterpreted = pl$col("a")$reinterpret(dtype = pl$Int128)
 )
 }

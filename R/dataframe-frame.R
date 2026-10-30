@@ -1359,7 +1359,7 @@ dataframe__shift <- function(n = 1, ..., fill_value = NULL) {
 dataframe__join_where <- function(
   other,
   ...,
-  how = c("inner", "left", "right"),
+  how = c("inner", "left", "right", "full"),
   suffix = "_right"
 ) {
   wrap({

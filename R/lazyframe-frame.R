@@ -1276,8 +1276,10 @@ lazyframe__join <- function(
 #' suffix must be applied in the predicate. For example, if both tables have a
 #' column `"x"` that you want to use in the conditions, you must refer to the
 #' column of the right table as `"x<suffix>"`.
-#' @param how Join strategy, one of `"inner"` (default), `"left"` or
-#' `"right"`.
+#' @param how Join strategy, one of `"inner"` (default), `"left"`, `"right"`
+#' or `"full"`. `"left"` and `"right"` also keep the rows of that input without
+#' a match, and `"full"` keeps them from both inputs. The columns of the other
+#' input are null in those rows.
 #' @param suffix Suffix to append to columns with a duplicate name.
 #'
 #' @inherit as_polars_lf return
@@ -1313,12 +1315,12 @@ lazyframe__join <- function(
 lazyframe__join_where <- function(
   other,
   ...,
-  how = c("inner", "left", "right"),
+  how = c("inner", "left", "right", "full"),
   suffix = "_right"
 ) {
   wrap({
     check_polars_lf(other)
-    how <- arg_match0(how, values = c("inner", "left", "right"))
+    how <- arg_match0(how, values = c("inner", "left", "right", "full"))
     by <- parse_into_list_of_expressions(...)
     self$`_ldf`$join_where(other$`_ldf`, by, how, suffix)
   })

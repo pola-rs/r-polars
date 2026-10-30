@@ -316,6 +316,22 @@
       Caused by error:
       ! Invalid operation: cannot reinterpret from Int32 to Int64
 
+---
+
+    Code
+      pl$DataFrame(a = 1e+06)$cast(pl$Int128)$select(pl$col("a")$reinterpret(dtype = pl$
+        Decimal(5, 2)))
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! decimal precision 5 can't fit values with 7 digits
+      
+      This error occurred in the following expression:
+      	col("a").reinterpret()
+
 # rolling_*_by only works with date, datetime, or integers
 
     Code
