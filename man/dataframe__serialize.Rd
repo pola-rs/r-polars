@@ -37,7 +37,7 @@ serialized
 pl$deserialize_df(serialized)
 
 # Other Apache Arrow implementations may be able to read it.
-if (requireNamespace("arrow", quietly = TRUE)) \{
-  arrow::read_ipc_stream(serialized, as_data_frame = FALSE)
+if (requireNamespace("nanoarrow", quietly = TRUE)) \{
+  nanoarrow::read_nanoarrow(serialized)
 \}
 }

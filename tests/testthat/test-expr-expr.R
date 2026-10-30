@@ -549,22 +549,16 @@ test_that("is_in", {
   )
 
   # behavior for NA and NULL
-  # TODO: replace `pl$lit(NULL)$cast(pl$Boolean)` to `pl$lit(NA)` causes panic
   expect_equal(
-    pl$select(pl$lit(NULL)$cast(pl$Boolean)$is_in(list(NA))),
+    pl$select(pl$lit(NA)$is_in(list(NA))),
     pl$DataFrame(literal = NA)
   )
-  # TODO: replace `pl$lit(NULL)$cast(pl$Boolean)` to `pl$lit(NA)` causes panic
   expect_equal(
-    pl$select(pl$lit(NULL)$cast(pl$Boolean)$is_in(list(NULL))),
+    pl$select(pl$lit(NA)$is_in(list(NULL))),
     pl$DataFrame(literal = NA)
   )
-  # TODO: replace the first `pl$lit(NULL)$cast(pl$Boolean)` to `NULL` causes panic
-  # TODO: replace the first `pl$lit(NULL)$cast(pl$Boolean)` to `NULL`
-  #  and the second `pl$lit(NULL)$cast(pl$Boolean)` to `NA` causes panic
-  #  Original code: pl$select(pl$lit(NULL)$is_in(NA))
   expect_equal(
-    pl$select(pl$lit(NULL)$cast(pl$Boolean)$is_in(pl$lit(NULL)$cast(pl$Boolean)$implode())),
+    pl$select(pl$lit(NULL)$is_in(pl$lit(NA)$implode())),
     pl$DataFrame(literal = NA)
   )
 
@@ -2298,25 +2292,6 @@ test_that("clip", {
     )
   )
 
-  # TODO: those panick in dev profile but not in release profile. Either
-  # uncomment or remove when https://github.com/pola-rs/polars/issues/19692
-  # is resolved
-
-  # expect_snapshot(
-  #   df$select(pl$col("float")$clip(10, 1)),
-  #   error = TRUE
-  # )
-  # expect_equal(
-  #   df$select(
-  #     clip_min_int = pl$col("int")$clip(NaN),
-  #     clip_min_float = pl$col("float")$clip(NaN)
-  #   ),
-  #   pl$DataFrame(
-  #     clip_min_int = c(1:3, NA, -.Machine$integer.max, .Machine$integer.max),
-  #     clip_min_float = c(1, 2, 3, NA, -Inf, Inf)
-  #   )
-  # )
-
   # clip() works with temporal
   df <- pl$DataFrame(foo = as.Date(c("2020-01-01", "2020-01-02")))
   expect_equal(
@@ -2618,9 +2593,7 @@ test_that("unique_counts", {
     integer(),
     NA_integer_,
     NA_character_,
-    # TODO: not supported for bool columns, uncomment when
-    # https://github.com/pola-rs/polars/issues/16356 is resolved
-    # NA,
+    NA,
     c(NA, 24, NaN),
     c(NA, 24, Inf, NaN, 24),
     c("ejw", NA_character_),

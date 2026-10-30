@@ -32,16 +32,15 @@ test_that("sink_parquet: argument 'statistics'", {
     lf$sink_parquet(tmpf, statistics = "foo"),
     "must be TRUE, FALSE, 'full', or"
   )
-  # TODO: uncomment when https://github.com/pola-rs/polars/issues/17306 is fixed
-  # expect_silent(lf$sink_parquet(
-  #   tmpf,
-  #   statistics = list(
-  #     min = TRUE,
-  #     max = FALSE,
-  #     distinct_count = TRUE,
-  #     null_count = FALSE
-  #   )
-  # ))
+  expect_silent(lf$sink_parquet(
+    tmpf,
+    statistics = parquet_statistics(
+      min = TRUE,
+      max = FALSE,
+      distinct_count = TRUE,
+      null_count = FALSE
+    )
+  ))
   expect_error(
     lf$sink_parquet(tmpf, statistics = list(foo = TRUE, foo2 = FALSE)),
     "must be TRUE, FALSE, 'full', or"
