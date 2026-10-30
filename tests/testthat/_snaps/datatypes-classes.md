@@ -594,7 +594,7 @@
       Error in `pl$Decimal()`:
       ! Evaluation failed in `$Decimal()`.
       Caused by error:
-      ! Invalid operation: precision must be between 1 and 38
+      ! Invalid operation: precision must be between 1 and 38, got 0
 
 # invalid decimal (precision = -1, scale = 0)
 
@@ -624,7 +624,7 @@
       Error in `pl$Decimal()`:
       ! Evaluation failed in `$Decimal()`.
       Caused by error:
-      ! Invalid operation: precision must be between 1 and 38
+      ! Invalid operation: precision must be between 1 and 38, got 39
 
 # invalid decimal (precision = 38, scale = 39)
 
@@ -634,7 +634,7 @@
       Error in `pl$Decimal()`:
       ! Evaluation failed in `$Decimal()`.
       Caused by error:
-      ! Invalid operation: scale must be less than or equal to precision
+      ! Invalid operation: scale must be less than or equal to precision, got scale 39 and precision 38
 
 # invalid decimal (precision = 39, scale = 1)
 
@@ -644,5 +644,5 @@
       Error in `pl$Decimal()`:
       ! Evaluation failed in `$Decimal()`.
       Caused by error:
-      ! Invalid operation: precision must be between 1 and 38
+      ! Invalid operation: precision must be between 1 and 38, got 39
 

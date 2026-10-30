@@ -44,6 +44,10 @@ impl PlRExpr {
         Ok(dsl::binary_expr(self.inner.clone(), Operator::FloorDivide, rhs.inner.clone()).into())
     }
 
+    fn trunc_div(&self, rhs: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().trunc_div(rhs.inner.clone()).into())
+    }
+
     fn neg(&self) -> Result<Self> {
         Ok(self.inner.clone().neg().into())
     }

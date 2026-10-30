@@ -1848,6 +1848,28 @@ test_that("inequality joins support `how`", {
     pl$DataFrame(t_id = c(404, 498, 676, 742))
   )
 
+  # `how = "full"` keeps the unmatched rows of both frames
+  expect_query_equal(
+    .input$join_where(
+      .input2,
+      pl$col("dur") < pl$col("time"),
+      pl$col("rev") < pl$col("cost"),
+      how = "full"
+    )$sort("id", "t_id"),
+    .input = east,
+    .input2 = west,
+    pl$DataFrame(
+      id = c(NA, 100, 100, 100, 101, 101, 102),
+      dur = c(NA, 120, 120, 120, 140, 140, 160),
+      rev = c(NA, 12, 12, 12, 14, 14, 16),
+      cores = c(NA, 2, 2, 2, 8, 8, 4),
+      t_id = c(404, 498, 676, 742, 676, 742, NA),
+      time = c(90, 130, 150, 170, 150, 170, NA),
+      cost = c(9, 13, 15, 16, 15, 16, NA),
+      cores_right = c(4, 2, 1, 4, 1, 4, NA)
+    )
+  )
+
   expect_query_error(
     .input$join_where(
       .input2,
