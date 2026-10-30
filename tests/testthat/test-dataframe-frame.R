@@ -449,7 +449,7 @@ test_that("pivot args work", {
       "cat",
       index = "ann",
       values = c("ann", "bob"),
-      aggregate_function = "mean",
+      aggregate_function = "first",
       separator = "."
     ),
     c(

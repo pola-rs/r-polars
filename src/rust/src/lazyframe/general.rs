@@ -1104,6 +1104,7 @@ impl PlRLazyFrame {
                 parallel,
                 low_memory,
                 use_statistics,
+                decryption_properties: None,
             };
 
             let first_path = sources.first_path().map(|p| p.to_owned());
@@ -1287,6 +1288,7 @@ impl PlRLazyFrame {
                 key_value_metadata: None,
                 arrow_schema: None,
                 compat_level: None,
+                encryption_properties: None,
             };
 
             let cloud_options = parse_cloud_options(target.cloud_scheme(), storage_options)?;

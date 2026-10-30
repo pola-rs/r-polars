@@ -84,9 +84,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! `std` operation not supported for dtype `duration[ms]`
-      This error occurred in the following expression:
-        col("x").std()
+      ! Invalid operation: `std` operation not supported for dtype `duration[ms]`
 
 ---
 
@@ -98,9 +96,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! `var` operation not supported for dtype `duration[ms]`
-      This error occurred in the following expression:
-        col("x").var()
+      ! Invalid operation: `var` operation not supported for dtype `duration[ms]`
 
 ---
 

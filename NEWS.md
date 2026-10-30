@@ -2,6 +2,14 @@
 
 ## polars (development version)
 
+### Other changes
+
+- Update the upstream Polars dependency to 2.1.0.
+- Moment aggregations such as `$mean()`, `$std()`, and `$var()` on unsupported
+  data types (e.g. String) now raise an error when the query is planned instead
+  of returning nulls
+  ([pola-rs/polars#29955](https://github.com/pola-rs/polars/pull/29955)).
+
 ## polars 2.0.0
 
 This release matches Python Polars 2.0.0 and completes the R Polars 2.0 API transition.

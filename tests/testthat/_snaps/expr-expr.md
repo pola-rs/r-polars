@@ -502,7 +502,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! lengths don't match: cannot take a larger sample than the total population when `with_replacement=false`
+      ! lengths don't match: cannot take a larger sample than the total population when `with_replacement=false` (sample size: 20, population: 10)
       
       This error occurred in the following expression:
       	col("a").sample([2.0])
