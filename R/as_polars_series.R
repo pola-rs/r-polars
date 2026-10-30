@@ -620,7 +620,7 @@ as_polars_series.clock_duration <- function(x, name = NULL, ...) {
 
 #' @export
 as_polars_series.python.builtin.object <- function(x, name = NULL, ...) {
-  check_installed("nanoarrow", version = "0.7.0.9000") # TODO: update to 0.8.0 after the release
+  check_installed("nanoarrow", version = "0.8.0")
 
   nanoarrow::as_nanoarrow_array_stream(x) |>
     as_polars_series.nanoarrow_array_stream(name = name)

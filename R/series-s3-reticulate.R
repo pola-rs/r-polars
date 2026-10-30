@@ -3,7 +3,7 @@
 # exported in zzz.R
 # TODO: support `convert = TRUE`
 r_to_py.polars_series <- function(x, convert = FALSE) {
-  check_installed("nanoarrow", version = "0.7.0.9000") # TODO: update to 0.8.0 after the release
+  check_installed("nanoarrow", version = "0.8.0")
 
   pypl <- import_py_polars()
 

@@ -139,7 +139,6 @@ dataframe__set_column_names <- function(names) {
 }
 
 # TODO: support json format
-# TODO: use nanoarrow instead of arrow in examples after <https://github.com/apache/arrow-nanoarrow/issues/743> is fixed # nolint
 #' Serialize the DataFrame to a binary format
 #'
 #' Serialize the DataFrame to a binary format.
@@ -162,8 +161,8 @@ dataframe__set_column_names <- function(names) {
 #' pl$deserialize_df(serialized)
 #'
 #' # Other Apache Arrow implementations may be able to read it.
-#' if (requireNamespace("arrow", quietly = TRUE)) {
-#'   arrow::read_ipc_stream(serialized, as_data_frame = FALSE)
+#' if (requireNamespace("nanoarrow", quietly = TRUE)) {
+#'   nanoarrow::read_nanoarrow(serialized)
 #' }
 dataframe__serialize <- function() {
   self$`_df`$serialize_binary() |>
