@@ -1,41 +1,41 @@
+use super::s7_api;
 use crate::{lazyframe::PlROptFlags, prelude::*};
 use savvy::{ObjSexp, Sexp, savvy_err};
 
-// Get the S7 class name from an object.
-// In R: `attr(obj, "_S7_class") |> attr("name")`
-// S7 >= 0.3.0 uses "_S7_class"; older versions use "S7_class".
-// TODO: Remove "S7_class" fallback after S7 0.3.0 is released.
-fn get_s7_class_name(obj: &ObjSexp) -> Option<String> {
-    obj.get_attrib("_S7_class")
-        .ok()
-        .flatten()
-        .or_else(|| obj.get_attrib("S7_class").ok().flatten())
-        .and_then(|s7_class| {
-            s7_class
-                .get_attrib("name")
-                .ok()
-                .flatten()
-                .and_then(|name_sexp| <&str>::try_from(name_sexp).ok())
-                .map(|s| s.to_string())
-        })
-}
-
+// Extract a required property of an S7 object.
+//
+// `T` must not borrow from the property value (e.g. `&str`), because the value
+// is not protected after this function returns. Use `try_extract_string_prop()`
+// for strings.
 // TODO: Move this to upstream?
-pub(crate) fn try_extract_prop<T>(obj: &ObjSexp, attr_name: &str) -> savvy::Result<T>
+pub(crate) fn try_extract_prop<T>(obj: &ObjSexp, prop_name: &str) -> savvy::Result<T>
 where
     T: TryFrom<Sexp, Error = savvy::Error>,
 {
-    obj.get_attrib(attr_name)?
-        .ok_or(savvy_err!("Attribute '{attr_name}' does not exist."))
-        .and_then(|v| T::try_from(v))
+    let value = s7_api::prop(obj, prop_name)?
+        .ok_or_else(|| savvy_err!("Property '{prop_name}' does not exist or is NULL."))?;
+    T::try_from(value.sexp())
 }
 
-pub(crate) fn try_extract_opt_prop<T>(obj: &ObjSexp, attr_name: &str) -> savvy::Result<Option<T>>
+// Extract an optional property of an S7 object. `NULL` is converted to `None`.
+// The same restriction on `T` as `try_extract_prop()` applies.
+pub(crate) fn try_extract_opt_prop<T>(obj: &ObjSexp, prop_name: &str) -> savvy::Result<Option<T>>
 where
     T: TryFrom<Sexp, Error = savvy::Error>,
 {
-    obj.get_attrib(attr_name)?
-        .map_or(Ok(None), |v| Ok(Some(T::try_from(v)?)))
+    match s7_api::prop(obj, prop_name)? {
+        Some(value) => Ok(Some(T::try_from(value.sexp())?)),
+        None => Ok(None),
+    }
+}
+
+// Extract a required string property of an S7 object. The string is copied
+// while the property value is still protected.
+pub(crate) fn try_extract_string_prop(obj: &ObjSexp, prop_name: &str) -> savvy::Result<String> {
+    let value = s7_api::prop(obj, prop_name)?
+        .ok_or_else(|| savvy_err!("Property '{prop_name}' does not exist or is NULL."))?;
+    let string: &str = value.sexp().try_into()?;
+    Ok(string.to_string())
 }
 
 impl TryFrom<ObjSexp> for PlROptFlags {
@@ -93,18 +93,21 @@ impl TryFrom<ObjSexp> for Wrap<SinkDestination> {
     type Error = savvy::Error;
 
     fn try_from(obj: ObjSexp) -> Result<Self, savvy::Error> {
-        let class_name = get_s7_class_name(&obj);
-
-        if class_name.as_deref() == Some("PartitionBy") {
-            extract_partition_by(&obj)
-        } else {
-            Err(savvy_err!("expected a PartitionBy object"))
+        match s7_api::class_info(&obj)? {
+            // Check the package as well to avoid confusion with a class of the
+            // same name defined by another package.
+            Some(class)
+                if class.name == "PartitionBy" && class.package.as_deref() == Some("polars") =>
+            {
+                extract_partition_by(&obj)
+            }
+            _ => Err(savvy_err!("expected a PartitionBy object")),
         }
     }
 }
 
 fn extract_partition_by(obj: &ObjSexp) -> savvy::Result<Wrap<SinkDestination>> {
-    let base_path: &str = try_extract_prop(obj, "base_path")?;
+    let base_path = try_extract_string_prop(obj, "base_path")?;
     let key: Option<Wrap<Vec<Expr>>> = try_extract_opt_prop(obj, "key")?;
     let include_key: Option<bool> = try_extract_opt_prop(obj, "include_key")?;
     let max_rows_per_file: Option<Wrap<u32>> = try_extract_opt_prop(obj, "max_rows_per_file")?;
@@ -122,7 +125,7 @@ fn extract_partition_by(obj: &ObjSexp) -> savvy::Result<Wrap<SinkDestination>> {
     };
 
     Ok(Wrap(SinkDestination::Partitioned {
-        base_path: PlRefPath::new(base_path),
+        base_path: PlRefPath::new(base_path.as_str()),
         file_path_provider: None,
         partition_strategy,
         max_rows_per_file: max_rows_per_file.map(|wrap| wrap.0).unwrap_or(IdxSize::MAX),

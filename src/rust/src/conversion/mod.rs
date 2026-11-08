@@ -20,6 +20,7 @@ mod chunked_array;
 pub mod clock;
 pub mod data_table;
 pub mod s7;
+mod s7_api;
 
 // Same as savvy
 const F64_MAX_SIGFIG: f64 = (2_u64.pow(53) - 1) as f64;
