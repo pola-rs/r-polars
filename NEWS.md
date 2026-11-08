@@ -1,5 +1,7 @@
 # NEWS
 
+## polars (development version)
+
 ## polars 2.1.0
 
 This is an update that corresponds to Python Polars 2.1.0.
