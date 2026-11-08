@@ -20,7 +20,7 @@ This is an update that corresponds to Python Polars 2.1.0.
   and `pl$QueryOptFlags()` are now read on the Rust side through the S7 native API
   when it is available, falling back to the previous implementation for older
   versions of S7. Loading polars with S7 1.0.0 no longer warns about the conflicting
-  `:=` imports from rlang and S7.
+  `:=` imports from rlang and S7 (#1905).
 
 ## polars 2.0.0
 
