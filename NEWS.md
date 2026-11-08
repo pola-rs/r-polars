@@ -16,11 +16,7 @@ This is an update that corresponds to Python Polars 2.1.0.
 
 - Aggregations such as `$mean()`, `$std()`, and `$var()` on unsupported data types (e.g. 
   String) now raise an error when the query is planned instead of returning nulls (#1901).
-- Compatibility with the upcoming S7 1.0.0. S7 objects such as `pl$PartitionBy()`
-  and `pl$QueryOptFlags()` are now read on the Rust side through the S7 native API
-  when it is available, falling back to the previous implementation for older
-  versions of S7. Loading polars with S7 1.0.0 no longer warns about the conflicting
-  `:=` imports from rlang and S7 (#1905).
+- Compatibility with the upcoming S7 1.0.0 (#1905).
 
 ## polars 2.0.0
 
