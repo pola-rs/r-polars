@@ -96,7 +96,8 @@ test_that("pl$explain_all() works", {
   expect_snapshot(pl$explain_all(1), error = TRUE)
   expect_snapshot(
     pl$explain_all(list(cyl_4, cyl_6), optimizations = 1),
-    error = TRUE
+    error = TRUE,
+    variant = s7_snapshot_variant()
   )
 })
 
