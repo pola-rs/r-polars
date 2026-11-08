@@ -63,3 +63,25 @@ test_that("Rust side validation", {
     cnd_class = TRUE
   )
 })
+
+test_that("QueryOptFlags are passed to the query optimizer", {
+  lazy_query <- as_polars_lf(iris)$sort("Species")$filter(pl$col("Species") != "setosa")
+
+  default_plan <- lazy_query$explain()
+  expect_false(identical(
+    default_plan,
+    lazy_query$explain(optimizations = pl$QueryOptFlags(predicate_pushdown = FALSE))
+  ))
+  expect_false(identical(
+    default_plan,
+    lazy_query$explain(optimizations = pl$QueryOptFlags()$no_optimizations())
+  ))
+
+  # An object modified with `set_props()` is converted the same way as one built by the constructor
+  expect_identical(
+    lazy_query$explain(optimizations = pl$QueryOptFlags(predicate_pushdown = FALSE)),
+    lazy_query$explain(
+      optimizations = set_props(pl$QueryOptFlags(), predicate_pushdown = FALSE)
+    )
+  )
+})

@@ -55,3 +55,85 @@ test_that("approximate_bytes_per_file does not support 2^64 - 1 for now", {
     error = TRUE
   )
 })
+
+test_that("PartitionBy with only approximate_bytes_per_file works", {
+  out_dir <- withr::local_tempdir()
+  as_polars_lf(mtcars)$sink_parquet(
+    pl$PartitionBy(out_dir, approximate_bytes_per_file = 1e9),
+    mkdir = TRUE
+  )
+
+  expect_length(list.files(out_dir, recursive = TRUE), 1L)
+  expect_shape(pl$read_parquet(out_dir), dim = c(32L, 11L))
+})
+
+test_that("PartitionBy with include_key = FALSE drops the key columns from the files", {
+  out_dir <- withr::local_tempdir()
+  as_polars_lf(mtcars)$sink_parquet(
+    pl$PartitionBy(out_dir, key = "cyl", include_key = FALSE),
+    mkdir = TRUE
+  )
+
+  file <- list.files(out_dir, pattern = "\\.parquet$", recursive = TRUE, full.names = TRUE)[[1]]
+  expect_false("cyl" %in% pl$read_parquet(file, hive_partitioning = FALSE)$columns)
+})
+
+test_that("only PartitionBy objects of the polars package are accepted as the sink target", {
+  # S7 classes defined outside of the polars package.
+  # Specify `package` explicitly because the default is the package of the calling environment,
+  # which is polars when the tests run.
+  unnamed_pkg_class <- new_class(
+    "PartitionBy",
+    package = NULL,
+    properties = list(base_path = class_character)
+  )
+  other_pkg_class <- new_class(
+    "PartitionBy",
+    package = "otherpkg",
+    properties = list(base_path = class_character)
+  )
+  other_name_class <- new_class(
+    "OtherScheme",
+    package = "otherpkg",
+    properties = list(base_path = class_character)
+  )
+
+  lf <- as_polars_lf(mtcars)
+  out_dir <- withr::local_tempdir()
+
+  # The public methods reject these objects before passing them to Rust.
+  expect_snapshot(
+    lf$sink_parquet(unnamed_pkg_class(out_dir)),
+    error = TRUE
+  )
+  expect_snapshot(
+    lf$sink_parquet(other_pkg_class(out_dir)),
+    error = TRUE
+  )
+  expect_snapshot(
+    lf$sink_parquet(other_name_class(out_dir)),
+    error = TRUE
+  )
+
+  # The conversion on the Rust side must reject them as well.
+  sink_ndjson_unchecked <- function(target) {
+    lf$`_ldf`$sink_ndjson(
+      target = target,
+      compression = "uncompressed",
+      compression_level = NULL,
+      check_extension = TRUE,
+      maintain_order = TRUE,
+      sync_on_close = "none",
+      mkdir = FALSE,
+      storage_options = NULL
+    )
+  }
+
+  expect_snapshot(sink_ndjson_unchecked(unnamed_pkg_class(out_dir)), error = TRUE)
+  expect_snapshot(sink_ndjson_unchecked(other_pkg_class(out_dir)), error = TRUE)
+  expect_snapshot(sink_ndjson_unchecked(other_name_class(out_dir)), error = TRUE)
+  expect_snapshot(sink_ndjson_unchecked(pl$QueryOptFlags()), error = TRUE)
+
+  # Nothing is written
+  expect_length(list.files(out_dir), 0L)
+})
