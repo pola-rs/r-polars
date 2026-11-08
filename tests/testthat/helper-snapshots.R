@@ -21,3 +21,10 @@ normalize_cache_ids <- function(lines) {
 normalize_s7_str_spacing <- function(lines) {
   gsub(":logi ", ": logi ", lines, fixed = TRUE)
 }
+
+# S7 1.0.0 changed the format of class printing and of the errors raised by S7.
+# Use this as the `variant` of snapshots whose output depends on the S7 version.
+# TODO: Remove this once S7 >= 1.0.0 is required.
+s7_snapshot_variant <- function() {
+  if (utils::packageVersion("S7") > "0.2.2") "S7-1.0" else "S7-0.2"
+}
