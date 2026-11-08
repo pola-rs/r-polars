@@ -2,7 +2,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @import rlang
+#' @rawNamespace import(rlang, except = ":=")
 #' @import S7
 #' @importFrom utils findMatches head tail
 ## usethis namespace: end

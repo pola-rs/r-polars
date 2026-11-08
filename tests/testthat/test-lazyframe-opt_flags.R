@@ -1,6 +1,6 @@
 test_that("QueryOptFlags", {
   # Class
-  expect_snapshot(pl$QueryOptFlags)
+  expect_snapshot(pl$QueryOptFlags, variant = s7_snapshot_variant())
 
   # Constructor
   expect_snapshot(eager_opt_flags(), transform = normalize_s7_str_spacing)
@@ -21,22 +21,30 @@ test_that("QueryOptFlags", {
   expect_snapshot(
     opt_flags@type_coercion <- 1L,
     error = TRUE,
-    cnd_class = TRUE
+    cnd_class = TRUE,
+    variant = s7_snapshot_variant()
   )
   expect_snapshot(
     opt_flags@type_coercion <- NA,
     error = TRUE,
-    cnd_class = TRUE
+    cnd_class = TRUE,
+    variant = s7_snapshot_variant()
   )
   expect_snapshot(
     opt_flags@type_coercion <- c(TRUE, TRUE),
     error = TRUE,
-    cnd_class = TRUE
+    cnd_class = TRUE,
+    variant = s7_snapshot_variant()
   )
 
   # dollar method
   expect_snapshot(opt_flags$type_coercion)
-  expect_snapshot(opt_flags$type, error = TRUE, cnd_class = TRUE)
+  expect_snapshot(
+    opt_flags$type,
+    error = TRUE,
+    cnd_class = TRUE,
+    variant = s7_snapshot_variant()
+  )
 
   expect_snapshot(opt_flags$no_optimizations(), transform = normalize_s7_str_spacing)
   no_optimizations <- opt_flags$no_optimizations()
@@ -54,12 +62,35 @@ test_that("Rust side validation", {
   expect_snapshot(
     validate(opt_flags),
     error = TRUE,
-    cnd_class = TRUE
+    cnd_class = TRUE,
+    variant = s7_snapshot_variant()
   )
 
   expect_snapshot(
     pl$collect_all(list(), optimizations = opt_flags),
     error = TRUE,
     cnd_class = TRUE
+  )
+})
+
+test_that("QueryOptFlags are passed to the query optimizer", {
+  lazy_query <- as_polars_lf(iris)$sort("Species")$filter(pl$col("Species") != "setosa")
+
+  default_plan <- lazy_query$explain()
+  expect_false(identical(
+    default_plan,
+    lazy_query$explain(optimizations = pl$QueryOptFlags(predicate_pushdown = FALSE))
+  ))
+  expect_false(identical(
+    default_plan,
+    lazy_query$explain(optimizations = pl$QueryOptFlags()$no_optimizations())
+  ))
+
+  # An object modified with `set_props()` is converted the same way as one built by the constructor
+  expect_identical(
+    lazy_query$explain(optimizations = pl$QueryOptFlags(predicate_pushdown = FALSE)),
+    lazy_query$explain(
+      optimizations = set_props(pl$QueryOptFlags(), predicate_pushdown = FALSE)
+    )
   )
 })
