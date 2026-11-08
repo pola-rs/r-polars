@@ -115,3 +115,71 @@
       Caused by error:
       ! 1.8446744073709552e19 is out of range that can be safely converted to u32
 
+# only PartitionBy objects of the polars package are accepted as the sink target
+
+    Code
+      lf$sink_parquet(unnamed_pkg_class(out_dir))
+    Condition
+      Error in `lf$sink_parquet()`:
+      ! Evaluation failed in `$sink_parquet()`.
+      Caused by error in `self$lazy_sink_parquet()`:
+      ! Evaluation failed in `$lazy_sink_parquet()`.
+      Caused by error in `self$lazy_sink_parquet()`:
+      ! `path` must be a string or a polars_partitioning_scheme, got: a <PartitionBy> object
+
+---
+
+    Code
+      lf$sink_parquet(other_pkg_class(out_dir))
+    Condition
+      Error in `lf$sink_parquet()`:
+      ! Evaluation failed in `$sink_parquet()`.
+      Caused by error in `self$lazy_sink_parquet()`:
+      ! Evaluation failed in `$lazy_sink_parquet()`.
+      Caused by error in `self$lazy_sink_parquet()`:
+      ! `path` must be a string or a polars_partitioning_scheme, got: a <otherpkg::PartitionBy> object
+
+---
+
+    Code
+      lf$sink_parquet(other_name_class(out_dir))
+    Condition
+      Error in `lf$sink_parquet()`:
+      ! Evaluation failed in `$sink_parquet()`.
+      Caused by error in `self$lazy_sink_parquet()`:
+      ! Evaluation failed in `$lazy_sink_parquet()`.
+      Caused by error in `self$lazy_sink_parquet()`:
+      ! `path` must be a string or a polars_partitioning_scheme, got: a <otherpkg::OtherScheme> object
+
+---
+
+    Code
+      sink_ndjson_unchecked(unnamed_pkg_class(out_dir))
+    Condition
+      Error:
+      ! expected a PartitionBy object
+
+---
+
+    Code
+      sink_ndjson_unchecked(other_pkg_class(out_dir))
+    Condition
+      Error:
+      ! expected a PartitionBy object
+
+---
+
+    Code
+      sink_ndjson_unchecked(other_name_class(out_dir))
+    Condition
+      Error:
+      ! expected a PartitionBy object
+
+---
+
+    Code
+      sink_ndjson_unchecked(pl$QueryOptFlags())
+    Condition
+      Error:
+      ! expected a PartitionBy object
+
