@@ -14,6 +14,7 @@
 
 - New class Schema, created with `pl$Schema()`, which is an ordered mapping of column
   names to data types. It supports `==` and `!=`.
+- New method `<Schema>$dtypes()` to get the data types of a Schema.
 
 ## polars 2.1.0
 

@@ -5,6 +5,7 @@ test_that("pl$Schema() works", {
   expect_length(schema, 2L)
   expect_equal(schema$a, pl$Int32)
   expect_equal(schema[["b"]], pl$String)
+  expect_equal(schema$dtypes(), list(pl$Int32, pl$String))
   expect_length(pl$Schema(), 0)
 
   expect_snapshot(schema)
@@ -59,9 +60,12 @@ test_that("subsetting and modifying keep a valid Schema", {
   expect_error(schema[["a"]] <- "foo", "must be polars data types")
 })
 
-test_that("$ extracts columns without partial matching", {
-  schema <- pl$Schema(foo = pl$String)
+test_that("$ gives priority to methods over column names", {
+  schema <- pl$Schema(dtypes = pl$Int32, foo = pl$String)
+  expect_type(schema$dtypes, "closure")
+  expect_equal(schema[["dtypes"]], pl$Int32)
   expect_equal(schema$foo, pl$String)
+  # No partial matching
   expect_null(schema$fo)
 })
 

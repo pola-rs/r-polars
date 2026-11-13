@@ -747,6 +747,7 @@ nav:
         - to_dtype_expr: man/datatype__to_dtype_expr.md
       Schema:
         - Schema: man/pl__Schema.md
+        - dtypes: man/schema__dtypes.md
       Input/Output:
         - read_csv: man/pl__read_csv.md
         - scan_csv: man/pl__scan_csv.md

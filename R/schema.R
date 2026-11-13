@@ -61,6 +61,16 @@ new_polars_schema <- function(x) {
   x
 }
 
+#' Get the data types of a Schema
+#'
+#' @return A list of polars data types.
+#' @examples
+#' schema <- pl$Schema(x = pl$UInt8, y = pl$List(pl$UInt8))
+#' schema$dtypes()
+schema__dtypes <- function() {
+  unname(unclass(self))
+}
+
 #' @export
 `$.polars_schema` <- function(x, name) {
   if (name %in% names(polars_schema__methods)) {
