@@ -748,6 +748,7 @@ nav:
       Schema:
         - Schema: man/pl__Schema.md
         - dtypes: man/schema__dtypes.md
+        - to_frame: man/schema__to_frame.md
       Input/Output:
         - read_csv: man/pl__read_csv.md
         - scan_csv: man/pl__scan_csv.md

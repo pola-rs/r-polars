@@ -71,6 +71,26 @@ schema__dtypes <- function() {
   unname(unclass(self))
 }
 
+#' Create an empty DataFrame or LazyFrame from a Schema
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @param eager If `TRUE` (default), create a [DataFrame]; otherwise, create
+#' a [LazyFrame].
+#' @return A polars [DataFrame] or [LazyFrame].
+#' @examples
+#' schema <- pl$Schema(x = pl$Int32, y = pl$String)
+#' schema$to_frame()
+#' schema$to_frame(eager = FALSE)
+schema__to_frame <- function(..., eager = TRUE) {
+  wrap({
+    check_dots_empty0(...)
+    check_bool(eager)
+    df <- lapply(self, \(dtype) as_polars_series(NULL)$cast(dtype)) |>
+      as_polars_df()
+    if (eager) df else df$lazy()
+  })
+}
+
 #' @export
 `$.polars_schema` <- function(x, name) {
   if (name %in% names(polars_schema__methods)) {

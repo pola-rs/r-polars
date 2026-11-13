@@ -27,6 +27,20 @@ test_that("frames return a Schema", {
   expect_equal(df$lazy()$collect_schema(), expected)
 })
 
+test_that("$to_frame() works", {
+  schema <- pl$Schema(a = pl$Int32, b = pl$List(pl$String), c = pl$Struct(x = pl$Date))
+  df <- schema$to_frame()
+  expect_s3_class(df, "polars_data_frame")
+  expect_identical(df$height, 0L)
+  expect_true(df$schema == schema)
+
+  lf <- schema$to_frame(eager = FALSE)
+  expect_s3_class(lf, "polars_lazy_frame")
+  expect_true(lf$collect_schema() == schema)
+
+  expect_equal(pl$Schema()$to_frame(), pl$DataFrame())
+})
+
 test_that("== and != work", {
   schema <- pl$Schema(a = pl$Int32, b = pl$Datetime("us"))
   expect_true(schema == pl$Schema(a = pl$Int32, b = pl$Datetime("us")))

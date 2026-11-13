@@ -2022,10 +2022,7 @@ lazyframe__to_dot <- function(
 #' df$clear(n = 2)$collect()
 lazyframe__clear <- function(n = 0) {
   wrap({
-    cols <- names(self)
-    dat <- vector("list", length(cols))
-    names(dat) <- cols
-    pl$DataFrame(!!!dat, .schema_overrides = self$collect_schema())$clear(n)$lazy()
+    self$collect_schema()$to_frame()$clear(n)$lazy()
   })
 }
 
