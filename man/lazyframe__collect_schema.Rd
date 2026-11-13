@@ -7,8 +7,7 @@
 lazyframe__collect_schema()
 }
 \value{
-A named list with names indicating column names and values indicating
-column data types.
+A polars \link{Schema}.
 }
 \description{
 This resolves the query plan but does not trigger computations.

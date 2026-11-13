@@ -2,6 +2,19 @@
 
 ## polars (development version)
 
+### Breaking changes
+
+- `<DataFrame>$schema`, `<DataFrame>$collect_schema()` and `<LazyFrame>$collect_schema()`
+  now return a polars Schema (see below) instead of a plain named list. Since a Schema is
+  a named list with the class `polars_schema`, most existing code keeps working, but
+  e.g. `expect_equal(df$schema, list(...))` must be replaced with
+  `expect_equal(df$schema, pl$Schema(...))`.
+
+### New features
+
+- New class Schema, created with `pl$Schema()`, which is an ordered mapping of column
+  names to data types. It supports `==` and `!=`.
+
 ## polars 2.1.0
 
 This is an update that corresponds to Python Polars 2.1.0.

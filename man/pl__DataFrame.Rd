@@ -44,8 +44,8 @@ and then passed to \code{\link[=as_polars_df]{as_polars_df()}}.
  \itemize{
 \item \code{columns}: \verb{$columns} returns a character vector with the names of the columns.
 \item \code{dtypes}: \verb{$dtypes} returns a nameless list of the data type of each column.
-\item \code{schema}: \verb{$schema} returns a named list with the column names as names
-and the data types as values.
+\item \code{schema}: \verb{$schema} returns a polars \link{Schema}, a named list with the column
+names as names and the data types as values.
 \item \code{shape}: \verb{$shape} returns a integer vector of length two with the number of rows
 and columns of the DataFrame.
 \item \code{height}: \verb{$height} returns a integer with the number of rows of the DataFrame.

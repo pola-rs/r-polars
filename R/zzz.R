@@ -73,6 +73,7 @@ POLARS_STORE_ENVS <- list(
   "rolling_groupby__" = polars_rolling_groupby__methods,
   "group_by_dynamic__" = polars_group_by_dynamic__methods,
   "sql_context__" = polars_sql_context__methods,
+  "schema__" = polars_schema__methods,
   QueryOptFlags__ = polars_query_opt_flags__methods
 )
 

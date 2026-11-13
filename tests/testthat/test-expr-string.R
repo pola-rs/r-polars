@@ -1019,7 +1019,7 @@ patrick::with_parameters_test_that(
     df <- pl$DataFrame(x = time_str)$select(pl$col("x")$str$strptime(dtype))$schema
     expect_equal(
       df,
-      list(x = type_expected)
+      pl$Schema(x = type_expected)
     )
   }
 )

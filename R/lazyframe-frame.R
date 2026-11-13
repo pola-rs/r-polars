@@ -336,8 +336,7 @@ lazyframe__explain <- function(
 #'
 #' This resolves the query plan but does not trigger computations.
 #'
-#' @return A named list with names indicating column names and values indicating
-#' column data types.
+#' @return A polars [Schema].
 #'
 #' @examples
 #' lf <- pl$LazyFrame(
@@ -358,6 +357,7 @@ lazyframe__collect_schema <- function() {
       .savvy_wrap_PlRDataType(x) |>
         wrap()
     }) |>
+    new_polars_schema() |>
     wrap()
 }
 

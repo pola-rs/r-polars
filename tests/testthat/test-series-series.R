@@ -124,7 +124,7 @@ test_that("shrink_dtype", {
 
   expect_equal(
     df$schema,
-    list(
+    pl$Schema(
       a = pl$Int8,
       b = pl$Int64,
       c = pl$Int32,

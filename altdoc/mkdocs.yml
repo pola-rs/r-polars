@@ -745,6 +745,8 @@ nav:
         - infer_polars_dtype: man/infer_polars_dtype.md
         - polars_dtype: man/polars_dtype.md
         - to_dtype_expr: man/datatype__to_dtype_expr.md
+      Schema:
+        - Schema: man/pl__Schema.md
       Input/Output:
         - read_csv: man/pl__read_csv.md
         - scan_csv: man/pl__scan_csv.md

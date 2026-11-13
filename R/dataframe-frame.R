@@ -17,8 +17,8 @@
 #' @section Active bindings:
 #' - `columns`: `$columns` returns a character vector with the names of the columns.
 #' - `dtypes`: `$dtypes` returns a nameless list of the data type of each column.
-#' - `schema`: `$schema` returns a named list with the column names as names
-#'   and the data types as values.
+#' - `schema`: `$schema` returns a polars [Schema], a named list with the column
+#'   names as names and the data types as values.
 #' - `shape`: `$shape` returns a integer vector of length two with the number of rows
 #'   and columns of the DataFrame.
 #' - `height`: `$height` returns a integer with the number of rows of the DataFrame.
@@ -115,7 +115,11 @@ polars_dataframe__methods <- new.env(parent = emptyenv())
     },
     self
   )
-  makeActiveBinding("schema", function() structure(self$dtypes, names = self$columns), self)
+  makeActiveBinding(
+    "schema",
+    function() new_polars_schema(structure(self$dtypes, names = self$columns)),
+    self
+  )
   makeActiveBinding("shape", function() self$`_df`$shape(), self)
   makeActiveBinding("height", function() self$`_df`$height(), self)
   makeActiveBinding("width", function() self$`_df`$width(), self)

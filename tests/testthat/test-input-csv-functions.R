@@ -74,10 +74,10 @@ test_that("read/scan: arg try_parse_date work", {
   write.csv(dat, tmpf, row.names = FALSE)
 
   out <- pl$read_csv(tmpf, infer_schema_files = NULL)
-  expect_equal(out$schema, list(foo = pl$String))
+  expect_equal(out$schema, pl$Schema(foo = pl$String))
 
   out <- pl$read_csv(tmpf, try_parse_dates = TRUE, infer_schema_files = NULL)
-  expect_equal(out$schema, list(foo = pl$Date))
+  expect_equal(out$schema, pl$Schema(foo = pl$Date))
 })
 
 test_that("read/scan: arg raise_if_empty works", {
@@ -111,7 +111,7 @@ test_that("read/scan: CSV defaults use the 2.0 behavior", {
     )$collect()
   )
   expect_equal(dim(scan_out), c(0L, 1L))
-  expect_equal(scan_out$schema, list(a = pl$Int64))
+  expect_equal(scan_out$schema, pl$Schema(a = pl$Int64))
   expect_snapshot(
     pl$scan_csv(
       empty,
@@ -132,7 +132,7 @@ test_that("read/scan: CSV defaults use the 2.0 behavior", {
     )
   )
   expect_equal(dim(out), c(0L, 1L))
-  expect_equal(out$schema, list(a = pl$Int64))
+  expect_equal(out$schema, pl$Schema(a = pl$Int64))
   expect_snapshot(
     pl$read_csv(
       empty,
@@ -362,9 +362,11 @@ test_that("read/scan: arg 'schema_overrides' works", {
       schema_overrides = mixed_empty_name,
       infer_schema_files = NULL
     )$schema,
-    setNames(
-      list(pl$Float64, pl$Int32, pl$Int32),
-      c("a", "", "c")
+    pl$Schema(
+      !!!setNames(
+        list(pl$Float64, pl$Int32, pl$Int32),
+        c("a", "", "c")
+      )
     )
   )
 
@@ -552,23 +554,23 @@ test_that("read/scan: arg infer_schema_files works", {
   # The default uses the first 10 files for inference.
   expect_equal(
     pl$scan_csv(glob)$collect_schema(),
-    list(a = pl$Int64)
+    pl$Schema(a = pl$Int64)
   )
 
   expect_equal(
     pl$scan_csv(glob, infer_schema_files = NULL)$collect_schema(),
-    list(a = pl$String)
+    pl$Schema(a = pl$String)
   )
 
   # Only using the first 10 files infers Int64.
   expect_equal(
     pl$scan_csv(glob, infer_schema_files = 10)$collect_schema(),
-    list(a = pl$Int64)
+    pl$Schema(a = pl$Int64)
   )
 
   expect_equal(
     pl$scan_csv(glob, infer_schema_files = 11)$collect_schema(),
-    list(a = pl$String)
+    pl$Schema(a = pl$String)
   )
 
   expect_error(

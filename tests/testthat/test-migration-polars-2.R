@@ -50,7 +50,7 @@ test_that("signed integer and UInt64 use the Int128 supertype", {
   uint64 <- pl$Series("uint64", c("1", "2"))$cast(pl$UInt64)
   out <- pl$select(pl$lit(-1L) + pl$lit(uint64))
 
-  expect_equal(out$schema, list(literal = pl$Int128))
+  expect_equal(out$schema, pl$Schema(literal = pl$Int128))
   expect_equal(out$to_series()$to_r_vector(), c(0, 1))
 })
 

@@ -2408,7 +2408,7 @@ test_that("reshape", {
     pl$DataFrame(a = 1:4)$select(
       pl$col("a")$reshape(c(-1, 2))
     )$schema,
-    list(a = pl$Array(pl$Int32, 2))
+    pl$Schema(a = pl$Array(pl$Int32, 2))
   )
   expect_snapshot(pl$DataFrame(a = 1:4)$select(pl$col("a")$reshape(c(2, -1))), error = TRUE)
 
@@ -2416,10 +2416,9 @@ test_that("reshape", {
   out <- pl$DataFrame(foo = 1:12)$select(
     pl$col("foo")$reshape(c(3, 2, 2))
   )
-  # annoying to test schema equivalency with list()
   expect_equal(
     out$schema,
-    list(foo = pl$Array(pl$Int32, c(2, 2)))
+    pl$Schema(foo = pl$Array(pl$Int32, c(2, 2)))
   )
   expect_equal(nrow(out), 3L)
 })
