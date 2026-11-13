@@ -10,8 +10,8 @@ polars_schema__methods <- new.env(parent = emptyenv())
 #' [`<LazyFrame>$collect_schema()`][lazyframe__collect_schema] return this class.
 #'
 #' Elements of the schema can be extracted with `$` (e.g. `schema$foo`),
-#' except for column names that conflict with a method name of the Schema,
-#' which must be extracted with `[[`.
+#' except for column names that conflict with a method name
+#' (`dtypes`, `to_frame`, `contains_dtype`), which must be extracted with `[[`.
 #'
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]>
 #' Name-value pairs of polars data types. Each name is a column name.
@@ -88,6 +88,45 @@ schema__to_frame <- function(..., eager = TRUE) {
     df <- lapply(self, \(dtype) as_polars_series(NULL)$cast(dtype)) |>
       as_polars_df()
     if (eager) df else df$lazy()
+  })
+}
+
+#' Check if a Schema contains the given data type
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @param dtype A polars data type to search for.
+#' @param recursive If `FALSE`, only check top-level column data types.
+#' If `TRUE`, search the data types inside nested types (List, Array, Map, Struct)
+#' instead, in which case the nested types themselves are not matched.
+#' @return A logical value.
+#' @examples
+#' schema <- pl$Schema(x = pl$Int64, y = pl$List(pl$Float64))
+#' schema$contains_dtype(pl$Int64, recursive = FALSE)
+#' schema$contains_dtype(pl$Float64, recursive = FALSE)
+#' schema$contains_dtype(pl$Float64, recursive = TRUE)
+schema__contains_dtype <- function(dtype, ..., recursive) {
+  wrap({
+    check_dots_empty0(...)
+    check_polars_dtype(dtype)
+    check_bool(recursive)
+
+    unpack <- function(dt) {
+      if (inherits(dt, c("polars_dtype_list", "polars_dtype_array"))) {
+        unpack(dt$inner)
+      } else if (inherits(dt, "polars_dtype_map")) {
+        c(unpack(dt$key), unpack(dt$value))
+      } else if (inherits(dt, "polars_dtype_struct")) {
+        unlist(lapply(unname(dt$fields), unpack), recursive = FALSE)
+      } else {
+        list(dt)
+      }
+    }
+
+    dtypes <- self$dtypes()
+    if (recursive) {
+      dtypes <- unlist(lapply(dtypes, unpack), recursive = FALSE)
+    }
+    any(vapply(dtypes, \(dt) dt$eq(dtype), logical(1)))
   })
 }
 

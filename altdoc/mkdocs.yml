@@ -747,6 +747,7 @@ nav:
         - to_dtype_expr: man/datatype__to_dtype_expr.md
       Schema:
         - Schema: man/pl__Schema.md
+        - contains_dtype: man/schema__contains_dtype.md
         - dtypes: man/schema__dtypes.md
         - to_frame: man/schema__to_frame.md
       Input/Output:

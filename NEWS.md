@@ -16,6 +16,7 @@
   names to data types. It supports `==` and `!=`.
 - New method `<Schema>$dtypes()` to get the data types of a Schema.
 - New method `<Schema>$to_frame()` to create an empty DataFrame or LazyFrame from a Schema.
+- New method `<Schema>$contains_dtype()` to check if a Schema contains a given data type.
 
 ## polars 2.1.0
 

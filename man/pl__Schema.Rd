@@ -24,8 +24,8 @@ so base R functions such as \code{\link[=names]{names()}}, \code{\link[=length]{
 }
 \details{
 Elements of the schema can be extracted with \code{$} (e.g. \code{schema$foo}),
-except for column names that conflict with a method name of the Schema,
-which must be extracted with \code{[[}.
+except for column names that conflict with a method name
+(\code{dtypes}, \code{to_frame}, \code{contains_dtype}), which must be extracted with \code{[[}.
 }
 \examples{
 schema <- pl$Schema(

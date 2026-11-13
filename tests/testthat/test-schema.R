@@ -41,6 +41,22 @@ test_that("$to_frame() works", {
   expect_equal(pl$Schema()$to_frame(), pl$DataFrame())
 })
 
+test_that("$contains_dtype() works", {
+  schema <- pl$Schema(
+    x = pl$Int64,
+    y = pl$List(pl$Struct(a = pl$Float64)),
+    z = pl$Map(pl$String, pl$Array(pl$Int8, 2))
+  )
+  expect_true(schema$contains_dtype(pl$Int64, recursive = FALSE))
+  expect_false(schema$contains_dtype(pl$Float64, recursive = FALSE))
+  expect_true(schema$contains_dtype(pl$Float64, recursive = TRUE))
+  expect_true(schema$contains_dtype(pl$Int8, recursive = TRUE))
+  expect_true(schema$contains_dtype(pl$String, recursive = TRUE))
+  expect_true(schema$contains_dtype(pl$List(pl$Struct(a = pl$Float64)), recursive = FALSE))
+  # Like Python Polars, nested types themselves are not matched recursively
+  expect_false(schema$contains_dtype(pl$List(pl$Struct(a = pl$Float64)), recursive = TRUE))
+})
+
 test_that("== and != work", {
   schema <- pl$Schema(a = pl$Int32, b = pl$Datetime("us"))
   expect_true(schema == pl$Schema(a = pl$Int32, b = pl$Datetime("us")))
