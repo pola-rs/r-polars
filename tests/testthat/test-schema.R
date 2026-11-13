@@ -1,8 +1,8 @@
 test_that("pl$Schema() works", {
   schema <- pl$Schema(a = pl$Int32, b = pl$String)
   expect_s3_class(schema, "polars_schema")
-  expect_identical(names(schema), c("a", "b"))
-  expect_identical(length(schema), 2L)
+  expect_named(schema, c("a", "b"))
+  expect_length(schema, 2L)
   expect_equal(schema$a, pl$Int32)
   expect_equal(schema[["b"]], pl$String)
   expect_length(pl$Schema(), 0)
@@ -14,6 +14,7 @@ test_that("pl$Schema() works", {
 test_that("pl$Schema() validates its input", {
   expect_snapshot(pl$Schema(pl$Int32), error = TRUE)
   expect_snapshot(pl$Schema(a = 1), error = TRUE)
+  # jarl-ignore duplicated_arguments: testing the error on duplicated names
   expect_snapshot(pl$Schema(a = pl$Int32, a = pl$String), error = TRUE)
 })
 
@@ -52,7 +53,7 @@ test_that("subsetting and modifying keep a valid Schema", {
   )
 
   schema$b <- NULL
-  expect_identical(names(schema), c("a", "c", "d", "e"))
+  expect_named(schema, c("a", "c", "d", "e"))
 
   expect_error(schema$a <- 1, "must be polars data types")
   expect_error(schema[["a"]] <- "foo", "must be polars data types")

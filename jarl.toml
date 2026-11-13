@@ -44,6 +44,7 @@ skipped-functions = [
   "^pl_",
   "^QueryOptFlags_",
   "^rolling_",
+  "^schema_",
   "^selector_",
   "^series_",
   "^sql_",
