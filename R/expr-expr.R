@@ -3669,6 +3669,42 @@ expr__ewm_mean <- function(
   })
 }
 
+#' Compute exponentially-weighted moving sum
+#'
+#' `r lifecycle::badge("experimental")`
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @inheritParams expr__ewm_var
+#' @param min_samples Minimum number of non-null observations required before
+#' returning a result.
+#' @param ignore_nulls Ignore missing values when calculating weights. If `FALSE`
+#' (default), weights are based on absolute positions. If `TRUE`, weights are based
+#' on the relative positions of non-null values.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(a = 1:3)
+#' df$select(pl$col("a")$ewm_sum(alpha = 0.5))
+expr__ewm_sum <- function(
+  ...,
+  com = NULL,
+  span = NULL,
+  half_life = NULL,
+  alpha = NULL,
+  min_samples = 1,
+  ignore_nulls = FALSE
+) {
+  wrap({
+    check_dots_empty0(...)
+    alpha <- prepare_alpha(com, span, half_life, alpha)
+    self$`_rexpr`$ewm_sum(
+      alpha = alpha,
+      min_samples = min_samples,
+      ignore_nulls = ignore_nulls
+    )
+  })
+}
+
 #' Compute time-based exponentially weighted moving average
 #'
 #' Given observations \eqn{x_0}, \eqn{x_1}, \ldots, \eqn{x_{n-1}} at times

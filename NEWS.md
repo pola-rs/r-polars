@@ -2,6 +2,10 @@
 
 ## polars (development version)
 
+### New features
+
+- New method `$ewm_sum()` computes exponentially-weighted moving sums (#1844).
+
 ## polars 2.1.0
 
 This is an update that corresponds to Python Polars 2.1.0.

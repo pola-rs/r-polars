@@ -1459,6 +1459,11 @@ SEXP savvy_PlRExpr_ewm_std__impl(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__adj
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_ewm_sum__impl(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__min_samples, SEXP c_arg__ignore_nulls) {
+    SEXP res = savvy_PlRExpr_ewm_sum__ffi(self__, c_arg__alpha, c_arg__min_samples, c_arg__ignore_nulls);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_ewm_var__impl(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__adjust, SEXP c_arg__bias, SEXP c_arg__min_samples, SEXP c_arg__ignore_nulls) {
     SEXP res = savvy_PlRExpr_ewm_var__ffi(self__, c_arg__alpha, c_arg__adjust, c_arg__bias, c_arg__min_samples, c_arg__ignore_nulls);
     return handle_result(res);
@@ -3749,6 +3754,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_ewm_mean__impl", (DL_FUNC) &savvy_PlRExpr_ewm_mean__impl, 5},
     {"savvy_PlRExpr_ewm_mean_by__impl", (DL_FUNC) &savvy_PlRExpr_ewm_mean_by__impl, 3},
     {"savvy_PlRExpr_ewm_std__impl", (DL_FUNC) &savvy_PlRExpr_ewm_std__impl, 6},
+    {"savvy_PlRExpr_ewm_sum__impl", (DL_FUNC) &savvy_PlRExpr_ewm_sum__impl, 4},
     {"savvy_PlRExpr_ewm_var__impl", (DL_FUNC) &savvy_PlRExpr_ewm_var__impl, 6},
     {"savvy_PlRExpr_exp__impl", (DL_FUNC) &savvy_PlRExpr_exp__impl, 1},
     {"savvy_PlRExpr_explode__impl", (DL_FUNC) &savvy_PlRExpr_explode__impl, 3},

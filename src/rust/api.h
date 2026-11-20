@@ -296,6 +296,7 @@ SEXP savvy_PlRExpr_eq_missing__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRExpr_ewm_mean__ffi(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__adjust, SEXP c_arg__min_samples, SEXP c_arg__ignore_nulls);
 SEXP savvy_PlRExpr_ewm_mean_by__ffi(SEXP self__, SEXP c_arg__times, SEXP c_arg__half_life);
 SEXP savvy_PlRExpr_ewm_std__ffi(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__adjust, SEXP c_arg__bias, SEXP c_arg__min_samples, SEXP c_arg__ignore_nulls);
+SEXP savvy_PlRExpr_ewm_sum__ffi(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__min_samples, SEXP c_arg__ignore_nulls);
 SEXP savvy_PlRExpr_ewm_var__ffi(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__adjust, SEXP c_arg__bias, SEXP c_arg__min_samples, SEXP c_arg__ignore_nulls);
 SEXP savvy_PlRExpr_exp__ffi(SEXP self__);
 SEXP savvy_PlRExpr_explode__ffi(SEXP self__, SEXP c_arg__empty_as_null, SEXP c_arg__keep_nulls);
