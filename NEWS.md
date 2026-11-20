@@ -4,7 +4,7 @@
 
 ### New features
 
-- New method `$ewm_sum()` computes exponentially-weighted moving sums (#1844).
+- New method `$ewm_sum()` computes exponentially-weighted moving sums (#1915).
 
 ## polars 2.1.0
 
