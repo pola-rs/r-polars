@@ -297,6 +297,7 @@ nav:
             - ewm_mean_by: man/expr__ewm_mean_by.md
             - ewm_mean: man/expr__ewm_mean.md
             - ewm_std: man/expr__ewm_std.md
+            - ewm_sum: man/expr__ewm_sum.md
             - ewm_var: man/expr__ewm_var.md
             - exp: man/expr__exp.md
             - explode: man/expr__explode.md
