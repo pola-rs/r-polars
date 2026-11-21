@@ -644,6 +644,18 @@ impl PlRExpr {
         Ok(self.inner.clone().ewm_mean(options).into())
     }
 
+    fn ewm_sum(&self, alpha: f64, min_samples: NumericScalar, ignore_nulls: bool) -> Result<Self> {
+        let min_periods = <Wrap<usize>>::try_from(min_samples)?.0;
+        let options = EWMOptions {
+            alpha,
+            bias: false,
+            min_periods,
+            ignore_nulls,
+            ..Default::default()
+        };
+        Ok(self.inner.clone().ewm_sum(options).into())
+    }
+
     fn ewm_mean_by(&self, times: &PlRExpr, half_life: &str) -> Result<Self> {
         let half_life = Duration::parse(half_life);
         Ok(self

@@ -640,6 +640,132 @@
       │ 0.000733 ┆ 0.000023 ┆ 0.011298 ┆ 0.000733 ┆ 0.001463    ┆ 0.001463    ┆ 0.101988    ┆ 0.000733   │
       └──────────┴──────────┴──────────┴──────────┴─────────────┴─────────────┴─────────────┴────────────┘
 
+---
+
+    Code
+      ewm_sum_res
+    Output
+      shape: (11, 5)
+      ┌───────────┬──────────┬──────────┬───────────┬──────────────────┐
+      │ com1      ┆ span2    ┆ hl2      ┆ a.5       ┆ com1_min_samples │
+      │ ---       ┆ ---      ┆ ---      ┆ ---       ┆ ---              │
+      │ f64       ┆ f64      ┆ f64      ┆ f64       ┆ f64              │
+      ╞═══════════╪══════════╪══════════╪═══════════╪══════════════════╡
+      │ 1.0       ┆ 1.0      ┆ 1.0      ┆ 1.0       ┆ null             │
+      │ 0.5       ┆ 0.333333 ┆ 0.707107 ┆ 0.5       ┆ null             │
+      │ 0.25      ┆ 0.111111 ┆ 0.5      ┆ 0.25      ┆ null             │
+      │ 0.125     ┆ 0.037037 ┆ 0.353553 ┆ 0.125     ┆ 0.125            │
+      │ 0.0625    ┆ 0.012346 ┆ 0.25     ┆ 0.0625    ┆ 0.0625           │
+      │ …         ┆ …        ┆ …        ┆ …         ┆ …                │
+      │ 0.015625  ┆ 0.001372 ┆ 0.125    ┆ 0.015625  ┆ 0.015625         │
+      │ 0.0078125 ┆ 0.000457 ┆ 0.088388 ┆ 0.0078125 ┆ 0.0078125        │
+      │ 0.003906  ┆ 0.000152 ┆ 0.0625   ┆ 0.003906  ┆ 0.003906         │
+      │ 0.001953  ┆ 0.000051 ┆ 0.044194 ┆ 0.001953  ┆ 0.001953         │
+      │ 0.000977  ┆ 0.000017 ┆ 0.03125  ┆ 0.000977  ┆ 0.000977         │
+      └───────────┴──────────┴──────────┴───────────┴──────────────────┘
+
+---
+
+    Code
+      x$ewm_sum()
+    Condition
+      Error in `x$ewm_sum()`:
+      ! Evaluation failed in `$ewm_sum()`.
+      Caused by error in `x$ewm_sum()`:
+      ! One of `com`, `span`, `half_life`, or `alpha` must be supplied.
+
+---
+
+    Code
+      x$ewm_sum(alpha = 0.5, com = 1)
+    Condition
+      Error in `x$ewm_sum()`:
+      ! Evaluation failed in `$ewm_sum()`.
+      Caused by error in `x$ewm_sum()`:
+      ! Can't specify multiple of parameters `com`, `span`, `half_life`, or `alpha`.
+
+---
+
+    Code
+      x$ewm_sum(alpha = 0)
+    Condition
+      Error in `x$ewm_sum()`:
+      ! Evaluation failed in `$ewm_sum()`.
+      Caused by error in `x$ewm_sum()`:
+      ! `alpha` must be between greater than 0 and lower or equal to 1.
+
+---
+
+    Code
+      x$ewm_sum(alpha = 1.5)
+    Condition
+      Error in `x$ewm_sum()`:
+      ! Evaluation failed in `$ewm_sum()`.
+      Caused by error in `x$ewm_sum()`:
+      ! `alpha` must be between greater than 0 and lower or equal to 1.
+
+---
+
+    Code
+      x$ewm_sum(com = -1)
+    Condition
+      Error in `x$ewm_sum()`:
+      ! Evaluation failed in `$ewm_sum()`.
+      Caused by error in `x$ewm_sum()`:
+      ! `com` must be a number larger than or equal to 0, not the number -1.
+
+---
+
+    Code
+      x$ewm_sum(com = "a")
+    Condition
+      Error in `x$ewm_sum()`:
+      ! Evaluation failed in `$ewm_sum()`.
+      Caused by error in `x$ewm_sum()`:
+      ! `com` must be a number, not the string "a".
+
+---
+
+    Code
+      x$ewm_sum(span = 0.5)
+    Condition
+      Error in `x$ewm_sum()`:
+      ! Evaluation failed in `$ewm_sum()`.
+      Caused by error in `x$ewm_sum()`:
+      ! `span` must be a number larger than or equal to 1, not the number 0.5.
+
+---
+
+    Code
+      x$ewm_sum(half_life = -1)
+    Condition
+      Error in `x$ewm_sum()`:
+      ! Evaluation failed in `$ewm_sum()`.
+      Caused by error in `x$ewm_sum()`:
+      ! `half_life` must be a number larger than or equal to 0, not the number -1.
+
+---
+
+    Code
+      x$ewm_sum(alpha = 0.5, min_samples = -1)
+    Condition
+      Error in `x$ewm_sum()`:
+      ! Evaluation failed in `$ewm_sum()`.
+      Caused by error:
+      ! -1.0 is out of range that can be safely converted to usize
+
+---
+
+    Code
+      x$ewm_sum(alpha = 0.5, adjust = TRUE)
+    Condition
+      Error in `x$ewm_sum()`:
+      ! Evaluation failed in `$ewm_sum()`.
+      Caused by error in `x$ewm_sum()`:
+      ! `...` must be empty.
+      x Problematic argument:
+      * adjust = TRUE
+
 # extend_constant
 
     Code

@@ -1964,6 +1964,12 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   }
 }
 
+`PlRExpr_ewm_sum` <- function(self) {
+  function(`alpha`, `min_samples`, `ignore_nulls`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_ewm_sum__impl, `self`, `alpha`, `min_samples`, `ignore_nulls`))
+  }
+}
+
 `PlRExpr_ewm_var` <- function(self) {
   function(`alpha`, `adjust`, `bias`, `min_samples`, `ignore_nulls`) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_ewm_var__impl, `self`, `alpha`, `adjust`, `bias`, `min_samples`, `ignore_nulls`))
@@ -3682,6 +3688,7 @@ class(`PlRDataTypeExpr`) <- c("polars::PlRDataTypeExpr__bundle", "savvy_polars__
   e$`ewm_mean` <- `PlRExpr_ewm_mean`(ptr)
   e$`ewm_mean_by` <- `PlRExpr_ewm_mean_by`(ptr)
   e$`ewm_std` <- `PlRExpr_ewm_std`(ptr)
+  e$`ewm_sum` <- `PlRExpr_ewm_sum`(ptr)
   e$`ewm_var` <- `PlRExpr_ewm_var`(ptr)
   e$`exp` <- `PlRExpr_exp`(ptr)
   e$`explode` <- `PlRExpr_explode`(ptr)
