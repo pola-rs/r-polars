@@ -8,7 +8,7 @@
 
 ### Other changes
 
-- S7 >= 1.0.0 is now required.
+- S7 >= 1.0.0 is now required (#1917).
 
 ## polars 2.1.0
 
