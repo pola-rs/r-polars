@@ -62,6 +62,16 @@
       Caused by error in `pl$explain_all()`:
       ! `lazy_frames` must be a list of polars lazyframes, not the number 1.
 
+---
+
+    Code
+      pl$explain_all(list(cyl_4, cyl_6), optimizations = 1)
+    Condition
+      Error in `pl$explain_all()`:
+      ! Evaluation failed in `$explain_all()`.
+      Caused by error in `withCallingHandlers()`:
+      ! `optimizations` must be a <polars::QueryOptFlags>, not a <double>.
+
 # pl$row_index() works
 
     Code

@@ -6,6 +6,10 @@
 
 - New method `$ewm_sum()` computes exponentially-weighted moving sums (#1915).
 
+### Other changes
+
+- S7 >= 1.0.0 is now required (#1917).
+
 ## polars 2.1.0
 
 This is an update that corresponds to Python Polars 2.1.0.
