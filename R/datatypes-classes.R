@@ -78,6 +78,18 @@
 #' pl$Struct(a = pl$Int32, b = pl$String)
 #' pl$Null
 #' pl$Unknown
+#'
+#' # A Map Series is created by casting a List(Struct(key, value)) Series.
+#' # The second map has an "it" key with a missing value, the third has no "it" key.
+#' translations <- as_polars_series(
+#'   list(
+#'     data.frame(key = c("fr", "es"), value = c("chat", "gato")),
+#'     data.frame(key = c("de", "it"), value = c("Hund", NA)),
+#'     data.frame(key = "pt", value = "cavalo")
+#'   ),
+#'   name = "translations"
+#' )
+#' translations$cast(pl$Map(pl$String, pl$String))
 NULL
 
 # The env for storing data type methods
